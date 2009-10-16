@@ -6,8 +6,7 @@ INCLUDE_DIRECTORIES(
     . 
     ${CMAKE_HOME_DIRECTORY}/src 
     ${OPENCV_INCLUDE_DIRS}
-    #${CMAKE_HOME_DIRECTORY}/external/IVT/src/
-    ${CMAKE_HOME_DIRECTORY}/external/6dslam/src
+    ${CMAKE_HOME_DIRECTORY}/external
 )
 
 LINK_DIRECTORIES(

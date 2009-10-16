@@ -31,25 +31,25 @@ using std::endl;
 #include <fstream>
 using std::ifstream;
 
-#include "scan.h"
+#include "6dslam/src/scan.h"
 
-#include "icp6Dapx.h"
-#include "icp6Dsvd.h"
-#include "icp6Dquat.h"
-#include "icp6Dortho.h"
-#include "icp6Dhelix.h"
-#include "icp6D.h"
-#include "lum6Deuler.h"
-#include "lum6Dquat.h"
-#include "ghelix6DQ2.h"
-#include "elch6Deuler.h"
-#include "elch6Dquat.h"
-#include "elch6DunitQuat.h"
-#include "elch6Dslerp.h"
-#include "graphSlam6D.h"
-#include "gapx6D.h"
-#include "graph.h"
-#include "globals.icc"
+#include "6dslam/src/icp6Dapx.h"
+#include "6dslam/src/icp6Dsvd.h"
+#include "6dslam/src/icp6Dquat.h"
+#include "6dslam/src/icp6Dortho.h"
+#include "6dslam/src/icp6Dhelix.h"
+#include "6dslam/src/icp6D.h"
+#include "6dslam/src/lum6Deuler.h"
+#include "6dslam/src/lum6Dquat.h"
+#include "6dslam/src/ghelix6DQ2.h"
+#include "6dslam/src/elch6Deuler.h"
+#include "6dslam/src/elch6Dquat.h"
+#include "6dslam/src/elch6DunitQuat.h"
+#include "6dslam/src/elch6Dslerp.h"
+#include "6dslam/src/graphSlam6D.h"
+#include "6dslam/src/gapx6D.h"
+#include "6dslam/src/graph.h"
+#include "6dslam/src/globals.icc"
 
 #ifndef _MSC_VER
 #include <getopt.h>
