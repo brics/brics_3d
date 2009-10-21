@@ -24,74 +24,23 @@ using namespace std;
 namespace brics {
 
 /**
- * @struct CartesianPoint3D
- * @brief Simple struct to represent a 3D point in the Cartesian system
- * @author Sebastian Blumenthal
- **/
-struct CartesianPoint3D {
-
-	/**
-	 * @brief Standard constuctor
-	 */
-	CartesianPoint3D() {};
-
-	/**
-	 * @brief Create and initialize a 3D point
-	 * @param xParam X coordinate in Cartesian system
-	 * @param yParam Y coordinate in Cartesian system
-	 * @param zParam Z coordinate in Cartesian system (height)
-	 */
-	CartesianPoint3D(double xParam, double yParam, double zParam) {
-		x = xParam;
-		y = yParam;
-		z = zParam;
-	};
-
-	/**
-	 * @brief Copy constructor
-	 */
-	CartesianPoint3D(CartesianPoint3D* point) {
-		x = point->x;
-		y = point->y;
-		z = point->z;
-	};
-
-	/**
-	 * @brief Copy raw data to input buffer (array)
-	 * @param[in] pointBuffer Pointer to buffer, where to store the raw data
-	 */
-	void getRawData(double* pointBuffer) {
-		pointBuffer[0] = x;
-		pointBuffer[1] = y;
-		pointBuffer[2] = z;
-	};
-
-	/// X coordinate in Cartesian system
-	double x;
-	/// Y coordinate in Cartesian system
-	double y;
-	/// Z coordinate in Cartesian system (heigth)
-	double z;
-};
-
-/**
- * @class CartesianPointCloud
+ * @class PointCloud3D
  * @brief Class to represent a Cartesian 3D point cloud
  * @author Sebastian Blumenthal
  * @date Aug 25, 2009
  */
-class CartesianPointCloud {
+class PointCloud3D {
 public:
 
 	/**
 	 * @brief Standard constuctor
 	 */
-	CartesianPointCloud();
+	PointCloud3D();
 
 	/**
 	 * @brief Standard destructor
 	 */
-	virtual ~CartesianPointCloud();
+	virtual ~PointCloud3D();
 
 	/**
 	 * @brief Add a point to the poin cloud

@@ -26,7 +26,7 @@ DepthImageToPointCloudTransformation::~DepthImageToPointCloudTransformation() {
 }
 
 void DepthImageToPointCloudTransformation::transformDepthImageToPointCloud(IplImage *depthImage,
-		CartesianPointCloud *pointCloud, double threshold) {
+		PointCloud3D *pointCloud, double threshold) {
 
 	double x = 0.0;
 	double y = 0.0;

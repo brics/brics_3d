@@ -82,7 +82,7 @@ public:
 	 *
 	 * 3.) brighter regions appears nearer to camera
 	 */
-	void transformDepthImageToPointCloud(IplImage *depthImage, CartesianPointCloud *pointCloud, double threshold = 0.0);
+	void transformDepthImageToPointCloud(IplImage *depthImage, PointCloud3D *pointCloud, double threshold = 0.0);
 
 
 

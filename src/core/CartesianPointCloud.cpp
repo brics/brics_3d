@@ -14,37 +14,37 @@
 
 namespace brics {
 
-CartesianPointCloud::CartesianPointCloud() {
+PointCloud3D::PointCloud3D() {
 	pointCloud = new vector<Point3D> ();
 	pointCloud->clear();
 
 }
 
-CartesianPointCloud::~CartesianPointCloud() {
+PointCloud3D::~PointCloud3D() {
 	if (pointCloud != NULL) {
 		pointCloud->clear();
 		delete pointCloud;
 	}
 }
 
-void CartesianPointCloud::addPoint(Point3D point) {
+void PointCloud3D::addPoint(Point3D point) {
 	pointCloud->push_back(point);
 }
 
-vector<Point3D> *CartesianPointCloud::getPointCloud() {
+vector<Point3D> *PointCloud3D::getPointCloud() {
 	return pointCloud;
 
 }
 
-void CartesianPointCloud::setPointCloud(vector<Point3D> *pointCloud) {
+void PointCloud3D::setPointCloud(vector<Point3D> *pointCloud) {
 	this->pointCloud = pointCloud;
 }
 
-int CartesianPointCloud::getSize() {
+int PointCloud3D::getSize() {
 	return pointCloud->size();
 }
 
-void CartesianPointCloud::storeToPlyFile(string filename) {
+void PointCloud3D::storeToPlyFile(string filename) {
 	ofstream outputFile;
 	outputFile.open(filename.c_str());
 	cout << "INFO: Saving point cloud to: " << filename << endl;
@@ -52,7 +52,7 @@ void CartesianPointCloud::storeToPlyFile(string filename) {
 	/* write ply header */
 	outputFile << "ply" << endl;
 	outputFile << "format ascii 1.0" << endl;
-	outputFile << "comment created by brics::CartesianPointCloud::storeToPlyFile" << endl;
+	outputFile << "comment created by brics::PointCloud3D::storeToPlyFile" << endl;
 	outputFile << "element vertex " << pointCloud->size() << endl;
 	outputFile << "property float32 x" << endl;
 	outputFile << "property float32 y" << endl;
@@ -80,7 +80,7 @@ void CartesianPointCloud::storeToPlyFile(string filename) {
 	outputFile.close();
 }
 
-void CartesianPointCloud::storeToTxtFile(string filename) {
+void PointCloud3D::storeToTxtFile(string filename) {
 	ofstream outputFile;
 	outputFile.open(filename.c_str());
 	cout << "INFO: Saving point cloud to: " << filename << endl;
