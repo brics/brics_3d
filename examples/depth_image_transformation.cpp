@@ -12,7 +12,7 @@
 
 #include <iostream>
 #include <util/DepthImageLoader.h>
-#include <core/CartesianPointCloud.h>
+#include <core/PointCloud3D.h>
 #include <algorithm/DepthImageToPointCloudTransformation.h>
 
 using namespace std;
@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
 	depthImgageLoader->displayDepthImage();
 
 	/* convert to point cloud */
-	CartesianPointCloud *pointCloud = new CartesianPointCloud();
+	PointCloud3D *pointCloud = new PointCloud3D();
 	DepthImageToPointCloudTransformation *img2cloudTramsformer = new DepthImageToPointCloudTransformation();
 	img2cloudTramsformer->transformDepthImageToPointCloud(depthImage, pointCloud, 0);
 	cout << "Size of point cloud: " << pointCloud->getSize() << endl;

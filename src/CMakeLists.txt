@@ -19,7 +19,7 @@ LINK_DIRECTORIES(
 
 # define sources lists for libraries (cpp files)
 SET (CORE_LIBRARY_SOURCES
-	./core/CartesianPointCloud
+	./core/PointCloud3D
 	./core/Point3D
 )
 

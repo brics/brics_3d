@@ -8,7 +8,7 @@
  * @version: 0.1
  */
 
-#include "CartesianPointCloud.h"
+#include "PointCloud3D.h"
 #include <iostream>
 #include <fstream>
 

@@ -12,7 +12,7 @@
 
 #include <iostream>
 #include <util/DepthImageLoader.h>
-#include <core/CartesianPointCloud.h>
+#include <core/PointCloud3D.h>
 #include <algorithm/DepthImageToPointCloudTransformation.h>
 
 using namespace brics;
@@ -88,8 +88,8 @@ int main(int argc, char **argv) {
 	depthImgageLoader->displayDepthImage();
 
 	/* convert to point clouds */
-	CartesianPointCloud *pointCloud1 = new CartesianPointCloud();
-	CartesianPointCloud *pointCloud2 = new CartesianPointCloud();
+	PointCloud3D *pointCloud1 = new PointCloud3D();
+	PointCloud3D *pointCloud2 = new PointCloud3D();
 	DepthImageToPointCloudTransformation *img2cloudTramsformer =
 			new DepthImageToPointCloudTransformation();
 	img2cloudTramsformer->transformDepthImageToPointCloud(depthImage1,
@@ -100,7 +100,7 @@ int main(int argc, char **argv) {
 	cout << "Size of point cloud2: " << pointCloud2->getSize() << endl;
 
 	/* create point cloud container */
-	vector<CartesianPointCloud*> *pointClouds = new vector<CartesianPointCloud*>;
+	vector<PointCloud3D*> *pointClouds = new vector<PointCloud3D*>;
 	pointClouds->push_back(pointCloud1);
 	pointClouds->push_back(pointCloud2);
 
@@ -288,7 +288,7 @@ int main(int argc, char **argv) {
 	   long endtime = GetCurrentTimeInMilliSec() - starttime;
 	   cout << "Matching done in " << endtime << " milliseconds!!!" << endl;
 
-	   CartesianPointCloud *registeredPoints = new CartesianPointCloud();
+	   PointCloud3D *registeredPoints = new PointCloud3D();
 	   double x,y,z = 0.0;
 	   if (exportPoints) {
 	     cout << "Export all 3D Points" << endl;

@@ -11,7 +11,7 @@
 #ifndef DEPTHIMAGETOPOINTCLOUDTRANSFORMATION_H_
 #define DEPTHIMAGETOPOINTCLOUDTRANSFORMATION_H_
 
-#include "core/CartesianPointCloud.h"
+#include "core/PointCloud3D.h"
 #include <cv.h>
 #include <highgui.h>
 
