@@ -360,7 +360,7 @@ int main(int argc, char **argv) {
 				x = Scan::allScans[i]->get_points_red()[j][0];
 				y = Scan::allScans[i]->get_points_red()[j][1];
 				z =	Scan::allScans[i]->get_points_red()[j][2];
-				registeredPoints->addPoint(CartesianPoint3D(x,y,z));
+				registeredPoints->addPoint(Point3D(x,y,z));
 			 }
 
 	     }
