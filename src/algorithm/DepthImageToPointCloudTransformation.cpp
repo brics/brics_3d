@@ -63,7 +63,7 @@ void DepthImageToPointCloudTransformation::transformDepthImageToPointCloud(IplIm
 				assert((0.0 <= pixelValue) && (pixelValue <= 255.0)); //comment out for optimization
 				y = MAX_DEPTHIMAGE_VALUE - pixelValue; // invert here because bright regions appears nearer (at least for zcam) TODO: check if this common
 				z = depthImage->height - row; //flips the image (because of negative y axis definition in depth images)
-				pointCloud->addPoint(CartesianPoint3D(x,y,z));
+				pointCloud->addPoint(Point3D(x,y,z));
 			}
 		}
 	}

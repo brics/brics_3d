@@ -14,6 +14,8 @@
 #include <vector>
 #include <string>
 
+#include "core/Point3D.h"
+
 using namespace std;
 
 /**
@@ -95,19 +97,19 @@ public:
 	 * @brief Add a point to the poin cloud
 	 * @param point Point that will be added
 	 */
-	void addPoint(CartesianPoint3D point);
+	void addPoint(Point3D point);
 
 	/**
 	 * @brief Get the reference to the point cloud
 	 * @return Pointer to point cloud
 	 */
-    vector<CartesianPoint3D> *getPointCloud();
+    vector<Point3D> *getPointCloud();
 
 	/**
 	 * @brief Set the reference to the point cloud
 	 * @param pointCloud Pointer to new point cloud
 	 */
-    void setPointCloud(vector<CartesianPoint3D> *pointCloud);
+    void setPointCloud(vector<Point3D> *pointCloud);
 
     /**
      * @brief Get the number of points in the point cloud
@@ -130,7 +132,7 @@ public:
 private:
 
 	///Pointer to vector which represents a Cartesian point cloud
-	vector<CartesianPoint3D> *pointCloud;
+	vector<Point3D> *pointCloud;
 };
 
 }

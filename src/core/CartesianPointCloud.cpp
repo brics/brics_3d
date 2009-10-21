@@ -15,7 +15,7 @@
 namespace brics {
 
 CartesianPointCloud::CartesianPointCloud() {
-	pointCloud = new vector<CartesianPoint3D> ();
+	pointCloud = new vector<Point3D> ();
 	pointCloud->clear();
 
 }
@@ -27,16 +27,16 @@ CartesianPointCloud::~CartesianPointCloud() {
 	}
 }
 
-void CartesianPointCloud::addPoint(CartesianPoint3D point) {
+void CartesianPointCloud::addPoint(Point3D point) {
 	pointCloud->push_back(point);
 }
 
-vector<CartesianPoint3D> *CartesianPointCloud::getPointCloud() {
+vector<Point3D> *CartesianPointCloud::getPointCloud() {
 	return pointCloud;
 
 }
 
-void CartesianPointCloud::setPointCloud(vector<CartesianPoint3D> *pointCloud) {
+void CartesianPointCloud::setPointCloud(vector<Point3D> *pointCloud) {
 	this->pointCloud = pointCloud;
 }
 
