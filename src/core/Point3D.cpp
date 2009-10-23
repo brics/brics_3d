@@ -36,7 +36,7 @@ Point3D::Point3D(double x, double y, double z) {
 }
 
 Point3D::~Point3D() {
-	// TODO Auto-generated destructor stub
+
 }
 
 void Point3D::getRawData(double *pointBuffer) {
@@ -52,10 +52,11 @@ Point3D Point3D::operator +(const Point3D *point) {
 	result.z = this->z + point->z;
 
 	/* check if any value of x,y,z is infinity or not a number */
-	if (	( !(isfinite(result.x)) && (result.x != 0.0) ) ||
-			( !(isfinite(result.y)) && (result.y != 0.0) ) ||
-			( !(isfinite(result.z)) && (result.z != 0.0) ) ){
-		throw runtime_error("Point3D operation exceeds the limit of datatype representation double.");
+	if ((!(isfinite(result.x)) && (result.x != 0.0)) || (!(isfinite(result.y))
+			&& (result.y != 0.0)) || (!(isfinite(result.z))
+			&& (result.z != 0.0))) {
+		throw runtime_error(
+				"Point3D operation exceeds the limit of datatype representation double.");
 	}
 
 	return result;
@@ -68,10 +69,11 @@ Point3D Point3D::operator -(const Point3D *point) {
 	result.z = this->z - point->z;
 
 	/* check if any value of x,y,z is infinity or not a number */
-	if (	( !(isfinite(result.x)) && (result.x != 0.0) ) ||
-			( !(isfinite(result.y)) && (result.y != 0.0) ) ||
-			( !(isfinite(result.z)) && (result.z != 0.0) ) ){
-		throw runtime_error("Point3D operation exceeds the limit of datatype representation double.");
+	if ((!(isfinite(result.x)) && (result.x != 0.0)) || (!(isfinite(result.y))
+			&& (result.y != 0.0)) || (!(isfinite(result.z))
+			&& (result.z != 0.0))) {
+		throw runtime_error(
+				"Point3D operation exceeds the limit of datatype representation double.");
 	}
 
 	return result;
@@ -84,24 +86,28 @@ Point3D Point3D::operator *(double scalar) {
 	result.z = (this->z) * scalar;
 
 	/* check if any value of x,y,z is infinity or not a number */
-	if (	( !(isfinite(result.x)) && (result.x != 0.0) ) ||
-			( !(isfinite(result.y)) && (result.y != 0.0) ) ||
-			( !(isfinite(result.z)) && (result.z != 0.0) ) ){
-		throw runtime_error("Point3D operation exceeds the limit of datatype representation double.");
+	if ((!(isfinite(result.x)) && (result.x != 0.0)) || (!(isfinite(result.y))
+			&& (result.y != 0.0)) || (!(isfinite(result.z))
+			&& (result.z != 0.0))) {
+		throw runtime_error(
+				"Point3D operation exceeds the limit of datatype representation double.");
 	}
 
 	return result;
 }
 
- istream& operator>>(istream &inStream, Point3D &point) {
-	  if (!inStream.good()) throw runtime_error("ERROR: cannot read x coordinate of point.");
-	  inStream >> point.x;
-	  if (!inStream.good()) throw runtime_error("ERROR: cannot read y coordinate of point.");
-	  inStream >> point.y;
-	  if (!inStream.good()) throw runtime_error("ERROR: cannot read z coordinate of point.");
-	  inStream >> point.z;
+istream& operator>>(istream &inStream, Point3D &point) {
+	if (!inStream.good())
+		throw runtime_error("ERROR: cannot read x coordinate of point.");
+	inStream >> point.x;
+	if (!inStream.good())
+		throw runtime_error("ERROR: cannot read y coordinate of point.");
+	inStream >> point.y;
+	if (!inStream.good())
+		throw runtime_error("ERROR: cannot read z coordinate of point.");
+	inStream >> point.z;
 
-	  return inStream;
+	return inStream;
 }
 
 ostream& operator<<(ostream &outStream, const Point3D &point) {
@@ -110,6 +116,25 @@ ostream& operator<<(ostream &outStream, const Point3D &point) {
 	return outStream;
 }
 
+void Point3D::homogeneousTransformation(IHomogeneousMatrix44 *transformation) {
+	const int matrixElements = 16; // 4x4
+	double homogenousMatrix[matrixElements];
+	double xTemp;
+	double yTemp;
+	double zTemp;
+
+	transformation->getRawData(homogenousMatrix); //TODO: check if correct
+
+	/* rotate */;
+	xTemp = x * homogenousMatrix[0] + y * homogenousMatrix[1] + z * homogenousMatrix[2];
+	yTemp = x * homogenousMatrix[4] + y * homogenousMatrix[5] + z * homogenousMatrix[6];
+	xTemp = x * homogenousMatrix[8] + y * homogenousMatrix[9] + z * homogenousMatrix[10];
+
+	/* translate */
+	x = xTemp + homogenousMatrix[3];
+	y = yTemp + homogenousMatrix[7];
+	z = zTemp + homogenousMatrix[11];
+}
 
 }
 

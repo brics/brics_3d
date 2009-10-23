@@ -11,6 +11,9 @@
 #include "PointCloud3D.h"
 #include <iostream>
 #include <fstream>
+#include <string>
+#include <sstream>
+#include <stdexcept>
 
 namespace brics {
 
@@ -92,6 +95,32 @@ void PointCloud3D::storeToTxtFile(string filename) {
 	}
 
 	outputFile.close();
+}
+
+istream& operator>>(istream &inStream, PointCloud3D &pointCloud) {
+	Point3D *tmpPoint;
+	string line;
+
+	while(getline(inStream, line)) {
+		tmpPoint = new Point3D;
+		stringstream lineSteam(line);
+		if (!lineSteam.good()) {
+			throw runtime_error("ERROR: cannot read point.");
+		}
+		lineSteam >> *tmpPoint;
+		pointCloud.addPoint(tmpPoint);
+	}
+
+	return inStream;
+}
+
+ostream& operator<<(ostream &outStream, PointCloud3D &pointCloud) {
+
+	for (int i = 0; i < pointCloud.getSize(); ++i) {
+		outStream << (*pointCloud.getPointCloud())[i] << endl;
+	}
+
+	return outStream;
 }
 
 }

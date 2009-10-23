@@ -13,17 +13,18 @@
 using std::ostream;
 using std::istream;
 
+#include "core/IHomogeneousMatrix44.h"
+
 /**
  * @namespace brics
  */
 namespace brics {
 
-class HomogeneousMatrix4x4;
 /**
  * @brief A class to represent a point in the Cartesian space
  *
  * This class is the basic representation of a three dimensional point in a Cartesian space.
- * Basic vector functionality is also provided
+ * Basic vector functionality is also provided.
  *
  */
 class Point3D {
@@ -111,8 +112,12 @@ public:
 	 */
 	friend ostream& operator<<(ostream &outStream, const Point3D &point);
 
-	/// TODO: implement!
-	Point3D homogeneousTransformation(HomogeneousMatrix4x4 *transformation); //TODO
+	/**
+	 * @brief Applies a homogeneous transformation matrix to the point.
+	 *
+	 * @param[in] transformation The homogeneous transformation matrix that will be applied
+	 */
+	void homogeneousTransformation(IHomogeneousMatrix44 *transformation);
 };
 
 }

@@ -78,6 +78,28 @@ public:
      */
     void storeToTxtFile(string filename);
 
+	/**
+	 * @brief Overridden >> operator.
+	 *
+	 * Reads a point cloud from a stream an stores it. E.g. e.g. std::cin >> pointCloudObj;
+	 *
+	 * @param inStream The input stream
+	 * @param pointCloud Pointer to point where input is stored
+	 * @return Input stream
+	 */
+	friend istream& operator>>(istream &inStream, PointCloud3D &pointCloud);
+
+	/**
+	 * @brief Overridden << operator.
+	 *
+	 * Writes a point cloud to a stream e.g. std::cout << pointCloudObj;
+	 *
+	 * @param outStream The output stream
+	 * @param pointCloud Pointer to point which data is forwarded to output stream
+	 * @return Output stream
+	 */
+	friend ostream& operator<<(ostream &outStream, PointCloud3D &pointCloud);
+
 private:
 
 	///Pointer to vector which represents a Cartesian point cloud
