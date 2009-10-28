@@ -117,23 +117,31 @@ ostream& operator<<(ostream &outStream, const Point3D &point) {
 }
 
 void Point3D::homogeneousTransformation(IHomogeneousMatrix44 *transformation) {
-	const int matrixElements = 16; // 4x4
-	double homogenousMatrix[matrixElements];
+
+	double *homogenousMatrix;
 	double xTemp;
 	double yTemp;
 	double zTemp;
 
-	transformation->getRawData(homogenousMatrix); //TODO: check if correct
+	transformation->getRawData(homogenousMatrix);
+
+	/*
+	 * layout:
+	 * 0 4 8  12
+	 * 1 5 9  13
+	 * 2 6 10 14
+	 * 3 7 11 15
+	 */
 
 	/* rotate */;
-	xTemp = x * homogenousMatrix[0] + y * homogenousMatrix[1] + z * homogenousMatrix[2];
-	yTemp = x * homogenousMatrix[4] + y * homogenousMatrix[5] + z * homogenousMatrix[6];
-	xTemp = x * homogenousMatrix[8] + y * homogenousMatrix[9] + z * homogenousMatrix[10];
+	xTemp = x * homogenousMatrix[0] + y * homogenousMatrix[4] + z * homogenousMatrix[8];
+	yTemp = x * homogenousMatrix[1] + y * homogenousMatrix[5] + z * homogenousMatrix[9];
+	zTemp = x * homogenousMatrix[2] + y * homogenousMatrix[6] + z * homogenousMatrix[10];
 
 	/* translate */
-	x = xTemp + homogenousMatrix[3];
-	y = yTemp + homogenousMatrix[7];
-	z = zTemp + homogenousMatrix[11];
+	x = xTemp + homogenousMatrix[12];
+	y = yTemp + homogenousMatrix[13];
+	z = zTemp + homogenousMatrix[14];
 }
 
 }
