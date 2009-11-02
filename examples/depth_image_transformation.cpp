@@ -16,7 +16,7 @@
 #include <algorithm/DepthImageToPointCloudTransformation.h>
 
 using namespace std;
-using namespace brics;
+using namespace BRICS_3D;
 
 
 int main(int argc, char **argv) {

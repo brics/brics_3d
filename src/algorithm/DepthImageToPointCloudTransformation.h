@@ -1,6 +1,5 @@
 /**
  * @file
- * brics_3dpm 
  * DepthImageToPointCloudTransformation.h
  * 
  * @author: Sebastian Blumenthal
@@ -19,9 +18,9 @@
 #define MAX_DEPTHIMAGE_VALUE 255
 
 /**
- * @namespace brics
+ * @namespace BRICS_3D
  */
-namespace brics {
+namespace BRICS_3D {
 
 /**
  * @class DepthImageToPointCloudTransformation

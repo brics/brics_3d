@@ -1,6 +1,5 @@
 /**
  * @file
- * brics_3dpm 
  * DepthImageToPointCloudTransformation.cpp
  * 
  * @author: Sebastian Blumenthal
@@ -15,7 +14,7 @@
 
 using namespace std;
 
-namespace brics {
+namespace BRICS_3D {
 
 DepthImageToPointCloudTransformation::DepthImageToPointCloudTransformation() {
 

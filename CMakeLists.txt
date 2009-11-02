@@ -2,7 +2,7 @@
 # date: 2009-09-09
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
-PROJECT(BRICS_3DPerceptionAndModeling)
+PROJECT(BRICS_3D)
 
 ## check prerequisites
 SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/external/cmake_modules")
@@ -39,7 +39,8 @@ SET(LIBRARY_OUTPUT_PATH ${CMAKE_HOME_DIRECTORY}/lib/ CACHE PATH "Configure the l
 #SET(INCLUDE_INSTALL_DIR /usr/local/include/brics CACHE PATH "The subdirectory to the header prefix")
 #SET(LIBRARY_INSTALL_DIR /usr/local/lib/brics CACHE PATH "The subdirectory to the header prefix")
 
-## do compitions
+## do compilations
 ADD_SUBDIRECTORY(./src) #compile everything in src to create the libraries
-ADD_SUBDIRECTORY(./examples) #compile everything in test to create the test binaries
+#ADD_SUBDIRECTORY(./tests) #compile everything in tests to create the unit test binaries
+ADD_SUBDIRECTORY(./examples) #compile everything in examples to create the example binaries
 

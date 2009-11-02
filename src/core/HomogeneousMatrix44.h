@@ -12,14 +12,14 @@
 #include "IHomogeneousMatrix44.h"
 #include <eigen2/Eigen/Geometry>
 
-namespace brics {
+namespace BRICS_3D {
 
 /**
  * @brief Simple implementation of IHomogeneousMatrix44 interface.
  *
  * Matrix can be set up either via manual rotation and translation coefficients or an Eigen2 transformation.
  */
-class HomogeneousMatrix44: public brics::IHomogeneousMatrix44 {
+class HomogeneousMatrix44: public BRICS_3D::IHomogeneousMatrix44 {
 public:
 
 	/**

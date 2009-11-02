@@ -26,7 +26,7 @@
 #include <core/PointCloud3D.h>
 #include <algorithm/DepthImageToPointCloudTransformation.h>
 
-using namespace brics;
+using namespace BRICS_3D;
 
 #define WANT_STREAM ///< define the WANT stream :)
 #include <string>

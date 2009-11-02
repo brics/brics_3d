@@ -10,7 +10,7 @@
 #define IHOMOGENEOUSMATRIX44_H_
 
 
-namespace brics {
+namespace BRICS_3D {
 
 /**
  * @brief An abstract class interface to represent a homogeneous 4x4 matrix.

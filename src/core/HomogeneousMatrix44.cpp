@@ -8,7 +8,7 @@
 
 #include "HomogeneousMatrix44.h"
 
-namespace brics {
+namespace BRICS_3D {
 
 HomogeneousMatrix44::~HomogeneousMatrix44() {
 

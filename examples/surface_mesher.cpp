@@ -1,6 +1,5 @@
 /**
  * @file
- * brics_3dpm 
  * surface_mesher.cpp
  * 
  * @author: Sebastian Blumenthal

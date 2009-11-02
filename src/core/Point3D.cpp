@@ -15,7 +15,7 @@
 using std::runtime_error;
 using std::isfinite;
 
-namespace brics {
+namespace BRICS_3D {
 
 Point3D::Point3D() {
 	x = 0.0;

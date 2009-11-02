@@ -18,7 +18,7 @@
 #include "Tracking/ICP.h"
 
 using namespace std;
-using namespace brics;
+using namespace BRICS_3D;
 
 //#include "Image/ImageProcessor.h"
 //#include "Image/ByteImage.h"

@@ -1,6 +1,5 @@
 /**
  * @file
- * brics_3dpm 
  * PointCloud.h
  * 
  * @author: Sebastian Blumenthal
@@ -19,9 +18,9 @@
 using namespace std;
 
 /**
- * @namespace brics
+ * @namespace BRICS_3D
  */
-namespace brics {
+namespace BRICS_3D {
 
 /**
  * @class PointCloud3D

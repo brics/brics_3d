@@ -1,6 +1,5 @@
 /**
  * @file
- * brics_3dpm 
  * PointCloud.cpp
  * 
  * @author: Sebastian Blumenthal
@@ -15,7 +14,7 @@
 #include <sstream>
 #include <stdexcept>
 
-namespace brics {
+namespace BRICS_3D {
 
 PointCloud3D::PointCloud3D() {
 	pointCloud = new vector<Point3D> ();
@@ -55,7 +54,7 @@ void PointCloud3D::storeToPlyFile(string filename) {
 	/* write ply header */
 	outputFile << "ply" << endl;
 	outputFile << "format ascii 1.0" << endl;
-	outputFile << "comment created by brics::PointCloud3D::storeToPlyFile" << endl;
+	outputFile << "comment created by BRICS_3D::PointCloud3D::storeToPlyFile" << endl;
 	outputFile << "element vertex " << pointCloud->size() << endl;
 	outputFile << "property float32 x" << endl;
 	outputFile << "property float32 y" << endl;

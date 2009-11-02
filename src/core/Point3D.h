@@ -16,9 +16,9 @@ using std::istream;
 #include "core/IHomogeneousMatrix44.h"
 
 /**
- * @namespace brics
+ * @namespace BRICS_3D
  */
-namespace brics {
+namespace BRICS_3D {
 
 /**
  * @brief A class to represent a point in the Cartesian space
