@@ -13,7 +13,12 @@
 #include <stdexcept>
 
 using std::runtime_error;
+
+#ifdef WIN32
+#define isfinite(x) (1)
+#else
 using std::isfinite;
+#endif
 
 namespace BRICS_3D {
 

@@ -90,6 +90,7 @@ int main(int argc, char **argv) {
 			<< endl;
 	as.set_alpha(*opt);
 	assert(as.number_of_solid_components() == 1);
+#ifndef WIN32
 	CGAL::Geomview_stream gv(CGAL::Bbox_3(-300, -300, -300, 300, 300, 300));
 	gv.set_line_width(4);
 	gv.set_trace(false);
@@ -100,6 +101,7 @@ int main(int argc, char **argv) {
 		//gv << dt;
 		cin >> n;
 	}
+#endif
 
 	return 0;
 }

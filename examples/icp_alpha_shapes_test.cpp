@@ -61,7 +61,7 @@ using std::ifstream;
 #ifndef _MSC_VER
 #include <getopt.h>
 #else
-#include "..\Visual_Studio_Projects\6DSLAM\6D_SLAM\XGetopt.h"
+#include "6dslam\Visual_Studio_Projects\6DSLAM\6D_SLAM\XGetopt.h"
 #endif
 
 #include <csignal>
@@ -474,6 +474,7 @@ int main(int argc, char **argv) {
 		/*
 		 * display results
 		 */
+#ifndef WIN32
 		CGAL::Geomview_stream gv(CGAL::Bbox_3(-300, -300, -300, 300, 300, 300));
 		gv.set_line_width(4);
 		gv.set_trace(false);
@@ -485,7 +486,7 @@ int main(int argc, char **argv) {
 			//gv << dt;
 			cin >> i;
 		}
-
+#endif
 
 
 

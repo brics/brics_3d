@@ -8,7 +8,14 @@ PROJECT(BRICS_3D)
 SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/external/cmake_modules")
 
 # search for OpenCV library
-INCLUDE(${PROJECT_SOURCE_DIR}/external/cmake_modules/FindOpenCV.cmake)
+#INCLUDE(${PROJECT_SOURCE_DIR}/external/cmake_modules/FindOpenCV.cmake)
+
+FIND_PACKAGE(OpenCV REQUIRED)
+IF (OpenCV_FOUND)
+  MESSAGE(STATUS "SUCCESSFUL: OpenCV found")
+ELSE (OpenCV_FOUND)
+  MESSAGE(STATUS "WARNING: OpenCV not found")
+ENDIF (OpenCV_FOUND)
 
 # search for Boost library (not yet necessary!)
 FIND_PACKAGE(Boost)
@@ -26,6 +33,12 @@ ELSE (NOT CGAL_FOUND)
   MESSAGE(STATUS "SUCCESSFUL: CGAL found")
 ENDIF()
 #MESSAGE(STATUS "INFO: "${CGAL_DIR} , ${CGAL_INCLUDE_DIRS})
+
+IF (WIN32)
+	SET (DL_LIB "")
+ELSEIF (WIN32)
+	SET (DL_LIB "dl")
+ENDIF (WIN32)
 
 
 ## set parameters

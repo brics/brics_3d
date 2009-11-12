@@ -69,8 +69,15 @@ SET(CORE_LIBRARY_SOURCES
 	elch6Dquat
 	elch6DunitQuat
 	elch6Dslerp
-	elch6Deuler
+	elch6Deuler	
 )
+
+IF(WIN32)
+SET(CORE_LIBRARY_SOURCES
+	${CORE_LIBRARY_SOURCES}
+  ../Visual_Studio_Projects/6DSLAM/6D_SLAM/XGetopt.cpp
+)
+ENDIF(WIN32)
 
 # shared file IO (Scan) libraries(TODO: port all)
 #$(BIN)scan_io_uos.so: $(SRC)scan_io.h $(SRC)scan_io_uos.h $(SRC)scan_io_uos.cc $(SRC)point.h $(SRC)point.icc $(SRC)globals.icc
@@ -83,10 +90,16 @@ SET(SCAN_IO_UOS_LIBRARY
 )
 
 # compile libraries
+IF(WIN32)
+SET(DL_LIB "")
+ELSEIF(WIN32)
+SET(DL_LIB "dl")
+ENDIF(WIN32)
+
 ADD_LIBRARY(newmat_cmake ${NEWMAT_LIBRARY_SOURCES})
 ADD_LIBRARY(scanlib ${SCANLIB_LIBRARY_SOURCES})
 ADD_LIBRARY(6dslam_core ${CORE_LIBRARY_SOURCES})
-TARGET_LINK_LIBRARIES(6dslam_core newmat_cmake scanlib dl)
+TARGET_LINK_LIBRARIES(6dslam_core newmat_cmake scanlib ${DL_LIB})
 
 # compile shared file IO (Scan) libraries
 ADD_LIBRARY(scan_io_uos SHARED ${SCAN_IO_UOS_LIBRARY})

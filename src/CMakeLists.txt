@@ -5,7 +5,7 @@
 INCLUDE_DIRECTORIES(
     . 
     ${CMAKE_HOME_DIRECTORY}/src 
-    ${OPENCV_INCLUDE_DIRS}
+    ${OPENCV_INCLUDE_DIR}
 )
 
 
@@ -13,7 +13,7 @@ INCLUDE_DIRECTORIES(
 LINK_DIRECTORIES(
     #/usr/local/lib 
     /usr/lib 
-    ${OPENCV_LINK_DIRS}
+    ${OpenCV_LINK_DIRECTORIES}
 )
 
 
@@ -36,11 +36,11 @@ SET (UTIL_LIBRARY_SOURCES
 
 # compile libraries
 ADD_LIBRARY(brics_3dpm_core ${CORE_LIBRARY_SOURCES})
-TARGET_LINK_LIBRARIES(brics_3dpm_core ${OPENCV_LIBS})
+TARGET_LINK_LIBRARIES(brics_3dpm_core ${OpenCV_LIBRARIES})
 
 ADD_LIBRARY(brics_3dpm_algorithm ${ALGORITHM_LIBRARY_SOURCES})
-TARGET_LINK_LIBRARIES(brics_3dpm_algorithm brics_3dpm_core ${OPENCV_LIBS})
+TARGET_LINK_LIBRARIES(brics_3dpm_algorithm brics_3dpm_core ${OpenCV_LIBRARIES})
 
 ADD_LIBRARY(brics_3dpm_util ${UTIL_LIBRARY_SOURCES})
-TARGET_LINK_LIBRARIES(brics_3dpm_util brics_3dpm_core ${OPENCV_LIBS})
+TARGET_LINK_LIBRARIES(brics_3dpm_util brics_3dpm_core ${OpenCV_LIBRARIES})
 

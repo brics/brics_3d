@@ -54,7 +54,7 @@ using std::ifstream;
 #ifndef _MSC_VER
 #include <getopt.h>
 #else
-#include "..\Visual_Studio_Projects\6DSLAM\6D_SLAM\XGetopt.h"
+#include "6dslam\Visual_Studio_Projects\6DSLAM\6D_SLAM\XGetopt.h"
 #endif
 
 #include <csignal>
