@@ -30,6 +30,7 @@ TARGET_LINK_LIBRARIES(depth_image_transformation brics_3dpm_core brics_3dpm_algo
 
 ADD_EXECUTABLE(alpha_shapes alpha_shapes)
 #TARGET_LINK_LIBRARIES(alpha_shapes CGAL)
+TARGET_LINK_LIBRARIES(alpha_shapes ${CGAL_LIBRARY})
 
 #ADD_EXECUTABLE(surface_mesher surface_mesher) # doesen't work so far
 #TARGET_LINK_LIBRARIES(surface_mesher CGAL CGAL_ImageIO)
@@ -51,8 +52,12 @@ TARGET_LINK_LIBRARIES(slam6d_icp_test scanlib  6dslam_core newmat_cmake ${DL_LIB
 
 ADD_EXECUTABLE(icp_alpha_shapes_test icp_alpha_shapes_test)
 #TARGET_LINK_LIBRARIES(icp_alpha_shapes_test CGAL scanlib  6dslam_core newmat_cmake ${DL_LIB} brics_3dpm_core brics_3dpm_algorithm brics_3dpm_util) #TODO: why is scanlib dl and newmat_camke not linked into 6dslam?!?
-TARGET_LINK_LIBRARIES(icp_alpha_shapes_test scanlib 6dslam_core newmat_cmake ${DL_LIB} brics_3dpm_core brics_3dpm_algorithm brics_3dpm_util) #TODO: why is scanlib dl and newmat_camke not linked into 6dslam?!?
+#TARGET_LINK_LIBRARIES(icp_alpha_shapes_test scanlib 6dslam_core newmat_cmake ${DL_LIB} brics_3dpm_core brics_3dpm_algorithm brics_3dpm_util) #TODO: why is scanlib dl and newmat_camke not linked into 6dslam?!?
+TARGET_LINK_LIBRARIES(icp_alpha_shapes_test ${CGAL_LIBRARY} scanlib 6dslam_core newmat_cmake ${DL_LIB} brics_3dpm_core brics_3dpm_algorithm brics_3dpm_util) #TODO: why is scanlib dl and newmat_camke not linked into 6dslam?!?
+
 
 ADD_EXECUTABLE(icp_alpha_shapes_stream_test icp_alpha_shapes_stream_test)
 #TARGET_LINK_LIBRARIES(icp_alpha_shapes_stream_test CGAL scanlib  6dslam_core newmat_cmake ${DL_LIB} brics_3dpm_core brics_3dpm_algorithm brics_3dpm_util)
-TARGET_LINK_LIBRARIES(icp_alpha_shapes_stream_test scanlib 6dslam_core newmat_cmake ${DL_LIB} brics_3dpm_core brics_3dpm_algorithm brics_3dpm_util)
+#TARGET_LINK_LIBRARIES(icp_alpha_shapes_stream_test scanlib 6dslam_core newmat_cmake ${DL_LIB} brics_3dpm_core brics_3dpm_algorithm brics_3dpm_util)
+TARGET_LINK_LIBRARIES(icp_alpha_shapes_stream_test ${CGAL_LIBRARY} scanlib 6dslam_core newmat_cmake ${DL_LIB} brics_3dpm_core brics_3dpm_algorithm brics_3dpm_util)
+

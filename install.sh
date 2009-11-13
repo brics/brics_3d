@@ -25,7 +25,7 @@ then
 fi
 
 cd build #compile as out-of-source build
-cmake ..
+cmake .. -DCGAL_DIR=/usr/local/lib/CGAL/
 make
 cd ..
 

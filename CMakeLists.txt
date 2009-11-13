@@ -33,13 +33,28 @@ ELSE (NOT CGAL_FOUND)
   MESSAGE(STATUS "SUCCESSFUL: CGAL found")
 ENDIF()
 #MESSAGE(STATUS "INFO: "${CGAL_DIR} , ${CGAL_INCLUDE_DIRS})
+MESSAGE("CGAL lib: "${CGAL_LIBRARY})
+
+# search for Eigen2 (header-only) library
+#FIND_PACKAGE(Eigen2)
+#IF (EIGEN2_FOUND)
+#  MESSAGE(STATUS "SUCCESSFUL: Eigen2 found")
+#ELSE (EIGEN2_FOUND)
+#  MESSAGE(STATUS "WARNING: Eigen2 not found")
+#ENDIF (EIGEN2_FOUND)
+
+
+IF (WIN32)
+	SET (CGAL_LIBRARY "") # windows uses auto_linker.h => skip CGAL_LIBRARY for linker
+ENDIF (WIN32)
+
 
 IF (WIN32)
 	SET (DL_LIB "")
-ELSEIF (WIN32)
+ELSE (WIN32)
 	SET (DL_LIB "dl")
 ENDIF (WIN32)
-
+MESSAGE("dl lib: "${DL_LIB})
 
 ## set parameters
 # set parameters for compiler
@@ -54,6 +69,6 @@ SET(LIBRARY_OUTPUT_PATH ${CMAKE_HOME_DIRECTORY}/lib/ CACHE PATH "Configure the l
 
 ## do compilations
 ADD_SUBDIRECTORY(./src) #compile everything in src to create the libraries
-#ADD_SUBDIRECTORY(./tests) #compile everything in tests to create the unit test binaries
+ADD_SUBDIRECTORY(./tests) #compile everything in tests to create the unit test binaries
 ADD_SUBDIRECTORY(./examples) #compile everything in examples to create the example binaries
 
