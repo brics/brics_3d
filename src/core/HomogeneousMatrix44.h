@@ -10,7 +10,7 @@
 #define HOMOGENEOUSMATRIX44_H_
 
 #include "IHomogeneousMatrix44.h"
-#include <eigen2/Eigen/Geometry>
+#include <Eigen/Geometry>
 
 namespace BRICS_3D {
 
