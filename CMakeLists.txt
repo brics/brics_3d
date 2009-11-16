@@ -4,12 +4,12 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 PROJECT(BRICS_3D)
 
-## check prerequisites
+## check required prerequisites
 SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/external/cmake_modules")
 
-# search for OpenCV library
-#INCLUDE(${PROJECT_SOURCE_DIR}/external/cmake_modules/FindOpenCV.cmake)
+MESSAGE("Checking required prerequisites: ")
 
+# search for OpenCV library
 FIND_PACKAGE(OpenCV REQUIRED)
 IF (OpenCV_FOUND)
   MESSAGE(STATUS "SUCCESSFUL: OpenCV found")
@@ -33,28 +33,36 @@ ELSE (NOT CGAL_FOUND)
   MESSAGE(STATUS "SUCCESSFUL: CGAL found")
 ENDIF()
 #MESSAGE(STATUS "INFO: "${CGAL_DIR} , ${CGAL_INCLUDE_DIRS})
-MESSAGE("CGAL lib: "${CGAL_LIBRARY})
+#MESSAGE("CGAL lib: "${CGAL_LIBRARY})
 
 # search for Eigen2 (header-only) library
-#FIND_PACKAGE(Eigen2)
-#IF (EIGEN2_FOUND)
-#  MESSAGE(STATUS "SUCCESSFUL: Eigen2 found")
-#ELSE (EIGEN2_FOUND)
-#  MESSAGE(STATUS "WARNING: Eigen2 not found")
-#ENDIF (EIGEN2_FOUND)
+FIND_PACKAGE(Eigen2)
+IF (EIGEN2_FOUND)
+  MESSAGE(STATUS "SUCCESSFUL: Eigen2 found")
+ELSE (EIGEN2_FOUND)
+  MESSAGE(STATUS "WARNING: Eigen2 not found")
+ENDIF (EIGEN2_FOUND)
 
 
-IF (WIN32)
+## check optional prerequisites
+
+MESSAGE("Checking optional prerequisites: ")
+
+FIND_PACKAGE(CppUnit)
+IF (CppUnit_FOUND)
+  MESSAGE(STATUS "SUCCESSFUL: CppUnit found")
+ELSE (CppUnit_FOUND)
+  MESSAGE(STATUS "WARNING: CppUnit not found")
+ENDIF (CppUnit_FOUND)
+
+## perform platform dependant configurations
+IF (WIN32)   # windows
 	SET (CGAL_LIBRARY "") # windows uses auto_linker.h => skip CGAL_LIBRARY for linker
+	SET (DL_LIB "")		
+ELSE (WIN32) # linux
+	SET (DL_LIB "dl")	
 ENDIF (WIN32)
 
-
-IF (WIN32)
-	SET (DL_LIB "")
-ELSE (WIN32)
-	SET (DL_LIB "dl")
-ENDIF (WIN32)
-MESSAGE("dl lib: "${DL_LIB})
 
 ## set parameters
 # set parameters for compiler
@@ -69,6 +77,11 @@ SET(LIBRARY_OUTPUT_PATH ${CMAKE_HOME_DIRECTORY}/lib/ CACHE PATH "Configure the l
 
 ## do compilations
 ADD_SUBDIRECTORY(./src) #compile everything in src to create the libraries
-ADD_SUBDIRECTORY(./tests) #compile everything in tests to create the unit test binaries
 ADD_SUBDIRECTORY(./examples) #compile everything in examples to create the example binaries
+
+IF(CppUnit_FOUND)
+    ADD_SUBDIRECTORY(./tests) #compile everything in tests to create the unit test binaries
+ENDIF(CppUnit_FOUND)
+    
+
 
