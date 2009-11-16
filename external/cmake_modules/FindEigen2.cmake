@@ -53,21 +53,23 @@ if (EIGEN2_INCLUDE_DIR)
 
 else (EIGEN2_INCLUDE_DIR)
 
-find_path(EIGEN2_INCLUDE_DIR NAMES Eigen/Core
-     PATHS
-     ${INCLUDE_INSTALL_DIR}
-     ${KDE4_INCLUDE_DIR}
-     PATH_SUFFIXES eigen2
-   )
-
-if(EIGEN2_INCLUDE_DIR)
-  _eigen2_check_version()
-endif(EIGEN2_INCLUDE_DIR)
-
-include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(Eigen2 DEFAULT_MSG EIGEN2_INCLUDE_DIR EIGEN2_VERSION_OK)
-
-mark_as_advanced(EIGEN2_INCLUDE_DIR)
+	find_path(EIGEN2_INCLUDE_DIR NAMES Eigen/Core
+	     PATHS
+	     ${INCLUDE_INSTALL_DIR}
+	     ${KDE4_INCLUDE_DIR}
+	     $ENV{EIGENDIR}/include
+	     $ENV{EIGEN2DIR}/include
+	     PATH_SUFFIXES eigen2
+	   )
+   
+	if(EIGEN2_INCLUDE_DIR)
+	  _eigen2_check_version()
+	endif(EIGEN2_INCLUDE_DIR)
+	
+	include(FindPackageHandleStandardArgs)
+	find_package_handle_standard_args(Eigen2 DEFAULT_MSG EIGEN2_INCLUDE_DIR EIGEN2_VERSION_OK)
+	
+	mark_as_advanced(EIGEN2_INCLUDE_DIR)
 
 endif(EIGEN2_INCLUDE_DIR)
 
