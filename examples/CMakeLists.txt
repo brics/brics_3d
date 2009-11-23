@@ -10,6 +10,7 @@ INCLUDE_DIRECTORIES(
     ${CGAL_INCLUDE_DIRS}
     ${CGAL_3RD_PARTY_INCLUDE_DIRS}
     ${Boost_INCLUDE_DIRS}
+    ${OPENSCENEGRAPH_INCLUDE_DIRS}
 )
 
 LINK_DIRECTORIES(
@@ -27,6 +28,17 @@ TARGET_LINK_LIBRARIES(depth_image_stream_test brics_3dpm_core brics_3dpm_algorit
 ADD_EXECUTABLE(depth_image_transformation depth_image_transformation)
 TARGET_LINK_LIBRARIES(depth_image_transformation brics_3dpm_core brics_3dpm_algorithm brics_3dpm_util)
 
+IF (USE_OSG)
+    ADD_EXECUTABLE(osg_point_plotter osg_point_plotter)
+    TARGET_LINK_LIBRARIES(osg_point_plotter 
+        brics_3dpm_core 
+        brics_3dpm_algorithm
+        brics_3dpm_util
+    	${OSG_LIBRARY_DEBUG}
+    	${OSGGA_LIBRARY_DEBUG}
+    	${OSGVIEWER_LIBRARY_DEBUG}
+    )
+ENDIF(USE_OSG)
 
 ADD_EXECUTABLE(alpha_shapes alpha_shapes)
 #TARGET_LINK_LIBRARIES(alpha_shapes CGAL)

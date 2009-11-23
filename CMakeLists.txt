@@ -4,6 +4,10 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 PROJECT(BRICS_3D)
 
+## project definitions
+ADD_DEFINITIONS(-DBRICS_IMGAGES_DIR="${CMAKE_HOME_DIRECTORY}/examples/test_data/depth_images")
+ADD_DEFINITIONS(-DBRICS_MODELS_DIR="${CMAKE_HOME_DIRECTORY}/examples/test_data/3d_models")
+
 ## check required prerequisites
 SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/external/cmake_modules")
 
@@ -45,15 +49,30 @@ ENDIF (EIGEN2_FOUND)
 
 
 ## check optional prerequisites
-
 MESSAGE("Checking optional prerequisites: ")
 
+# search for cpp unut testing library
 FIND_PACKAGE(CppUnit)
 IF (CppUnit_FOUND)
   MESSAGE(STATUS "SUCCESSFUL: CppUnit found")
 ELSE (CppUnit_FOUND)
   MESSAGE(STATUS "WARNING: CppUnit not found")
 ENDIF (CppUnit_FOUND)
+
+# search for open scene graph (OSG) visualization library 
+FIND_PACKAGE(OpenSceneGraph COMPONENTS osgGA osgViewer)
+IF (OPENSCENEGRAPH_FOUND)
+	message(STATUS "SUCCESSFUL: OpenSceneGraph found")
+	ADD_DEFINITIONS(-DBRICS_OSG_ENABLE)	
+ELSE (OPENSCENEGRAPH_FOUND)
+	MESSAGE(STATUS "WARNING: OpenSceneGraph not found")
+	SET(OPENSCENEGRAPH_INCLUDE_DIRS "")
+	SET(OSG_LIBRARY_DEBUG "")
+	SET(OSGGA_LIBRARY_DEBUG "")
+	SET(OSGVIEWER_LIBRARY_DEBUG "")
+	SET(REMOVE_DEFINITIONS(-DBRICS_OSG_ENABLE))
+ENDIF (OPENSCENEGRAPH_FOUND)
+OPTION(USE_OSG "Enable Open Scene Graph" OFF)
 
 ## perform platform dependant configurations
 IF (WIN32)   # windows

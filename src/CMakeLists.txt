@@ -34,6 +34,14 @@ SET (UTIL_LIBRARY_SOURCES
 	./util/DepthImageLoader
 )	
 
+#optional sources
+IF (USE_OSG)
+    SET (UTIL_LIBRARY_SOURCES
+    ${UTIL_LIBRARY_SOURCES}
+    ./util/OSGPointCloudVisualizer 
+    )
+ENDIF(USE_OSG)
+
 
 # compile libraries
 ADD_LIBRARY(brics_3dpm_core ${CORE_LIBRARY_SOURCES})
