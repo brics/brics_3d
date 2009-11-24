@@ -123,12 +123,17 @@ ostream& operator<<(ostream &outStream, const Point3D &point) {
 
 void Point3D::homogeneousTransformation(IHomogeneousMatrix44 *transformation) {
 
+//	double* ptrHomogenousMatrix;
+//	double homogenousMatrix[16];
 	double *homogenousMatrix;
 	double xTemp;
 	double yTemp;
 	double zTemp;
 
 	transformation->getRawData(homogenousMatrix);
+	//transformation->getRawData(ptrHomogenousMatrix);
+	//memcpy(&homogenousMatrix, ptrHomogenousMatrix, 16*(sizeof(double)));
+	//copy from pointer into array?!?
 
 	/*
 	 * layout:

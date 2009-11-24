@@ -38,6 +38,26 @@ IF (USE_OSG)
     	${OSGGA_LIBRARY_DEBUG}
     	${OSGVIEWER_LIBRARY_DEBUG}
     )
+    	
+    ADD_EXECUTABLE(osg_delaunay osg_delaunay)
+    TARGET_LINK_LIBRARIES(osg_delaunay
+        brics_3dpm_core 
+        brics_3dpm_algorithm
+        brics_3dpm_util
+    	${OSG_LIBRARY_DEBUG}
+    	${OSGGA_LIBRARY_DEBUG}
+    	${OSGVIEWER_LIBRARY_DEBUG}   	
+    )
+    
+    ADD_EXECUTABLE(icp_test icp_test) 
+    TARGET_LINK_LIBRARIES(icp_test
+        brics_3dpm_core 
+        brics_3dpm_algorithm
+        brics_3dpm_util
+    	${OSG_LIBRARY_DEBUG}
+    	${OSGGA_LIBRARY_DEBUG}
+    	${OSGVIEWER_LIBRARY_DEBUG}
+    )
 ENDIF(USE_OSG)
 
 ADD_EXECUTABLE(alpha_shapes alpha_shapes)

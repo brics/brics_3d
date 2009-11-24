@@ -14,6 +14,8 @@
 #include <sstream>
 #include <stdexcept>
 
+using namespace std;
+
 namespace BRICS_3D {
 
 PointCloud3D::PointCloud3D() {
@@ -33,12 +35,12 @@ void PointCloud3D::addPoint(Point3D point) {
 	pointCloud->push_back(point);
 }
 
-vector<Point3D> *PointCloud3D::getPointCloud() {
+std::vector<Point3D> *PointCloud3D::getPointCloud() {
 	return pointCloud;
 
 }
 
-void PointCloud3D::setPointCloud(vector<Point3D> *pointCloud) {
+void PointCloud3D::setPointCloud(std::vector<Point3D> *pointCloud) {
 	this->pointCloud = pointCloud;
 }
 
@@ -46,7 +48,7 @@ int PointCloud3D::getSize() {
 	return pointCloud->size();
 }
 
-void PointCloud3D::storeToPlyFile(string filename) {
+void PointCloud3D::storeToPlyFile(std::string filename) {
 	ofstream outputFile;
 	outputFile.open(filename.c_str());
 	cout << "INFO: Saving point cloud to: " << filename << endl;
@@ -82,7 +84,7 @@ void PointCloud3D::storeToPlyFile(string filename) {
 	outputFile.close();
 }
 
-void PointCloud3D::storeToTxtFile(string filename) {
+void PointCloud3D::storeToTxtFile(std::string filename) {
 	ofstream outputFile;
 	outputFile.open(filename.c_str());
 	cout << "INFO: Saving point cloud to: " << filename << endl;
@@ -96,17 +98,38 @@ void PointCloud3D::storeToTxtFile(string filename) {
 	outputFile.close();
 }
 
+void PointCloud3D::readFromTxtFile(std::string filename) {
+	Point3D *tmpPoint;
+	ifstream inputFile;
+	string line;
+
+	inputFile.open(filename.c_str());
+	cout << "INFO: Reading point cloud from: " << filename << endl;
+
+	while(getline(inputFile, line)) {
+		tmpPoint = new Point3D;
+		stringstream lineStream(line);
+		if (!inputFile.good()) {
+			throw runtime_error("ERROR: cannot read point.");
+		}
+		lineStream >> *tmpPoint;
+		this->addPoint(tmpPoint);
+	}
+
+	inputFile.close();
+}
+
 istream& operator>>(istream &inStream, PointCloud3D &pointCloud) {
 	Point3D *tmpPoint;
 	string line;
 
 	while(getline(inStream, line)) {
 		tmpPoint = new Point3D;
-		stringstream lineSteam(line);
-		if (!lineSteam.good()) {
+		stringstream lineStream(line);
+		if (!lineStream.good()) {
 			throw runtime_error("ERROR: cannot read point.");
 		}
-		lineSteam >> *tmpPoint;
+		lineStream >> *tmpPoint;
 		pointCloud.addPoint(tmpPoint);
 	}
 

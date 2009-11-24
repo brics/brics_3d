@@ -15,7 +15,7 @@
 
 #include "core/Point3D.h"
 
-using namespace std;
+//using namespace std;
 
 /**
  * @namespace BRICS_3D
@@ -51,13 +51,13 @@ public:
 	 * @brief Get the reference to the point cloud
 	 * @return Pointer to point cloud
 	 */
-    vector<Point3D> *getPointCloud();
+    std::vector<Point3D> *getPointCloud();
 
 	/**
 	 * @brief Set the reference to the point cloud
 	 * @param pointCloud Pointer to new point cloud
 	 */
-    void setPointCloud(vector<Point3D> *pointCloud);
+    void setPointCloud(std::vector<Point3D> *pointCloud);
 
     /**
      * @brief Get the number of points in the point cloud
@@ -66,16 +66,22 @@ public:
     int getSize();
 
     /**
-     * @brief Strores the point cloud into a ply file (Stanford polygon file format)
-     * @param filename Specifiess the name of the file .e.g. point_cloud.ply
+     * @brief Stores the point cloud into a ply file (Stanford polygon file format)
+     * @param filename Specifies the name of the file .e.g. point_cloud.ply
      */
-    void storeToPlyFile(string filename);
+    void storeToPlyFile(std::string filename);
 
     /**
-     * @brief Strores the point cloud into a sipmle text file (x y z)
-     * @param filename Specifiess the name of the file .e.g. point_cloud.txt
+     * @brief Stores the point cloud into a sipmle text file (x y z)
+     * @param filename Specifies the name of the file .e.g. point_cloud.txt
      */
-    void storeToTxtFile(string filename);
+    void storeToTxtFile(std::string filename);
+
+    /**
+     * @brief Reads data from a simple text file (x y z) and appends it to this point cloud
+     * @param filename Specifies the name of the file .e.g. point_cloud.txt
+     */
+    void readFromTxtFile(std::string filename);
 
 	/**
 	 * @brief Overridden >> operator.
@@ -102,7 +108,7 @@ public:
 private:
 
 	///Pointer to vector which represents a Cartesian point cloud
-	vector<Point3D> *pointCloud;
+	std::vector<Point3D> *pointCloud;
 };
 
 }

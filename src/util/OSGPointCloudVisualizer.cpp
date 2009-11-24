@@ -13,7 +13,8 @@
 namespace BRICS_3D {
 
 OSGPointCloudVisualizer::OSGPointCloudVisualizer() {
-
+	rootGeode = new osg::Group();
+	viewer.setSceneData(rootGeode);
 }
 
 OSGPointCloudVisualizer::~OSGPointCloudVisualizer() {
@@ -56,13 +57,18 @@ struct DrawCallback: public osg::Drawable::DrawCallback {
 	mutable osg::Matrix _previousModelViewMatrix;
 };
 
-void OSGPointCloudVisualizer::visualizePointCloud(PointCloud3D *pointCloud)
-{
-	viewer.setSceneData(createPointCloudNode(pointCloud));
-	viewer.run();
+void OSGPointCloudVisualizer::addPointCloud(PointCloud3D* pointCloud, float red, float green, float blue, float alpha) {
+	rootGeode->addChild(createPointCloudNode(pointCloud, red, green, blue, alpha));
 }
 
-osg::Node* OSGPointCloudVisualizer::createPointCloudNode(PointCloud3D* pointCloud) {
+void OSGPointCloudVisualizer::visualizePointCloud(PointCloud3D *pointCloud, float red, float green, float blue, float alpha)
+{
+	rootGeode->addChild(createPointCloudNode(pointCloud, red, green, blue, alpha));
+	//viewer.setSceneData(createPointCloudNode(pointCloud));
+	viewer.run(); // run();
+}
+
+osg::Node* OSGPointCloudVisualizer::createPointCloudNode(PointCloud3D* pointCloud, float red, float green, float blue, float alpha) {
 
 	unsigned int targetNumVertices = 10000; //maximal points per geode
 
@@ -73,7 +79,7 @@ osg::Node* OSGPointCloudVisualizer::createPointCloudNode(PointCloud3D* pointClou
 	//osg::Vec3Array* normals = new osg::Vec3Array;
 	//osg::Vec4ubArray* colours = new osg::Vec4ubArray; //every point has color
 	osg::Vec4Array* colours = new osg::Vec4Array(1); //all point have same color
-	(*colours)[0].set(1.0f, 1.0f, 1.0f, 1.0f); //set colours (r,g,b,a)
+	(*colours)[0].set(red, green, blue, alpha); //set colours (r,g,b,a)
 
 	vertices->reserve(targetNumVertices);
 	//normals->reserve(targetNumVertices);
