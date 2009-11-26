@@ -56,7 +56,7 @@ public:
 	 */
 	HomogeneousMatrix44(Eigen::Transform3d *homogeneousTransformation);
 
-	void virtual getRawData(double *matrixBuffer);
+	const double* getRawData();
 
 	/**
 	 * @brief Standard destructor

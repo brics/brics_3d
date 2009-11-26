@@ -39,10 +39,10 @@ public:
 	 * 3 &nbsp;&nbsp;7 &nbsp;&nbsp;11 &nbsp;15 <br>
 	 *
 	 *
-	 * @param[out] matrixBuffer Pointer to buffer where the matrix is stored.
-	 * Buffer is assumed to have a size of at least 16 double values.
+	 * @return (Constant) pointer to buffer where the matrix is stored.
+	 * Buffer has a size of 16 double values.
 	 */
-	virtual void getRawData(double *matrixBuffer) = 0;
+	virtual const double* getRawData() = 0;
 
 	/**
 	 * @brief Standard destructor

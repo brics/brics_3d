@@ -105,6 +105,13 @@ public:
 	 */
 	friend ostream& operator<<(ostream &outStream, PointCloud3D &pointCloud);
 
+	/**
+	 * @brief Applies a homogeneous transformation to the pointcloud
+	 *
+	 * @param[in] transformation The homogeneous transformation matrix that will be applied
+	 */
+	void homogeneousTransformation(IHomogeneousMatrix44 *transformation);
+
 private:
 
 	///Pointer to vector which represents a Cartesian point cloud

@@ -53,11 +53,9 @@ HomogeneousMatrix44::HomogeneousMatrix44(Eigen::Transform3d *homogeneousTransfor
 	memcpy(&matrixData, tmpMatrix, sizeof(double)*matrixElements);
 }
 
-void HomogeneousMatrix44::getRawData(double *matrixBuffer) {
-	matrixBuffer = (double*)&matrixData;
+const double* HomogeneousMatrix44::getRawData() {
+	return (double*)&matrixData;
 }
-
-
 
 }
 /* EOF */

@@ -137,12 +137,17 @@ istream& operator>>(istream &inStream, PointCloud3D &pointCloud) {
 }
 
 ostream& operator<<(ostream &outStream, PointCloud3D &pointCloud) {
-
 	for (int i = 0; i < pointCloud.getSize(); ++i) {
 		outStream << (*pointCloud.getPointCloud())[i] << endl;
 	}
 
 	return outStream;
+}
+
+void PointCloud3D::homogeneousTransformation(IHomogeneousMatrix44 *transformation) {
+	for (int i = 0; i < pointCloud->size(); ++i) {
+		(*pointCloud)[i].homogeneousTransformation(transformation);
+	}
 }
 
 }
