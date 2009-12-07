@@ -29,7 +29,7 @@ public:
 	IHomogeneousMatrix44(){};
 
 	/**
-	 * @brief Returns a pointer to buffer where the raw data of the matrix is stored.
+	 * @brief Returns a pointer to a read-only buffer where the raw data of the matrix is stored.
 	 *
 	 * <b> Important: </b> the 16 values are stored in column-row order!
 	 * So the layout is: <br>
@@ -43,6 +43,11 @@ public:
 	 * Buffer has a size of 16 double values.
 	 */
 	virtual const double* getRawData() = 0;
+
+	/**
+	 * @brief Returns a pointer to a writable buffer where the raw data of the matrix is stored.
+	 */
+	virtual double* setRawData() = 0;
 
 	/**
 	 * @brief Standard destructor

@@ -57,5 +57,9 @@ const double* HomogeneousMatrix44::getRawData() {
 	return (double*)&matrixData;
 }
 
+double* HomogeneousMatrix44::setRawData() {
+	return (double*)&matrixData;
+}
+
 }
 /* EOF */

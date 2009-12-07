@@ -10,9 +10,7 @@
 
 #include <sstream>
 
-using namespace std;
 using namespace Eigen;
-using namespace BRICS_3D;
 
 namespace unitTests {
 
@@ -71,11 +69,11 @@ void PointCorrespondenceTest::testSimpleCorrespondence() {
 	IHomogeneousMatrix44* homogeneousTrans = new HomogeneousMatrix44(&transformation);
 	pointCloudCubeCopy->homogeneousTransformation(homogeneousTrans);
 
-	cout << "pc1" << endl;
-	cout << *pointCloudCube << endl << endl;
-
-	cout << "pc2" << endl;
-	cout << *pointCloudCubeCopy	 << endl;
+//	cout << "pc1" << endl;
+//	cout << *pointCloudCube << endl << endl;
+//
+//	cout << "pc2" << endl;
+//	cout << *pointCloudCubeCopy	 << endl;
 
 	assigner = new PointCorrespondenceKDTree();
 	vector<CorrespondencePoint3DPair>* pointPairs = new vector<CorrespondencePoint3DPair>();
@@ -85,8 +83,8 @@ void PointCorrespondenceTest::testSimpleCorrespondence() {
 	CPPUNIT_ASSERT_EQUAL((int)pointCloudCube->getSize(), (int)pointPairs->size());
 	for (int i = 0;  i < pointPairs->size(); ++ i) {
 
-		cout << "Point 1: " << (*pointPairs)[i].firstPoint
-				<< ", Point 2 " << (*pointPairs)[i].secondPoint << endl;
+//		cout << "Point 1: " << (*pointPairs)[i].firstPoint
+//				<< ", Point 2 " << (*pointPairs)[i].secondPoint << endl;
 		/*
 		 * expectation as the same point cloud is used:
 		 * direct correspondence from one cloud the other

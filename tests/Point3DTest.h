@@ -24,7 +24,7 @@ namespace unitTests {
 /**
  * @brief UnitTest for the Point3D class
  */
-class Point3DTest: public CPPUNIT_NS::TestFixture {
+class Point3DTest : public CPPUNIT_NS::TestFixture {
 
 	CPPUNIT_TEST_SUITE( Point3DTest );
 	CPPUNIT_TEST( testConstructor );

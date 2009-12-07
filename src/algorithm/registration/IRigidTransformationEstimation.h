@@ -11,6 +11,7 @@
 
 #include "core/PointCloud3D.h"
 #include "core/IHomogeneousMatrix44.h"
+#include "core/CorrespondencePoint3DPair.h"
 
 #include <vector>
 
@@ -28,12 +29,12 @@ public:
 	/**
 	 * @brief Standard constructor
 	 */
-	IRigidTransformationEstimation();
+	IRigidTransformationEstimation(){};
 
 	/**
 	 * @brief Standard destructor
 	 */
-	virtual ~IRigidTransformationEstimation();
+	virtual ~IRigidTransformationEstimation(){};
 
 	/**
 	 * @brief Estimates the rigid transformation between two corresponding point clouds.

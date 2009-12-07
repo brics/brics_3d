@@ -44,7 +44,7 @@ void PointCorrespondenceKDTree::createNearestNeighborCorrespondence(PointCloud3D
 	}
 
 	KDtree* kDTree = new KDtree(pointCloud1Points, pointCloud1->getSize());
-	cout << "k-d tree created" << endl;
+//	cout << "k-d tree created" << endl;
 
 //	unsigned int numpts_target;
 //	KDtree *kd = 0;

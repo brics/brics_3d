@@ -58,6 +58,8 @@ public:
 
 	const double* getRawData();
 
+	double* setRawData();
+
 	/**
 	 * @brief Standard destructor
 	 */
