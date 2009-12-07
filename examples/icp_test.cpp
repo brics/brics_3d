@@ -14,12 +14,17 @@
 #include <util/DepthImageLoader.h>
 #include <util/OSGPointCloudVisualizer.h>
 #include <core/PointCloud3D.h>
+#include <core/HomogeneousMatrix44.h>
 #include <algorithm/DepthImageToPointCloudTransformation.h>
+#include <algorithm/registration/IterativeClosestPoint6DSLAM.h>
+
+#include <Eigen/Geometry>
 
 //#include "Math/Math3d.h"
 //#include "Tracking/ICP.h"
 
 using namespace std;
+using namespace Eigen;
 using namespace BRICS_3D;
 
 //#include "Image/ImageProcessor.h"
@@ -59,7 +64,7 @@ int main(int argc, char **argv) {
 
 	PointCloud3D* pointCloud2 = new PointCloud3D();
 	pointCloud2->readFromTxtFile(filename2);
-	cout << "Size of first point cloud: " << pointCloud2->getSize() << endl;
+	cout << "Size of second point cloud: " << pointCloud2->getSize() << endl;
 
 	PointCloud3D* pointCloud3 = new PointCloud3D();
 	stringstream tmpSteam;
@@ -68,9 +73,23 @@ int main(int argc, char **argv) {
 	tmpSteam >> *pointCloud3;
 	cout << "Size of third point cloud: " << pointCloud3->getSize() << endl;
 
+	/* manipulate second point cloud */
+	AngleAxis<double> rotation(M_PI_2l/4.0, Vector3d(1,0,0));
+	Transform3d transformation;
+	transformation = rotation;
+	IHomogeneousMatrix44* homogeneousTrans = new HomogeneousMatrix44(&transformation);
+	//pointCloud2->homogeneousTransformation(homogeneousTrans);
+
+
 	OSGPointCloudVisualizer* viewer = new OSGPointCloudVisualizer();
-	viewer->addPointCloud(pointCloud1, 1.0f, 0.0f, 0.0f, 1.0f);
-	viewer->visualizePointCloud(pointCloud2, 0.0f, 1.0f, 0.0f, 1.0f);
+	viewer->addPointCloud(pointCloud3, 1.0f, 0.0f, 0.0f, 1.0f);
+	//viewer->addPointCloud(pointCloud2, 1.0f, 0.0f, 0.0f, 1.0f);
+	/* invoke ICP */
+	IterativeClosestPoint6DSLAM* icp = new IterativeClosestPoint6DSLAM();
+	IHomogeneousMatrix44* resultTransformation = new HomogeneousMatrix44();
+	icp->match(pointCloud1, pointCloud2, resultTransformation);
+
+	viewer->visualizePointCloud(pointCloud2, 1.0f, 1.0f, 1.0f, 1.0f);
 	//viewer->visualizePointCloud(pointCloud3, 1.0f,0.0f,1.0f,1.0f);
 
 
@@ -211,13 +230,12 @@ int main(int argc, char **argv) {
 //	assert (pointCloudOut->getSize() == (pointCloud1->getSize()+pointCloud2->getSize()));
 //	pointCloudOut->storeToTxtFile("test_point_cloud_icp.txt");
 //	pointCloudOut->storeToPlyFile("test_point_cloud_icp.ply");
-//
-//	/* clean up */
-//	delete icp;
-//	delete pointCloud1;
-//	delete pointCloud2;
-//	delete depthImgageLoader;
-//	delete img2cloudTramsformer;
+
+	/* clean up */
+	delete icp;
+	delete viewer;
+	delete pointCloud2;
+	delete pointCloud1;
 
 	return 0;
 }

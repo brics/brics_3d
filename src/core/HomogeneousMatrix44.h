@@ -50,7 +50,7 @@ public:
 	/**
 	 * @brief Constructor with Eigen2 transformation
 	 *
-	 * @param homogeneousTransformation Transformation defeined as Eigen2 transformation.
+	 * @param homogeneousTransformation Transformation defined as Eigen2 transformation.
 	 * See also: http://eigen.tuxfamily.org/dox/TutorialGeometry.html
 	 *
 	 */
@@ -68,7 +68,7 @@ private:
 	/// Amount of elements in 4x4 matrix
 	const static int matrixElements = 16; // 4x4
 
-	/// Array that holds data in column-row order
+	/// Array that holds data in column-row (column-major) order
 	double matrixData[matrixElements];
 };
 

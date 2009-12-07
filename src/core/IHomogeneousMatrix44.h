@@ -29,7 +29,7 @@ public:
 	IHomogeneousMatrix44(){};
 
 	/**
-	 * @brief Copy raw data to input buffer (array)
+	 * @brief Returns a pointer to buffer where the raw data of the matrix is stored.
 	 *
 	 * <b> Important: </b> the 16 values are stored in column-row order!
 	 * So the layout is: <br>

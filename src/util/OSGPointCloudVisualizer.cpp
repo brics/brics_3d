@@ -9,6 +9,7 @@
 #ifdef BRICS_OSG_ENABLE
 
 #include "OSGPointCloudVisualizer.h"
+#include <osg/Point>
 
 namespace BRICS_3D {
 
@@ -63,8 +64,11 @@ void OSGPointCloudVisualizer::addPointCloud(PointCloud3D* pointCloud, float red,
 
 void OSGPointCloudVisualizer::visualizePointCloud(PointCloud3D *pointCloud, float red, float green, float blue, float alpha)
 {
+	osg::Point* point=new osg::Point;
+	point->setSize(2.0f);
+	rootGeode->getOrCreateStateSet()->setAttribute(point);
+
 	rootGeode->addChild(createPointCloudNode(pointCloud, red, green, blue, alpha));
-	//viewer.setSceneData(createPointCloudNode(pointCloud));
 	viewer.run(); // run();
 }
 
@@ -109,7 +113,7 @@ osg::Node* OSGPointCloudVisualizer::createPointCloudNode(PointCloud3D* pointClou
 			geometry->setColorArray(colours);
 			geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
 
-			geometry->addPrimitiveSet(new osg::DrawArrays(GL_POINTS, 0, vertices->size()));
+			geometry->addPrimitiveSet(new osg::DrawArrays(GL_POINTS, 0, vertices->size())); //GL_POINTS
 
 			geode->addDrawable(geometry);
 

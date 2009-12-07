@@ -106,7 +106,7 @@ public:
 	friend ostream& operator<<(ostream &outStream, PointCloud3D &pointCloud);
 
 	/**
-	 * @brief Applies a homogeneous transformation to the pointcloud
+	 * @brief Applies a homogeneous transformation to the point cloud
 	 *
 	 * @param[in] transformation The homogeneous transformation matrix that will be applied
 	 */
