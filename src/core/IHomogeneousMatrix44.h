@@ -9,6 +9,9 @@
 #ifndef IHOMOGENEOUSMATRIX44_H_
 #define IHOMOGENEOUSMATRIX44_H_
 
+#include <iostream>
+using std::ostream;
+using std::istream;
 
 namespace BRICS_3D {
 
@@ -29,6 +32,11 @@ public:
 	IHomogeneousMatrix44(){};
 
 	/**
+	 * @brief Standard destructor
+	 */
+	virtual ~IHomogeneousMatrix44(){};
+
+	/**
 	 * @brief Returns a pointer to a read-only buffer where the raw data of the matrix is stored.
 	 *
 	 * <b> Important: </b> the 16 values are stored in column-row order!
@@ -42,7 +50,7 @@ public:
 	 * @return (Constant) pointer to buffer where the matrix is stored.
 	 * Buffer has a size of 16 double values.
 	 */
-	virtual const double* getRawData() = 0;
+	virtual const double* getRawData() const = 0;
 
 	/**
 	 * @brief Returns a pointer to a writable buffer where the raw data of the matrix is stored.
@@ -50,9 +58,29 @@ public:
 	virtual double* setRawData() = 0;
 
 	/**
-	 * @brief Standard destructor
+	 * @brief Multiply a matrix by another matrix
+	 * @param matrix Multiplicand matrix
+	 * @return Result of matrix multiplication
 	 */
-	virtual ~IHomogeneousMatrix44(){};
+	virtual IHomogeneousMatrix44* operator*(const IHomogeneousMatrix44 &matrix) = 0;
+
+	/**
+	 * @brief Assign a matrix to another matrix
+	 * @param matrix R-value matrix
+	 */
+	virtual IHomogeneousMatrix44* operator=(const IHomogeneousMatrix44 &matrix) = 0;
+
+	/**
+	 * @brief Overridden << operator.
+	 *
+	 * Writes a homogeneous matrix to a stream e.g. std::cout << homMatObj;
+	 *
+	 * @param outStream The output stream
+	 * @param matrix Pointer to homogeneous matrix which data is forwarded to the output stream
+	 * @return Output stream
+	 */
+	friend ostream& operator<<(ostream &outStream, const IHomogeneousMatrix44 &matrix);
+
 };
 
 }

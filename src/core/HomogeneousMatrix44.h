@@ -56,14 +56,23 @@ public:
 	 */
 	HomogeneousMatrix44(Eigen::Transform3d *homogeneousTransformation);
 
-	const double* getRawData();
-
-	double* setRawData();
-
 	/**
 	 * @brief Standard destructor
 	 */
 	virtual ~HomogeneousMatrix44();
+
+	const double* getRawData() const;
+
+	double* setRawData();
+
+	IHomogeneousMatrix44* operator*(const IHomogeneousMatrix44 &matrix);
+
+	IHomogeneousMatrix44* operator*=(const IHomogeneousMatrix44 &matrix); //TODO?
+
+	IHomogeneousMatrix44* operator=(const IHomogeneousMatrix44 &matrix);
+
+	friend ostream& operator<<(ostream &outStream, const IHomogeneousMatrix44 &matrix);
+
 
 private:
 

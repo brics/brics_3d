@@ -31,6 +31,9 @@ class HomogeneousMatrixTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testOveloadedConstructor );
 	CPPUNIT_TEST( testEigenConstructor );
 	CPPUNIT_TEST( testPolymorphConstructor );
+	CPPUNIT_TEST( testStreaming );
+	CPPUNIT_TEST( testAssignment );
+	CPPUNIT_TEST( testMultiplication );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -41,6 +44,9 @@ public:
 	  void testOveloadedConstructor();
 	  void testEigenConstructor();
 	  void testPolymorphConstructor();
+	  void testStreaming();
+	  void testAssignment();
+	  void testMultiplication();
 
 	  EIGEN_MAKE_ALIGNED_OPERATOR_NEW //Required by Eigen2
 

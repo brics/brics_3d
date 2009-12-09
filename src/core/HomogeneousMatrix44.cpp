@@ -53,12 +53,61 @@ HomogeneousMatrix44::HomogeneousMatrix44(Eigen::Transform3d *homogeneousTransfor
 	memcpy(&matrixData, tmpMatrix, sizeof(double)*matrixElements);
 }
 
-const double* HomogeneousMatrix44::getRawData() {
+const double* HomogeneousMatrix44::getRawData() const {
 	return (double*)&matrixData;
 }
 
 double* HomogeneousMatrix44::setRawData() {
 	return (double*)&matrixData;
+}
+
+IHomogeneousMatrix44* HomogeneousMatrix44::operator*(const IHomogeneousMatrix44 &matrix) {
+	const double *multiplicand = matrix.getRawData();
+
+	 Eigen::Matrix4d tempMatrix1;
+	 Eigen::Matrix4d tempMatrix2;
+	 Eigen::Matrix4d result;
+
+	 for (int i = 0; i < 16; ++i) { //layout for BRICS and Eigen2 4x4 matrices is the same ;-)
+		 tempMatrix1[i] = matrixData[i];
+		 tempMatrix2[i] = multiplicand[i];
+	 }
+
+	 result = tempMatrix1 * tempMatrix2;
+
+	 for (int i = 0; i < 16; ++i) {
+		 matrixData[i] = result[i];
+	 }
+
+	return this;
+}
+
+//IHomogeneousMatrix44* HomogeneousMatrix44::operator*=(const IHomogeneousMatrix44 &matrix1, const IHomogeneousMatrix44 &matrix2) {
+//
+//}
+
+IHomogeneousMatrix44* HomogeneousMatrix44::operator=(const IHomogeneousMatrix44 &matrix) {
+	const double* newMatrixData = matrix.getRawData();
+
+	for (int i = 0; i < matrixElements; ++i) {
+		matrixData[i] = newMatrixData[i];
+	}
+
+    return this;
+}
+
+ostream& operator<<(ostream &outStream, const IHomogeneousMatrix44 &matrix) {
+	const double *matrixData = matrix.getRawData();
+
+	for (int row = 0; row < 4; ++row) {
+		for (int col = row; col < row+9; col += 4) {
+			outStream << matrixData[col] << " ";
+		}
+		outStream << matrixData[row+12]; // without space at end of row
+		outStream << std::endl;
+	}
+
+	return outStream;
 }
 
 }
