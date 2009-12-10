@@ -25,6 +25,7 @@ namespace BRICS_3D {
 /**
  * @ingroup registration
  * @brief Abstract interface for the Iterative Closest Point (ICP) registration algorithm
+ *
  */
 class IIterativeClosestPoint {
 public:

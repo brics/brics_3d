@@ -91,7 +91,7 @@ IterativeClosestPoint6DSLAM::~IterativeClosestPoint6DSLAM() {
 
 void IterativeClosestPoint6DSLAM::match(PointCloud3D* model, PointCloud3D* data, IHomogeneousMatrix44* resultTransformation) {
 
-	IHomogeneousMatrix44* resutTransformation = new HomogeneousMatrix44();
+//	IHomogeneousMatrix44* resutTransformation = new HomogeneousMatrix44(); //WRONG here
 
 	/* create point cloud container */
 	vector<PointCloud3D*> *pointClouds = new vector<PointCloud3D*>;
@@ -280,14 +280,14 @@ void IterativeClosestPoint6DSLAM::match(PointCloud3D* model, PointCloud3D* data,
 
 	   PointCloud3D *registeredPoints = new PointCloud3D();
 	   double x,y,z = 0.0;
-	   if (exportPoints) {
-	     cout << "Export all 3D Points" << endl;
-	     ofstream redptsout("points.pts");
+//	   if (exportPoints) {
+//	     cout << "Export all 3D Points" << endl;
+//	     ofstream redptsout("points.pts");
 	     for(unsigned int i = 0; i < Scan::allScans.size(); i++) {
 			 for (int j = 0; j < Scan::allScans[i]->get_points_red_size(); j++) {
-				 redptsout << Scan::allScans[i]->get_points_red()[j][0] << " "
-						 << Scan::allScans[i]->get_points_red()[j][1] << " "
-						 << Scan::allScans[i]->get_points_red()[j][2] << endl;
+//				 redptsout << Scan::allScans[i]->get_points_red()[j][0] << " "
+//						 << Scan::allScans[i]->get_points_red()[j][1] << " "
+//						 << Scan::allScans[i]->get_points_red()[j][2] << endl;
 
 				x = Scan::allScans[i]->get_points_red()[j][0];
 				y = Scan::allScans[i]->get_points_red()[j][1];
@@ -295,28 +295,21 @@ void IterativeClosestPoint6DSLAM::match(PointCloud3D* model, PointCloud3D* data,
 				registeredPoints->addPoint(Point3D(x,y,z));
 			 }
 
-	     }
-	     redptsout.close();
-	     redptsout.clear();
-//	     registeredPoints->storeToPlyFile("registeredPoints.ply");
-//	     registeredPoints->storeToTxtFile("registeredPoints.txt");
+//	     }
+//	     redptsout.close();
+//	     redptsout.clear();
+
 	   }
 
-//	   cout << "Saving registration information in .frames files" << endl;
-//	   vector <Scan*>::iterator Iter = Scan::allScans.begin();
-//	   for( ; Iter != Scan::allScans.end(); ) {
-//	     Iter = Scan::allScans.begin();
-//	     delete (*Iter);
-//	     cout << ".";
-//	     cout.flush();
-//	   }
 	   Scan::allScans.clear();
 
 	   delete my_icp6Dminimizer;
 
 	   //TODO only test!!!
-	   delete model;
-	   model = registeredPoints;
+//	   delete model;
+//	   model = registeredPoints;
+//	   delete data;
+	   data = registeredPoints; //FIXME result is not transformed
 
 	   cout << endl << endl;
 	   cout << "INFO: ICP matching done." << endl;

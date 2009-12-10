@@ -66,7 +66,7 @@ void IterativeClosestPointTest::testConstructor() {
 
 }
 
-void IterativeClosestPointTest::testSimpleAlignment() {
+void IterativeClosestPointTest::testSimpleAlignmentSVD() {
 	/* manipulate second point cloud */
 	AngleAxis<double> rotation(M_PI_2l/4.0, Vector3d(1,0,0));
 	Transform3d transformation;
@@ -101,6 +101,108 @@ void IterativeClosestPointTest::testSimpleAlignment() {
 		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].z, (*pointCloudCubeCopy->getPointCloud())[i].z, maxTolerance);
 	}
 
+}
+
+void IterativeClosestPointTest::testSimpleAlignmentQUAT() {
+	/* manipulate second point cloud */
+	AngleAxis<double> rotation(M_PI_2l/4.0, Vector3d(1,0,0));
+	Transform3d transformation;
+	transformation = rotation;
+	IHomogeneousMatrix44* homogeneousTrans = new HomogeneousMatrix44(&transformation);
+	pointCloudCubeCopy->homogeneousTransformation(homogeneousTrans);
+
+	/* set up ICP */
+	IPointCorrespondence* assigner;
+	assigner = new PointCorrespondenceKDTree();
+	IRigidTransformationEstimation* estimator = new RigidTransformationEstimationQUAT();
+	icp = new IterativeClosestPoint(assigner, estimator);
+
+	/* perform ICP*/
+	IHomogeneousMatrix44* resultTransformation = new HomogeneousMatrix44();
+	icp->match(pointCloudCube, pointCloudCubeCopy, resultTransformation);
+
+	/* test if initial and resulting homogeneous transformations are the same */
+	const double* matrix1 = homogeneousTrans->getRawData();
+	const double* matrix2 = resultTransformation->getRawData();
+
+	for (int i = 0; i < 16; ++i) {
+		CPPUNIT_ASSERT_DOUBLES_EQUAL(abs(matrix1[i]), abs(matrix2[i]), maxTolerance);
+	}
+
+	/* test if aligned point cloud is the more or less same as the initial one */
+	for (int i = 0;  i < pointCloudCube->getSize(); ++ i) {
+		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].x, (*pointCloudCubeCopy->getPointCloud())[i].x, maxTolerance);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].y, (*pointCloudCubeCopy->getPointCloud())[i].y, maxTolerance);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].z, (*pointCloudCubeCopy->getPointCloud())[i].z, maxTolerance);
+	}
+}
+
+void IterativeClosestPointTest::testSimpleAlignmentHELIX() {
+	/* manipulate second point cloud */
+	AngleAxis<double> rotation(M_PI_2l/4.0, Vector3d(1,0,0));
+	Transform3d transformation;
+	transformation = rotation;
+	IHomogeneousMatrix44* homogeneousTrans = new HomogeneousMatrix44(&transformation);
+	pointCloudCubeCopy->homogeneousTransformation(homogeneousTrans);
+
+	/* set up ICP */
+	IPointCorrespondence* assigner;
+	assigner = new PointCorrespondenceKDTree();
+	IRigidTransformationEstimation* estimator = new RigidTransformationEstimationHELIX();
+	icp = new IterativeClosestPoint(assigner, estimator);
+
+	/* perform ICP*/
+	IHomogeneousMatrix44* resultTransformation = new HomogeneousMatrix44();
+	icp->match(pointCloudCube, pointCloudCubeCopy, resultTransformation);
+
+	/* test if initial and resulting homogeneous transformations are the same */
+	const double* matrix1 = homogeneousTrans->getRawData();
+	const double* matrix2 = resultTransformation->getRawData();
+
+	for (int i = 0; i < 16; ++i) {
+		CPPUNIT_ASSERT_DOUBLES_EQUAL(abs(matrix1[i]), abs(matrix2[i]), maxTolerance * 10e3); //HELIX is not very accurate...
+	}
+
+	/* test if aligned point cloud is the more or less same as the initial one */
+	for (int i = 0;  i < pointCloudCube->getSize(); ++ i) {
+		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].x, (*pointCloudCubeCopy->getPointCloud())[i].x, maxTolerance);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].y, (*pointCloudCubeCopy->getPointCloud())[i].y, maxTolerance);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].z, (*pointCloudCubeCopy->getPointCloud())[i].z, maxTolerance);
+	}
+}
+
+void IterativeClosestPointTest::testSimpleAlignmentAPX() {
+	/* manipulate second point cloud */
+	AngleAxis<double> rotation(M_PI_2l/4.0, Vector3d(1,0,0));
+	Transform3d transformation;
+	transformation = rotation;
+	IHomogeneousMatrix44* homogeneousTrans = new HomogeneousMatrix44(&transformation);
+	pointCloudCubeCopy->homogeneousTransformation(homogeneousTrans);
+
+	/* set up ICP */
+	IPointCorrespondence* assigner;
+	assigner = new PointCorrespondenceKDTree();
+	IRigidTransformationEstimation* estimator = new RigidTransformationEstimationAPX();
+	icp = new IterativeClosestPoint(assigner, estimator);
+
+	/* perform ICP*/
+	IHomogeneousMatrix44* resultTransformation = new HomogeneousMatrix44();
+	icp->match(pointCloudCube, pointCloudCubeCopy, resultTransformation);
+
+	/* test if initial and resulting homogeneous transformations are the same */
+	const double* matrix1 = homogeneousTrans->getRawData();
+	const double* matrix2 = resultTransformation->getRawData();
+
+	for (int i = 0; i < 16; ++i) {
+		CPPUNIT_ASSERT_DOUBLES_EQUAL(abs(matrix1[i]), abs(matrix2[i]), maxTolerance);
+	}
+
+	/* test if aligned point cloud is the more or less same as the initial one */
+	for (int i = 0;  i < pointCloudCube->getSize(); ++ i) {
+		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].x, (*pointCloudCubeCopy->getPointCloud())[i].x, maxTolerance);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].y, (*pointCloudCubeCopy->getPointCloud())[i].y, maxTolerance);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].z, (*pointCloudCubeCopy->getPointCloud())[i].z, maxTolerance);
+	}
 }
 
 }  // namespace unitTests

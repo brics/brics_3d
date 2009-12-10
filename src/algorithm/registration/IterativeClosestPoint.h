@@ -18,6 +18,10 @@ namespace BRICS_3D {
 /**
  * @ingroup registration
  * @brief Generic implementation of ICP
+ *
+ * This class serves a generic implementation of the Iterative Closest Point Algorithm.
+ * It follows the "strategy" software design pattern (except that context and strategy are implemented in the same class).
+ * That means the actual point correspondence and the rigid transformation estimation algorithms are exchangeable during runtime.
  */
 class IterativeClosestPoint : public IIterativeClosestPoint {
 public:

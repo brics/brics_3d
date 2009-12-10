@@ -36,6 +36,10 @@ SET (ALGORITHM_LIBRARY_SOURCES
 	./algorithm/registration/PointCorrespondenceKDTree
 	./algorithm/registration/IRigidTransformationEstimation
 	./algorithm/registration/RigidTransformationEstimationSVD
+	./algorithm/registration/RigidTransformationEstimationQUAT
+	./algorithm/registration/RigidTransformationEstimationHELIX
+	./algorithm/registration/RigidTransformationEstimationAPX
+	./algorithm/registration/RigidTransformationEstimationORTHO
 	./algorithm/registration/IIterativeClosestPoint
 	./algorithm/registration/IterativeClosestPoint
 	./algorithm/registration/IterativeClosestPoint6DSLAM

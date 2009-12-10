@@ -16,6 +16,9 @@
 #include "core/HomogeneousMatrix44.h"
 #include "algorithm/registration/PointCorrespondenceKDTree.h"
 #include "algorithm/registration/RigidTransformationEstimationSVD.h"
+#include "algorithm/registration/RigidTransformationEstimationQUAT.h"
+#include "algorithm/registration/RigidTransformationEstimationHELIX.h"
+#include "algorithm/registration/RigidTransformationEstimationAPX.h"
 #include "algorithm/registration/IterativeClosestPoint.h"
 
 #include <Eigen/Geometry>
@@ -30,7 +33,10 @@ class IterativeClosestPointTest : public CPPUNIT_NS::TestFixture {
 
 	CPPUNIT_TEST_SUITE( IterativeClosestPointTest );
 	CPPUNIT_TEST( testConstructor );
-	CPPUNIT_TEST( testSimpleAlignment );
+	CPPUNIT_TEST( testSimpleAlignmentSVD );
+	CPPUNIT_TEST( testSimpleAlignmentQUAT );
+	CPPUNIT_TEST( testSimpleAlignmentHELIX );
+	CPPUNIT_TEST( testSimpleAlignmentAPX );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -38,7 +44,10 @@ public:
 	void tearDown();
 
 	void testConstructor();
-	void testSimpleAlignment();
+	void testSimpleAlignmentSVD();
+	void testSimpleAlignmentQUAT();
+	void testSimpleAlignmentHELIX();
+	void testSimpleAlignmentAPX();
 
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW //Required by Eigen2
 

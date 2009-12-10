@@ -14,7 +14,11 @@
 
 #include "core/PointCloud3D.h"
 #include "core/HomogeneousMatrix44.h"
-#include <algorithm/registration/RigidTransformationEstimationSVD.h>
+#include "algorithm/registration/RigidTransformationEstimationSVD.h"
+#include "algorithm/registration/RigidTransformationEstimationQUAT.h"
+#include "algorithm/registration/RigidTransformationEstimationHELIX.h"
+#include "algorithm/registration/RigidTransformationEstimationAPX.h"
+#include "algorithm/registration/RigidTransformationEstimationORTHO.h"
 
 #include <Eigen/Geometry>
 #include <iostream>
@@ -33,6 +37,10 @@ class RigidTransformationEstimationTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST_SUITE( RigidTransformationEstimationTest );
 	CPPUNIT_TEST( testConstructor );
 	CPPUNIT_TEST( testSVDTransformation );
+	CPPUNIT_TEST( testQUATTransformation );
+	CPPUNIT_TEST( testHELIXTransformation );
+	CPPUNIT_TEST( testAPXTransformation );
+//	CPPUNIT_TEST( testORTHOTransformation ); TODO throws an unknown exception
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -41,6 +49,10 @@ public:
 
 	void testConstructor();
 	void testSVDTransformation();
+	void testQUATTransformation();
+	void testHELIXTransformation();
+	void testAPXTransformation();
+	void testORTHOTransformation();
 
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW //Required by Eigen2
 

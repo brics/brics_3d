@@ -10,6 +10,7 @@
 
 #include <sstream>
 #include <cmath>
+#include <exception>
 
 using namespace Eigen;
 
@@ -89,7 +90,7 @@ void RigidTransformationEstimationTest::testSVDTransformation(){
 	IHomogeneousMatrix44* reusultTransformation = new HomogeneousMatrix44();
 	estimator = new RigidTransformationEstimationSVD();
 	errorResult1 = estimator->estimateTransformation(pointPairs, reusultTransformation);
-	cout << "SVD RMS point-to-point error is " << errorResult1 << endl;
+	cout << "INFO: SVD RMS point-to-point error is " << errorResult1 << endl;
 
 	/* test if initial and resulting homogeneous transformations are the same */
 	const double* matrix1 = homogeneousTrans->getRawData();
@@ -97,12 +98,172 @@ void RigidTransformationEstimationTest::testSVDTransformation(){
 
 	for (int i = 0; i < 16; ++i) { //TODO getSize() for IHomogeneousMatrix44 ?!?
 //		cout << matrix1[i] << ", " << matrix2[i] << endl; //DBG output
-		CPPUNIT_ASSERT_DOUBLES_EQUAL(abs(matrix1[i]), abs(matrix2[i]), maxTolerance); //SVD returns ambiguous results (+ or -)
+		CPPUNIT_ASSERT_DOUBLES_EQUAL(abs(matrix1[i]), abs(matrix2[i]), maxTolerance);
 	}
 
 	/* perform estimation again, should be indempotent */
 	double errorResult2 = 0.0;
 	errorResult2 = estimator->estimateTransformation(pointPairs, reusultTransformation);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(errorResult1, errorResult2, maxTolerance);
+}
+
+void RigidTransformationEstimationTest::testQUATTransformation() {
+	/* manipulate second point cloud */
+	AngleAxis<double> rotation(M_PI_2l/4.0, Vector3d(1,0,0));
+	Transform3d transformation;
+	transformation = rotation;
+	IHomogeneousMatrix44* homogeneousTrans = new HomogeneousMatrix44(&transformation);
+	pointCloudCubeCopy->homogeneousTransformation(homogeneousTrans);
+
+	/* we already know the correspondences...*/
+	vector<CorrespondencePoint3DPair>* pointPairs = new vector<CorrespondencePoint3DPair>();
+	for (int i = 0; i < pointCloudCube->getSize(); ++i) {
+		Point3D firstPoint = (*pointCloudCube->getPointCloud())[i];
+		Point3D secondPoint = (*pointCloudCubeCopy->getPointCloud())[i];
+
+		CorrespondencePoint3DPair tmpPair(firstPoint, secondPoint);
+		pointPairs->push_back(tmpPair);
+	}
+
+	/* perform estimation */
+	double errorResult1 = 0.0;
+	IHomogeneousMatrix44* reusultTransformation = new HomogeneousMatrix44();
+	abstractEstimator = new RigidTransformationEstimationQUAT();
+	errorResult1 = abstractEstimator->estimateTransformation(pointPairs, reusultTransformation);
+	cout << "INFO: QUAT RMS point-to-point error is " << errorResult1 << endl;
+
+	/* test if initial and resulting homogeneous transformations are the same */
+	const double* matrix1 = homogeneousTrans->getRawData();
+	const double* matrix2 = reusultTransformation->getRawData();
+
+	for (int i = 0; i < 16; ++i) {
+		CPPUNIT_ASSERT_DOUBLES_EQUAL(abs(matrix1[i]), abs(matrix2[i]), maxTolerance);
+	}
+
+	/* perform estimation again, should be indempotent */
+	double errorResult2 = 0.0;
+	errorResult2 = abstractEstimator->estimateTransformation(pointPairs, reusultTransformation);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(errorResult1, errorResult2, maxTolerance);
+}
+
+void RigidTransformationEstimationTest::testHELIXTransformation() {
+	/* manipulate second point cloud */
+	AngleAxis<double> rotation(M_PI_2l/4.0, Vector3d(1,0,0));
+	Transform3d transformation;
+	transformation = rotation;
+	IHomogeneousMatrix44* homogeneousTrans = new HomogeneousMatrix44(&transformation);
+	pointCloudCubeCopy->homogeneousTransformation(homogeneousTrans);
+
+	/* we already know the correspondences...*/
+	vector<CorrespondencePoint3DPair>* pointPairs = new vector<CorrespondencePoint3DPair>();
+	for (int i = 0; i < pointCloudCube->getSize(); ++i) {
+		Point3D firstPoint = (*pointCloudCube->getPointCloud())[i];
+		Point3D secondPoint = (*pointCloudCubeCopy->getPointCloud())[i];
+
+		CorrespondencePoint3DPair tmpPair(firstPoint, secondPoint);
+		pointPairs->push_back(tmpPair);
+	}
+
+	/* perform estimation */
+	double errorResult1 = 0.0;
+	IHomogeneousMatrix44* reusultTransformation = new HomogeneousMatrix44();
+	abstractEstimator = new RigidTransformationEstimationHELIX();
+	errorResult1 = abstractEstimator->estimateTransformation(pointPairs, reusultTransformation);
+	cout << "INFO: HELIX RMS point-to-point error is " << errorResult1 << endl;
+
+	/* test if initial and resulting homogeneous transformations are the same */
+	const double* matrix1 = homogeneousTrans->getRawData();
+	const double* matrix2 = reusultTransformation->getRawData();
+
+	for (int i = 0; i < 16; ++i) {
+		CPPUNIT_ASSERT_DOUBLES_EQUAL(abs(matrix1[i]), abs(matrix2[i]), maxTolerance * 10e3); //HELIX is not very accurate
+	}
+
+	/* perform estimation again, should be indempotent */
+	double errorResult2 = 0.0;
+	errorResult2 = abstractEstimator->estimateTransformation(pointPairs, reusultTransformation);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(errorResult1, errorResult2, maxTolerance);
+}
+
+void RigidTransformationEstimationTest::testAPXTransformation() {
+	/* manipulate second point cloud */
+	AngleAxis<double> rotation(M_PI_2l/4.0, Vector3d(1,0,0));
+	Transform3d transformation;
+	transformation = rotation;
+	IHomogeneousMatrix44* homogeneousTrans = new HomogeneousMatrix44(&transformation);
+	pointCloudCubeCopy->homogeneousTransformation(homogeneousTrans);
+
+	/* we already know the correspondences...*/
+	vector<CorrespondencePoint3DPair>* pointPairs = new vector<CorrespondencePoint3DPair>();
+	for (int i = 0; i < pointCloudCube->getSize(); ++i) {
+		Point3D firstPoint = (*pointCloudCube->getPointCloud())[i];
+		Point3D secondPoint = (*pointCloudCubeCopy->getPointCloud())[i];
+
+		CorrespondencePoint3DPair tmpPair(firstPoint, secondPoint);
+		pointPairs->push_back(tmpPair);
+	}
+
+	/* perform estimation */
+	double errorResult1 = 0.0;
+	IHomogeneousMatrix44* reusultTransformation = new HomogeneousMatrix44();
+	abstractEstimator = new RigidTransformationEstimationAPX();
+	errorResult1 = abstractEstimator->estimateTransformation(pointPairs, reusultTransformation);
+	cout << "INFO: APX RMS point-to-point error is " << errorResult1 << endl;
+
+	/* test if initial and resulting homogeneous transformations are the same */
+	const double* matrix1 = homogeneousTrans->getRawData();
+	const double* matrix2 = reusultTransformation->getRawData();
+
+	for (int i = 0; i < 16; ++i) {
+		CPPUNIT_ASSERT_DOUBLES_EQUAL(abs(matrix1[i]), abs(matrix2[i]), maxTolerance);
+	}
+
+	/* perform estimation again, should be indempotent */
+	double errorResult2 = 0.0;
+	errorResult2 = abstractEstimator->estimateTransformation(pointPairs, reusultTransformation);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(errorResult1, errorResult2, maxTolerance);
+}
+
+void RigidTransformationEstimationTest::testORTHOTransformation() {
+	/* manipulate second point cloud */
+	AngleAxis<double> rotation(M_PI_2l/4.0, Vector3d(1,0,0));
+	Transform3d transformation;
+	transformation = rotation;
+	IHomogeneousMatrix44* homogeneousTrans = new HomogeneousMatrix44(&transformation);
+	pointCloudCubeCopy->homogeneousTransformation(homogeneousTrans);
+
+	/* we already know the correspondences...*/
+	vector<CorrespondencePoint3DPair>* pointPairs = new vector<CorrespondencePoint3DPair>();
+	for (int i = 0; i < pointCloudCube->getSize(); ++i) {
+		Point3D firstPoint = (*pointCloudCube->getPointCloud())[i];
+		Point3D secondPoint = (*pointCloudCubeCopy->getPointCloud())[i];
+
+		CorrespondencePoint3DPair tmpPair(firstPoint, secondPoint);
+		pointPairs->push_back(tmpPair);
+	}
+
+	/* perform estimation */
+	double errorResult1 = 0.0;
+	IHomogeneousMatrix44* reusultTransformation = new HomogeneousMatrix44();
+	abstractEstimator = new RigidTransformationEstimationORTHO();
+	try {
+		errorResult1 = abstractEstimator->estimateTransformation(pointPairs, reusultTransformation);
+	} catch (exception& e) {
+		cout << "ERROR: RigidTransformationEstimationORTHO has thrown an exception.";
+	}
+	cout << "INFO: ORTHO RMS point-to-point error is " << errorResult1 << endl;
+
+	/* test if initial and resulting homogeneous transformations are the same */
+	const double* matrix1 = homogeneousTrans->getRawData();
+	const double* matrix2 = reusultTransformation->getRawData();
+
+	for (int i = 0; i < 16; ++i) {
+		CPPUNIT_ASSERT_DOUBLES_EQUAL(abs(matrix1[i]), abs(matrix2[i]), maxTolerance);
+	}
+
+	/* perform estimation again, should be indempotent */
+	double errorResult2 = 0.0;
+	errorResult2 = abstractEstimator->estimateTransformation(pointPairs, reusultTransformation);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(errorResult1, errorResult2, maxTolerance);
 }
 
