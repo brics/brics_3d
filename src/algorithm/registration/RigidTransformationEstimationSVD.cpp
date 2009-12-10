@@ -26,7 +26,7 @@ RigidTransformationEstimationSVD::~RigidTransformationEstimationSVD() {
 
 }
 
-double RigidTransformationEstimationSVD::estimateTransformation(PointCloud3D* pointCloud1, PointCloud3D* pointCloud2, std::vector<CorrespondencePoint3DPair>* pointPairs, IHomogeneousMatrix44* resultTransformation){
+double RigidTransformationEstimationSVD::estimateTransformation(std::vector<CorrespondencePoint3DPair>* pointPairs, IHomogeneousMatrix44* resultTransformation) {
 	double resultError = -1.0;
 	bool quiet = true;
 	icp6Dminimizer *errorMinimizer = new icp6D_SVD(quiet);

@@ -32,7 +32,8 @@ public:
 	 */
 	virtual ~RigidTransformationEstimationSVD();
 
-	double estimateTransformation(PointCloud3D* pointCloud1, PointCloud3D* pointCloud2, std::vector<CorrespondencePoint3DPair>* pointPairs, IHomogeneousMatrix44* resultTransformation);
+	double estimateTransformation(std::vector<CorrespondencePoint3DPair>* pointPairs, IHomogeneousMatrix44* resultTransformation);
+
 };
 
 }

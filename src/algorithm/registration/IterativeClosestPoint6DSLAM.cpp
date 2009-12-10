@@ -89,7 +89,7 @@ IterativeClosestPoint6DSLAM::~IterativeClosestPoint6DSLAM() {
 
 }
 
-void IterativeClosestPoint6DSLAM::match(PointCloud3D* model, PointCloud3D* data, IHomogeneousMatrix44* resultTransformation, int maxIterations) {
+void IterativeClosestPoint6DSLAM::match(PointCloud3D* model, PointCloud3D* data, IHomogeneousMatrix44* resultTransformation) {
 
 	IHomogeneousMatrix44* resutTransformation = new HomogeneousMatrix44();
 
@@ -315,12 +315,13 @@ void IterativeClosestPoint6DSLAM::match(PointCloud3D* model, PointCloud3D* data,
 	   delete my_icp6Dminimizer;
 
 	   //TODO only test!!!
+	   delete model;
 	   model = registeredPoints;
 
 	   cout << endl << endl;
 	   cout << "INFO: ICP matching done." << endl;
 
-	   //return resutTransformation;
+	   //return resutTransformation; //TODO return correct transformation
 }
 
 

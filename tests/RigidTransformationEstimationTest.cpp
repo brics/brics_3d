@@ -13,6 +13,8 @@
 
 using namespace Eigen;
 
+namespace unitTests {
+
 CPPUNIT_TEST_SUITE_REGISTRATION( RigidTransformationEstimationTest );
 
 void RigidTransformationEstimationTest::setUp() {
@@ -86,7 +88,7 @@ void RigidTransformationEstimationTest::testSVDTransformation(){
 	double errorResult1 = 0.0;
 	IHomogeneousMatrix44* reusultTransformation = new HomogeneousMatrix44();
 	estimator = new RigidTransformationEstimationSVD();
-	errorResult1 = estimator->estimateTransformation(pointCloudCube, pointCloudCubeCopy, pointPairs, reusultTransformation);
+	errorResult1 = estimator->estimateTransformation(pointPairs, reusultTransformation);
 	cout << "SVD RMS point-to-point error is " << errorResult1 << endl;
 
 	/* test if initial and resulting homogeneous transformations are the same */
@@ -100,8 +102,10 @@ void RigidTransformationEstimationTest::testSVDTransformation(){
 
 	/* perform estimation again, should be indempotent */
 	double errorResult2 = 0.0;
-	errorResult2 = estimator->estimateTransformation(pointCloudCube, pointCloudCubeCopy, pointPairs, reusultTransformation);
+	errorResult2 = estimator->estimateTransformation(pointPairs, reusultTransformation);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(errorResult1, errorResult2, maxTolerance);
 }
+
+}  // namespace unitTests
 
 /* EOF */

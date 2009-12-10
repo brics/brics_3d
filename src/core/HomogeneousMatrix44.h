@@ -67,7 +67,7 @@ public:
 
 	IHomogeneousMatrix44* operator*(const IHomogeneousMatrix44 &matrix);
 
-	IHomogeneousMatrix44* operator*=(const IHomogeneousMatrix44 &matrix); //TODO?
+	IHomogeneousMatrix44* operator*=(const IHomogeneousMatrix44 &matrix); //TODO: implement?
 
 	IHomogeneousMatrix44* operator=(const IHomogeneousMatrix44 &matrix);
 

@@ -31,7 +31,7 @@ public:
 	 */
 	virtual ~IterativeClosestPoint6DSLAM();
 
-	void match(PointCloud3D* model, PointCloud3D* data, IHomogeneousMatrix44* resultTransformation, int maxIterations = 20);
+	void match(PointCloud3D* model, PointCloud3D* data, IHomogeneousMatrix44* resultTransformation);
 
 
 

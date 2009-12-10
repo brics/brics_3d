@@ -14,6 +14,7 @@
 #include "6dslam/src/kdc.h"
 
 #include <iostream>
+#include <assert.h>
 
 using std::cout;
 using std::endl;
@@ -28,6 +29,10 @@ PointCorrespondenceKDTree::~PointCorrespondenceKDTree() {
 }
 
 void PointCorrespondenceKDTree::createNearestNeighborCorrespondence(PointCloud3D* pointCloud1, PointCloud3D* pointCloud2, std::vector<CorrespondencePoint3DPair>* resultPointPairs) {
+	assert(pointCloud1 != 0);
+	assert(pointCloud2 != 0);
+	assert(resultPointPairs != 0);
+
 	double *centroid_m = new double[3];
 	double *centroid_d = new double[3];
 	double maxMatchingDistance = 50;

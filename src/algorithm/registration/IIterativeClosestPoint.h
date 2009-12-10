@@ -45,9 +45,8 @@ public:
 	 * @param[in] model Pointer to point cloud that represents the model
 	 * @param[in,out] data Pointer to point cloud that represents the data (points will be transformed during iterations)
 	 * @param[out] resultTransformation Pointer to resulting homogeneous transformation to align both point clouds
-	 * @param maxIterations Maximum amount of iterations for matching process
 	 */
-	virtual void match(PointCloud3D* model, PointCloud3D* data, IHomogeneousMatrix44* resultTransformation, int maxIterations = 20) = 0;
+	virtual void match(PointCloud3D* model, PointCloud3D* data, IHomogeneousMatrix44* resultTransformation) = 0;
 
 	/**
 	 * @brief Calculates the required transformation to align the data point cloud to the model point cloud

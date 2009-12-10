@@ -34,19 +34,11 @@ public:
 	 */
 	virtual ~IPointCorrespondence(){};
 
-//	/**
-//	 * @brief Establishes a point to point correspondence with nearest neighborhood search
-//	 * @param[in] pointCloud1 Pointer to first point cloud
-//	 * @param[in] pointCloud2 Pointer to second point cloud
-//	 * @param[out] resultPointPairs Pointer where to store the resulting point correspondences. If no correspondences are found, this vector will be empty
-//	 */
-//	virtual void createNearestNeighborCorrespondence(PointCloud3D* pointCloud1, PointCloud3D* pointCloud2, std::vector<CorrespondenceIndexPair>* resultPointPairs) = 0;
-
 	/**
 	 * @brief Establishes a point to point correspondence with nearest neighborhood search
 	 * @param[in] pointCloud1 Pointer to first point cloud
 	 * @param[in] pointCloud2 Pointer to second point cloud
-	 * @param[out] resultPointPairs Pointer where to store the resulting point correspondences. If no correspondences are found, this vector will be empty
+	 * @param[out] resultPointPairs Pointer where to store the resulting point correspondences. If no correspondences are found, this vector will be empty.
 	 */
 	virtual void createNearestNeighborCorrespondence(PointCloud3D* pointCloud1, PointCloud3D* pointCloud2, std::vector<CorrespondencePoint3DPair>* resultPointPairs) = 0;
 

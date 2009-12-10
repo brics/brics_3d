@@ -27,16 +27,6 @@ void HomogeneousMatrixTest::testDefaultConstructor() {
 	matrix = new HomogeneousMatrix44();
 	matrixPtr = matrix->getRawData();
 
-//	cout << endl;
-//	for (int i = 0; i < arraySize; ++i) {
-//		cout << matrixPtr[i];
-//		if (((i + 1) % 4) == 0) {
-//			cout << endl;
-//		}
-//	}
-//	cout << endl;
-
-
 	/* rotation in column-major order*/
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, matrixPtr[0], maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[4], maxTolerance);

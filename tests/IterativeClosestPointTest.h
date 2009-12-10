@@ -14,7 +14,9 @@
 
 #include "core/PointCloud3D.h"
 #include "core/HomogeneousMatrix44.h"
-#include <algorithm/registration/RigidTransformationEstimationSVD.h>
+#include "algorithm/registration/PointCorrespondenceKDTree.h"
+#include "algorithm/registration/RigidTransformationEstimationSVD.h"
+#include "algorithm/registration/IterativeClosestPoint.h"
 
 #include <Eigen/Geometry>
 #include <iostream>
@@ -24,15 +26,11 @@ using namespace BRICS_3D;
 
 namespace unitTests {
 
+class IterativeClosestPointTest : public CPPUNIT_NS::TestFixture {
 
-
-
-
-class RigidTransformationEstimationTest : public CPPUNIT_NS::TestFixture {
-
-	CPPUNIT_TEST_SUITE( RigidTransformationEstimationTest );
+	CPPUNIT_TEST_SUITE( IterativeClosestPointTest );
 	CPPUNIT_TEST( testConstructor );
-	CPPUNIT_TEST( testSVDTransformation );
+	CPPUNIT_TEST( testSimpleAlignment );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -40,14 +38,14 @@ public:
 	void tearDown();
 
 	void testConstructor();
-	void testSVDTransformation();
+	void testSimpleAlignment();
 
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW //Required by Eigen2
 
 private:
 
-	RigidTransformationEstimationSVD* estimator;
-	IRigidTransformationEstimation* abstractEstimator;
+	IterativeClosestPoint* icp;
+	IIterativeClosestPoint* abstractIcp;
 
 	PointCloud3D *pointCloudCube;
 	PointCloud3D *pointCloudCubeCopy;
@@ -66,7 +64,6 @@ private:
 };
 
 }  // namespace unitTests
-
 #endif /* RIGIDTRANSFORMATIONESTIMATIONTEST_H_ */
 
 /* EOF */

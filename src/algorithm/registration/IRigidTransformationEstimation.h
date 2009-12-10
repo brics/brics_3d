@@ -39,13 +39,16 @@ public:
 	/**
 	 * @brief Estimates the rigid transformation between two corresponding point clouds.
 	 *
-	 * @param[in] pointCloud1 Pointer to first point cloud
-	 * @param[in] pointCloud2 Pointer to second point cloud
 	 * @param[in] pointPairs Pointer to point correspondences between points of pointCloud1 and pointCloud2
 	 * @param[out] resultTransformation Pointer to resulting rigid transformation, represented as a homogeneous matrix
-	 * @return error TODO
+	 * @return Returns the RMS point-to-point error
+	 *
+	 * NOTE: A function with two point clouds a correspondence representation based on CorrespondenceIndexPair might be more efficient,
+	 * as the pointPairs vector does not need to be filled, but this implies that however the correspondences are established, the underlying structure is
+	 * based on a vector. This assumption does not always hold e.g. the k-d tree does not necessarily store its data in a consecutive vector.
 	 */
-	virtual double estimateTransformation(PointCloud3D* pointCloud1, PointCloud3D* pointCloud2, std::vector<CorrespondencePoint3DPair>* pointPairs, IHomogeneousMatrix44* resultTransformation) = 0;
+	virtual double estimateTransformation(std::vector<CorrespondencePoint3DPair>* pointPairs, IHomogeneousMatrix44* resultTransformation) = 0;
+
 };
 
 }
