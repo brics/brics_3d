@@ -31,7 +31,7 @@ SET (CORE_LIBRARY_SOURCES
 
 SET (ALGORITHM_LIBRARY_SOURCES
 	./algorithm/DepthImageToPointCloudTransformation
-	./algorithm/filter/IOctree
+#	./algorithm/filter/IOctree
 	./algorithm/registration/IPointCorrespondence
 	./algorithm/registration/PointCorrespondenceKDTree
 	./algorithm/registration/IRigidTransformationEstimation
