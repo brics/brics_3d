@@ -91,9 +91,9 @@ SET(SCAN_IO_UOS_LIBRARY
 
 # compile libraries
 IF(WIN32)
-SET(DL_LIB "")
-ELSEIF(WIN32)
-SET(DL_LIB "dl")
+    SET(DL_LIB "")
+ELSE(WIN32)
+    SET(DL_LIB "dl")
 ENDIF(WIN32)
 
 ADD_LIBRARY(newmat_cmake ${NEWMAT_LIBRARY_SOURCES})
