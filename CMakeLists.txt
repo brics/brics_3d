@@ -79,7 +79,8 @@ IF (WIN32)   # windows
 	SET (CGAL_LIBRARY "") # windows uses auto_linker.h => skip CGAL_LIBRARY for linker
 	SET (DL_LIB "")		
 ELSE (WIN32) # linux
-	SET (DL_LIB "dl")	
+	SET (DL_LIB "dl")
+	ADD_DEFINITIONS(-Wall)	
 ENDIF (WIN32)
 
 

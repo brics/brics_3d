@@ -57,11 +57,11 @@ void PointCloud3DTest::tearDown() {
 
 void PointCloud3DTest::testConstructor() {
 
-	CPPUNIT_ASSERT_EQUAL(8, pointCloudCube->getSize());
+	CPPUNIT_ASSERT_EQUAL(8u, pointCloudCube->getSize());
 
 	/* check copy constructor */
 	pointCloudCubeCopy = new PointCloud3D(*pointCloudCube);
-	CPPUNIT_ASSERT_EQUAL(8, pointCloudCubeCopy->getSize());
+	CPPUNIT_ASSERT_EQUAL(8u, pointCloudCubeCopy->getSize());
 }
 
 void PointCloud3DTest::testContent() {
@@ -83,7 +83,7 @@ void PointCloud3DTest::testContent() {
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.y, maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.z, maxTolerance);
 
-	resultPoint = (*pointCloudCube->getPointCloud())[3];	CPPUNIT_ASSERT_EQUAL(8, pointCloudCube->getSize());
+	resultPoint = (*pointCloudCube->getPointCloud())[3];
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.x, maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.y, maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.z, maxTolerance);
@@ -109,7 +109,7 @@ void PointCloud3DTest::testContent() {
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.z, maxTolerance);
 
 	pointCloudCube->getPointCloud()->clear();
-	CPPUNIT_ASSERT_EQUAL(0, pointCloudCube->getSize());
+	CPPUNIT_ASSERT_EQUAL(0u, pointCloudCube->getSize());
 }
 
 void PointCloud3DTest::testLimits() {
@@ -178,10 +178,10 @@ void PointCloud3DTest::testStreaming() {
 
 	/* test input */
 	pointCloudCubeCopy = new PointCloud3D;
-	CPPUNIT_ASSERT_EQUAL(0, pointCloudCubeCopy->getSize());
+	CPPUNIT_ASSERT_EQUAL(0u, pointCloudCubeCopy->getSize());
 
 	testStringStream0 >> *pointCloudCubeCopy;
-	CPPUNIT_ASSERT_EQUAL(8, pointCloudCubeCopy->getSize());
+	CPPUNIT_ASSERT_EQUAL(8u, pointCloudCubeCopy->getSize());
 
 	/* check if input is same as reference */
 	testStringStream1 << *pointCloudCubeCopy;
@@ -190,7 +190,7 @@ void PointCloud3DTest::testStreaming() {
 
 	/* check if points are added */
 	testStringStream1 >> *pointCloudCubeCopy;
-	CPPUNIT_ASSERT_EQUAL(16, pointCloudCubeCopy->getSize());
+	CPPUNIT_ASSERT_EQUAL(16u, pointCloudCubeCopy->getSize());
 	//	cout << *point111 << endl; // actual
 
 	/* check what happens if bad data is inserted */
@@ -211,9 +211,9 @@ void PointCloud3DTest::testTransformation() {
 	transformation = rotation;
 
 	IHomogeneousMatrix44 *homogeneousTransformation = new HomogeneousMatrix44(&transformation);
-	CPPUNIT_ASSERT_EQUAL(8, pointCloudCube->getSize());
+	CPPUNIT_ASSERT_EQUAL(8u, pointCloudCube->getSize());
 	pointCloudCube->homogeneousTransformation(homogeneousTransformation);
-	CPPUNIT_ASSERT_EQUAL(8, pointCloudCube->getSize());
+	CPPUNIT_ASSERT_EQUAL(8u, pointCloudCube->getSize());
 
 
 	/* check 90° rotation about X */

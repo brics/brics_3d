@@ -81,7 +81,7 @@ void PointCorrespondenceTest::testSimpleCorrespondence() {
 
 
 	CPPUNIT_ASSERT_EQUAL((int)pointCloudCube->getSize(), (int)pointPairs->size());
-	for (int i = 0;  i < pointPairs->size(); ++ i) {
+	for (unsigned int i = 0;  i < pointPairs->size(); ++ i) {
 
 //		cout << "Point 1: " << (*pointPairs)[i].firstPoint
 //				<< ", Point 2 " << (*pointPairs)[i].secondPoint << endl;

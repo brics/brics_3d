@@ -44,7 +44,7 @@ void PointCloud3D::setPointCloud(std::vector<Point3D> *pointCloud) {
 	this->pointCloud = pointCloud;
 }
 
-int PointCloud3D::getSize() {
+unsigned int PointCloud3D::getSize() {
 	return pointCloud->size();
 }
 
@@ -75,7 +75,7 @@ void PointCloud3D::storeToPlyFile(std::string filename) {
 	*/
 
 	/* add data to file */
-	for (int i = 0; i < pointCloud->size(); ++i) {
+	for (unsigned int i = 0; i < pointCloud->size(); ++i) {
 		outputFile << (*pointCloud)[i].x << " ";
 		outputFile << (*pointCloud)[i].y << " ";
 		outputFile << (*pointCloud)[i].z << endl;
@@ -89,7 +89,7 @@ void PointCloud3D::storeToTxtFile(std::string filename) {
 	outputFile.open(filename.c_str());
 	cout << "INFO: Saving point cloud to: " << filename << endl;
 
-	for (int i = 0; i < pointCloud->size(); ++i) {
+	for (unsigned int i = 0; i < pointCloud->size(); ++i) {
 		outputFile << (*pointCloud)[i].x << " ";
 		outputFile << (*pointCloud)[i].y << " ";
 		outputFile << (*pointCloud)[i].z << endl;
@@ -137,7 +137,7 @@ istream& operator>>(istream &inStream, PointCloud3D &pointCloud) {
 }
 
 ostream& operator<<(ostream &outStream, PointCloud3D &pointCloud) {
-	for (int i = 0; i < pointCloud.getSize(); ++i) {
+	for (unsigned int i = 0; i < pointCloud.getSize(); ++i) {
 		outStream << (*pointCloud.getPointCloud())[i] << endl;
 	}
 
@@ -145,7 +145,7 @@ ostream& operator<<(ostream &outStream, PointCloud3D &pointCloud) {
 }
 
 void PointCloud3D::homogeneousTransformation(IHomogeneousMatrix44 *transformation) {
-	for (int i = 0; i < pointCloud->size(); ++i) {
+	for (unsigned int i = 0; i < pointCloud->size(); ++i) {
 		(*pointCloud)[i].homogeneousTransformation(transformation);
 	}
 }

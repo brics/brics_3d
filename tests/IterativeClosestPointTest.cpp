@@ -95,7 +95,7 @@ void IterativeClosestPointTest::testSimpleAlignmentSVD() {
 	}
 
 	/* test if aligned point cloud is the more or less same as the initial one */
-	for (int i = 0;  i < pointCloudCube->getSize(); ++ i) {
+	for (unsigned int i = 0;  i < pointCloudCube->getSize(); ++ i) {
 		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].x, (*pointCloudCubeCopy->getPointCloud())[i].x, maxTolerance);
 		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].y, (*pointCloudCubeCopy->getPointCloud())[i].y, maxTolerance);
 		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].z, (*pointCloudCubeCopy->getPointCloud())[i].z, maxTolerance);
@@ -130,7 +130,7 @@ void IterativeClosestPointTest::testSimpleAlignmentQUAT() {
 	}
 
 	/* test if aligned point cloud is the more or less same as the initial one */
-	for (int i = 0;  i < pointCloudCube->getSize(); ++ i) {
+	for (unsigned int i = 0;  i < pointCloudCube->getSize(); ++ i) {
 		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].x, (*pointCloudCubeCopy->getPointCloud())[i].x, maxTolerance);
 		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].y, (*pointCloudCubeCopy->getPointCloud())[i].y, maxTolerance);
 		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].z, (*pointCloudCubeCopy->getPointCloud())[i].z, maxTolerance);
@@ -164,7 +164,7 @@ void IterativeClosestPointTest::testSimpleAlignmentHELIX() {
 	}
 
 	/* test if aligned point cloud is the more or less same as the initial one */
-	for (int i = 0;  i < pointCloudCube->getSize(); ++ i) {
+	for (unsigned int i = 0;  i < pointCloudCube->getSize(); ++ i) {
 		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].x, (*pointCloudCubeCopy->getPointCloud())[i].x, maxTolerance);
 		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].y, (*pointCloudCubeCopy->getPointCloud())[i].y, maxTolerance);
 		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].z, (*pointCloudCubeCopy->getPointCloud())[i].z, maxTolerance);
@@ -198,7 +198,7 @@ void IterativeClosestPointTest::testSimpleAlignmentAPX() {
 	}
 
 	/* test if aligned point cloud is the more or less same as the initial one */
-	for (int i = 0;  i < pointCloudCube->getSize(); ++ i) {
+	for (unsigned int i = 0;  i < pointCloudCube->getSize(); ++ i) {
 		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].x, (*pointCloudCubeCopy->getPointCloud())[i].x, maxTolerance);
 		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].y, (*pointCloudCubeCopy->getPointCloud())[i].y, maxTolerance);
 		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].z, (*pointCloudCubeCopy->getPointCloud())[i].z, maxTolerance);

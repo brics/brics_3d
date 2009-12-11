@@ -68,7 +68,7 @@ void DepthImageToPointCloudTransformation::transformDepthImageToPointCloud(IplIm
 	}
 
 	/* plausibility check */
-	assert(pointCloud->getSize() >= 0 && pointCloud->getSize() <= depthImage->imageSize);
+	assert(pointCloud->getSize() >= 0u && pointCloud->getSize() <= static_cast<unsigned int>(depthImage->imageSize));
 }
 
 }

@@ -63,7 +63,7 @@ public:
      * @brief Get the number of points in the point cloud
      * @return Size of point cloud (= number of stored points)
      */
-    int getSize();
+    unsigned int getSize();
 
     /**
      * @brief Stores the point cloud into a ply file (Stanford polygon file format)

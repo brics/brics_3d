@@ -77,7 +77,7 @@ void RigidTransformationEstimationTest::testSVDTransformation(){
 
 	/* we already know the correspondences...*/
 	vector<CorrespondencePoint3DPair>* pointPairs = new vector<CorrespondencePoint3DPair>();
-	for (int i = 0; i < pointCloudCube->getSize(); ++i) {
+	for (unsigned int i = 0; i < pointCloudCube->getSize(); ++i) {
 		Point3D firstPoint = (*pointCloudCube->getPointCloud())[i];
 		Point3D secondPoint = (*pointCloudCubeCopy->getPointCloud())[i];
 
@@ -117,7 +117,7 @@ void RigidTransformationEstimationTest::testQUATTransformation() {
 
 	/* we already know the correspondences...*/
 	vector<CorrespondencePoint3DPair>* pointPairs = new vector<CorrespondencePoint3DPair>();
-	for (int i = 0; i < pointCloudCube->getSize(); ++i) {
+	for (unsigned int i = 0; i < pointCloudCube->getSize(); ++i) {
 		Point3D firstPoint = (*pointCloudCube->getPointCloud())[i];
 		Point3D secondPoint = (*pointCloudCubeCopy->getPointCloud())[i];
 
@@ -156,7 +156,7 @@ void RigidTransformationEstimationTest::testHELIXTransformation() {
 
 	/* we already know the correspondences...*/
 	vector<CorrespondencePoint3DPair>* pointPairs = new vector<CorrespondencePoint3DPair>();
-	for (int i = 0; i < pointCloudCube->getSize(); ++i) {
+	for (unsigned int i = 0; i < pointCloudCube->getSize(); ++i) {
 		Point3D firstPoint = (*pointCloudCube->getPointCloud())[i];
 		Point3D secondPoint = (*pointCloudCubeCopy->getPointCloud())[i];
 
@@ -195,7 +195,7 @@ void RigidTransformationEstimationTest::testAPXTransformation() {
 
 	/* we already know the correspondences...*/
 	vector<CorrespondencePoint3DPair>* pointPairs = new vector<CorrespondencePoint3DPair>();
-	for (int i = 0; i < pointCloudCube->getSize(); ++i) {
+	for (unsigned int i = 0; i < pointCloudCube->getSize(); ++i) {
 		Point3D firstPoint = (*pointCloudCube->getPointCloud())[i];
 		Point3D secondPoint = (*pointCloudCubeCopy->getPointCloud())[i];
 
@@ -234,7 +234,7 @@ void RigidTransformationEstimationTest::testORTHOTransformation() {
 
 	/* we already know the correspondences...*/
 	vector<CorrespondencePoint3DPair>* pointPairs = new vector<CorrespondencePoint3DPair>();
-	for (int i = 0; i < pointCloudCube->getSize(); ++i) {
+	for (unsigned int i = 0; i < pointCloudCube->getSize(); ++i) {
 		Point3D firstPoint = (*pointCloudCube->getPointCloud())[i];
 		Point3D secondPoint = (*pointCloudCubeCopy->getPointCloud())[i];
 

@@ -133,16 +133,15 @@ void IterativeClosestPoint6DSLAM::match(PointCloud3D* model, PointCloud3D* data,
 	//Scan::readScans(type, start, end, dir, maxDist, minDist, true);
 	double eu[6] = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
 	vector<Point> ptss;
-	int _fileNr;
 	Scan::readScans(type, start, end, dir, maxDist, minDist, false);
 	//Scan *scanContainer = new Scan(eu, maxDist);
 
 	/* feed all point clouds into the "Scan" container for 6DSLAM ICP */
-	for (int i = 0; i < pointClouds->size(); ++i) {
+	for (unsigned int i = 0; i < pointClouds->size(); ++i) {
 		Scan *currentScan = new Scan(eu, maxDist);
 		Point tmpPoint;
 		cout << "Feeding points " << (*pointClouds)[i]->getSize() <<" into scan" << endl;
-		for (int j = 0; j < (*pointClouds)[i]->getSize() ;++j) {
+		for (unsigned int j = 0; j < (*pointClouds)[i]->getSize() ;++j) {
 			tmpPoint.x = (*(*pointClouds)[i]->getPointCloud())[j].x;
 			tmpPoint.y = (*(*pointClouds)[i]->getPointCloud())[j].y;
 			tmpPoint.z = (*(*pointClouds)[i]->getPointCloud())[j].z;

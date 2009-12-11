@@ -40,7 +40,7 @@ class RigidTransformationEstimationTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testQUATTransformation );
 	CPPUNIT_TEST( testHELIXTransformation );
 	CPPUNIT_TEST( testAPXTransformation );
-//	CPPUNIT_TEST( testORTHOTransformation ); TODO throws an unknown exception
+	CPPUNIT_TEST( testORTHOTransformation ); // TODO throws an unknown exception
 	CPPUNIT_TEST_SUITE_END();
 
 public:

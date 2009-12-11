@@ -41,7 +41,7 @@ void PointCorrespondenceKDTree::createNearestNeighborCorrespondence(PointCloud3D
 
 	/* prepare data */
 	double** pointCloud1Points = new double*[pointCloud1->getSize()];
-	for (int i = 0; i < pointCloud1->getSize(); i++) {
+	for (unsigned int i = 0; i < pointCloud1->getSize(); i++) {
 		pointCloud1Points[i] = new double[3];
 		pointCloud1Points[i][0] = (*pointCloud1->getPointCloud())[i].x;
 		pointCloud1Points[i][1] = (*pointCloud1->getPointCloud())[i].y;

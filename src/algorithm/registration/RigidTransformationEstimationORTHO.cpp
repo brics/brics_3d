@@ -28,7 +28,7 @@ RigidTransformationEstimationORTHO::~RigidTransformationEstimationORTHO() {
 
 double RigidTransformationEstimationORTHO::estimateTransformation(std::vector<CorrespondencePoint3DPair>* pointPairs, IHomogeneousMatrix44* resultTransformation) {
 	double resultError = -1.0;
-	bool quiet = true;
+	bool quiet = false;
 	icp6Dminimizer *errorMinimizer = new icp6D_ORTHO(quiet);
 
 	vector<PtPair> minimizerPointPairs;
@@ -37,7 +37,7 @@ double RigidTransformationEstimationORTHO::estimateTransformation(std::vector<Co
 	double centroid_d[3] = {0.0, 0.0, 0.0};
 
 	/* convert data structures */
-	for (int i = 0; i < pointPairs->size(); ++i) {
+	for (unsigned int i = 0; i < pointPairs->size(); ++i) {
 		double firstPoint[3];
 		firstPoint[0] = (*pointPairs)[i].firstPoint.x;
 		firstPoint[1] = (*pointPairs)[i].firstPoint.y;

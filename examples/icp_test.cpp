@@ -75,8 +75,6 @@ int main(int argc, char **argv) {
 	AngleAxis<double> rotation(M_PI_2l/4.0, Vector3d(1,0,0));
 	Transform3d transformation;
 	transformation = rotation;
-	IHomogeneousMatrix44* homogeneousTrans = new HomogeneousMatrix44(&transformation);
-	//pointCloud2->homogeneousTransformation(homogeneousTrans);
 
 
 	OSGPointCloudVisualizer* viewer = new OSGPointCloudVisualizer();
@@ -85,7 +83,7 @@ int main(int argc, char **argv) {
 	viewer->addPointCloud(pointCloud1, 0.0f, 1.0f, 0.0f, 1.0f); //initial
 
 	/* set up icp */
-	int algorithm = 0;
+	int algorithm = 1; //TODO switch
 	IIterativeClosestPoint* icp; //abstract interface to ICP
 
 	IPointCorrespondence* assigner; //only needed for generic icp
@@ -109,7 +107,9 @@ int main(int argc, char **argv) {
 
 	/* invoke ICP */
 	IHomogeneousMatrix44* resultTransformation = new HomogeneousMatrix44();
+	cout << pointCloud1->getSize() << " | " << pointCloud2->getSize() << endl;
 	icp->match(pointCloud1, pointCloud2, resultTransformation);
+	cout << pointCloud1->getSize() << " | " << pointCloud2->getSize() << endl;
 
 	viewer->visualizePointCloud(pointCloud2, 1.0f, 1.0f, 1.0f, 1.0f);
 	//viewer->visualizePointCloud(pointCloud3, 1.0f,0.0f,1.0f,1.0f);
