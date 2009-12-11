@@ -121,7 +121,7 @@ ostream& operator<<(ostream &outStream, const Point3D &point) {
 	return outStream;
 }
 
-void Point3D::homogeneousTransformation(IHomogeneousMatrix44 *transformation) {
+void Point3D::homogeneousTransformation(IHomogeneousMatrix44 *transformation) { //TODO throw exception if values exceed limits
 	const double *homogenousMatrix;
 	double xTemp;
 	double yTemp;

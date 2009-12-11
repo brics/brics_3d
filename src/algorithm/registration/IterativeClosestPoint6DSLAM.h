@@ -33,7 +33,21 @@ public:
 
 	void match(PointCloud3D* model, PointCloud3D* data, IHomogeneousMatrix44* resultTransformation);
 
+private:
 
+	double getConvergenceThreshold() const;
+
+	int getMaxIterations() const;
+
+	void setConvergenceThreshold(double convergenceThreshold);
+
+	void setMaxIterations(int maxIterations);
+
+	/// Defines the maximum amount of iterations for matching process
+	int maxIterations;
+
+	/// The threshold to define convergence.
+	double convergenceThreshold;
 
 	/* set ICP parameters */
 	 ///Parameterize octree (-1.0 is none)
@@ -59,7 +73,7 @@ public:
 	int clpairs;
 	int loopsize;
 	std::string net;
-	int anim;
+	int anim;	/// Defines the maximum amount of iterations for matching process
 	double epsilonICP;
 	double epsilonSLAM;
 	bool use_cache;
@@ -70,10 +84,6 @@ public:
 	double distLoop;
 	int iterLoop;
 	double graphDist;
-
-
-private:
-
 
 };
 

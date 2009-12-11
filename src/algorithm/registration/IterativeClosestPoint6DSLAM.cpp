@@ -49,6 +49,8 @@ namespace BRICS_3D {
 void matchGraph6Dautomatic(double cldist, int loopsize, vector <Scan *> allScans, icp6D *my_icp6D, bool meta_icp, bool use_cache, loopSlam6D *my_loopSlam6D, graphSlam6D *my_graphSlam6D, int nrIt, double epsilonSLAM, double mdml, double mdmll, double graphDist, bool &eP, reader_type type);
 
 IterativeClosestPoint6DSLAM::IterativeClosestPoint6DSLAM() {
+	convergenceThreshold = 0.00001;
+	maxIterations = 20;
 
 	/* set ICP default parameters */
 	red = -1.0;//3;//5; //paremetrize octree (-1.0 is none)
@@ -56,7 +58,7 @@ IterativeClosestPoint6DSLAM::IterativeClosestPoint6DSLAM() {
 	mdml = 25.0;
 	mdm = 25.0;
 	rand = -1;
-	mni = 50;
+//	mni = maxIterations;
 	start = 0;
 	end = -1;
 	quiet = false;
@@ -72,7 +74,7 @@ IterativeClosestPoint6DSLAM::IterativeClosestPoint6DSLAM() {
 	loopsize = 20;
 	net = "none";
 	anim = -1;
-	epsilonICP = 0.00001;
+//	epsilonICP = convergenceThreshold;
 	epsilonSLAM = 0.5;
 	use_cache = false;
 	exportPts = false;
@@ -90,8 +92,8 @@ IterativeClosestPoint6DSLAM::~IterativeClosestPoint6DSLAM() {
 }
 
 void IterativeClosestPoint6DSLAM::match(PointCloud3D* model, PointCloud3D* data, IHomogeneousMatrix44* resultTransformation) {
-
-//	IHomogeneousMatrix44* resutTransformation = new HomogeneousMatrix44(); //WRONG here
+	mni = maxIterations;
+	epsilonICP = convergenceThreshold;
 
 	/* create point cloud container */
 	vector<PointCloud3D*> *pointClouds = new vector<PointCloud3D*>;
@@ -483,6 +485,28 @@ void matchGraph6Dautomatic(double cldist, int loopsize, vector <Scan *> allScans
 
 }
 
+
+
+double IterativeClosestPoint6DSLAM::getConvergenceThreshold() const{
+	return convergenceThreshold;
+}
+
+
+int IterativeClosestPoint6DSLAM::getMaxIterations() const {
+	return maxIterations;
+}
+
+
+void IterativeClosestPoint6DSLAM::setConvergenceThreshold(double convergenceThreshold)
+{
+	this->convergenceThreshold = convergenceThreshold;
+}
+
+
+void IterativeClosestPoint6DSLAM::setMaxIterations(int maxIterations)
+{
+	this->maxIterations = maxIterations;
+}
 
 }
 

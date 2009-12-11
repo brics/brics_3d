@@ -17,6 +17,9 @@
 #include <algorithm/registration/IterativeClosestPoint6DSLAM.h>
 #include "algorithm/registration/PointCorrespondenceKDTree.h"
 #include "algorithm/registration/RigidTransformationEstimationSVD.h"
+#include "algorithm/registration/RigidTransformationEstimationHELIX.h"
+#include "algorithm/registration/RigidTransformationEstimationAPX.h"
+#include "algorithm/registration/RigidTransformationEstimationORTHO.h"
 #include "algorithm/registration/IterativeClosestPoint.h"
 
 
@@ -83,12 +86,12 @@ int main(int argc, char **argv) {
 	viewer->addPointCloud(pointCloud1, 0.0f, 1.0f, 0.0f, 1.0f); //initial
 
 	/* set up icp */
-	int algorithm = 1; //TODO switch
+	int algorithm = 0; //TODO switch
 	IIterativeClosestPoint* icp; //abstract interface to ICP
 
 	IPointCorrespondence* assigner; //only needed for generic icp
 	assigner = new PointCorrespondenceKDTree(); //only needed for generic icp
-	IRigidTransformationEstimation* estimator = new RigidTransformationEstimationSVD(); //only needed for generic icp
+	IRigidTransformationEstimation* estimator = new RigidTransformationEstimationAPX(); //only needed for generic icp
 
 	switch (algorithm) {
 		case 0:
@@ -100,16 +103,16 @@ int main(int argc, char **argv) {
 			cout << "INFO: Using 6Dslam icp." << endl;
 			break;
 		default:
-			cout << "ERRO: No algorithm given." << endl;
+			cout << "ERROR: No algorithm given." << endl;
 			return -1;
 			break;
 	}
 
 	/* invoke ICP */
 	IHomogeneousMatrix44* resultTransformation = new HomogeneousMatrix44();
-	cout << pointCloud1->getSize() << " | " << pointCloud2->getSize() << endl;
+	icp->setMaxIterations(100);
 	icp->match(pointCloud1, pointCloud2, resultTransformation);
-	cout << pointCloud1->getSize() << " | " << pointCloud2->getSize() << endl;
+
 
 	viewer->visualizePointCloud(pointCloud2, 1.0f, 1.0f, 1.0f, 1.0f);
 	//viewer->visualizePointCloud(pointCloud3, 1.0f,0.0f,1.0f,1.0f);

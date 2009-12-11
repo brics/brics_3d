@@ -7,6 +7,7 @@
  */
 
 #include "RigidTransformationEstimationTest.h"
+#include "6dslam/src/newmat/newmat.h"
 
 #include <sstream>
 #include <cmath>
@@ -249,7 +250,7 @@ void RigidTransformationEstimationTest::testORTHOTransformation() {
 	try {
 		errorResult1 = abstractEstimator->estimateTransformation(pointPairs, reusultTransformation);
 	} catch (exception& e) {
-		cout << "ERROR: RigidTransformationEstimationORTHO has thrown an exception.";
+		cerr << "ERROR: RigidTransformationEstimationORTHO has thrown an exception." << endl;
 	}
 	cout << "INFO: ORTHO RMS point-to-point error is " << errorResult1 << endl;
 

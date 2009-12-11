@@ -11,8 +11,10 @@
 
 #define OPENMP_NUM_THREADS 4 //only to make code compilable
 #include "6dslam/src/icp6Dortho.h"
+#include "6dslam/src/newmat/newmat.h"
 
 using std::cout;
+using std::cerr;
 using std::endl;
 
 namespace BRICS_3D {
@@ -28,7 +30,7 @@ RigidTransformationEstimationORTHO::~RigidTransformationEstimationORTHO() {
 
 double RigidTransformationEstimationORTHO::estimateTransformation(std::vector<CorrespondencePoint3DPair>* pointPairs, IHomogeneousMatrix44* resultTransformation) {
 	double resultError = -1.0;
-	bool quiet = false;
+	bool quiet = true;
 	icp6Dminimizer *errorMinimizer = new icp6D_ORTHO(quiet);
 
 	vector<PtPair> minimizerPointPairs;
@@ -72,7 +74,13 @@ double RigidTransformationEstimationORTHO::estimateTransformation(std::vector<Co
 //	cout << "centroid of pointCloud1 " << centroid_m[0] << ", " << centroid_m[1] << ", " << centroid_m[2] << endl; //DBG output
 //	cout << "centroid of pointCloud2 " << centroid_d[0] << ", " << centroid_d[1] << ", " << centroid_d[2] << endl;
 
-	resultError = errorMinimizer->Point_Point_Align(minimizerPointPairs, alignxf, centroid_m, centroid_d);
+	try {
+		resultError = errorMinimizer->Point_Point_Align(minimizerPointPairs, alignxf, centroid_m, centroid_d);
+	} catch (ProgramException& e) {
+		throw runtime_error("ERROR: RigidTransformationEstimationORTHO has thrown a ProgramException. Something went wrong while performing a newmat matrix operation.");
+	}
+
+
 //	for (int i = 0; i < 16; ++i) { // DBG output
 //		cout << alignxf[i];
 //		if (((i+1)%4) == 0) {
