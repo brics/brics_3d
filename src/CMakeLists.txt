@@ -1,22 +1,41 @@
 # author: Sebastian Blumenthal
 # date: 2009-09-09
 
-# add include directories (-I)
-INCLUDE_DIRECTORIES(
-    . 
-    ${CMAKE_HOME_DIRECTORY}/src
-    ${CMAKE_HOME_DIRECTORY}/external 
+SET(BRICS_3D_LIBRARIES_INCLUDE_DIRS 
+	${CMAKE_HOME_DIRECTORY}/src
+	${CMAKE_HOME_DIRECTORY}/external
     ${OPENCV_INCLUDE_DIR}
     ${EIGEN2_INCLUDE_DIR}
 )
 
-
-# add library directories (-L)
-LINK_DIRECTORIES(
-    #/usr/local/lib 
+SET(BRICS_3D_LIBRARIES_LIB_DIRS
     /usr/lib 
     ${OpenCV_LINK_DIRECTORIES}
 )
+
+# define required libraries
+SET(CORE_LIBRARY_LIBS
+
+)
+
+SET(ALGORITHM_LIBRARY_LIBS
+    scanlib 
+    6dslam_core 
+    newmat_cmake 
+    ${DL_LIB}
+)
+
+SET(UTIL_LIBRARY_LIBS
+    ${OpenCV_LIBRARIES}
+)
+
+
+# define optionl libraries
+IF(XERCES_INCLUDE_DIR)
+	list(APPEND BRICS_3D_LIBRARIES_INCLUDE_DIRS ${XERCES_INCLUDE_DIR})
+	list(APPEND UTIL_LIBRARY_LIBS               ${XERCES_LIBRARIES})
+ENDIF(XERCES_INCLUDE_DIR)	
+
 
 
 # define sources lists for libraries (cpp files)
@@ -48,24 +67,33 @@ SET (ALGORITHM_LIBRARY_SOURCES
 
 SET (UTIL_LIBRARY_SOURCES
 	./util/DepthImageLoader
+	./util/ConfigurationFileHandler
 )	
 
 #optional sources
 IF (USE_OSG)
-    SET (UTIL_LIBRARY_SOURCES
-    ${UTIL_LIBRARY_SOURCES}
-    ./util/OSGPointCloudVisualizer 
-    )
+    list(APPEND UTIL_LIBRARY_SOURCES ./util/OSGPointCloudVisualizer)
 ENDIF(USE_OSG)
+
+
+# add library directories (-L)
+LINK_DIRECTORIES(
+    ${BRICS_3D_LIBRARIES_LIB_DIRS}
+)
+
+# add include directories (-I)
+INCLUDE_DIRECTORIES(
+     ${BRICS_3D_LIBRARIES_INCLUDE_DIRS}
+)
 
 
 # compile libraries
 ADD_LIBRARY(brics_3dpm_core ${CORE_LIBRARY_SOURCES})
-TARGET_LINK_LIBRARIES(brics_3dpm_core ${OpenCV_LIBRARIES})
+TARGET_LINK_LIBRARIES(brics_3dpm_core ${CORE_LIBRARY_LIBS})
 
 ADD_LIBRARY(brics_3dpm_algorithm ${ALGORITHM_LIBRARY_SOURCES})
-TARGET_LINK_LIBRARIES(brics_3dpm_algorithm brics_3dpm_core ${OpenCV_LIBRARIES} scanlib 6dslam_core newmat_cmake ${DL_LIB})
+TARGET_LINK_LIBRARIES(brics_3dpm_algorithm brics_3dpm_core ${ALGORITHM_LIBRARY_LIBS})
 
 ADD_LIBRARY(brics_3dpm_util ${UTIL_LIBRARY_SOURCES})
-TARGET_LINK_LIBRARIES(brics_3dpm_util brics_3dpm_core ${OpenCV_LIBRARIES})
+TARGET_LINK_LIBRARIES(brics_3dpm_util brics_3dpm_core ${UTIL_LIBRARY_LIBS})
 

@@ -7,6 +7,7 @@ PROJECT(BRICS_3D)
 ## project definitions
 ADD_DEFINITIONS(-DBRICS_IMGAGES_DIR="${CMAKE_HOME_DIRECTORY}/examples/test_data/depth_images")
 ADD_DEFINITIONS(-DBRICS_MODELS_DIR="${CMAKE_HOME_DIRECTORY}/examples/test_data/3d_models")
+ADD_DEFINITIONS(-DBRICS_CONFIGURATIONS_DIR="${CMAKE_HOME_DIRECTORY}/examples/test_data")
 
 ## check required prerequisites
 SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/external/cmake_modules")
@@ -73,6 +74,17 @@ ELSE (OPENSCENEGRAPH_FOUND)
 	SET(REMOVE_DEFINITIONS(-DBRICS_OSG_ENABLE))
 ENDIF (OPENSCENEGRAPH_FOUND)
 OPTION(USE_OSG "Enable Open Scene Graph" OFF)
+
+# search for Xerces xml library
+FIND_PACKAGE(Xerces)
+IF (XERCES_INCLUDE_DIR)
+	MESSAGE(STATUS "SUCCESSFUL: Xerces found")
+	SET(BRICS_XERCES_ENABLE 1)
+	ADD_DEFINITIONS(-DBRICS_XERCES_ENABLE)
+ELSE (XERCES_INCLUDE_DIR)
+	MESSAGE(STATUS "WARNING: Xerces not found")
+ENDIF (XERCES_INCLUDE_DIR)
+
 
 ## perform platform dependant configurations
 IF (WIN32)   # windows
