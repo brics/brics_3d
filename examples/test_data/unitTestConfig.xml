@@ -2,7 +2,7 @@
 <!DOCTYPE dummy>
 <BRICS_3D-Configuration>
 
-  <IterativeClosestPoint implementation="IterativeClosestPoint" maxIterations="20" convergenceThreshold="0.001">
+  <IterativeClosestPoint implementation="IterativeClosestPoint" maxIterations="25" convergenceThreshold="0.001">
 	<PointCorrespondence implementation="PointCorrespondenceKDTree"></PointCorrespondence>
 	<RigidTransformationEstimation implementation="RigidTransformationEstimationSVD"></RigidTransformationEstimation>
   </IterativeClosestPoint> 	

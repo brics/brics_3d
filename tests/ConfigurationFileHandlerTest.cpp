@@ -39,7 +39,7 @@ void ConfigurationFileHandlerTest::testParsing() {
 
 	int maxIterations;
 	CPPUNIT_ASSERT(xmlHandler->getAttribute("IterativeClosestPoint", "maxIterations", &maxIterations) == true);
-	CPPUNIT_ASSERT_EQUAL(20, maxIterations);
+	CPPUNIT_ASSERT_EQUAL(25, maxIterations);
 //	cout << "maxIterations = " << maxIterations << endl;
 
 	double convergenceThreshold;

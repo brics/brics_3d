@@ -13,7 +13,6 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "util/ConfigurationFileHandler.h"
-//#include "algorithm/registration/IIterativeClosestPoint.h"
 
 using namespace std;
 using namespace BRICS_3D;

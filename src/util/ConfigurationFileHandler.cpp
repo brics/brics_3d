@@ -63,7 +63,7 @@ ConfigurationFileHandler::ConfigurationFileHandler(const std::string filename) {
 		int errorCount = parser->getErrorCount();
 		if (errorCount > 0) {
 			errorsOccured = true;
-			cerr << "ERORR: XML document has " << errorsOccured << " errors." << endl;
+			cerr << "ERORR: XML document has " << errorsOccured << " error(s)." << endl;
 		}
 
 	} catch (const XMLException& e) {
@@ -104,9 +104,9 @@ bool ConfigurationFileHandler::getAttribute(std::string algorithm, std::string a
     DOMDocument* doc = parser->getDocument();
     DOMNodeList* root = doc->getElementsByTagName(algorithmName);
     if (root->getLength() > 1) {
-        cerr << "WARNING: More than one " << algorithm << " found, taking the first one" << endl;
+        cout << "WARNING: More than one " << algorithm << " found, taking the first one" << endl;
     } else if(root->getLength() < 1) {
-        cerr << "WARNING: No algorithm called " << algorithm << " found." << endl;
+        cout << "WARNING: No algorithm called " << algorithm << " found." << endl;
 		return false;
     }
 
@@ -148,9 +148,9 @@ bool ConfigurationFileHandler::getAttribute(std::string algorithm, std::string a
     DOMDocument* doc = parser->getDocument();
     DOMNodeList* root = doc->getElementsByTagName(algorithmName);
     if (root->getLength() > 1) {
-        cerr << "WARNING: More than one " << algorithm << " found, taking the first one" << endl;
+        cout << "WARNING: More than one " << algorithm << " found, taking the first one" << endl;
     } else if(root->getLength() < 1) {
-        cerr << "WARNING: No algorithm called " << algorithm << " found." << endl;
+    	cout << "WARNING: No algorithm called " << algorithm << " found." << endl;
 		return false; //TODO release resouces
     }
 
@@ -189,9 +189,9 @@ bool ConfigurationFileHandler::getAttribute(std::string algorithm, std::string a
     DOMDocument* doc = parser->getDocument();
     DOMNodeList* root = doc->getElementsByTagName(algorithmName);
     if (root->getLength() > 1) {
-        cerr << "WARNING: More than one " << algorithm << " found, taking the first one" << endl;
+    	cout << "WARNING: More than one " << algorithm << " found, taking the first one" << endl;
     } else if(root->getLength() < 1) {
-        cerr << "WARNING: No algorithm called " << algorithm << " found." << endl;
+    	cout << "WARNING: No algorithm called " << algorithm << " found." << endl;
 		return false; //TODO release resouces
     }
 
@@ -230,9 +230,9 @@ bool ConfigurationFileHandler::getSubAlgorithm(std::string algorithm, std::strin
     DOMDocument* doc = parser->getDocument();
     DOMNodeList* root = doc->getElementsByTagName(algorithmName);
     if (root->getLength() > 1) {
-        cerr << "WARNING: More than one " << algorithm << " found, taking the first one" << endl;
+    	cout << "WARNING: More than one " << algorithm << " found, taking the first one" << endl;
     } else if(root->getLength() < 1) {
-        cerr << "WARNING: No algorithm called " << algorithm << " found." << endl;
+    	cout << "WARNING: No algorithm called " << algorithm << " found." << endl;
 		return false; //TODO release resouces
     }
 
