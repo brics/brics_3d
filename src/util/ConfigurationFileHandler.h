@@ -39,13 +39,10 @@ public:
 
 	virtual ~ConfigurationFileHandler();
 
-//	const getXmlDomConfiguration ();
-
-	bool getProperty(std::string algorithm, std::string property, std::string* result);
-	bool getSubAlgorithm(std::string algorithm, std::string subalgorithm, std::string* result);
+	bool getAttribute(std::string algorithm, std::string attribute, std::string* result);
 	bool getAttribute(std::string algorithm, std::string attribute, int* result);
 	bool getAttribute(std::string algorithm, std::string attribute, double* result);
-
+	bool getSubAlgorithm(std::string algorithm, std::string subalgorithm, std::string* result);
 
 private:
 
@@ -54,7 +51,6 @@ private:
 	bool errorsOccured;
 
 #ifdef BRICS_XERCES_ENABLE
-	DOMNode* metadata;
 	XercesDOMParser* parser;
 #endif
 

@@ -27,8 +27,6 @@ void ConfigurationFileHandlerTest::tearDown() {
 void ConfigurationFileHandlerTest::testConstructor() {
 
 	CPPUNIT_ASSERT(xmlHandler == 0);
-
-//	xmlHandler = new ConfigurationFileHandler("unitTestConfig.xml");
 	xmlHandler = new ConfigurationFileHandler(filename);
 	CPPUNIT_ASSERT(xmlHandler != 0);
 
@@ -47,6 +45,21 @@ void ConfigurationFileHandlerTest::testParsing() {
 	CPPUNIT_ASSERT(xmlHandler->getAttribute("IterativeClosestPoint", "convergenceThreshold", &convergenceThreshold) == true);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.001, convergenceThreshold, maxTolerance);
 	cout << "convergenceThreshold = " << convergenceThreshold << endl;
+
+	string implementation;
+	CPPUNIT_ASSERT(xmlHandler->getAttribute("IterativeClosestPoint", "implementation", &implementation) == true);
+	CPPUNIT_ASSERT(implementation.compare("IterativeClosestPoint") == 0);
+	cout << "implementation = " << implementation << endl;
+
+	string assigner;
+	CPPUNIT_ASSERT(xmlHandler->getSubAlgorithm("IterativeClosestPoint", "PointCorrespondence", &assigner) == true);
+	CPPUNIT_ASSERT(assigner.compare("PointCorrespondenceKDTree") == 0);
+	cout << "assigner = " << assigner << endl;
+
+	string rigidEstimator;
+	CPPUNIT_ASSERT(xmlHandler->getSubAlgorithm("IterativeClosestPoint", "RigidTransformationEstimation", &rigidEstimator) == true);
+	CPPUNIT_ASSERT(rigidEstimator.compare("RigidTransformationEstimationSVD") == 0);
+	cout << "assigner = " << rigidEstimator << endl;
 
 
 }

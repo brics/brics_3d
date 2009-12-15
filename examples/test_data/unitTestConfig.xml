@@ -1,43 +1,12 @@
 
 <!DOCTYPE dummy>
-<BRICS_Lite-Settings>
+<BRICS_3D-Configuration>
 
   <IterativeClosestPoint implementation="IterativeClosestPoint" maxIterations="20" convergenceThreshold="0.001">
 	<PointCorrespondence implementation="PointCorrespondenceKDTree"></PointCorrespondence>
 	<RigidTransformationEstimation implementation="RigidTransformationEstimationSVD"></RigidTransformationEstimation>
   </IterativeClosestPoint> 	
 
-  <Collision-Checker Params="0">01PQP(no parameter)</Collision-Checker>
+ 
 
-  <Sampler Params="250, 50">02GaussianSampler(mean,sigma)</Sampler>
-
-  <Smoother Params="100">04PartialShortCut(maxNumIter,maxExecTime)</Smoother>
-
-  <Metric Params="1,1,562,424,464,306,166,14,1">05WeightedManhattan(weight1,weight2,...,weight_numjoints)</Metric>
-
-  <PathPlanner Params="1000,1000,1000,1000">01PCD(MaxFreeCellsWhenSampling)</PathPlanner>
-
-  <DynamicPathAdopter Params="1000,1000,0,1000">01NoUpdateDynamicPathAdopter(no parameter)</DynamicPathAdopter>
-
-  <maxConnectDist>100</maxConnectDist>
-
-  <maxPlanTime>20</maxPlanTime>
-
-  <benchmarkParameters>20</benchmarkParameters>
-
-  <benchmarkKind>GeneralBenchmark(numExperiments)</benchmarkKind>
-
-  <Inner-Algorithms NumberOfInnerAlgorithms="1">
-    <InnerAlgorithm Algorithm="01NoSmoothing(no parameter)" Component="Smoother" Parameters=""/>
-  </Inner-Algorithms>
-
-  <Outer-Algorithms NumberOfOuterAlgorithms="4">
-    <OuterAlgorithm Algorithm="02ClassicPRM(maxConnectDist,maxEdgesPerNode,maxNumNodes)" Component="PathPlanner" Parameters="1000,10,2"/>
-    <OuterAlgorithm Algorithm="02ClassicPRM(maxConnectDist,maxEdgesPerNode,maxNumNodes)" Component="PathPlanner" Parameters="2000,10,2"/>
-    <OuterAlgorithm Algorithm="02ClassicPRM(maxConnectDist,maxEdgesPerNode,maxNumNodes)" Component="PathPlanner" Parameters="3000,10,2"/>
-    <OuterAlgorithm Algorithm="02ClassicPRM(maxConnectDist,maxEdgesPerNode,maxNumNodes)" Component="PathPlanner" Parameters=""/>
-  </Outer-Algorithms>
-
-  <ScenarioName>LimboDance</ScenarioName>
-
-</BRICS_Lite-Settings>
+</BRICS_3D-Configuration>
