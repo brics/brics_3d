@@ -26,6 +26,7 @@ class ConfigurationFileHandlerTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testConstructor );
 #ifdef BRICS_XERCES_ENABLE //This test can only be performed if xerces is enabled
 	CPPUNIT_TEST( testParsing );
+	CPPUNIT_TEST( testFalseParameters );
 #endif
 	CPPUNIT_TEST_SUITE_END();
 
@@ -37,6 +38,7 @@ public:
 
 #ifdef BRICS_XERCES_ENABLE //This test can only be performed if xerces is enabled
 	void testParsing();
+	void testFalseParameters();
 #endif
 
 

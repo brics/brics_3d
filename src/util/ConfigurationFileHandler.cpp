@@ -18,8 +18,8 @@ using std::string;
 
 namespace BRICS_3D {
 
-ConfigurationFileHandler::ConfigurationFileHandler(const std::string file) {
-	this->filename = file;
+ConfigurationFileHandler::ConfigurationFileHandler(const std::string filename) {
+	this->filename = filename;
 
 #ifdef BRICS_XERCES_ENABLE
 	cout << "INFO: opening configuration file " << filename << endl;
@@ -99,8 +99,9 @@ bool ConfigurationFileHandler::getAttribute(std::string algorithm, std::string a
     DOMNode* attributeNode = NULL;
     XMLCh* algorithmName = XMLString::transcode(algorithm.c_str());
     XMLCh* attributeName = XMLString::transcode(attribute.c_str());
+    bool attributeFound = false;
 
-    DOMDocument* doc = parser->getDocument(); //TODO replication
+    DOMDocument* doc = parser->getDocument();
     DOMNodeList* root = doc->getElementsByTagName(algorithmName);
     if (root->getLength() > 1) {
         cerr << "WARNING: More than one " << algorithm << " found, taking the first one" << endl;
@@ -113,12 +114,15 @@ bool ConfigurationFileHandler::getAttribute(std::string algorithm, std::string a
     DOMNamedNodeMap* attributesList =  current->getAttributes();
     attributeNode = attributesList->getNamedItem(attributeName);
 
-    *result = XMLString::transcode(attributeNode->getNodeValue());
+    if (attributeNode != 0) {
+    	*result = XMLString::transcode(attributeNode->getNodeValue());
+        attributeFound = true;
+    }
 
     XMLString::release(&algorithmName);
     XMLString::release(&attributeName);
 
-    return true;
+    return attributeFound;
 #else
     return false;
 #endif
@@ -139,27 +143,31 @@ bool ConfigurationFileHandler::getAttribute(std::string algorithm, std::string a
     XMLCh* algorithmName = XMLString::transcode(algorithm.c_str());
     XMLCh* attributeName = XMLString::transcode(attribute.c_str());
     string tmpResult;
+    bool attributeFound = false;
 
-    DOMDocument* doc = parser->getDocument(); //TODO replication
+    DOMDocument* doc = parser->getDocument();
     DOMNodeList* root = doc->getElementsByTagName(algorithmName);
     if (root->getLength() > 1) {
         cerr << "WARNING: More than one " << algorithm << " found, taking the first one" << endl;
     } else if(root->getLength() < 1) {
         cerr << "WARNING: No algorithm called " << algorithm << " found." << endl;
-		return false;
+		return false; //TODO release resouces
     }
 
     current = root->item(0);
     DOMNamedNodeMap* attributesList =  current->getAttributes();
     attributeNode = attributesList->getNamedItem(attributeName);
 
-    tmpResult = XMLString::transcode(attributeNode->getNodeValue());
-    *result = atof(tmpResult.c_str());
+    if (attributeNode != 0) {
+    	tmpResult = XMLString::transcode(attributeNode->getNodeValue());
+    	*result = atof(tmpResult.c_str());
+        attributeFound = true;
+    }
 
     XMLString::release(&algorithmName);
     XMLString::release(&attributeName);
 
-    return true;
+    return attributeFound;
 #else
     return false;
 #endif
@@ -176,27 +184,31 @@ bool ConfigurationFileHandler::getAttribute(std::string algorithm, std::string a
     XMLCh* algorithmName = XMLString::transcode(algorithm.c_str());
     XMLCh* attributeName = XMLString::transcode(attribute.c_str());
     string tmpResult;
+    bool attributeFound = false;
 
-    DOMDocument* doc = parser->getDocument(); //TODO replication
+    DOMDocument* doc = parser->getDocument();
     DOMNodeList* root = doc->getElementsByTagName(algorithmName);
     if (root->getLength() > 1) {
         cerr << "WARNING: More than one " << algorithm << " found, taking the first one" << endl;
     } else if(root->getLength() < 1) {
         cerr << "WARNING: No algorithm called " << algorithm << " found." << endl;
-		return false;
+		return false; //TODO release resouces
     }
 
     current = root->item(0);
     DOMNamedNodeMap* attributesList =  current->getAttributes();
     attributeNode = attributesList->getNamedItem(attributeName);
 
-    tmpResult = XMLString::transcode(attributeNode->getNodeValue());
-    *result = atoi(tmpResult.c_str());
+    if (attributeNode != 0) {
+		    tmpResult = XMLString::transcode(attributeNode->getNodeValue());
+		    *result = atoi(tmpResult.c_str());
+		    attributeFound = true;
+	}
 
     XMLString::release(&algorithmName);
     XMLString::release(&attributeName);
 
-    return true;
+    return attributeFound;
 #else
     return false;
 #endif
@@ -215,13 +227,13 @@ bool ConfigurationFileHandler::getSubAlgorithm(std::string algorithm, std::strin
     XMLCh* implementationString = XMLString::transcode("implementation");
     bool subAlgorithmFound = false;
 
-    DOMDocument* doc = parser->getDocument(); //TODO replication
+    DOMDocument* doc = parser->getDocument();
     DOMNodeList* root = doc->getElementsByTagName(algorithmName);
     if (root->getLength() > 1) {
         cerr << "WARNING: More than one " << algorithm << " found, taking the first one" << endl;
     } else if(root->getLength() < 1) {
         cerr << "WARNING: No algorithm called " << algorithm << " found." << endl;
-		return false;
+		return false; //TODO release resouces
     }
 
     current = root->item(0);
@@ -232,9 +244,11 @@ bool ConfigurationFileHandler::getSubAlgorithm(std::string algorithm, std::strin
 		if (nodeName.compare(subalgorithm) == 0) {
 		    DOMNamedNodeMap* attributesList =  current->getAttributes();
 		    attributeNode = attributesList->getNamedItem(implementationString);
-		    *result = XMLString::transcode(attributeNode->getNodeValue());
-			subAlgorithmFound = true;
-			break; //take only first found
+		    if (attributeNode != 0) {
+		    	*result = XMLString::transcode(attributeNode->getNodeValue());
+		    	subAlgorithmFound = true;
+		    	break; //take only first found
+		    }
 		}
 	}
 
@@ -246,6 +260,10 @@ bool ConfigurationFileHandler::getSubAlgorithm(std::string algorithm, std::strin
 #else
     return false;
 #endif
+}
+
+bool ConfigurationFileHandler::getErrorsOccured() {
+	return errorsOccured;
 }
 
 }
