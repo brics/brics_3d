@@ -38,11 +38,11 @@ IterativeClosestPointFactory::~IterativeClosestPointFactory() {
 
 }
 
-IIterativeClosestPoint* IterativeClosestPointFactory::createIterativeClosestPoint() {
-	return new IterativeClosestPoint(); //TODO return smart pointer
+IIterativeClosestPointPtr IterativeClosestPointFactory::createIterativeClosestPoint() {
+	return IIterativeClosestPointPtr(new IterativeClosestPoint());
 }
 
-IIterativeClosestPoint* IterativeClosestPointFactory::createIterativeClosestPoint(std::string configurationFile) {
+IIterativeClosestPointPtr IterativeClosestPointFactory::createIterativeClosestPoint(std::string configurationFile) {
 	if (((configurationFile.compare("")) == 0) || (configurationFile.compare("default") == 0)) {
 		return createIterativeClosestPoint();
 	}
@@ -57,12 +57,12 @@ IIterativeClosestPoint* IterativeClosestPointFactory::createIterativeClosestPoin
 	summary << "#################### ICP Configuration ####################" << endl << "#" <<endl;
 
 	/* set up icp */
-	IIterativeClosestPoint* icp; //abstract interface to ICP
+	IIterativeClosestPointPtr icp; //abstract interface to ICP
 
 	string icpImplementation;
 	configReader.getAttribute("IterativeClosestPoint", "implementation", &icpImplementation);
 	if (icpImplementation.compare("IterativeClosestPoint6DSLAM") == 0) {
-		icp = new IterativeClosestPoint6DSLAM();
+		icp = IIterativeClosestPointPtr(new IterativeClosestPoint6DSLAM());
 		summary << "# Implementation: IterativeClosestPoint6DSLAM" << endl;
 
 	} else if (icpImplementation.compare("IterativeClosestPoint") == 0) {
@@ -126,7 +126,7 @@ IIterativeClosestPoint* IterativeClosestPointFactory::createIterativeClosestPoin
 		}
 
 
-		icp = new IterativeClosestPoint(assigner, estimator);
+		icp = IIterativeClosestPointPtr(new IterativeClosestPoint(assigner, estimator));
 
 	} else { //Neither IterativeClosestPoint6DSLAM nor IterativeClosestPoint
 		cout << "WARNING: Errors during parsing configuration file. Factory fill provide default configuration." << endl;
@@ -153,7 +153,7 @@ IIterativeClosestPoint* IterativeClosestPointFactory::createIterativeClosestPoin
 
 	cout << summary.str();
 
-	return icp; //TODO
+	return icp;
 
 }
 

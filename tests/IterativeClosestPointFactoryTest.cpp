@@ -40,22 +40,24 @@ void IterativeClosestPointFactoryTest::testConstructor() {
 
 void IterativeClosestPointFactoryTest::testDefault() {
 	icpFactory = new IterativeClosestPointFactory();
-	IIterativeClosestPoint* icp = 0;
+	IIterativeClosestPointPtr icp;
 	icp = icpFactory->createIterativeClosestPoint();
 	CPPUNIT_ASSERT(icp != 0);
 }
 
 void IterativeClosestPointFactoryTest::testUnitTestConfig() {
 	icpFactory = new IterativeClosestPointFactory();
-	IIterativeClosestPoint* icp = 0;
+	IIterativeClosestPointPtr icp;
 	icp = icpFactory->createIterativeClosestPoint(filename);
 	CPPUNIT_ASSERT(icp != 0);
 
 	CPPUNIT_ASSERT_EQUAL(25, icp->getMaxIterations());
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.001, icp->getConvergenceThreshold(), maxTolerance);
 
-	IterativeClosestPoint* genericIcpImpl;
-	genericIcpImpl = dynamic_cast<IterativeClosestPoint*>(icp); //polymorph downcast
+	//IterativeClosestPoint* genericIcpImpl;
+	boost::shared_ptr<IterativeClosestPoint> genericIcpImpl;
+//	genericIcpImpl = dynamic_cast<IterativeClosestPoint*>(icp); //polymorph downcast
+	genericIcpImpl = boost::shared_dynamic_cast<IterativeClosestPoint>(icp); //polymorph downcast
 
 	IPointCorrespondence* assigner = genericIcpImpl->getAssigner();
 	PointCorrespondenceKDTree assignerReference;

@@ -1,4 +1,3 @@
-
 <!DOCTYPE dummy>
 <BRICS_3D-Configuration>
 
@@ -6,7 +5,5 @@
 	<PointCorrespondence implementation="PointCorrespondenceKDTree"></PointCorrespondence>
 	<RigidTransformationEstimation implementation="RigidTransformationEstimationSVD"></RigidTransformationEstimation>
   </IterativeClosestPoint> 	
-
- 
 
 </BRICS_3D-Configuration>
