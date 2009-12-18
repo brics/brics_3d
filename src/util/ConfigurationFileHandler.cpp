@@ -63,7 +63,7 @@ ConfigurationFileHandler::ConfigurationFileHandler(const std::string filename) {
 		int errorCount = parser->getErrorCount();
 		if (errorCount > 0) {
 			errorsOccured = true;
-			cerr << "ERORR: XML document has " << errorsOccured << " error(s)." << endl;
+			cerr << "ERROR: XML document has " << errorsOccured << " error(s)." << endl;
 		}
 
 	} catch (const XMLException& e) {
@@ -151,7 +151,7 @@ bool ConfigurationFileHandler::getAttribute(std::string algorithm, std::string a
         cout << "WARNING: More than one " << algorithm << " found, taking the first one" << endl;
     } else if(root->getLength() < 1) {
     	cout << "WARNING: No algorithm called " << algorithm << " found." << endl;
-		return false; //TODO release resouces
+		return false; //TODO release resources
     }
 
     current = root->item(0);

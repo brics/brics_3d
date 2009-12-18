@@ -4,6 +4,7 @@ INCLUDE_DIRECTORIES(
     ${CMAKE_HOME_DIRECTORY}/external
     ${EIGEN2_INCLUDE_DIR}
     ${CPPUNIT_INCLUDE_DIR}
+    ${OPENCV_INCLUDE_DIR}
 )
 
 # add library directories (-L)

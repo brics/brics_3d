@@ -39,6 +39,16 @@ IF (USE_OSG)
     	${OSGGA_LIBRARY_DEBUG}
     	${OSGVIEWER_LIBRARY_DEBUG}
     )
+ 
+    ADD_EXECUTABLE(pointcloud_viewer pointcloud_viewer)
+    TARGET_LINK_LIBRARIES(pointcloud_viewer
+        brics_3dpm_core 
+        brics_3dpm_algorithm
+        brics_3dpm_util
+    	${OSG_LIBRARY_DEBUG}
+    	${OSGGA_LIBRARY_DEBUG}
+    	${OSGVIEWER_LIBRARY_DEBUG}
+    )
     	
     ADD_EXECUTABLE(osg_delaunay osg_delaunay)
     TARGET_LINK_LIBRARIES(osg_delaunay

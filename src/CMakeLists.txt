@@ -69,6 +69,7 @@ SET (ALGORITHM_LIBRARY_SOURCES
 SET (UTIL_LIBRARY_SOURCES
 	./util/DepthImageLoader
 	./util/ConfigurationFileHandler
+	./util/IpaDatasetLoader
 )	
 
 #optional sources
