@@ -10,6 +10,7 @@
 #define IPADATASETLOADER_H_
 
 #include "core/PointCloud3D.h"
+#include "core/ColoredPoint3D.h"
 
 #ifdef WIN32
 	#include <windows.h>
@@ -59,21 +60,24 @@ public:
  	bool loadColoredPointCloud(std::string pathAndName);
 
  	/**
- 	 * Returns pointer to the xyz image.
+ 	 * @brief Returns pointer to the xyz image.
+ 	 *
 	 * The xyz image holds one corresponding x,y,z-coordinate triple for each image coordinate
 	 * @return The cartesian coordinate image.
 	 */
 	IplImage* getXYZImage();
 
 	/**
-	 * Returns pointer to the color image.
+	 * @brief Returns pointer to the color image.
+	 *
 	 * The color image holds the color information of the 3D data
 	 * @return The shared image.
 	 */
 	IplImage* getColorImage();
 
 	/**
-	 * Returns to a pair of image coordinates the corresponding color and depth values.
+	 * @brief Returns to a pair of image coordinates the corresponding color and depth values.
+	 *
 	 * @param i x-coordinate of image	//bool m_initialized;
 	 * @param j y-coordinate of image
 	 * @param x Corresponding x-coordinate of (i,j)-image-pixel
@@ -90,6 +94,13 @@ public:
 	 * @brief Get a <code>PointCloud3D</code> representation of the data.
 	 */
 	PointCloud3D* getPointCloud();
+
+	/**
+	 * @brief Get a <code>PointCloud3D</code> representation of the data.
+	 *
+	 *  The cloud is filled with <code>ColoredPoint3D<> entities instead of <code>Point3D</code>.
+	 */
+	PointCloud3D* getColoredPointCloud();
 
 private:
 

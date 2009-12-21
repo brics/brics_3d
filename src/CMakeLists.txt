@@ -44,6 +44,7 @@ SET (CORE_LIBRARY_SOURCES
     ./core/HomogeneousMatrix44
 	./core/PointCloud3D
 	./core/Point3D
+	./core/ColoredPoint3D
 	./core/CorrespondenceIndexPair
 	./core/CorrespondencePoint3DPair
 )

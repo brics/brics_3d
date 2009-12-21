@@ -125,7 +125,36 @@ PointCloud3D* IpaDatasetLoader::getPointCloud() {
 			this->getData(row, col, x, y, z, red, green, blue);
 
 			if (!((red == 0) && (green == 0) && (blue == 0))) { //discard "black" points as they don't belong to the object itself
-				pointCloud->addPoint(Point3D(x,y,z));
+				pointCloud->addPoint(Point3D(x, y, z));
+			}
+		}
+	}
+
+	/* plausibility check */
+	assert(pointCloud->getSize() >= 0u && pointCloud->getSize() <= static_cast<unsigned int>(xyzImage->imageSize));
+
+	return pointCloud;
+}
+
+PointCloud3D* IpaDatasetLoader::getColoredPointCloud() {
+
+	PointCloud3D* pointCloud = new PointCloud3D();
+
+	double x = 0.0;
+	double y = 0.0;
+	double z = 0.0;
+	unsigned char red;
+	unsigned char green;
+	unsigned char blue;
+
+
+	/* loop over all pixels and add those who are above a certain threshold */
+	for (int row = 0; row < xyzImage->height; ++row) {
+		for (int col = 0; col < xyzImage->width; ++col) {
+			this->getData(row, col, x, y, z, red, green, blue);
+
+			if (!((red == 0) && (green == 0) && (blue == 0))) { //discard "black" points as they don't belong to the object itself
+				pointCloud->addPoint(ColoredPoint3D(x, y, z, red, green, blue));
 			}
 		}
 	}

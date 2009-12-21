@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
 	/* convert to point cloud */
 	PointCloud3D* pointCloud = new PointCloud3D();
 	pointCloud->readFromTxtFile(filename);
-	cout << "Size of first cloud: " << pointCloud->getSize() << endl;
+	cout << "Size of cloud: " << pointCloud->getSize() << endl;
 
 	/* visualize point cloud */
 	OSGPointCloudVisualizer* visualizer = new OSGPointCloudVisualizer();

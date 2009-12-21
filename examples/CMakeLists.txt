@@ -50,6 +50,16 @@ IF (USE_OSG)
     	${OSGVIEWER_LIBRARY_DEBUG}
     )
     	
+    ADD_EXECUTABLE(fused_data_registration fused_data_registration)
+    TARGET_LINK_LIBRARIES(fused_data_registration
+        brics_3dpm_core 
+        brics_3dpm_algorithm
+        brics_3dpm_util
+    	${OSG_LIBRARY_DEBUG}
+    	${OSGGA_LIBRARY_DEBUG}
+    	${OSGVIEWER_LIBRARY_DEBUG}
+    )    	
+    	
     ADD_EXECUTABLE(osg_delaunay osg_delaunay)
     TARGET_LINK_LIBRARIES(osg_delaunay
         brics_3dpm_core 
