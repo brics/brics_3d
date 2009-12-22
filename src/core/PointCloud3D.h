@@ -42,7 +42,7 @@ public:
 	virtual ~PointCloud3D();
 
 	/**
-	 * @brief Add a point to the poin cloud
+	 * @brief Add a point to the point cloud
 	 * @param point Point that will be added
 	 */
 	void addPoint(Point3D point);
@@ -112,7 +112,7 @@ public:
 	 */
 	void homogeneousTransformation(IHomogeneousMatrix44 *transformation);
 
-private:
+protected:
 
 	///Pointer to vector which represents a Cartesian point cloud
 	std::vector<Point3D> *pointCloud;

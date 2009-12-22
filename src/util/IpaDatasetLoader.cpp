@@ -136,9 +136,9 @@ PointCloud3D* IpaDatasetLoader::getPointCloud() {
 	return pointCloud;
 }
 
-PointCloud3D* IpaDatasetLoader::getColoredPointCloud() {
+ColoredPointCloud3D* IpaDatasetLoader::getColoredPointCloud() {
 
-	PointCloud3D* pointCloud = new PointCloud3D();
+	ColoredPointCloud3D* pointCloud = new ColoredPointCloud3D();
 
 	double x = 0.0;
 	double y = 0.0;
@@ -155,6 +155,7 @@ PointCloud3D* IpaDatasetLoader::getColoredPointCloud() {
 
 			if (!((red == 0) && (green == 0) && (blue == 0))) { //discard "black" points as they don't belong to the object itself
 				pointCloud->addPoint(ColoredPoint3D(x, y, z, red, green, blue));
+				std::cout << ".";
 			}
 		}
 	}

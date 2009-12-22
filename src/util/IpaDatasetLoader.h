@@ -10,7 +10,7 @@
 #define IPADATASETLOADER_H_
 
 #include "core/PointCloud3D.h"
-#include "core/ColoredPoint3D.h"
+#include "core/ColoredPointCloud3D.h"
 
 #ifdef WIN32
 	#include <windows.h>
@@ -86,7 +86,7 @@ public:
 	 * @param R Corresponding red color component of (i,j)-image-pixel
 	 * @param G Corresponding green color component of (i,j)-image-pixel
 	 * @param B Corresponding blue color component of (i,j)-image-pixel
-	 * @return True if method succesfully finished, false if an error occurred.
+	 * @return True if method successfully finished, false if an error occurred.
 	 */
 	bool getData(int i, int j, double& x, double& y, double& z, unsigned char& R, unsigned char& G, unsigned char& B);
 
@@ -96,11 +96,9 @@ public:
 	PointCloud3D* getPointCloud();
 
 	/**
-	 * @brief Get a <code>PointCloud3D</code> representation of the data.
-	 *
-	 *  The cloud is filled with <code>ColoredPoint3D<> entities instead of <code>Point3D</code>.
+	 * @brief Get a <code>ColoredPointCloud3D</code> representation of the data.
 	 */
-	PointCloud3D* getColoredPointCloud();
+	ColoredPointCloud3D* getColoredPointCloud();
 
 private:
 
