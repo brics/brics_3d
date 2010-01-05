@@ -21,8 +21,9 @@ SET(CORE_LIBRARY_LIBS
 SET(ALGORITHM_LIBRARY_LIBS
     scanlib 
     6dslam_core 
-    newmat_cmake 
+    newmat_cmake    
     ${DL_LIB}
+    flann_s
 )
 
 SET(UTIL_LIBRARY_LIBS
@@ -53,6 +54,8 @@ SET (CORE_LIBRARY_SOURCES
 SET (ALGORITHM_LIBRARY_SOURCES
 	./algorithm/DepthImageToPointCloudTransformation
 #	./algorithm/filter/IOctree
+    ./algorithm/nearestNeighbor/INearestNeighbor
+    ./algorithm/nearestNeighbor/NearestNeighborFLANN
 	./algorithm/registration/IPointCorrespondence
 	./algorithm/registration/PointCorrespondenceKDTree
 	./algorithm/registration/IRigidTransformationEstimation

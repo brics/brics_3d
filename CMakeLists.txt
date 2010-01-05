@@ -108,6 +108,7 @@ SET(LIBRARY_OUTPUT_PATH ${CMAKE_HOME_DIRECTORY}/lib/ CACHE PATH "Configure the l
 #SET(LIBRARY_INSTALL_DIR /usr/local/lib/brics CACHE PATH "The subdirectory to the header prefix")
 
 ## do compilations
+ADD_SUBDIRECTORY(./external/flann)
 ADD_SUBDIRECTORY(./src) #compile everything in src to create the libraries
 ADD_SUBDIRECTORY(./examples) #compile everything in examples to create the example binaries
 
