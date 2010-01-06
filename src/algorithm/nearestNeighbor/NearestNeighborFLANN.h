@@ -16,7 +16,7 @@ namespace BRICS_3D {
 
 /**
  * @ingroup nearestNeighbor
- * @brief Implementaion for the nearest neighbor search algorithm with the FĹANN library.
+ * @brief Implementation for the nearest neighbor search algorithm with the FLANN library.
  *
  */
 class NearestNeighborFLANN : public INearestNeighbor {
@@ -40,6 +40,16 @@ public:
 	int findNearestNeigbor(vector<double>* query);
 	int findNearestNeigbor(Point3D* query);
 
+	FLANNParameters getParameters() const;
+
+	void setParameters(FLANNParameters p);
+
+	float getSpeedup() const;
+
+
+
+
+
 private:
 
 	/// Matrix in major-row representation
@@ -52,7 +62,7 @@ private:
 	int cols;
 
 	/// Container for various algorithm parameters
-	FLANNParameters p;
+	FLANNParameters parameters;
 
 	/// Handle for the reprocessed data (e.g. k-d tree)
 	FLANN_INDEX index_id;

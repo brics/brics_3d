@@ -11,11 +11,13 @@
 
 #include <iostream>
 #include <sstream>
-#include <util/OSGPointCloudVisualizer.h>
-#include <core/PointCloud3D.h>
-#include <core/HomogeneousMatrix44.h>
-#include <algorithm/registration/IterativeClosestPoint6DSLAM.h>
+#include "util/OSGPointCloudVisualizer.h"
+#include "core/PointCloud3D.h"
+#include "core/HomogeneousMatrix44.h"
+#include "algorithm/nearestNeighbor/NearestNeighborFLANN.h"
+#include "algorithm/registration/IterativeClosestPoint6DSLAM.h"
 #include "algorithm/registration/PointCorrespondenceKDTree.h"
+#include "algorithm/registration/PointCorrespondenceGenericNN.h"
 #include "algorithm/registration/RigidTransformationEstimationSVD.h"
 #include "algorithm/registration/RigidTransformationEstimationHELIX.h"
 #include "algorithm/registration/RigidTransformationEstimationAPX.h"
@@ -85,13 +87,30 @@ int main(int argc, char **argv) {
 	//viewer->addPointCloud(pointCloud2, 1.0f, 0.0f, 0.0f, 1.0f);
 	viewer->addPointCloud(pointCloud1, 0.0f, 1.0f, 0.0f, 1.0f); //initial
 
-	/* set up icp */
+	/*
+	 * set up icp
+	 */
 	int algorithm = 0; //TODO switch
 	IIterativeClosestPoint* icp; //abstract interface to ICP
 
+	/* set up assigner */
 	IPointCorrespondence* assigner; //only needed for generic icp
-	assigner = new PointCorrespondenceKDTree(); //only needed for generic icp
+	INearestNeighbor* nearestNeigbourFinder = new NearestNeighborFLANN();
+//	nearestNeigbourFinder->setMaxDistance(1);
+	NearestNeighborFLANN* nearestNeigbourFinderFLANN = dynamic_cast<NearestNeighborFLANN*>(nearestNeigbourFinder); //polymorph down cast
+	FLANNParameters parameters;
+	parameters = nearestNeigbourFinderFLANN->getParameters();
+//	parameters.algorithm = KMEANS;
+	parameters.target_precision = -1;
+	nearestNeigbourFinderFLANN->setParameters(parameters);
+
+	assigner = new PointCorrespondenceGenericNN(nearestNeigbourFinder);
+//	assigner = new PointCorrespondenceKDTree(); //only needed for generic icp
+
+	/* setup estimator */
 	IRigidTransformationEstimation* estimator = new RigidTransformationEstimationAPX(); //only needed for generic icp
+
+
 
 	switch (algorithm) {
 		case 0:

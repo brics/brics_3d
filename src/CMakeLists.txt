@@ -58,6 +58,7 @@ SET (ALGORITHM_LIBRARY_SOURCES
     ./algorithm/nearestNeighbor/NearestNeighborFLANN
 	./algorithm/registration/IPointCorrespondence
 	./algorithm/registration/PointCorrespondenceKDTree
+	./algorithm/registration/PointCorrespondenceGenericNN
 	./algorithm/registration/IRigidTransformationEstimation
 	./algorithm/registration/RigidTransformationEstimationSVD
 	./algorithm/registration/RigidTransformationEstimationQUAT

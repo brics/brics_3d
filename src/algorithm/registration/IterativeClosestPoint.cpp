@@ -38,6 +38,8 @@ IterativeClosestPoint::~IterativeClosestPoint() {
 void IterativeClosestPoint::match(PointCloud3D* model, PointCloud3D* data, IHomogeneousMatrix44* resultTransformation) {
 	assert(assigner != 0); //check if algorithms are setup
 	assert(estimator != 0);
+	assert(model != 0); // check input parameters
+	assert(data != 0);
 
 	double error = 0.0;
 	double previousError = 0.0;
