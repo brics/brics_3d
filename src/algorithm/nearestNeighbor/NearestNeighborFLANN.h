@@ -14,9 +14,22 @@
 
 namespace BRICS_3D {
 
+/**
+ * @ingroup nearestNeighbor
+ * @brief Implementaion for the nearest neighbor search algorithm with the FĹANN library.
+ *
+ */
 class NearestNeighborFLANN : public INearestNeighbor {
 public:
+
+	/**
+	 * @brief Standard constructor
+	 */
 	NearestNeighborFLANN();
+
+	/**
+	 * @brief Standard destructor
+	 */
 	virtual ~NearestNeighborFLANN();
 
 	void setData(vector< vector<float> >* data);
@@ -29,17 +42,22 @@ public:
 
 private:
 
-	///matrix in major-row representation
+	/// Matrix in major-row representation
 	float* dataMatrix;
 
+	/// Number of rows in the dataMatrix
 	int rows;
 
+	/// Number of columns in the dataMatrix
 	int cols;
 
+	/// Container for various algorithm parameters
 	FLANNParameters p;
 
+	/// Handle for the reprocessed data (e.g. k-d tree)
 	FLANN_INDEX index_id;
 
+	/// Estimated speedup of used algorithm with respect to a brute force approach
 	float speedup;
 };
 
