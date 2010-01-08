@@ -10,12 +10,19 @@
 
 #include "OSGPointCloudVisualizer.h"
 #include <osg/Point>
+#include <osgGA/StateSetManipulator>
+#include <osgViewer/ViewerEventHandlers>
 
 namespace BRICS_3D {
 
 OSGPointCloudVisualizer::OSGPointCloudVisualizer() {
 	rootGeode = new osg::Group();
 	viewer.setSceneData(rootGeode);
+	viewer.setUpViewInWindow(10, 10, 500, 500);
+	//viewer.setThreadingModel(osgViewer::ViewerBase::SingleThreaded);
+	viewer.addEventHandler(new osgViewer::StatsHandler);
+	viewer.addEventHandler(new osgViewer::WindowSizeHandler);
+	viewer.addEventHandler(new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
 }
 
 OSGPointCloudVisualizer::~OSGPointCloudVisualizer() {
@@ -108,6 +115,7 @@ osg::Node* OSGPointCloudVisualizer::createPointCloudNode(PointCloud3D* pointClou
 	unsigned int j = 0;
 	unsigned int i = 0;
 	for (i = 0; i < pointCloud->getSize(); ++i, j += 2) {
+//	for (i = 0; i < 60032; ++i, j += 2) { //TODO: strange limit on a windows machine; higher results in crash
 
 		osg::Vec3 tmpPoint;
 		tmpPoint.set((float) ((*pointCloud->getPointCloud())[i].x), (float) ((*pointCloud->getPointCloud())[i].y),

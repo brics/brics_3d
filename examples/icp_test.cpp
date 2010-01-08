@@ -9,6 +9,10 @@
  * @version: 0.1
  */
 
+#ifdef WIN32
+ #define _USE_MATH_DEFINES
+#endif 
+
 #include <iostream>
 #include <sstream>
 #include "util/OSGPointCloudVisualizer.h"
@@ -23,7 +27,6 @@
 #include "algorithm/registration/RigidTransformationEstimationAPX.h"
 #include "algorithm/registration/RigidTransformationEstimationORTHO.h"
 #include "algorithm/registration/IterativeClosestPoint.h"
-
 
 #include <Eigen/Geometry>
 
@@ -77,7 +80,8 @@ int main(int argc, char **argv) {
 	cout << "Size of third point cloud: " << pointCloud3->getSize() << endl;
 
 	/* manipulate second point cloud */
-	AngleAxis<double> rotation(M_PI_2l/4.0, Vector3d(1,0,0));
+//	AngleAxis<double> rotation(M_PI_2l/4.0, Vector3d(1,0,0));
+	AngleAxis<double> rotation(M_PI_2/4.0, Vector3d(1,0,0));
 	Transform3d transformation;
 	transformation = rotation;
 
@@ -139,7 +143,7 @@ int main(int argc, char **argv) {
 
 	/* clean up */
 	delete icp;
-	delete estimator;
+	delete estimator; //TODO: crashes (+following lines)
 	delete assigner;
 	delete viewer;
 	delete pointCloud2;

@@ -61,7 +61,7 @@ ELSE (CppUnit_FOUND)
 ENDIF (CppUnit_FOUND)
 
 # search for open scene graph (OSG) visualization library 
-FIND_PACKAGE(OpenSceneGraph COMPONENTS osgGA osgViewer)
+FIND_PACKAGE(OpenSceneGraph COMPONENTS osgGA osgUtil osgViewer)
 IF (OPENSCENEGRAPH_FOUND)
 	message(STATUS "SUCCESSFUL: OpenSceneGraph found")
 	ADD_DEFINITIONS(-DBRICS_OSG_ENABLE)	

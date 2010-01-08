@@ -67,6 +67,7 @@ IF (USE_OSG)
         brics_3dpm_util
     	${OSG_LIBRARY_DEBUG}
     	${OSGGA_LIBRARY_DEBUG}
+    	${OSGUTIL_LIBRARY_DEBUG}
     	${OSGVIEWER_LIBRARY_DEBUG}   	
     )
     
