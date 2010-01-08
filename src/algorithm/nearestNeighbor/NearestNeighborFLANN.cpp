@@ -79,7 +79,7 @@ int NearestNeighborFLANN::findNearestNeigbor(Point3D* query) {
 	int nn = 1; // we only want the first nearest neighbor
 	int tcount = 1;
 
-	float queryData[dimension];
+	float* queryData = new float[dimension];
 	queryData[0] = static_cast<float> (query->x);
 	queryData[1] = static_cast<float> (query->y);
 	queryData[2] = static_cast<float> (query->z);
@@ -89,6 +89,7 @@ int NearestNeighborFLANN::findNearestNeigbor(Point3D* query) {
 
 	flann_find_nearest_neighbors_index(index_id, queryData, tcount, result, dists, nn, parameters.checks, &parameters);
 
+	delete[] queryData;
 	if (dists[0] <= maxDistance) {
 		return result[0];
 	}
