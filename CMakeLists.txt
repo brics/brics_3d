@@ -48,6 +48,8 @@ ELSE (EIGEN2_FOUND)
   MESSAGE(STATUS "WARNING: Eigen2 not found")
 ENDIF (EIGEN2_FOUND)
 
+# set STANN path (as they only use <> in headers ...) 
+SET(STANN_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/external/stann/include)
 
 ## check optional prerequisites
 MESSAGE("Checking optional prerequisites: ")

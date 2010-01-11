@@ -5,6 +5,7 @@ INCLUDE_DIRECTORIES(
     ${EIGEN2_INCLUDE_DIR}
     ${CPPUNIT_INCLUDE_DIR}
     ${OPENCV_INCLUDE_DIR}
+    ${STANN_INCLUDE_DIRS}
 )
 
 # add library directories (-L)

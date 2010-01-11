@@ -7,6 +7,7 @@ SET(BRICS_3D_LIBRARIES_INCLUDE_DIRS
     ${OPENCV_INCLUDE_DIR}
     ${EIGEN2_INCLUDE_DIR}
     ${Boost_INCLUDE_DIR}
+    ${STANN_INCLUDE_DIRS}
 )
 
 SET(BRICS_3D_LIBRARIES_LIB_DIRS
@@ -57,6 +58,7 @@ SET (ALGORITHM_LIBRARY_SOURCES
 #	./algorithm/filter/IOctree
     ./algorithm/nearestNeighbor/INearestNeighbor
     ./algorithm/nearestNeighbor/NearestNeighborFLANN
+    ./algorithm/nearestNeighbor/NearestNeighborSTANN
 	./algorithm/registration/IPointCorrespondence
 	./algorithm/registration/PointCorrespondenceKDTree
 	./algorithm/registration/PointCorrespondenceGenericNN
