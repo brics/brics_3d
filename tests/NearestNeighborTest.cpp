@@ -112,6 +112,39 @@ void NearestNeighborTest::testSTANNSimple() {
 
 }
 
+void NearestNeighborTest::testANNConstructor() {
+	CPPUNIT_ASSERT(nearestNeigborANN == 0);
+	nearestNeigborANN = new NearestNeighborANN();
+	CPPUNIT_ASSERT(nearestNeigborANN != 0);
+
+	/* polymorph variant */
+	CPPUNIT_ASSERT(abstractNearestNeigbor == 0);
+	abstractNearestNeigbor = new NearestNeighborANN();
+	CPPUNIT_ASSERT(abstractNearestNeigbor != 0);
+}
+
+void NearestNeighborTest::testANNSimple() {
+	nearestNeigborANN = new NearestNeighborANN();
+	CPPUNIT_ASSERT_EQUAL(-1, nearestNeigborANN->getDimension());
+	nearestNeigborANN->setData(pointCloudCube);
+	CPPUNIT_ASSERT_EQUAL(3, nearestNeigborANN->getDimension());
+
+
+	int indexResult;
+
+	for (unsigned int i = 0;  i < pointCloudCube->getSize(); ++ i) {
+		indexResult = nearestNeigborANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[i]);
+		CPPUNIT_ASSERT_EQUAL(static_cast<int>(i), indexResult); // must find the same (index)
+	}
+
+	nearestNeigborANN->setMaxDistance(-1);
+	for (unsigned int i = 0;  i < pointCloudCube->getSize(); ++ i) {
+		indexResult = nearestNeigborANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[i]);
+		CPPUNIT_ASSERT_EQUAL(-1, indexResult); // can't find any thing
+	}
+
+}
+
 }
 
 /* EOF */

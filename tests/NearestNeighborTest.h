@@ -14,6 +14,7 @@
 
 #include "algorithm/nearestNeighbor/NearestNeighborFLANN.h"
 #include "algorithm/nearestNeighbor/NearestNeighborSTANN.h"
+#include "algorithm/nearestNeighbor/NearestNeighborANN.h"
 #include "core/HomogeneousMatrix44.h"
 #include <Eigen/Geometry>
 
@@ -30,6 +31,8 @@ class NearestNeighborTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testFLANNSimple );
 	CPPUNIT_TEST( testSTANNConstructor );
 	CPPUNIT_TEST( testSTANNSimple );
+	CPPUNIT_TEST( testANNConstructor );
+	CPPUNIT_TEST( testANNSimple );
 	CPPUNIT_TEST_SUITE_END();
 
 
@@ -41,12 +44,15 @@ public:
 	void testFLANNSimple();
 	void testSTANNConstructor();
 	void testSTANNSimple();
+	void testANNConstructor();
+	void testANNSimple();
 
 private:
 
 	INearestNeighbor* abstractNearestNeigbor;
 	NearestNeighborFLANN* nearestNeigbor; //TODO rename
 	NearestNeighborSTANN* nearestNeigborSTANN;
+	NearestNeighborANN* nearestNeigborANN;
 
 	PointCloud3D* pointCloudCube;
 	PointCloud3D* pointCloudCubeCopy;
