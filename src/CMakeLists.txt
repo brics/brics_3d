@@ -26,6 +26,7 @@ SET(ALGORITHM_LIBRARY_LIBS
     newmat_cmake    
     ${DL_LIB}
     flann_s
+    ANN
 )
 
 SET(UTIL_LIBRARY_LIBS
@@ -57,6 +58,7 @@ SET (ALGORITHM_LIBRARY_SOURCES
 	./algorithm/DepthImageToPointCloudTransformation
 #	./algorithm/filter/IOctree
     ./algorithm/nearestNeighbor/INearestNeighbor
+    ./algorithm/nearestNeighbor/NearestNeighborANN
     ./algorithm/nearestNeighbor/NearestNeighborFLANN
     ./algorithm/nearestNeighbor/NearestNeighborSTANN
 	./algorithm/registration/IPointCorrespondence
