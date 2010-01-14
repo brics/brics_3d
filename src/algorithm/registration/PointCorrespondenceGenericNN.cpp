@@ -35,6 +35,7 @@ void PointCorrespondenceGenericNN::createNearestNeighborCorrespondence(PointClou
 	assert(pointCloud2 != 0);
 	assert(resultPointPairs != 0);
 
+	resultPointPairs->clear();
 
 	/* prepare data */
 	nearestNeighborAlgorithm->setData(pointCloud1);
