@@ -99,7 +99,6 @@ void PointCloud3D::storeToTxtFile(std::string filename) {
 }
 
 void PointCloud3D::readFromTxtFile(std::string filename) {
-	Point3D *tmpPoint;
 	ifstream inputFile;
 	string line;
 
@@ -107,30 +106,29 @@ void PointCloud3D::readFromTxtFile(std::string filename) {
 	cout << "INFO: Reading point cloud from: " << filename << endl;
 
 	while(getline(inputFile, line)) {
-		tmpPoint = new Point3D;
+		Point3D tmpPoint;
 		stringstream lineStream(line);
 		if (!inputFile.good()) {
 			throw runtime_error("ERROR: cannot read point.");
 		}
-		lineStream >> *tmpPoint;
-		this->addPoint(tmpPoint);
+		lineStream >> tmpPoint;
+		this->addPoint(&tmpPoint);
 	}
 
 	inputFile.close();
 }
 
 istream& operator>>(istream &inStream, PointCloud3D &pointCloud) {
-	Point3D *tmpPoint;
 	string line;
 
 	while(getline(inStream, line)) {
-		tmpPoint = new Point3D;
+		Point3D tmpPoint;
 		stringstream lineStream(line);
 		if (!lineStream.good()) {
 			throw runtime_error("ERROR: cannot read point.");
 		}
-		lineStream >> *tmpPoint;
-		pointCloud.addPoint(tmpPoint);
+		lineStream >> tmpPoint;
+		pointCloud.addPoint(&tmpPoint);
 	}
 
 	return inStream;

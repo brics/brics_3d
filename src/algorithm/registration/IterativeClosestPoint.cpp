@@ -46,6 +46,7 @@ void IterativeClosestPoint::match(PointCloud3D* model, PointCloud3D* data, IHomo
 	double previousPreviousError = 0.0;
 
 	IHomogeneousMatrix44* tmpResultTransformation = new HomogeneousMatrix44();
+	std::vector<CorrespondencePoint3DPair>* pointPairs = new std::vector<CorrespondencePoint3DPair>();
 
 	/* perform generic ICP */
 	for (int i = 0; i < maxIterations; ++i) {
@@ -53,7 +54,6 @@ void IterativeClosestPoint::match(PointCloud3D* model, PointCloud3D* data, IHomo
 		previousError = error;
 
 		/* find closest points */
-		std::vector<CorrespondencePoint3DPair>* pointPairs = new std::vector<CorrespondencePoint3DPair>();
 		assigner->createNearestNeighborCorrespondence(model, data, pointPairs);
 
 		/* estimate transformation */
@@ -73,7 +73,9 @@ void IterativeClosestPoint::match(PointCloud3D* model, PointCloud3D* data, IHomo
 	}
 
 	cout << "INFO: RMS Error is: " << error << endl; //DBG output
+	delete pointPairs;
 	delete tmpResultTransformation;
+
 }
 
 void IterativeClosestPoint::match(PointCloud3D* model, PointCloud3D* data, IHomogeneousMatrix44* resultTransformation, IHomogeneousMatrix44* initalEstimate, int maxIterations) {
