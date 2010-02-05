@@ -81,6 +81,7 @@ SET (UTIL_LIBRARY_SOURCES
 	./util/DepthImageLoader
 	./util/ConfigurationFileHandler
 	./util/IpaDatasetLoader
+	./util/Timer
 )	
 
 #optional sources
