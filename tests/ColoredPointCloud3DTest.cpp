@@ -51,6 +51,7 @@ void ColoredPointCloud3DTest::tearDown() {
 	delete point110;
 
 	delete pointCloudCube;
+//	delete pointCloudCubeCopy;
 }
 
 void ColoredPointCloud3DTest::testConstructor() {
@@ -314,6 +315,8 @@ void ColoredPointCloud3DTest::testTransformation() {
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(point110->x, resultPoint.x, maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(point110->y, resultPoint.y, maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(point110->z, resultPoint.z, maxTolerance);
+
+	delete homogeneousTransformation;
 
 }
 

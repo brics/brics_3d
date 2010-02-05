@@ -46,6 +46,15 @@ void IterativeClosestPointTest::setUp() {
 }
 
 void IterativeClosestPointTest::tearDown() {
+	delete point000;
+	delete point001;
+	delete point011;
+	delete point010;
+	delete point100;
+	delete point101;
+	delete point111;
+	delete point110;
+
 	delete pointCloudCube;
 	delete pointCloudCubeCopy;
 
@@ -101,6 +110,9 @@ void IterativeClosestPointTest::testSimpleAlignmentSVD() {
 		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].z, (*pointCloudCubeCopy->getPointCloud())[i].z, maxTolerance);
 	}
 
+
+	delete homogeneousTrans;
+	delete resultTransformation;
 }
 
 void IterativeClosestPointTest::testSimpleAlignmentQUAT() {
@@ -135,6 +147,9 @@ void IterativeClosestPointTest::testSimpleAlignmentQUAT() {
 		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].y, (*pointCloudCubeCopy->getPointCloud())[i].y, maxTolerance);
 		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].z, (*pointCloudCubeCopy->getPointCloud())[i].z, maxTolerance);
 	}
+
+	delete homogeneousTrans;
+	delete resultTransformation;
 }
 
 void IterativeClosestPointTest::testSimpleAlignmentHELIX() {
@@ -169,6 +184,9 @@ void IterativeClosestPointTest::testSimpleAlignmentHELIX() {
 		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].y, (*pointCloudCubeCopy->getPointCloud())[i].y, maxTolerance);
 		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].z, (*pointCloudCubeCopy->getPointCloud())[i].z, maxTolerance);
 	}
+
+	delete homogeneousTrans;
+	delete resultTransformation;
 }
 
 void IterativeClosestPointTest::testSimpleAlignmentAPX() {
@@ -203,6 +221,9 @@ void IterativeClosestPointTest::testSimpleAlignmentAPX() {
 		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].y, (*pointCloudCubeCopy->getPointCloud())[i].y, maxTolerance);
 		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].z, (*pointCloudCubeCopy->getPointCloud())[i].z, maxTolerance);
 	}
+
+	delete homogeneousTrans;
+	delete resultTransformation;
 }
 
 }  // namespace unitTests

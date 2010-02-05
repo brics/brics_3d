@@ -21,7 +21,7 @@ void ConfigurationFileHandlerTest::setUp() {
 }
 
 void ConfigurationFileHandlerTest::tearDown() {
-
+	delete xmlHandler;
 }
 
 void ConfigurationFileHandlerTest::testConstructor() {

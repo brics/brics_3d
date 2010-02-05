@@ -110,6 +110,7 @@ void IpaDatasetLoaderTest::testLoadPointCloud() {
 	resultCloud = loader->getPointCloud();
 //	cout << resultCloud->getSize() << endl;
 	CPPUNIT_ASSERT_EQUAL(28611u, resultCloud->getSize());
+	delete resultCloud;
 }
 
 }

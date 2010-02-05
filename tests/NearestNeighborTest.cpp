@@ -44,6 +44,10 @@ void NearestNeighborTest::setUp() {
 void NearestNeighborTest::tearDown() {
 	delete pointCloudCube;
 	delete pointCloudCubeCopy;
+	delete nearestNeigbor;
+	delete nearestNeigborANN;
+	delete nearestNeigborSTANN;
+	delete abstractNearestNeigbor;
 }
 
 void NearestNeighborTest::testFLANNConstructor() {
