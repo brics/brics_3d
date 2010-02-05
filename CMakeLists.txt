@@ -111,6 +111,7 @@ SET(LIBRARY_OUTPUT_PATH ${CMAKE_HOME_DIRECTORY}/lib/ CACHE PATH "Configure the l
 
 ## do compilations
 ADD_SUBDIRECTORY(./external/flann)
+ADD_SUBDIRECTORY(./external/ann)
 ADD_SUBDIRECTORY(./src) #compile everything in src to create the libraries
 ADD_SUBDIRECTORY(./examples) #compile everything in examples to create the example binaries
 
