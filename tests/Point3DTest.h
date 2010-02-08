@@ -74,11 +74,13 @@ private:
 	/// Maximum deviation for equality check of double variables
 	static const double maxTolerance = 0.00001;
 
-	/// Absolute maximum value of "double"
-	double maxDouble;
+	/// Absolute maximum value of "Coordinate"
+	Coordinate maxCoordValue;
+//	double maxCoordValue;
 
-	/// Absolute minimum value of "double"
-	double minDouble;
+	/// Absolute minimum value of "Coordinate"
+	Coordinate minCoordValue;
+//	double minCoordValue;
 
 	/// Eigen2 vector
 	Vector3d referenceVector;

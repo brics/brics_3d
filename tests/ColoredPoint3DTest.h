@@ -32,41 +32,41 @@ class ColoredPoint3DTest : public CPPUNIT_NS::TestFixture {
 
 public:
 
-void setUp();
-void tearDown();
+	void setUp();
+	void tearDown();
 
-void testConstructor();
-void testStreaming();
-void testIdentity();
-void testTranslation();
+	void testConstructor();
+	void testStreaming();
+	void testIdentity();
+	void testTranslation();
 
-EIGEN_MAKE_ALIGNED_OPERATOR_NEW //Required by Eigen2
+	EIGEN_MAKE_ALIGNED_OPERATOR_NEW //Required by Eigen2
 
 
 private:
 
-/// Test points
+	/// Test points
 
-ColoredPoint3D *point000;
-ColoredPoint3D *point111;
-ColoredPoint3D *pointMinus123;
-ColoredPoint3D *pointMax;
-ColoredPoint3D *pointMin;
+	ColoredPoint3D *point000;
+	ColoredPoint3D *point111;
+	ColoredPoint3D *pointMinus123;
+	ColoredPoint3D *pointMax;
+	ColoredPoint3D *pointMin;
 
-/// Maximum deviation for equality check of double variables
-static const double maxTolerance = 0.00001;
+	/// Maximum deviation for equality check of double variables
+	static const double maxTolerance = 0.00001;
 
-/// Absolute maximum value of "double"
-double maxDouble;
+	/// Absolute maximum value of "Coordinate"
+	Coordinate maxCoordValue;
 
-/// Absolute minimum value of "double"
-double minDouble;
+	/// Absolute minimum value of "Coordinate"
+	Coordinate minCoordValue;
 
-/// Eigen2 vector
-Vector3d referenceVector;
+	/// Eigen2 vector
+	Vector3d referenceVector;
 
-/// Eigen2 container for homogeneous transformations
-Transform3d transformation;
+	/// Eigen2 container for homogeneous transformations
+	Transform3d transformation;
 };
 
 

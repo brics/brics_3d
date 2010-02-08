@@ -23,15 +23,16 @@ CPPUNIT_TEST_SUITE_REGISTRATION( Point3DTest );
 void Point3DTest::setUp() {
 
 	/* use absolute max/min of double value */
-	maxDouble = std::numeric_limits<double>::max();
-	//minDouble = std::numeric_limits<double>::min();
-	minDouble = -maxDouble;
+//	maxCoordValue = std::numeric_limits<double>::max();
+	maxCoordValue = std::numeric_limits<BRICS_3D::Coordinate>::max();
+	//minCoordValue = std::numeric_limits<double>::min();
+	minCoordValue = -maxCoordValue;
 
 	point000 = new Point3D;
 	point111 = new Point3D(1, 1, 1);
 	pointMinus123 = new Point3D(-1.0, -2.0, -3.0);
-	pointMax = new Point3D(maxDouble, maxDouble, maxDouble);
-	pointMin = new Point3D(minDouble, minDouble, minDouble);
+	pointMax = new Point3D(maxCoordValue, maxCoordValue, maxCoordValue);
+	pointMin = new Point3D(minCoordValue, minCoordValue, minCoordValue);
 
 	referenceVector << 1, 1, 1;
 }
@@ -65,13 +66,13 @@ void Point3DTest::testConstructor() {
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(-2.0, pointMinus123->y, maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(-3.0, pointMinus123->z, maxTolerance);
 
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxDouble, pointMax->x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxDouble, pointMax->y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxDouble, pointMax->z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxCoordValue, pointMax->x, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxCoordValue, pointMax->y, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxCoordValue, pointMax->z, maxTolerance);
 
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(minDouble, pointMin->x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(minDouble, pointMin->y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(minDouble, pointMin->z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(minCoordValue, pointMin->x, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(minCoordValue, pointMin->y, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(minCoordValue, pointMin->z, maxTolerance);
 
 	/* copy constructor */
 	Point3D *newPoint0;
@@ -121,9 +122,9 @@ void Point3DTest::testSimleAdditions() {
 void Point3DTest::testComplexAdditions() {
 	Point3D resultPoint;
 	resultPoint = *point000 + pointMax;
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxDouble, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxDouble, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxDouble, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxCoordValue, resultPoint.x, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxCoordValue, resultPoint.y, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxCoordValue, resultPoint.z, maxTolerance);
 
 	CPPUNIT_ASSERT_NO_THROW((resultPoint = *point000 + point000));
 
@@ -155,14 +156,14 @@ void Point3DTest::testSimleSubtractions() {
 void Point3DTest::testComplexSubtractions() {
 	Point3D resultPoint;
 	resultPoint = *point000 - pointMin;
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(((-1)*minDouble), resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(((-1)*minDouble), resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(((-1)*minDouble), resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(((-1)*minCoordValue), resultPoint.x, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(((-1)*minCoordValue), resultPoint.y, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(((-1)*minCoordValue), resultPoint.z, maxTolerance);
 
 	resultPoint = *point000 + pointMin;
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(minDouble, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(minDouble, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(minDouble, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(minCoordValue, resultPoint.x, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(minCoordValue, resultPoint.y, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(minCoordValue, resultPoint.z, maxTolerance);
 
 	CPPUNIT_ASSERT_NO_THROW((resultPoint = *point000 - point000));
 
@@ -193,15 +194,15 @@ void Point3DTest::testSimleMultiplications() {
 
 void Point3DTest::testComplexMultiplications() {
 	Point3D resultPoint;
-	resultPoint = (*point111) * (maxDouble);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxDouble, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxDouble, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxDouble, resultPoint.z, maxTolerance);
+	resultPoint = (*point111) * (maxCoordValue);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxCoordValue, resultPoint.x, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxCoordValue, resultPoint.y, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxCoordValue, resultPoint.z, maxTolerance);
 
-	resultPoint = (*point111) * (minDouble);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(minDouble, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(minDouble, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(minDouble, resultPoint.z, maxTolerance);
+	resultPoint = (*point111) * (minCoordValue);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(minCoordValue, resultPoint.x, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(minCoordValue, resultPoint.y, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(minCoordValue, resultPoint.z, maxTolerance);
 
 	/* check limits */
 	CPPUNIT_ASSERT_NO_THROW((resultPoint = (*pointMax) * (1.0) ));

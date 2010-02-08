@@ -21,6 +21,16 @@ using std::istream;
 namespace BRICS_3D {
 
 /**
+ * @brief Coordinate data type.
+ *
+ * This typedef represents the a Cartesian coordinate.
+ * Typically it is a set to a double, but it can be changed to float
+ * if needed. Use redefinition with care.
+ */
+typedef double	Coordinate;				// coordinate data type
+//typedef float	Coordinate;				// coordinate data type
+
+/**
  * @brief A class to represent a point in the Cartesian space
  *
  * This class is the basic representation of a three dimensional point in a Cartesian space.
@@ -31,13 +41,13 @@ class Point3D {
 public:
 
 	/// X coordinate in Cartesian system
-	double x;
+	Coordinate x;
 
 	/// Y coordinate in Cartesian system
-	double y;
+	Coordinate y;
 
-	/// Z coordinate in Cartesian system (heigth)
-	double z;
+	/// Z coordinate in Cartesian system (height)
+	Coordinate z;
 
 	/**
 	 * @brief Default constructor
@@ -50,7 +60,7 @@ public:
 	 * @param y Y coordinate in Cartesian system
 	 * @param z Z coordinate in Cartesian system (height)
 	 */
-	Point3D(double x, double y, double z);
+	Point3D(Coordinate x, Coordinate y, Coordinate z);
 
 	/**
 	 * @brief Copy constructor
@@ -67,7 +77,7 @@ public:
 	 * @brief Copy raw data to input buffer (array)
 	 * @param[out] pointBuffer Pointer to buffer, where to store the raw data
 	 */
-	void getRawData(double *pointBuffer);
+	void getRawData(Coordinate *pointBuffer);
 
 	/**
 	 * @brief Add a point to another point e.i each coordinate is added.
@@ -85,7 +95,7 @@ public:
 
 	/**
 	 * @brief Multiply a point by a scalar
-	 * @param scalar Scalar that will be mulitiplied to each coordinate
+	 * @param scalar Scalar that will be multiplied to each coordinate
 	 * @return Result of scalar multiplication
 	 */
 	Point3D operator*(double scalar);

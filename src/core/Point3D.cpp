@@ -34,7 +34,7 @@ Point3D::Point3D(Point3D *point) {
 	z = point->z;
 }
 
-Point3D::Point3D(double x, double y, double z) {
+Point3D::Point3D(Coordinate x, Coordinate y, Coordinate z) {
 	this->x = x;
 	this->y = y;
 	this->z = z;
@@ -44,7 +44,7 @@ Point3D::~Point3D() {
 
 }
 
-void Point3D::getRawData(double *pointBuffer) {
+void Point3D::getRawData(Coordinate *pointBuffer) {
 	pointBuffer[0] = x;
 	pointBuffer[1] = y;
 	pointBuffer[2] = z;
@@ -61,7 +61,7 @@ Point3D Point3D::operator +(const Point3D *point) {
 			&& (result.y != 0.0)) || (!(isfinite(result.z))
 			&& (result.z != 0.0))) {
 		throw runtime_error(
-				"Point3D operation exceeds the limit of datatype representation double.");
+				"Point3D operation exceeds the limit of Coordinate datatype representation.");
 	}
 
 	return result;
@@ -78,7 +78,7 @@ Point3D Point3D::operator -(const Point3D *point) {
 			&& (result.y != 0.0)) || (!(isfinite(result.z))
 			&& (result.z != 0.0))) {
 		throw runtime_error(
-				"Point3D operation exceeds the limit of datatype representation double.");
+				"Point3D operation exceeds the limit of Coordinate datatype representation.");
 	}
 
 	return result;
@@ -86,16 +86,16 @@ Point3D Point3D::operator -(const Point3D *point) {
 
 Point3D Point3D::operator *(double scalar) {
 	Point3D result;
-	result.x = (this->x) * scalar;
-	result.y = (this->y) * scalar;
-	result.z = (this->z) * scalar;
+	result.x = (this->x) * static_cast<Coordinate>(scalar);
+	result.y = (this->y) * static_cast<Coordinate>(scalar);
+	result.z = (this->z) * static_cast<Coordinate>(scalar);
 
 	/* check if any value of x,y,z is infinity or not a number */
 	if ((!(isfinite(result.x)) && (result.x != 0.0)) || (!(isfinite(result.y))
 			&& (result.y != 0.0)) || (!(isfinite(result.z))
 			&& (result.z != 0.0))) {
 		throw runtime_error(
-				"Point3D operation exceeds the limit of datatype representation double.");
+				"Point3D operation exceeds the limit of Coordinate datatype representation.");
 	}
 
 	return result;
@@ -122,6 +122,8 @@ ostream& operator<<(ostream &outStream, const Point3D &point) {
 }
 
 void Point3D::homogeneousTransformation(IHomogeneousMatrix44 *transformation) { //TODO throw exception if values exceed limits
+	// NOTE: currently everything is done in "double" and afterward transformed to "Coordinate"
+	// This might involve implicit conversions between types (float to double e.g.) for each transformation...
 	const double *homogenousMatrix;
 	double xTemp;
 	double yTemp;
@@ -143,9 +145,9 @@ void Point3D::homogeneousTransformation(IHomogeneousMatrix44 *transformation) { 
 	zTemp = x * homogenousMatrix[2] + y * homogenousMatrix[6] + z * homogenousMatrix[10];
 
 	/* translate */
-	x = xTemp + homogenousMatrix[12];
-	y = yTemp + homogenousMatrix[13];
-	z = zTemp + homogenousMatrix[14];
+	x = static_cast<Coordinate>(xTemp + homogenousMatrix[12]);
+	y = static_cast<Coordinate>(yTemp + homogenousMatrix[13]);
+	z = static_cast<Coordinate>(zTemp + homogenousMatrix[14]);
 }
 
 }

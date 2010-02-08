@@ -25,15 +25,15 @@ CPPUNIT_TEST_SUITE_REGISTRATION( ColoredPoint3DTest );
 void ColoredPoint3DTest::setUp() {
 
 	/* use absolute max/min of double value */
-	maxDouble = std::numeric_limits<double>::max();
-	//minDouble = std::numeric_limits<double>::min();
-	minDouble = -maxDouble;
+	maxCoordValue = std::numeric_limits<BRICS_3D::Coordinate>::max();
+	//minCoordValue = std::numeric_limits<double>::min();
+	minCoordValue = -maxCoordValue;
 
 	point000 = new ColoredPoint3D;
 	point111 = new ColoredPoint3D(1, 1, 1, 1, 1, 1);
 	pointMinus123 = new ColoredPoint3D(-1.0, -2.0, -3.00, 1, 1, 1);
-	pointMax = new ColoredPoint3D(maxDouble, maxDouble, maxDouble, 1, 1, 1);
-	pointMin = new ColoredPoint3D(minDouble, minDouble, minDouble, 1, 1, 1);
+	pointMax = new ColoredPoint3D(maxCoordValue, maxCoordValue, maxCoordValue, 1, 1, 1);
+	pointMin = new ColoredPoint3D(minCoordValue, minCoordValue, minCoordValue, 1, 1, 1);
 
 	referenceVector << 1, 1, 1;
 }
@@ -76,16 +76,16 @@ void ColoredPoint3DTest::testConstructor() {
 	CPPUNIT_ASSERT(pointMinus123->green == 1);
 	CPPUNIT_ASSERT(pointMinus123->blue == 1);
 
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxDouble, pointMax->x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxDouble, pointMax->y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxDouble, pointMax->z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxCoordValue, pointMax->x, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxCoordValue, pointMax->y, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxCoordValue, pointMax->z, maxTolerance);
 	CPPUNIT_ASSERT(pointMax->red == 1);
 	CPPUNIT_ASSERT(pointMax->green == 1);
 	CPPUNIT_ASSERT(pointMax->blue == 1);
 
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(minDouble, pointMin->x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(minDouble, pointMin->y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(minDouble, pointMin->z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(minCoordValue, pointMin->x, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(minCoordValue, pointMin->y, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(minCoordValue, pointMin->z, maxTolerance);
 	CPPUNIT_ASSERT(pointMin->red == 1);
 	CPPUNIT_ASSERT(pointMin->green == 1);
 	CPPUNIT_ASSERT(pointMin->blue == 1);
