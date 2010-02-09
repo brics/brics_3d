@@ -69,44 +69,44 @@ void PointCloud3DTest::testContent() {
 
 	/* check all points in cloud */
 	resultPoint = (*pointCloudCube->getPointCloud())[0];
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.getZ(), maxTolerance);
 
 	resultPoint = (*pointCloudCube->getPointCloud())[1];
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.getZ(), maxTolerance);
 
 	resultPoint = (*pointCloudCube->getPointCloud())[2];
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.getZ(), maxTolerance);
 
 	resultPoint = (*pointCloudCube->getPointCloud())[3];
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.getZ(), maxTolerance);
 
 	resultPoint = (*pointCloudCube->getPointCloud())[4];
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.getZ(), maxTolerance);
 
 	resultPoint = (*pointCloudCube->getPointCloud())[5];
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.getZ(), maxTolerance);
 
 	resultPoint = (*pointCloudCube->getPointCloud())[6];
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.getZ(), maxTolerance);
 
 	resultPoint = (*pointCloudCube->getPointCloud())[7];
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.getZ(), maxTolerance);
 
 	pointCloudCube->getPointCloud()->clear();
 	CPPUNIT_ASSERT_EQUAL(0u, pointCloudCube->getSize());
@@ -130,44 +130,44 @@ void PointCloud3DTest::testStreaming() {
 
 	/* check all points in cloud */
 	resultPoint = (*pointCloudCube->getPointCloud())[0];
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.getZ(), maxTolerance);
 
 	resultPoint = (*pointCloudCube->getPointCloud())[1];
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.getZ(), maxTolerance);
 
 	resultPoint = (*pointCloudCube->getPointCloud())[2];
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.getZ(), maxTolerance);
 
 	resultPoint = (*pointCloudCube->getPointCloud())[3];
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.getZ(), maxTolerance);
 
 	resultPoint = (*pointCloudCube->getPointCloud())[4];
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.getZ(), maxTolerance);
 
 	resultPoint = (*pointCloudCube->getPointCloud())[5];
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.getZ(), maxTolerance);
 
 	resultPoint = (*pointCloudCube->getPointCloud())[6];
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.getZ(), maxTolerance);
 
 	resultPoint = (*pointCloudCube->getPointCloud())[7];
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.getZ(), maxTolerance);
 	stringstream testStringStream1;
 	stringstream testStringStream2;
 
@@ -221,51 +221,51 @@ void PointCloud3DTest::testTransformation() {
 
 	resultPoint = (*pointCloudCube->getPointCloud())[0];
 	point000->homogeneousTransformation(homogeneousTransformation);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(point000->x, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(point000->y, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(point000->z, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(point000->getX(), resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(point000->getY(), resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(point000->getZ(), resultPoint.getZ(), maxTolerance);
 
 	resultPoint = (*pointCloudCube->getPointCloud())[1];
 	point001->homogeneousTransformation(homogeneousTransformation);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(point001->x, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(point001->y, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(point001->z, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(point001->getX(), resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(point001->getY(), resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(point001->getZ(), resultPoint.getZ(), maxTolerance);
 
 	resultPoint = (*pointCloudCube->getPointCloud())[2];
 	point011->homogeneousTransformation(homogeneousTransformation);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(point011->x, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(point011->y, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(point011->z, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(point011->getX(), resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(point011->getY(), resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(point011->getZ(), resultPoint.getZ(), maxTolerance);
 
 	resultPoint = (*pointCloudCube->getPointCloud())[3];
 	point010->homogeneousTransformation(homogeneousTransformation);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(point010->x, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(point010->y, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(point010->z, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(point010->getX(), resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(point010->getY(), resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(point010->getZ(), resultPoint.getZ(), maxTolerance);
 
 	resultPoint = (*pointCloudCube->getPointCloud())[4];
 	point100->homogeneousTransformation(homogeneousTransformation);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(point100->x, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(point100->y, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(point100->z, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(point100->getX(), resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(point100->getY(), resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(point100->getZ(), resultPoint.getZ(), maxTolerance);
 
 	resultPoint = (*pointCloudCube->getPointCloud())[5];
 	point101->homogeneousTransformation(homogeneousTransformation);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(point101->x, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(point101->y, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(point101->z, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(point101->getX(), resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(point101->getY(), resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(point101->getZ(), resultPoint.getZ(), maxTolerance);
 
 	resultPoint = (*pointCloudCube->getPointCloud())[6];
 	point111->homogeneousTransformation(homogeneousTransformation);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(point111->x, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(point111->y, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(point111->z, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(point111->getX(), resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(point111->getY(), resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(point111->getZ(), resultPoint.getZ(), maxTolerance);
 
 	resultPoint = (*pointCloudCube->getPointCloud())[7];
 	point110->homogeneousTransformation(homogeneousTransformation);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(point110->x, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(point110->y, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(point110->z, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(point110->getX(), resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(point110->getY(), resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(point110->getZ(), resultPoint.getZ(), maxTolerance);
 
 }
 

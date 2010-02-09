@@ -58,9 +58,9 @@ void NearestNeighborANN::setData(PointCloud3D* data) {
 
 	/* fill in the data int the ANN specific representation */
 	for (int i = 0; i < static_cast<int>(data->getSize()); ++i) {
-		dataPoints[i][0] = static_cast<ANNcoord>( (*data->getPointCloud())[i].x );
-		dataPoints[i][1] = static_cast<ANNcoord>( (*data->getPointCloud())[i].y );
-		dataPoints[i][2] = static_cast<ANNcoord>( (*data->getPointCloud())[i].z );
+		dataPoints[i][0] = static_cast<ANNcoord>( (*data->getPointCloud())[i].getX() );
+		dataPoints[i][1] = static_cast<ANNcoord>( (*data->getPointCloud())[i].getY() );
+		dataPoints[i][2] = static_cast<ANNcoord>( (*data->getPointCloud())[i].getZ() );
 	}
 
 	kdTree = new ANNkd_tree(					// build search structure
@@ -87,9 +87,9 @@ int NearestNeighborANN::findNearestNeigbor(Point3D* query) {
 	distances = new ANNdist[k];						// allocate near neighbor distances
 	queryPoint = annAllocPt(dimension);			// allocate query point
 
-	queryPoint[0] = static_cast<ANNcoord>( query->x );
-	queryPoint[1] = static_cast<ANNcoord>( query->y );
-	queryPoint[2] = static_cast<ANNcoord>( query->z );
+	queryPoint[0] = static_cast<ANNcoord>( query->getX() );
+	queryPoint[1] = static_cast<ANNcoord>( query->getY() );
+	queryPoint[2] = static_cast<ANNcoord>( query->getZ() );
 
 	kdTree->annkSearch(						// search
 			queryPoint,						// query point

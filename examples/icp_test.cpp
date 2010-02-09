@@ -94,11 +94,14 @@ int main(int argc, char **argv) {
 	/*
 	 * set up icp
 	 */
-	int algorithm = 0; //TODO switch
+	int algorithm = 0; //TODO icp switch e.g. input parameter,...
+	int pointCorrespondence = 1; //TODO pointCorrespondence switch e.g. input parameter,...
+
 	IIterativeClosestPoint* icp; //abstract interface to ICP
+	IPointCorrespondence* assigner; //only needed for generic icp
+
 
 	/* set up assigner */
-	IPointCorrespondence* assigner; //only needed for generic icp
 	INearestNeighbor* nearestNeigbourFinder = new NearestNeighborFLANN();
 //	nearestNeigbourFinder->setMaxDistance(1);
 	NearestNeighborFLANN* nearestNeigbourFinderFLANN = dynamic_cast<NearestNeighborFLANN*>(nearestNeigbourFinder); //polymorph down cast
@@ -106,15 +109,27 @@ int main(int argc, char **argv) {
 	parameters = nearestNeigbourFinderFLANN->getParameters();
 //	parameters.algorithm = KMEANS;
 	parameters.target_precision = -1;
+	parameters.trees = 16;
 	nearestNeigbourFinderFLANN->setParameters(parameters);
 
-	assigner = new PointCorrespondenceGenericNN(nearestNeigbourFinder);
-//	assigner = new PointCorrespondenceKDTree(); //only needed for generic icp
+	switch (pointCorrespondence) {
+		case 0:
+			assigner = new PointCorrespondenceGenericNN(nearestNeigbourFinder);
+			cout << "INFO: Using PointCorrespondenceGenericNN icp." << endl;
+			break;
+		case 1:
+			assigner = new PointCorrespondenceKDTree(); //only needed for generic icp
+			cout << "INFO: Using PointCorrespondenceKDTree icp." << endl;
+			break;
+		default:
+			cout << "ERROR: No pointCorrespondence algorithm given." << endl;
+			return -1;
+			break;
+	}
+
 
 	/* setup estimator */
 	IRigidTransformationEstimation* estimator = new RigidTransformationEstimationAPX(); //only needed for generic icp
-
-
 
 	switch (algorithm) {
 		case 0:
@@ -143,8 +158,8 @@ int main(int argc, char **argv) {
 
 	/* clean up */
 	delete icp;
-	delete estimator; //TODO: crashes (+following lines)
-	delete assigner;
+//	delete estimator; //TODO: crashes (+following lines)
+//	delete assigner;
 	delete viewer;
 	delete pointCloud2;
 	delete pointCloud1;

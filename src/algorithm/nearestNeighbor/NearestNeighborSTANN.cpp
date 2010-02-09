@@ -77,9 +77,9 @@ void NearestNeighborSTANN::setData(PointCloud3D* data) {
 	double tmpZ = 0.0;
 
 	for (int i = 0; i < static_cast<int>(data->getSize()); ++i) {
-		tmpX = (*data->getPointCloud())[i].x;
-		tmpY = (*data->getPointCloud())[i].y;
-		tmpZ = (*data->getPointCloud())[i].z;
+		tmpX = (*data->getPointCloud())[i].getX();
+		tmpY = (*data->getPointCloud())[i].getY();
+		tmpZ = (*data->getPointCloud())[i].getZ();
 		STANNPoint tmpPoint(tmpX, tmpY, tmpZ);
 		points.push_back(tmpPoint);
 //		cout << tmpPoint;
@@ -123,9 +123,9 @@ int NearestNeighborSTANN::findNearestNeigbor(Point3D* query) {
 	assert (query!=0);
 	assert (STANNDimension == 3);
 
-	double tmpX = (*query).x;
-	double tmpY = (*query).y;
-	double tmpZ = (*query).z;
+	double tmpX = (*query).getX();
+	double tmpY = (*query).getY();
+	double tmpZ = (*query).getZ();
 
 
 	STANNPoint queryPoint(tmpX, tmpY, tmpZ);

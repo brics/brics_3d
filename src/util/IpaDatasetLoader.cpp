@@ -154,7 +154,7 @@ ColoredPointCloud3D* IpaDatasetLoader::getColoredPointCloud() {
 			this->getData(row, col, x, y, z, red, green, blue);
 
 			if (!((red == 0) && (green == 0) && (blue == 0))) { //discard "black" points as they don't belong to the object itself
-				pointCloud->addPoint(ColoredPoint3D(x, y, z, red, green, blue));
+				pointCloud->addPoint(ColoredPoint3D(new Point3D(x, y, z), red, green, blue));
 				std::cout << ".";
 			}
 		}

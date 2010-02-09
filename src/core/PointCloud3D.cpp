@@ -76,9 +76,9 @@ void PointCloud3D::storeToPlyFile(std::string filename) {
 
 	/* add data to file */
 	for (unsigned int i = 0; i < pointCloud->size(); ++i) {
-		outputFile << (*pointCloud)[i].x << " ";
-		outputFile << (*pointCloud)[i].y << " ";
-		outputFile << (*pointCloud)[i].z << endl;
+		outputFile << (*pointCloud)[i].getX() << " ";
+		outputFile << (*pointCloud)[i].getY() << " ";
+		outputFile << (*pointCloud)[i].getZ() << endl;
 	}
 
 	outputFile.close();
@@ -90,9 +90,9 @@ void PointCloud3D::storeToTxtFile(std::string filename) {
 	cout << "INFO: Saving point cloud to: " << filename << endl;
 
 	for (unsigned int i = 0; i < pointCloud->size(); ++i) {
-		outputFile << (*pointCloud)[i].x << " ";
-		outputFile << (*pointCloud)[i].y << " ";
-		outputFile << (*pointCloud)[i].z << endl;
+		outputFile << (*pointCloud)[i].getX() << " ";
+		outputFile << (*pointCloud)[i].getY() << " ";
+		outputFile << (*pointCloud)[i].getZ() << endl;
 	}
 
 	outputFile.close();

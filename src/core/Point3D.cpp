@@ -23,15 +23,15 @@ using std::isfinite;
 namespace BRICS_3D {
 
 Point3D::Point3D() {
-	x = 0.0;
-	y = 0.0;
-	z = 0.0;
+	this->x = 0.0;
+	this->y = 0.0;
+	this->z = 0.0;
 }
 
 Point3D::Point3D(Point3D *point) {
-	x = point->x;
-	y = point->y;
-	z = point->z;
+	this->x = point->getX();
+	this->y = point->getY();
+	this->z = point->getZ();
 }
 
 Point3D::Point3D(Coordinate x, Coordinate y, Coordinate z) {
@@ -42,6 +42,28 @@ Point3D::Point3D(Coordinate x, Coordinate y, Coordinate z) {
 
 Point3D::~Point3D() {
 
+}
+
+Coordinate Point3D::getX() const {
+	return this->x;
+}
+
+Coordinate Point3D::getY() const {
+	return this->y;
+}
+
+Coordinate Point3D::getZ() const {
+	return this->z;
+}
+
+void Point3D::setX(Coordinate x) {
+	this->x = x;
+}
+void Point3D::setY(Coordinate y) {
+	this->y = y;
+}
+void Point3D::setZ(Coordinate z) {
+	this->z = z;
 }
 
 void Point3D::getRawData(Coordinate *pointBuffer) {
@@ -69,7 +91,7 @@ Point3D Point3D::operator +(const Point3D *point) {
 
 Point3D Point3D::operator -(const Point3D *point) {
 	Point3D result;
-	result.x = this->x - point->x;
+	result.x = this->x - point->x; //TODO: !!! change to get and set ?!?!
 	result.y = this->y - point->y;
 	result.z = this->z - point->z;
 
@@ -101,26 +123,6 @@ Point3D Point3D::operator *(double scalar) {
 	return result;
 }
 
-istream& operator>>(istream &inStream, Point3D &point) {
-	if (!inStream.good())
-		throw runtime_error("ERROR: cannot read x coordinate of point.");
-	inStream >> point.x;
-	if (!inStream.good())
-		throw runtime_error("ERROR: cannot read y coordinate of point.");
-	inStream >> point.y;
-	if (!inStream.good())
-		throw runtime_error("ERROR: cannot read z coordinate of point.");
-	inStream >> point.z;
-
-	return inStream;
-}
-
-ostream& operator<<(ostream &outStream, const Point3D &point) {
-	outStream << point.x << " " << point.y << " " << point.z;
-
-	return outStream;
-}
-
 void Point3D::homogeneousTransformation(IHomogeneousMatrix44 *transformation) { //TODO throw exception if values exceed limits
 	// NOTE: currently everything is done in "double" and afterward transformed to "Coordinate"
 	// This might involve implicit conversions between types (float to double e.g.) for each transformation...
@@ -149,6 +151,27 @@ void Point3D::homogeneousTransformation(IHomogeneousMatrix44 *transformation) { 
 	y = static_cast<Coordinate>(yTemp + homogenousMatrix[13]);
 	z = static_cast<Coordinate>(zTemp + homogenousMatrix[14]);
 }
+
+istream& operator>>(istream &inStream, Point3D &point) {
+	if (!inStream.good())
+		throw runtime_error("ERROR: cannot read x coordinate of point.");
+	inStream >> point.x;
+	if (!inStream.good())
+		throw runtime_error("ERROR: cannot read y coordinate of point.");
+	inStream >> point.y;
+	if (!inStream.good())
+		throw runtime_error("ERROR: cannot read z coordinate of point.");
+	inStream >> point.z;
+
+	return inStream;
+}
+
+ostream& operator<<(ostream &outStream, const Point3D &point) {
+	outStream << point.x << " " << point.y << " " << point.z;
+
+	return outStream;
+}
+
 
 }
 

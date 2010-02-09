@@ -49,6 +49,7 @@ SET (CORE_LIBRARY_SOURCES
 	./core/PointCloud3D
 	./core/ColoredPointCloud3D
 	./core/Point3D
+	./core/Point3DDecorator
 	./core/ColoredPoint3D
 	./core/CorrespondenceIndexPair
 	./core/CorrespondencePoint3DPair

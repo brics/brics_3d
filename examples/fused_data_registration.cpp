@@ -54,7 +54,7 @@ int main(int argc, char **argv) {
 	ColoredPointCloud3D* rgbPointCloud;
 	rgbPointCloud = loader->getColoredPointCloud();
 	cout << "Size of cloud: " << rgbPointCloud->getSize() << endl;
-	cout << *rgbPointCloud;
+//	cout << *rgbPointCloud;
 
 	PointCloud3D* pointCloud;
 	pointCloud = loader->getPointCloud();
@@ -63,6 +63,12 @@ int main(int argc, char **argv) {
 
 	OSGPointCloudVisualizer* visualizer = new OSGPointCloudVisualizer();
 	visualizer->addPointCloud(pointCloud);
+
+//	for (int i = 0; i < 1000; ++i) { //evil test
+//		visualizer->addPointCloud(pointCloud);
+//	}
+
+
 	visualizer->visualizeColoredPointCloud(rgbPointCloud);
 
 	delete rgbPointCloud;

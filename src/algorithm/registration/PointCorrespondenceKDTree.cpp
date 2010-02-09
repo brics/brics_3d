@@ -43,9 +43,9 @@ void PointCorrespondenceKDTree::createNearestNeighborCorrespondence(PointCloud3D
 	double** pointCloud1Points = new double*[pointCloud1->getSize()];
 	for (unsigned int i = 0; i < pointCloud1->getSize(); i++) {
 		pointCloud1Points[i] = new double[3];
-		pointCloud1Points[i][0] = (*pointCloud1->getPointCloud())[i].x;
-		pointCloud1Points[i][1] = (*pointCloud1->getPointCloud())[i].y;
-		pointCloud1Points[i][2] = (*pointCloud1->getPointCloud())[i].z;
+		pointCloud1Points[i][0] = (*pointCloud1->getPointCloud())[i].getX();
+		pointCloud1Points[i][1] = (*pointCloud1->getPointCloud())[i].getY();
+		pointCloud1Points[i][2] = (*pointCloud1->getPointCloud())[i].getZ();
 	}
 
 	KDtree* kDTree = new KDtree(pointCloud1Points, pointCloud1->getSize());
@@ -60,9 +60,9 @@ void PointCorrespondenceKDTree::createNearestNeighborCorrespondence(PointCloud3D
 		//if (rnd > 1 && rand(rnd) != 0) continue;  // take about 1/rnd-th of the numbers only
 
 		double queryPoint[3];
-		queryPoint[0] = (*pointCloud2->getPointCloud())[i].x;
-		queryPoint[1] = (*pointCloud2->getPointCloud())[i].y;
-		queryPoint[2] = (*pointCloud2->getPointCloud())[i].z;
+		queryPoint[0] = (*pointCloud2->getPointCloud())[i].getX();
+		queryPoint[1] = (*pointCloud2->getPointCloud())[i].getY();
+		queryPoint[2] = (*pointCloud2->getPointCloud())[i].getZ();
 
 		double *closest = kDTree->FindClosest(queryPoint, maxMatchingDistance, 0);
 		if (closest) {

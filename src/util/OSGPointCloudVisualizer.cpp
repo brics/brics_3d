@@ -118,8 +118,8 @@ osg::Node* OSGPointCloudVisualizer::createPointCloudNode(PointCloud3D* pointClou
 //	for (i = 0; i < 60032; ++i, j += 2) { //TODO: strange limit on a windows machine; higher results in crash
 
 		osg::Vec3 tmpPoint;
-		tmpPoint.set((float) ((*pointCloud->getPointCloud())[i].x), (float) ((*pointCloud->getPointCloud())[i].y),
-				(float) ((*pointCloud->getPointCloud())[i].z));
+		tmpPoint.set((float) ((*pointCloud->getPointCloud())[i].getX()), (float) ((*pointCloud->getPointCloud())[i].getY()),
+				(float) ((*pointCloud->getPointCloud())[i].getZ()));
 		vertices->push_back(tmpPoint);
 
 		/*
@@ -198,8 +198,8 @@ osg::Node* OSGPointCloudVisualizer::createColoredPointCloudNode(ColoredPointClou
 	for (i = 0; i < pointCloud->getSize(); ++i, j += 2) {
 
 		osg::Vec3 tmpPoint;
-		tmpPoint.set((float) ((*pointCloud->getPointCloud())[i].x), (float) ((*pointCloud->getPointCloud())[i].y),
-				(float) ((*pointCloud->getPointCloud())[i].z));
+		tmpPoint.set((float) ((*pointCloud->getPointCloud())[i].getX()), (float) ((*pointCloud->getPointCloud())[i].getY()),
+				(float) ((*pointCloud->getPointCloud())[i].getZ()));
 		vertices->push_back(tmpPoint);
 
 		osg::Vec4ub tmpColor;

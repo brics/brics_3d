@@ -29,11 +29,11 @@ void ColoredPoint3DTest::setUp() {
 	//minCoordValue = std::numeric_limits<double>::min();
 	minCoordValue = -maxCoordValue;
 
-	point000 = new ColoredPoint3D;
-	point111 = new ColoredPoint3D(1, 1, 1, 1, 1, 1);
-	pointMinus123 = new ColoredPoint3D(-1.0, -2.0, -3.00, 1, 1, 1);
-	pointMax = new ColoredPoint3D(maxCoordValue, maxCoordValue, maxCoordValue, 1, 1, 1);
-	pointMin = new ColoredPoint3D(minCoordValue, minCoordValue, minCoordValue, 1, 1, 1);
+	point000 = new ColoredPoint3D(new Point3D());
+	point111 = new ColoredPoint3D(new Point3D(1, 1, 1), 1, 1, 1);
+	pointMinus123 = new ColoredPoint3D(new Point3D(-1.0, -2.0, -3.00), 1, 1, 1);
+	pointMax = new ColoredPoint3D(new Point3D(maxCoordValue, maxCoordValue, maxCoordValue), 1, 1, 1);
+	pointMin = new ColoredPoint3D(new Point3D(minCoordValue, minCoordValue, minCoordValue), 1, 1, 1);
 
 	referenceVector << 1, 1, 1;
 }
@@ -51,41 +51,41 @@ void ColoredPoint3DTest::testConstructor() {
 	/*
 	 * Test if all instances are created correctly.
 	 */
-	CPPUNIT_ASSERT((point000->x - 0) < maxTolerance);
-	CPPUNIT_ASSERT((point000->x - 0) < maxTolerance);
-	CPPUNIT_ASSERT((point000->x - 0) < maxTolerance);
+	CPPUNIT_ASSERT((point000->getX() - 0) < maxTolerance);
+	CPPUNIT_ASSERT((point000->getY() - 0) < maxTolerance); //NOTE: BUG fixed?
+	CPPUNIT_ASSERT((point000->getZ() - 0) < maxTolerance);
 
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, point000->x, maxTolerance); //same as before but with CppUnit macro
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, point000->y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, point000->z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, point000->getX(), maxTolerance); //same as before but with CppUnit macro
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, point000->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, point000->getZ(), maxTolerance);
 	CPPUNIT_ASSERT(point000->red == 0);
 	CPPUNIT_ASSERT(point000->green == 0);
 	CPPUNIT_ASSERT(point000->blue == 0);
 
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->getZ(), maxTolerance);
 	CPPUNIT_ASSERT(point111->red == 1);
 	CPPUNIT_ASSERT(point111->green == 1);
 	CPPUNIT_ASSERT(point111->blue == 1);
 
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, pointMinus123->x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(-2.0, pointMinus123->y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(-3.0, pointMinus123->z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, pointMinus123->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-2.0, pointMinus123->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-3.0, pointMinus123->getZ(), maxTolerance);
 	CPPUNIT_ASSERT(pointMinus123->red == 1);
 	CPPUNIT_ASSERT(pointMinus123->green == 1);
 	CPPUNIT_ASSERT(pointMinus123->blue == 1);
 
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxCoordValue, pointMax->x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxCoordValue, pointMax->y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxCoordValue, pointMax->z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxCoordValue, pointMax->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxCoordValue, pointMax->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxCoordValue, pointMax->getZ(), maxTolerance);
 	CPPUNIT_ASSERT(pointMax->red == 1);
 	CPPUNIT_ASSERT(pointMax->green == 1);
 	CPPUNIT_ASSERT(pointMax->blue == 1);
 
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(minCoordValue, pointMin->x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(minCoordValue, pointMin->y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(minCoordValue, pointMin->z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(minCoordValue, pointMin->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(minCoordValue, pointMin->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(minCoordValue, pointMin->getZ(), maxTolerance);
 	CPPUNIT_ASSERT(pointMin->red == 1);
 	CPPUNIT_ASSERT(pointMin->green == 1);
 	CPPUNIT_ASSERT(pointMin->blue == 1);
@@ -94,24 +94,24 @@ void ColoredPoint3DTest::testConstructor() {
 	Point3D *newPoint0;
 	newPoint0 = new Point3D(point111);
 
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint0->x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint0->y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint0->z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint0->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint0->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint0->getZ(), maxTolerance);
 	delete newPoint0;
 
 	Point3D newPoint1(point111);
 
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint1.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint1.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint1.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint1.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint1.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint1.getZ(), maxTolerance);
 
 
 	ColoredPoint3D *newPoint2;
 	newPoint2 = new ColoredPoint3D(point111);
 
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint2->x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint2->y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint2->z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint2->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint2->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint2->getZ(), maxTolerance);
 	CPPUNIT_ASSERT(newPoint2->red == 1);
 	CPPUNIT_ASSERT(newPoint2->green == 1);
 	CPPUNIT_ASSERT(newPoint2->blue == 1);
@@ -119,9 +119,9 @@ void ColoredPoint3DTest::testConstructor() {
 
 	ColoredPoint3D newPoint3(point111);
 
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint3.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint3.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint3.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint3.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint3.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint3.getZ(), maxTolerance);
 	CPPUNIT_ASSERT(newPoint3.red == 1);
 	CPPUNIT_ASSERT(newPoint3.green == 1);
 	CPPUNIT_ASSERT(newPoint3.blue == 1);
@@ -133,8 +133,8 @@ void ColoredPoint3DTest::testStreaming() {
 	string comparatorString;
 	stringstream testStringStream0;
 	stringstream testStringStream1;
-	ColoredPoint3D streamedPoint111;
-	ColoredPoint3D streamedPointMinus123;
+	ColoredPoint3D streamedPoint111(new Point3D());
+	ColoredPoint3D streamedPointMinus123(new Point3D());
 
 	/* test output */
 //	cout << "RGB point = " << *point111 << endl;
@@ -150,17 +150,17 @@ void ColoredPoint3DTest::testStreaming() {
 	/* test input */
 	testStringStream0 >> streamedPoint111;
 //	cout << "RGB point 2 = " << streamedPoint111 << endl;
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, streamedPoint111.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, streamedPoint111.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, streamedPoint111.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, streamedPoint111.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, streamedPoint111.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, streamedPoint111.getZ(), maxTolerance);
 	CPPUNIT_ASSERT(streamedPoint111.red == 1);
 	CPPUNIT_ASSERT(streamedPoint111.green == 1);
 	CPPUNIT_ASSERT(streamedPoint111.blue == 1);
 
 	testStringStream1 >> streamedPointMinus123;
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, streamedPointMinus123.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(-2.0, streamedPointMinus123.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(-3.0, streamedPointMinus123.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, streamedPointMinus123.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-2.0, streamedPointMinus123.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-3.0, streamedPointMinus123.getZ(), maxTolerance);
 	CPPUNIT_ASSERT(streamedPointMinus123.red == 1);
 	CPPUNIT_ASSERT(streamedPointMinus123.green == 1);
 	CPPUNIT_ASSERT(streamedPointMinus123.blue == 1);
@@ -178,9 +178,9 @@ void ColoredPoint3DTest::testIdentity() {
 	point111->homogeneousTransformation(homogeneousTransformation);
 //	cout << *point111 << endl; // actual
 
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->getZ(), maxTolerance);
 
 	/* check HomogeneousMatrix44 default constructor  */
 	HomogeneousMatrix44 *homogeneousTransformation2 = new HomogeneousMatrix44();
@@ -189,9 +189,9 @@ void ColoredPoint3DTest::testIdentity() {
 	point111->homogeneousTransformation(homogeneousTransformation2);
 //	cout << *point111 << endl; // actual
 
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->getZ(), maxTolerance);
 
 	CPPUNIT_ASSERT(point111->red == 1);
 	CPPUNIT_ASSERT(point111->green == 1);
@@ -209,9 +209,9 @@ void ColoredPoint3DTest::testTranslation() {
 //	cout << *point111 << endl; // actual
 
 	/* check translation by (1,1,1)*/
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, point111->x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, point111->y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, point111->z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, point111->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, point111->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, point111->getZ(), maxTolerance);
 
 	CPPUNIT_ASSERT(point111->red == 1);
 	CPPUNIT_ASSERT(point111->green == 1);

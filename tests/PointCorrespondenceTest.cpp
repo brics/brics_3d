@@ -102,14 +102,14 @@ void PointCorrespondenceTest::testSimpleCorrespondence() {
 		 * direct correspondence from one cloud the other
 		 */
 		//CPPUNIT_ASSERT_EQUAL(0, (int)(*pointPairs)[i].firstIndex);
-		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].x, (int)(*pointPairs)[i].firstPoint.x, maxTolerance);
-		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCubeCopy->getPointCloud())[i].x, (int)(*pointPairs)[i].secondPoint.x, maxTolerance);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].getX(), (int)(*pointPairs)[i].firstPoint.getX(), maxTolerance);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCubeCopy->getPointCloud())[i].getX(), (int)(*pointPairs)[i].secondPoint.getX(), maxTolerance);
 
-		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].y, (int)(*pointPairs)[i].firstPoint.y, maxTolerance);
-		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCubeCopy->getPointCloud())[i].y, (int)(*pointPairs)[i].secondPoint.y, maxTolerance);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].getY(), (int)(*pointPairs)[i].firstPoint.getY(), maxTolerance);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCubeCopy->getPointCloud())[i].getY(), (int)(*pointPairs)[i].secondPoint.getY(), maxTolerance);
 
-		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].z, (int)(*pointPairs)[i].firstPoint.z, maxTolerance);
-		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCubeCopy->getPointCloud())[i].z, (int)(*pointPairs)[i].secondPoint.z, maxTolerance);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].getZ(), (int)(*pointPairs)[i].firstPoint.getZ(), maxTolerance);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCubeCopy->getPointCloud())[i].getZ(), (int)(*pointPairs)[i].secondPoint.getZ(), maxTolerance);
 
 	}
 

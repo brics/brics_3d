@@ -50,81 +50,81 @@ void Point3DTest::testConstructor() {
 	/*
 	 * Test if all instances are created correctly.
 	 */
-	CPPUNIT_ASSERT((point000->x - 0) < maxTolerance);
-	CPPUNIT_ASSERT((point000->x - 0) < maxTolerance);
-	CPPUNIT_ASSERT((point000->x - 0) < maxTolerance);
+	CPPUNIT_ASSERT((point000->getX() - 0) < maxTolerance);
+	CPPUNIT_ASSERT((point000->getY() - 0) < maxTolerance);
+	CPPUNIT_ASSERT((point000->getZ() - 0) < maxTolerance);
 
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, point000->x, maxTolerance); //same as before but with CppUnit macro
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, point000->y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, point000->z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, point000->getX(), maxTolerance); //same as before but with CppUnit macro
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, point000->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, point000->getZ(), maxTolerance);
 
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->getZ(), maxTolerance);
 
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, pointMinus123->x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(-2.0, pointMinus123->y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(-3.0, pointMinus123->z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, pointMinus123->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-2.0, pointMinus123->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-3.0, pointMinus123->getZ(), maxTolerance);
 
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxCoordValue, pointMax->x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxCoordValue, pointMax->y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxCoordValue, pointMax->z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxCoordValue, pointMax->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxCoordValue, pointMax->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxCoordValue, pointMax->getZ(), maxTolerance);
 
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(minCoordValue, pointMin->x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(minCoordValue, pointMin->y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(minCoordValue, pointMin->z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(minCoordValue, pointMin->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(minCoordValue, pointMin->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(minCoordValue, pointMin->getZ(), maxTolerance);
 
 	/* copy constructor */
 	Point3D *newPoint0;
 	newPoint0 = new Point3D(point111);
 
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint0->x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint0->y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint0->z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint0->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint0->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint0->getZ(), maxTolerance);
 	delete newPoint0;
 
 	Point3D newPoint1(point111);
 
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint1.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint1.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint1.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint1.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint1.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint1.getZ(), maxTolerance);
 
 }
 
 void Point3DTest::testSimleAdditions() {
 	Point3D resultPoint(0, 0, 0);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.getZ(), maxTolerance);
 
 	resultPoint = *point000 + point111;
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.getZ(), maxTolerance);
 
 	/* reset result point */
-	resultPoint.x = 1.0;
-	resultPoint.y = 1.0;
-	resultPoint.z = 1.0;
+	resultPoint.setX(1.0);
+	resultPoint.setY(1.0);
+	resultPoint.setZ(1.0);
 
 	resultPoint = resultPoint + pointMinus123;
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(-2.0, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-2.0, resultPoint.getZ(), maxTolerance);
 
 	/* reset result point */
-	resultPoint.x = 1.0;
-	resultPoint.y = 1.0;
-	resultPoint.z = 1.0;
+	resultPoint.setX(1.0);
+	resultPoint.setY(1.0);
+	resultPoint.setZ(1.0);
 
 }
 
 void Point3DTest::testComplexAdditions() {
 	Point3D resultPoint;
 	resultPoint = *point000 + pointMax;
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxCoordValue, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxCoordValue, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxCoordValue, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxCoordValue, resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxCoordValue, resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxCoordValue, resultPoint.getZ(), maxTolerance);
 
 	CPPUNIT_ASSERT_NO_THROW((resultPoint = *point000 + point000));
 
@@ -137,33 +137,33 @@ void Point3DTest::testSimleSubtractions() {
 	Point3D resultPoint;
 
 	resultPoint = *point000 - point111;
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, resultPoint.getZ(), maxTolerance);
 
 	/* reset result point */
-	resultPoint.x = 0.0;
-	resultPoint.y = 0.0;
-	resultPoint.z = 0.0;
+	resultPoint.setX(0.0);
+	resultPoint.setY(0.0);
+	resultPoint.setZ(0.0);
 
 	resultPoint = resultPoint - pointMinus123;
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, resultPoint.getZ(), maxTolerance);
 
 }
 
 void Point3DTest::testComplexSubtractions() {
 	Point3D resultPoint;
 	resultPoint = *point000 - pointMin;
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(((-1)*minCoordValue), resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(((-1)*minCoordValue), resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(((-1)*minCoordValue), resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(((-1)*minCoordValue), resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(((-1)*minCoordValue), resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(((-1)*minCoordValue), resultPoint.getZ(), maxTolerance);
 
 	resultPoint = *point000 + pointMin;
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(minCoordValue, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(minCoordValue, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(minCoordValue, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(minCoordValue, resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(minCoordValue, resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(minCoordValue, resultPoint.getZ(), maxTolerance);
 
 	CPPUNIT_ASSERT_NO_THROW((resultPoint = *point000 - point000));
 
@@ -177,32 +177,32 @@ void Point3DTest::testSimleMultiplications() {
 	Point3D resultPoint;
 
 	resultPoint = *point111 * 10;
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(10.0, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(10.0, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(10.0, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(10.0, resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(10.0, resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(10.0, resultPoint.getZ(), maxTolerance);
 
 	CPPUNIT_ASSERT_NO_THROW((resultPoint = *point111 * 0));
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultPoint.getZ(), maxTolerance);
 
 	resultPoint = *pointMinus123 * (-1);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, resultPoint.getZ(), maxTolerance);
 }
 
 void Point3DTest::testComplexMultiplications() {
 	Point3D resultPoint;
 	resultPoint = (*point111) * (maxCoordValue);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxCoordValue, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxCoordValue, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxCoordValue, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxCoordValue, resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxCoordValue, resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(maxCoordValue, resultPoint.getZ(), maxTolerance);
 
 	resultPoint = (*point111) * (minCoordValue);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(minCoordValue, resultPoint.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(minCoordValue, resultPoint.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(minCoordValue, resultPoint.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(minCoordValue, resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(minCoordValue, resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(minCoordValue, resultPoint.getZ(), maxTolerance);
 
 	/* check limits */
 	CPPUNIT_ASSERT_NO_THROW((resultPoint = (*pointMax) * (1.0) ));
@@ -231,14 +231,14 @@ void Point3DTest::testStreaming() {
 
 	/* test input */
 	testStringStream0 >> streamedPoint111;
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, streamedPoint111.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, streamedPoint111.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, streamedPoint111.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, streamedPoint111.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, streamedPoint111.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, streamedPoint111.getZ(), maxTolerance);
 
 	testStringStream1 >> streamedPointMinus123;
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, streamedPointMinus123.x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(-2.0, streamedPointMinus123.y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(-3.0, streamedPointMinus123.z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, streamedPointMinus123.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-2.0, streamedPointMinus123.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-3.0, streamedPointMinus123.getZ(), maxTolerance);
 }
 
 void Point3DTest::testIdentity() {
@@ -262,9 +262,9 @@ void Point3DTest::testIdentity() {
 	point111->homogeneousTransformation(homogeneousTransformation);
 //	cout << *point111 << endl; // actual
 
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->getZ(), maxTolerance);
 
 	/* check HomogeneousMatrix44 default constructor  */
 	HomogeneousMatrix44 *homogeneousTransformation2 = new HomogeneousMatrix44();
@@ -273,9 +273,9 @@ void Point3DTest::testIdentity() {
 	point111->homogeneousTransformation(homogeneousTransformation2);
 //	cout << *point111 << endl; // actual
 
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->getZ(), maxTolerance);
 }
 
 void Point3DTest::testRotation90X(){
@@ -289,9 +289,9 @@ void Point3DTest::testRotation90X(){
 //	cout << *point111 << endl; // actual
 
 	/* check 90° rotation about X */
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, point111->y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, point111->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->getZ(), maxTolerance);
 }
 
 void Point3DTest::testRotation90Y(){
@@ -305,9 +305,9 @@ void Point3DTest::testRotation90Y(){
 //	cout << *point111 << endl; // actual
 
 	/* check 90° rotation about Y */
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, point111->z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, point111->getZ(), maxTolerance);
 }
 
 void Point3DTest::testRotation90Z(){
@@ -321,9 +321,9 @@ void Point3DTest::testRotation90Z(){
 //	cout << *point111 << endl; // actual
 
 	/* check 90° rotation about Z */
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, point111->x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, point111->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->getZ(), maxTolerance);
 }
 
 void Point3DTest::testTranslation(){
@@ -337,9 +337,9 @@ void Point3DTest::testTranslation(){
 //	cout << *point111 << endl; // actual
 
 	/* check translation by (1,1,1)*/
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, point111->x, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, point111->y, maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, point111->z, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, point111->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, point111->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, point111->getZ(), maxTolerance);
 }
 
 }

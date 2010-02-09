@@ -61,7 +61,8 @@ istream& operator>>(istream &inStream, ColoredPointCloud3D &pointCloud) {
 	string line;
 
 	while(getline(inStream, line)) {
-		tmpPoint = new ColoredPoint3D;
+//		tmpPoint = new ColoredPoint3D;
+		tmpPoint = new ColoredPoint3D(new Point3D());
 		stringstream lineStream(line);
 		if (!lineStream.good()) {
 			throw runtime_error("ERROR: cannot read point.");

@@ -35,19 +35,11 @@ typedef double	Coordinate;				// coordinate data type
  *
  * This class is the basic representation of a three dimensional point in a Cartesian space.
  * Basic vector functionality is also provided.
+ * Note that all data fields (coordinates) are private. (This is required by the Point3DDecorator.)
  *
  */
 class Point3D {
 public:
-
-	/// X coordinate in Cartesian system
-	Coordinate x;
-
-	/// Y coordinate in Cartesian system
-	Coordinate y;
-
-	/// Z coordinate in Cartesian system (height)
-	Coordinate z;
 
 	/**
 	 * @brief Default constructor
@@ -72,6 +64,42 @@ public:
 	 * @brief Standard destructor
 	 */
 	virtual ~Point3D();
+
+	/**
+	 * @brief Get the x coordinate
+	 * This is the only way to access a coordinate
+	 */
+	Coordinate getX() const;
+
+	/**
+	 * @brief Get the y coordinate
+	 * This is the only way to access a coordinate
+	 */
+	Coordinate getY() const;
+
+	/**
+	 * @brief Get the y coordinate
+	 * This is the only way to access a coordinate
+	 */
+	Coordinate getZ() const;
+
+	/**
+	 * @brief Set the x coordinate
+	 * This is the only way to manipulate a coordinate
+	 */
+	void setX(Coordinate x);
+
+	/**
+	 * @brief Set the y coordinate
+	 * This is the only way to manipulate a coordinate
+	 */
+	void setY(Coordinate y);
+
+	/**
+	 * @brief Set the z coordinate
+	 * This is the only way to manipulate a coordinate
+	 */
+	void setZ(Coordinate z);
 
 	/**
 	 * @brief Copy raw data to input buffer (array)
@@ -101,6 +129,13 @@ public:
 	Point3D operator*(double scalar);
 
 	/**
+	 * @brief Applies a homogeneous transformation matrix to the point.
+	 *
+	 * @param[in] transformation The homogeneous transformation matrix that will be applied
+	 */
+	void homogeneousTransformation(IHomogeneousMatrix44 *transformation);
+
+	/**
 	 * @brief Overridden >> operator.
 	 *
 	 * Reads a point from a stream an stores it. E.g. e.g. std::cin >> pointObj;
@@ -122,12 +157,16 @@ public:
 	 */
 	friend ostream& operator<<(ostream &outStream, const Point3D &point);
 
-	/**
-	 * @brief Applies a homogeneous transformation matrix to the point.
-	 *
-	 * @param[in] transformation The homogeneous transformation matrix that will be applied
-	 */
-	void homogeneousTransformation(IHomogeneousMatrix44 *transformation);
+private:
+
+	/// X coordinate in Cartesian system
+	Coordinate x;
+
+	/// Y coordinate in Cartesian system
+	Coordinate y;
+
+	/// Z coordinate in Cartesian system (height)
+	Coordinate z;
 };
 
 }

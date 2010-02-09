@@ -39,14 +39,14 @@ double RigidTransformationEstimationSVD::estimateTransformation(std::vector<Corr
 	/* convert data structures */
 	for (unsigned int i = 0; i < pointPairs->size(); ++i) {
 		double firstPoint[3];
-		firstPoint[0] = (*pointPairs)[i].firstPoint.x;
-		firstPoint[1] = (*pointPairs)[i].firstPoint.y;
-		firstPoint[2] = (*pointPairs)[i].firstPoint.z;
+		firstPoint[0] = (*pointPairs)[i].firstPoint.getX();
+		firstPoint[1] = (*pointPairs)[i].firstPoint.getY();
+		firstPoint[2] = (*pointPairs)[i].firstPoint.getZ();
 
 		double secondPoint[3];
-		secondPoint[0] = (*pointPairs)[i].secondPoint.x;
-		secondPoint[1] = (*pointPairs)[i].secondPoint.y;
-		secondPoint[2] = (*pointPairs)[i].secondPoint.z;
+		secondPoint[0] = (*pointPairs)[i].secondPoint.getX();
+		secondPoint[1] = (*pointPairs)[i].secondPoint.getY();
+		secondPoint[2] = (*pointPairs)[i].secondPoint.getZ();
 
 		PtPair pair;
 		pair.p1 = firstPoint;

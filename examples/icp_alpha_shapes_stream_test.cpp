@@ -210,9 +210,9 @@ int main(int argc, char **argv) {
 		Point tmpPoint;
 		cout << "Feeding points " << (*pointClouds)[i]->getSize() <<" into scan" << endl;
 		for (unsigned int j = 0; j < (*pointClouds)[i]->getSize() ;++j) {
-			tmpPoint.x = (*(*pointClouds)[i]->getPointCloud())[j].x;
-			tmpPoint.y = (*(*pointClouds)[i]->getPointCloud())[j].y;
-			tmpPoint.z = (*(*pointClouds)[i]->getPointCloud())[j].z;
+			tmpPoint.x = (*(*pointClouds)[i]->getPointCloud())[j].getX();
+			tmpPoint.y = (*(*pointClouds)[i]->getPointCloud())[j].getY();
+			tmpPoint.z = (*(*pointClouds)[i]->getPointCloud())[j].getZ();
 			ptss.push_back(tmpPoint);
 		}
 		assert(ptss.size() == (*pointClouds)[i]->getSize());
@@ -404,9 +404,9 @@ int main(int argc, char **argv) {
 	   for (; i > 0; i--) {
 			//is >> p;
 		   Point tmpPoint;
-		   x = (*registeredPoints->getPointCloud())[i].x;
-		   y = (*registeredPoints->getPointCloud())[i].y;
-		   z = (*registeredPoints->getPointCloud())[i].z;
+		   x = (*registeredPoints->getPointCloud())[i].getX();
+		   y = (*registeredPoints->getPointCloud())[i].getY();
+		   z = (*registeredPoints->getPointCloud())[i].getZ();
 		   CGAL_Point p(x, y, z);
 		   //p.PointC3(x,y,z);
 

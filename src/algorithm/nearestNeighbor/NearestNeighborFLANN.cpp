@@ -55,9 +55,9 @@ void NearestNeighborFLANN::setData(PointCloud3D* data) {
 	// convert data
 	int matrixIndex = 0;
 	for (int rowIndex = 0; rowIndex < rows; ++rowIndex) {
-		dataMatrix[matrixIndex + 0] = static_cast<float> ((*data->getPointCloud())[rowIndex].x);
-		dataMatrix[matrixIndex + 1] = static_cast<float> ((*data->getPointCloud())[rowIndex].y);
-		dataMatrix[matrixIndex + 2] = static_cast<float> ((*data->getPointCloud())[rowIndex].z);
+		dataMatrix[matrixIndex + 0] = static_cast<float> ((*data->getPointCloud())[rowIndex].getX());
+		dataMatrix[matrixIndex + 1] = static_cast<float> ((*data->getPointCloud())[rowIndex].getY());
+		dataMatrix[matrixIndex + 2] = static_cast<float> ((*data->getPointCloud())[rowIndex].getZ());
 		matrixIndex += 3;
 	}
 
@@ -80,9 +80,9 @@ int NearestNeighborFLANN::findNearestNeigbor(Point3D* query) {
 	int tcount = 1;
 
 	float* queryData = new float[dimension];
-	queryData[0] = static_cast<float> (query->x);
-	queryData[1] = static_cast<float> (query->y);
-	queryData[2] = static_cast<float> (query->z);
+	queryData[0] = static_cast<float> (query->getX());
+	queryData[1] = static_cast<float> (query->getY());
+	queryData[2] = static_cast<float> (query->getZ());
 
 	int result[1];
 	float dists[1];

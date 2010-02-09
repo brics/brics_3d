@@ -84,9 +84,9 @@ int main(int argc, char **argv) {
 
 
 	for(unsigned int i = 0; i < pointCloud->getSize(); ++i) {
-		points->push_back(osg::Vec3((float) ((*pointCloud->getPointCloud())[i].x),
-				(float) ((*pointCloud->getPointCloud())[i].x),
-				(float) ((*pointCloud->getPointCloud())[i].x)));
+		points->push_back(osg::Vec3((float) ((*pointCloud->getPointCloud())[i].getX()),
+				(float) ((*pointCloud->getPointCloud())[i].getY()),
+				(float) ((*pointCloud->getPointCloud())[i].getZ()))); //NOTE: possible BUG fixed here
 	}
 
 	// create triangulator and set the points as the area
