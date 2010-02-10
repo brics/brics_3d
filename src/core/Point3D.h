@@ -69,64 +69,64 @@ public:
 	 * @brief Get the x coordinate
 	 * This is the only way to access a coordinate
 	 */
-	Coordinate getX() const;
+	virtual Coordinate getX() const;
 
 	/**
 	 * @brief Get the y coordinate
 	 * This is the only way to access a coordinate
 	 */
-	Coordinate getY() const;
+	virtual Coordinate getY() const;
 
 	/**
 	 * @brief Get the y coordinate
 	 * This is the only way to access a coordinate
 	 */
-	Coordinate getZ() const;
+	virtual Coordinate getZ() const;
 
 	/**
 	 * @brief Set the x coordinate
 	 * This is the only way to manipulate a coordinate
 	 */
-	void setX(Coordinate x);
+	virtual void setX(Coordinate x);
 
 	/**
 	 * @brief Set the y coordinate
 	 * This is the only way to manipulate a coordinate
 	 */
-	void setY(Coordinate y);
+	virtual void setY(Coordinate y);
 
 	/**
 	 * @brief Set the z coordinate
 	 * This is the only way to manipulate a coordinate
 	 */
-	void setZ(Coordinate z);
+	virtual void setZ(Coordinate z);
 
 	/**
 	 * @brief Copy raw data to input buffer (array)
 	 * @param[out] pointBuffer Pointer to buffer, where to store the raw data
 	 */
-	void getRawData(Coordinate *pointBuffer);
+	virtual void getRawData(Coordinate *pointBuffer);
 
 	/**
 	 * @brief Add a point to another point e.i each coordinate is added.
 	 * @param[in] point Pointer to point that will be added
 	 * @return Result of addition
 	 */
-	Point3D operator+(const Point3D *point);
+	virtual Point3D operator+(const Point3D *point);
 
 	/**
 	 * @brief Subtract a point to another point e.i each coordinate is substracted
 	 * @param[in] point Pointer to point that will be subtracted
 	 * @return Result of substraction
 	 */
-	Point3D operator-(const Point3D *point);
+	virtual Point3D operator-(const Point3D *point);
 
 	/**
 	 * @brief Multiply a point by a scalar
 	 * @param scalar Scalar that will be multiplied to each coordinate
 	 * @return Result of scalar multiplication
 	 */
-	Point3D operator*(double scalar);
+	virtual Point3D operator*(double scalar);
 
 	/**
 	 * @brief Applies a homogeneous transformation matrix to the point.
