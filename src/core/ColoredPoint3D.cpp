@@ -67,17 +67,6 @@ ColoredPoint3D::~ColoredPoint3D() {
 
 }
 
-Point3D ColoredPoint3D::operator+(const Point3D *point) { //forward declaration
-	return Point3DDecorator::point->operator +(point);
-}
-
-Point3D ColoredPoint3D::operator-(const Point3D *point) { //forward declaration
-	return Point3DDecorator::point->operator -(point);
-}
-
-Point3D ColoredPoint3D::operator *(double scalar) { //forward declaration
-	return Point3DDecorator::point->operator *(scalar);
-}
 
 istream& operator>>(istream &inStream, ColoredPoint3D &point) {
 	unsigned int tmpColor;

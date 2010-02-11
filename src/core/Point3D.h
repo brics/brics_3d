@@ -128,12 +128,14 @@ public:
 	 */
 	virtual Point3D operator*(double scalar);
 
+	virtual Point3D& operator=(const Point3D &point);
+
 	/**
 	 * @brief Applies a homogeneous transformation matrix to the point.
 	 *
 	 * @param[in] transformation The homogeneous transformation matrix that will be applied
 	 */
-	void homogeneousTransformation(IHomogeneousMatrix44 *transformation);
+	virtual void homogeneousTransformation(IHomogeneousMatrix44 *transformation);
 
 	/**
 	 * @brief Overridden >> operator.

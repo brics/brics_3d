@@ -26,7 +26,8 @@ public:
 	 * @brief Constructor that requires a Point3D pointer
 	 * @param[in] point The Point3D that will be wrapped/enhanced/decorated by this decorator.
 	 *
-	 * Note that there is no standard constructor, to prevent a situation with an Point3DDecorator instance, but no internal Point3D specified
+	 * Note that there is no standard constructor, to prevent a situation with an Point3DDecorator instance,
+	 * but no internal Point3D specified.
 	 */
 	Point3DDecorator(Point3D* point);
 
@@ -47,13 +48,15 @@ public:
 
 	void setZ(Coordinate z);
 
-//	virtual void getRawData(Coordinate *pointBuffer);
+    void getRawData(Coordinate *pointBuffer);
 
-	virtual Point3D operator+(const Point3D *point) = 0;
+	Point3D& operator=(const Point3D &point);
 
-	virtual Point3D operator-(const Point3D *point) = 0;
+	Point3D operator+(const Point3D *point);
 
-	virtual Point3D operator*(double scalar) = 0;
+	Point3D operator-(const Point3D *point);
+
+	Point3D operator*(double scalar);
 
 	void homogeneousTransformation(IHomogeneousMatrix44 *transformation);
 

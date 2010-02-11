@@ -123,6 +123,16 @@ Point3D Point3D::operator *(double scalar) {
 	return result;
 }
 
+Point3D& Point3D::operator=(const Point3D &point) {
+	if (this == &point) { //case of self assignment
+		return *this;
+	}
+	this->x = point.getX();
+	this->y = point.getY();
+	this->z = point.getZ();
+	return *this;
+}
+
 void Point3D::homogeneousTransformation(IHomogeneousMatrix44 *transformation) { //TODO throw exception if values exceed limits
 	// NOTE: currently everything is done in "double" and afterward transformed to "Coordinate"
 	// This might involve implicit conversions between types (float to double e.g.) for each transformation...

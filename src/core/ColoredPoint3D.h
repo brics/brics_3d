@@ -69,12 +69,6 @@ public:
 	 */
 	virtual ~ColoredPoint3D();
 
-	Point3D operator+(const Point3D *point);
-
-	Point3D operator-(const Point3D *point);
-
-	Point3D operator*(double scalar);
-
 	/**
 	 * @brief Overridden >> operator.
 	 *

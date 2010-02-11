@@ -21,6 +21,28 @@ Point3DDecorator::~Point3DDecorator() {
 	}
 }
 
+Point3D Point3DDecorator::operator+(const Point3D *point) {
+	return this->point->operator +(point); //just a forward declaration
+}
+
+Point3D Point3DDecorator::operator-(const Point3D *point) {
+	return this->point->operator -(point); //just a forward declaration
+}
+
+Point3D Point3DDecorator::operator *(double scalar) {
+	return this->point->operator *(scalar); //just a forward declaration
+}
+
+Point3D& Point3DDecorator::operator=(const Point3D &point) {
+	/*
+	 * This is a forward declaration, that prevents from assigning results to the super class of the decorator,
+	 * rather than to the next skin/layer/wrapper of the decorator. Otherwise data inconsistency might occur!
+	 */
+	return this->point->operator =(point);
+}
+
+
+
 Coordinate Point3DDecorator::getX() const {
 	return point->getX(); //just a forward declaration
 }
@@ -43,6 +65,10 @@ void Point3DDecorator::setY(Coordinate y) {
 
 void Point3DDecorator::setZ(Coordinate z) {
 	point->setZ(z); //just a forward declaration
+}
+
+void Point3DDecorator::getRawData(Coordinate *pointBuffer) {
+	point->getRawData(pointBuffer); //just a forward declaration
 }
 
 void Point3DDecorator::homogeneousTransformation(IHomogeneousMatrix44 *transformation) {

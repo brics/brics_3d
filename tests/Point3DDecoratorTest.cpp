@@ -206,11 +206,11 @@ void Point3DDecoratorTest::testRecursiveDecoration() {
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(testZ, basePointOuter->getZ(), maxTolerance);
 
 
-//	cout << *point111 << endl;
-//	cout << *decoratedPointInner << endl;
-//	cout << *decoratedPointOuter << endl;
-//	cout << *basePointOuter  << endl; //FIXME
-//	cout << *basePointInner << endl << endl; //FIXME
+	cout << *point111 << endl;
+	cout << *decoratedPointInner << endl;
+	cout << *decoratedPointOuter << endl;
+	cout << "FIXME (virtual << operator) " << *basePointOuter  << "  " << basePointOuter-> getX() << " " << basePointOuter-> getY() << " " <<basePointOuter-> getZ() <<endl; //FIXME
+	cout << "FIXME " << *basePointInner << endl << endl; //FIXME
 
 	delete decoratedPointOuter;
 	delete decoratedPointInner;
@@ -263,25 +263,172 @@ void Point3DDecoratorTest::testAddition() {
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, decoratedResultPoint->getY(), maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, decoratedResultPoint->getZ(), maxTolerance);
 
-
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, downCastedResult->getX(), maxTolerance); //postconditions
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, downCastedResult->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, downCastedResult->getZ(), maxTolerance);
 
 
 	cout << resultPoint << endl;
 	cout << *decoratedPointMinus123 << endl;
 	cout << basePointMinus123 << endl;
 
+	delete decoratedResultPoint;
+
 }
 
 void Point3DDecoratorTest::testSubtraction() {
-	CPPUNIT_FAIL("TODO");
+	Point3D resultPoint;
+	Point3D basePointMinus123 = *decoratedPointMinus123;
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, decoratedPointMinus123->getX(), maxTolerance); //preconditions
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-2.0, decoratedPointMinus123->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-3.0, decoratedPointMinus123->getZ(), maxTolerance);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, basePointMinus123.getX(), maxTolerance);	//preconditions
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-2.0, basePointMinus123.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-3.0, basePointMinus123.getZ(), maxTolerance);
+
+
+	resultPoint = *decoratedPointMinus123 - point111;
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-2.0, resultPoint.getX(), maxTolerance); //postconditions
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-3.0, resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-4.0, resultPoint.getZ(), maxTolerance);
+
+	resultPoint = basePointMinus123 - point111;
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-2.0, resultPoint.getX(), maxTolerance); //postconditions
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-3.0, resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-4.0, resultPoint.getZ(), maxTolerance);
+
+	/* now only decorated points are used*/
+	ColoredPoint3D decoratedPoint456(new Point3D(4,5,6),7,8,9);
+	Point3D* decoratedResultPoint = new ColoredPoint3D(new Point3D(),13,14,15); //polymorph result
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, decoratedPointMinus123->getX(), maxTolerance); //preconditions
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-2.0, decoratedPointMinus123->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-3.0, decoratedPointMinus123->getZ(), maxTolerance);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, decoratedPoint456.getX(), maxTolerance); //preconditions
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, decoratedPoint456.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(6.0, decoratedPoint456.getZ(), maxTolerance);
+
+
+	*decoratedResultPoint = decoratedPoint456 - decoratedPointMinus123;
+	ColoredPoint3D* downCastedResult = dynamic_cast<ColoredPoint3D*>(decoratedResultPoint);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, decoratedResultPoint->getX(), maxTolerance); //postconditions
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(7.0, decoratedResultPoint->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(9.0, decoratedResultPoint->getZ(), maxTolerance);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, downCastedResult->getX(), maxTolerance); //postconditions
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(7.0, downCastedResult->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(9.0, downCastedResult->getZ(), maxTolerance);
+
+	delete decoratedResultPoint;
 }
 
 void Point3DDecoratorTest::testMultiplication() {
-	CPPUNIT_FAIL("TODO");
+	Point3D resultPoint;
+	Point3D basePointMinus123 = *decoratedPointMinus123;
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, decoratedPointMinus123->getX(), maxTolerance); //preconditions
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-2.0, decoratedPointMinus123->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-3.0, decoratedPointMinus123->getZ(), maxTolerance);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, basePointMinus123.getX(), maxTolerance);	//preconditions
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-2.0, basePointMinus123.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-3.0, basePointMinus123.getZ(), maxTolerance);
+
+
+	resultPoint = *decoratedPointMinus123 * 10;
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-10.0, resultPoint.getX(), maxTolerance); //postconditions
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-20.0, resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-30.0, resultPoint.getZ(), maxTolerance);
+
+	resultPoint = basePointMinus123 * 100;
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-100.0, resultPoint.getX(), maxTolerance); //postconditions
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-200.0, resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-300.0, resultPoint.getZ(), maxTolerance);
+
+	/* now only decorated points are used*/
+	ColoredPoint3D decoratedPoint456(new Point3D(4,5,6),7,8,9);
+	Point3D* decoratedResultPoint = new ColoredPoint3D(new Point3D(),13,14,15); //polymorph result
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, decoratedPoint456.getX(), maxTolerance); //preconditions
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, decoratedPoint456.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(6.0, decoratedPoint456.getZ(), maxTolerance);
+
+
+	*decoratedResultPoint = decoratedPoint456 * 1000;
+	ColoredPoint3D* downCastedResult = dynamic_cast<ColoredPoint3D*>(decoratedResultPoint);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(4000.0, decoratedResultPoint->getX(), maxTolerance); //postconditions
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(5000.0, decoratedResultPoint->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(6000.0, decoratedResultPoint->getZ(), maxTolerance);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(4000.0, downCastedResult->getX(), maxTolerance); //postconditions
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(5000.0, downCastedResult->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(6000.0, downCastedResult->getZ(), maxTolerance);
+
+	delete decoratedResultPoint;
 }
 
 void Point3DDecoratorTest::testTransfomration() {
-	CPPUNIT_FAIL("TODO");
+	/*
+	 * rotate 90° abouz x axis
+	 */
+	AngleAxis<double> rotation(M_PI_2l, Vector3d(1,0,0));
+	Transform3d transformation;
+	transformation = rotation;
+//	cout << transformation * referenceVector << endl; // expected
+
+	HomogeneousMatrix44* homogeneousTransformation = new HomogeneousMatrix44(&transformation);
+	ColoredPoint3D* decoraredPoint111 = new ColoredPoint3D(point111, 2, 3, 4);
+	decoraredPoint111->homogeneousTransformation(homogeneousTransformation);
+//	cout << *point111 << endl; // actual
+
+	/* check 90° rotation about X */
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, decoraredPoint111->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, decoraredPoint111->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, decoraredPoint111->getZ(), maxTolerance);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, point111->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->getZ(), maxTolerance);
+
+	delete homogeneousTransformation;
+
+	/*
+	 * translate by (10, 20, 30)
+	 */
+	Translation<double,3> translation(10, 20, 30);
+	transformation = translation;
+//	cout << transformation * referenceVector << endl; // expected
+
+	homogeneousTransformation = new HomogeneousMatrix44(&transformation);
+	decoratedPointMinus123->homogeneousTransformation(homogeneousTransformation);
+//	cout << *point111 << endl; // actual
+
+	/* check translation by (10, 20, 30) */
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(9.0, decoratedPointMinus123->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(18.0, decoratedPointMinus123->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(27.0, decoratedPointMinus123->getZ(), maxTolerance);
+
+	Point3D* basePointMinus123 = dynamic_cast<Point3D*>(decoratedPointMinus123);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(9.0, basePointMinus123->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(18.0, basePointMinus123->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(27.0, basePointMinus123->getZ(), maxTolerance);
+
+	/* perform again same translation, but perform on base class */
+	basePointMinus123->homogeneousTransformation(homogeneousTransformation);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(19.0, decoratedPointMinus123->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(38.0, decoratedPointMinus123->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(57.0, decoratedPointMinus123->getZ(), maxTolerance);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(19.0, basePointMinus123->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(38.0, basePointMinus123->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(57.0, basePointMinus123->getZ(), maxTolerance);
+
+	delete homogeneousTransformation;
+
 }
 
 void Point3DDecoratorTest::testStreaming() {

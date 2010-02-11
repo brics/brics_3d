@@ -17,6 +17,7 @@
 
 #include <Eigen/Geometry>
 #include "core/Point3D.h"
+#include "core/HomogeneousMatrix44.h"
 
 using namespace std;
 using namespace Eigen;
