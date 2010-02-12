@@ -17,10 +17,16 @@ using std::endl;
 namespace BRICS_3D {
 
 IterativeClosestPoint::IterativeClosestPoint() {
-	assigner = 0;
-	estimator = 0;
-	convergenceThreshold = 0.00001;
-	maxIterations = 20;
+	this->assigner = 0;
+	this->estimator = 0;
+	this->convergenceThreshold = 0.00001;
+	this->maxIterations = 20;
+
+	/* initial values fir stateful interface */
+	this->model = 0;
+	this->data = 0;
+	this->intermadiateTransformation = 0;
+	this->resultTransformation = 0;
 }
 
 IterativeClosestPoint::IterativeClosestPoint(IPointCorrespondence *assigner, IRigidTransformationEstimation *estimator, double convergenceThreshold, int maxIterations) {
@@ -28,14 +34,39 @@ IterativeClosestPoint::IterativeClosestPoint(IPointCorrespondence *assigner, IRi
 	this->estimator = estimator;
 	this->convergenceThreshold = convergenceThreshold;
 	this->maxIterations = maxIterations;
+
+	/* initial values for stateful interface */
+	this->model = 0;
+	this->data = 0;
+	this->intermadiateTransformation = 0;
+	this->resultTransformation = 0;
 }
 
 IterativeClosestPoint::~IterativeClosestPoint() {
-	delete assigner;
-	delete estimator;
+	delete this->assigner;
+	delete this->estimator;
+
+	if (this->model != 0) { // might be unused
+		delete this->model;
+	}
+	if (this->data != 0) { // might be unused
+		delete this->data;
+	}
+	if (this->intermadiateTransformation != 0) { // might be unused
+		delete this->intermadiateTransformation;
+	}
+	if (this->resultTransformation != 0) { // might be unused
+		delete this->resultTransformation;
+	}
 }
 
 void IterativeClosestPoint::match(PointCloud3D* model, PointCloud3D* data, IHomogeneousMatrix44* resultTransformation) {
+	/*
+	 * Important note:
+	 * This method does not work on the member variables model and data, to prevent a mixture between the
+	 * stateless (IIterativeClosestPoint) and statefull (IIterativeClosestPointDatailed) interface
+	 *
+	 */
 	assert(assigner != 0); //check if algorithms are setup
 	assert(estimator != 0);
 	assert(model != 0); // check input parameters
@@ -78,9 +109,6 @@ void IterativeClosestPoint::match(PointCloud3D* model, PointCloud3D* data, IHomo
 
 }
 
-void IterativeClosestPoint::match(PointCloud3D* model, PointCloud3D* data, IHomogeneousMatrix44* resultTransformation, IHomogeneousMatrix44* initalEstimate, int maxIterations) {
-
-}
 
 IPointCorrespondence* IterativeClosestPoint::getAssigner() const
 {
@@ -119,6 +147,61 @@ void IterativeClosestPoint::setMaxIterations(int maxIterations)
 	this->maxIterations = maxIterations;
 }
 
+
+void IterativeClosestPoint::setData(PointCloud3D* data) {
+	this->data = data;
+}
+
+void IterativeClosestPoint::setModel(PointCloud3D* model) {
+	this->model = model;
+}
+
+PointCloud3D* IterativeClosestPoint::getData() {
+	return this->data;
+}
+
+PointCloud3D* IterativeClosestPoint::getModel() {
+	return this->model;
+}
+
+double IterativeClosestPoint::performNextIteration() {
+	assert(assigner != 0); //check if algorithms are setup
+	assert(estimator != 0);
+	assert(this->model != 0); // check if data is set
+	assert(this->data != 0);
+
+	double error;
+	if (intermadiateTransformation == 0) { // do only one
+			this->intermadiateTransformation = new HomogeneousMatrix44();
+	}
+	std::vector<CorrespondencePoint3DPair>* pointPairs = new std::vector<CorrespondencePoint3DPair>();
+
+	/*
+	 * perform one ICP iteration:
+	 */
+
+	/* find closest points */
+	assigner->createNearestNeighborCorrespondence(this->model, this->data, pointPairs);
+
+	/* estimate transformation */
+	error = estimator->estimateTransformation(pointPairs, this->intermadiateTransformation);
+	//cout << "Estimated transformation: " << endl  << *tmpResultTransformation; //DBG output
+	*this->resultTransformation = *((*this->resultTransformation) * (*this->intermadiateTransformation)); // accumulate transformations
+
+	/* perform transformation on data point cloud */
+	this->data->homogeneousTransformation(this->intermadiateTransformation);
+
+	delete pointPairs;
+	return error;
+}
+
+IHomogeneousMatrix44*  IterativeClosestPoint::getLastEstimatedTransformation() {
+	return this->intermadiateTransformation;
+}
+
+IHomogeneousMatrix44*  IterativeClosestPoint::getAccumulatedTransfomation() {
+	return this->resultTransformation;
+}
 
 }
 

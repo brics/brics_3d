@@ -24,7 +24,7 @@ namespace BRICS_3D {
 
 /**
  * @ingroup registration
- * @brief Abstract interface for the Iterative Closest Point (ICP) registration algorithm
+ * @brief Abstract stateless interface for the Iterative Closest Point (ICP) registration algorithm
  *
  */
 class IIterativeClosestPoint {
@@ -48,18 +48,6 @@ public:
 	 * @param[out] resultTransformation Pointer to resulting homogeneous transformation to align both point clouds
 	 */
 	virtual void match(PointCloud3D* model, PointCloud3D* data, IHomogeneousMatrix44* resultTransformation) = 0;
-
-	/*
-	 * @brief Calculates the required transformation to align the data point cloud to the model point cloud
-	 *
-	 * @param[in] model Pointer to point cloud that represents the model
-	 * @param[in] data Pointer to point cloud that represents the data
-	 * @param[out] resultTransformation Pointer to resulting homogeneous transformation to align both point clouds
-	 * @param[in] initalEstimate Pointer to homogeneous matrix that represents an initial estimate of the transformation to align both point clouds
-	 * @param maxIterations Maximum amount of iterations for matching process
-	 */
-	//virtual void match(PointCloud3D* model, PointCloud3D* data, IHomogeneousMatrix44* resultTransformation, IHomogeneousMatrix44* initalEstimate, int maxIterations = 20) = 0;
-
 
 	/**
 	 * @brief Get the threshold to define convergence

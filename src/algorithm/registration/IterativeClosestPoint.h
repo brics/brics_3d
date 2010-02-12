@@ -10,6 +10,7 @@
 #define ITERATIVECLOSESTPOINT_H_
 
 #include "algorithm/registration/IIterativeClosestPoint.h"
+#include "algorithm/registration/IIterativeClosestPointDetailed.h"
 #include "algorithm/registration/IPointCorrespondence.h"
 #include "algorithm/registration/IRigidTransformationEstimation.h"
 
@@ -23,7 +24,7 @@ namespace BRICS_3D {
  * It follows the "strategy" software design pattern (except that context and strategy are implemented in the same class).
  * That means the actual point correspondence and the rigid transformation estimation algorithms are exchangeable during runtime.
  */
-class IterativeClosestPoint : public IIterativeClosestPoint {
+class IterativeClosestPoint : public IIterativeClosestPoint, public IIterativeClosestPointDetailed {
 public:
 
 	/**
@@ -42,8 +43,6 @@ public:
 	virtual ~IterativeClosestPoint();
 
 	void match(PointCloud3D* model, PointCloud3D* data, IHomogeneousMatrix44* resultTransformation);
-
-	void match(PointCloud3D* model, PointCloud3D* data, IHomogeneousMatrix44* resultTransformation, IHomogeneousMatrix44* initalEstimate, int maxIterations = 20);
 
 	double getConvergenceThreshold() const;
 
@@ -78,6 +77,19 @@ public:
 	void setEstimator(IRigidTransformationEstimation* estimator);
 
 
+	void setData(PointCloud3D* data);
+
+	void setModel(PointCloud3D* model);
+
+	PointCloud3D* getData();
+
+	PointCloud3D* getModel();
+
+	double performNextIteration();
+
+	IHomogeneousMatrix44*  getLastEstimatedTransformation();
+
+	IHomogeneousMatrix44*  getAccumulatedTransfomation();
 
 
 
@@ -94,6 +106,19 @@ private:
 
 	/// The threshold to define convergence.
 	double convergenceThreshold;
+
+	///Pointer to the model for the stateful interface (IIterativeClosestPointDetailed)
+	PointCloud3D* model;
+
+	///Pointer to the model for the stateful interface (IIterativeClosestPointDetailed)
+	PointCloud3D* data;
+
+	///Pointer to the model for the stateful interface (IIterativeClosestPointDetailed)
+	IHomogeneousMatrix44* intermadiateTransformation;
+
+	///Pointer to the model for the stateful interface (IIterativeClosestPointDetailed)
+	IHomogeneousMatrix44* resultTransformation;
+
 };
 
 }
