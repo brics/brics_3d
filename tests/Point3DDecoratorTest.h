@@ -35,6 +35,7 @@ class Point3DDecoratorTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testMultiplication );
 	CPPUNIT_TEST( testTransfomration );
 	CPPUNIT_TEST( testStreaming );
+	CPPUNIT_TEST( testRawAccess );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -48,6 +49,7 @@ public:
 	void testMultiplication();
 	void testTransfomration();
 	void testStreaming();
+	void testRawAccess();
 
 
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW //Required by Eigen2

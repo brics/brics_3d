@@ -509,17 +509,38 @@ void Point3DDecoratorTest::testStreaming() {
 	 */
 	ColoredPoint3D streamedDecoratedPoint0(new Point3D);
 	testStringStream2 >> streamedDecoratedPoint0;
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(10.0, streamedDecoratedPoint0.getX(), maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(11.0, streamedDecoratedPoint0.getY(), maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(12.0, streamedDecoratedPoint0.getZ(), maxTolerance);
-//
-//	testStringStream1 >> streamedPointMinus123;
-//	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, streamedPointMinus123.getX(), maxTolerance);
-//	CPPUNIT_ASSERT_DOUBLES_EQUAL(-2.0, streamedPointMinus123.getY(), maxTolerance);
-//	CPPUNIT_ASSERT_DOUBLES_EQUAL(-3.0, streamedPointMinus123.getZ(), maxTolerance);
+//	cout << streamedDecoratedPoint0 << endl;
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(testX, streamedDecoratedPoint0.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(testY, streamedDecoratedPoint0.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(testZ, streamedDecoratedPoint0.getZ(), maxTolerance);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1, streamedDecoratedPoint0.red, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(2, streamedDecoratedPoint0.green, maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3, streamedDecoratedPoint0.blue, maxTolerance);
+
+	Point3D* baseStreamedDecoratedPoint0 = dynamic_cast<Point3D*>(&streamedDecoratedPoint0);
+//	cout << *baseStreamedDecoratedPoint0 << endl;
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(testX, baseStreamedDecoratedPoint0->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(testY, baseStreamedDecoratedPoint0->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(testZ, baseStreamedDecoratedPoint0->getZ(), maxTolerance);
+
+	delete basePointOuter;
+	delete basePointInner;
 
 }
 
+void Point3DDecoratorTest::testRawAccess() {
+	Coordinate* result = new Coordinate[3];
+
+	decoratedPointMinus123->getRawData(result);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(pointMinus123->getX(), result[0], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(pointMinus123->getY(), result[1], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(pointMinus123->getZ(), result[2], maxTolerance);
+
+	delete result;
+
+}
 
 }
 
