@@ -222,7 +222,7 @@ void ColoredPointCloud3DTest::testStreaming() {
 	/* test output */
 	testStringStream0 << *pointCloudCube;
 	comparatorString = testStringStream0.str();
-	cout << "GRB pointCloudCube:" << endl << *pointCloudCube;
+//	cout << "RGB pointCloudCube:" << endl << *pointCloudCube;
 	CPPUNIT_ASSERT_EQUAL(0, comparatorString.compare(referenceString));
 
 	/* test input */

@@ -205,13 +205,6 @@ void Point3DDecoratorTest::testRecursiveDecoration() {
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(testY, basePointOuter->getY(), maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(testZ, basePointOuter->getZ(), maxTolerance);
 
-
-	cout << *point111 << endl;
-	cout << *decoratedPointInner << endl;
-	cout << *decoratedPointOuter << endl;
-	cout << "FIXME (virtual << operator) " << *basePointOuter  << "  " << basePointOuter-> getX() << " " << basePointOuter-> getY() << " " <<basePointOuter-> getZ() <<endl; //FIXME
-	cout << "FIXME " << *basePointInner << endl << endl; //FIXME
-
 	delete decoratedPointOuter;
 	delete decoratedPointInner;
 
@@ -255,10 +248,9 @@ void Point3DDecoratorTest::testAddition() {
 
 //	decoratedResultPoint = decoratedPoint456 + decoratedPointMinus123;
 	*decoratedResultPoint = decoratedPoint456 + decoratedPointMinus123;
-	cout << "[Test] " << endl;
-	cout << *decoratedResultPoint << endl;
+//	cout << *decoratedResultPoint << endl;
 	ColoredPoint3D* downCastedResult = dynamic_cast<ColoredPoint3D*>(decoratedResultPoint);
-	cout << *downCastedResult << endl;
+//	cout << *downCastedResult << endl;
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, decoratedResultPoint->getX(), maxTolerance); //postconditions
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, decoratedResultPoint->getY(), maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, decoratedResultPoint->getZ(), maxTolerance);
@@ -266,11 +258,6 @@ void Point3DDecoratorTest::testAddition() {
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, downCastedResult->getX(), maxTolerance); //postconditions
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, downCastedResult->getY(), maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, downCastedResult->getZ(), maxTolerance);
-
-
-	cout << resultPoint << endl;
-	cout << *decoratedPointMinus123 << endl;
-	cout << basePointMinus123 << endl;
 
 	delete decoratedResultPoint;
 
@@ -432,7 +419,105 @@ void Point3DDecoratorTest::testTransfomration() {
 }
 
 void Point3DDecoratorTest::testStreaming() {
-	CPPUNIT_FAIL("TODO");
+	ColoredPoint3D* decoratedPointInner = new ColoredPoint3D(pointMinus123,1,2,3);
+	ColoredPoint3D* decoratedPointOuter = new ColoredPoint3D(decoratedPointInner,4,5,6);
+
+	/*
+	 * check if chances are really transparent...
+	 */
+	Coordinate testX;
+	Coordinate testY;
+	Coordinate testZ;
+
+	/* change data from outer skin/layer/decorator/wrapper */
+	testX = 10.0;
+	testY = 11.0;
+	testZ = 12.0;
+	decoratedPointOuter->setX(testX);
+	decoratedPointOuter->setY(testY);
+	decoratedPointOuter->setZ(testZ);
+
+	/* cast to Point3D */
+	Point3D* basePointInner = dynamic_cast<Point3D*>(decoratedPointInner);
+	Point3D* basePointOuter = dynamic_cast<Point3D*>(decoratedPointOuter);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(testX , pointMinus123->getX(), maxTolerance); //preconditions
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(testY, pointMinus123->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(testZ, pointMinus123->getZ(), maxTolerance);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(testX , decoratedPointOuter->getX(), maxTolerance); //preconditions
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(testY, decoratedPointOuter->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(testZ, decoratedPointOuter->getZ(), maxTolerance);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(testX, decoratedPointInner->getX(), maxTolerance); //preconditions
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(testY, decoratedPointInner->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(testZ, decoratedPointInner->getZ(), maxTolerance);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(testX , basePointOuter->getX(), maxTolerance); //preconditions
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(testY, basePointOuter->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(testZ, basePointOuter->getZ(), maxTolerance);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(testX , basePointInner->getX(), maxTolerance); //preconditions
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(testY, basePointInner->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(testZ, basePointInner->getZ(), maxTolerance);
+
+	/*
+	 * now its getting intresting: check the stream outputs
+	 */
+	string comparatorString;
+	stringstream testStringStream0;
+	stringstream testStringStream1;
+	stringstream testStringStream2;
+	stringstream testStringStream3;
+	stringstream testStringStream4;
+
+//	cout << "testStreaming: "<< endl;
+//	cout << "pointMinus123: "  << *pointMinus123 << endl;
+//	cout << "decoratedPointOuter: "  << *decoratedPointOuter << endl;
+//	cout << "decoratedPointInner: "  << *decoratedPointInner << endl;
+//	cout << "basePointOuter: "  << *basePointOuter << endl;
+//	cout << "basePointInner: "  << *basePointInner << endl;
+
+	testStringStream0 << *pointMinus123;
+	testStringStream1 << *decoratedPointOuter;
+	testStringStream2 << *decoratedPointInner;
+	testStringStream3 << *basePointOuter;
+	testStringStream4 << *basePointInner;
+
+	comparatorString.clear();
+	comparatorString = testStringStream0.str();
+	CPPUNIT_ASSERT(comparatorString.compare("10 11 12") == 0);
+
+	comparatorString.clear();
+	comparatorString = testStringStream1.str();
+	CPPUNIT_ASSERT(comparatorString.compare("10 11 12 4 5 6") == 0); //different decoration layers have different output...
+
+	comparatorString.clear();
+	comparatorString = testStringStream2.str();
+	CPPUNIT_ASSERT(comparatorString.compare("10 11 12 1 2 3") == 0); //different decoration layers have different output...
+
+	comparatorString.clear();
+	comparatorString = testStringStream3.str();
+	CPPUNIT_ASSERT(comparatorString.compare("10 11 12") == 0);
+
+	comparatorString.clear();
+	comparatorString = testStringStream4.str();
+	CPPUNIT_ASSERT(comparatorString.compare("10 11 12") == 0);
+
+	/*
+	 * test input
+	 */
+	ColoredPoint3D streamedDecoratedPoint0(new Point3D);
+	testStringStream2 >> streamedDecoratedPoint0;
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(10.0, streamedDecoratedPoint0.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(11.0, streamedDecoratedPoint0.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(12.0, streamedDecoratedPoint0.getZ(), maxTolerance);
+//
+//	testStringStream1 >> streamedPointMinus123;
+//	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, streamedPointMinus123.getX(), maxTolerance);
+//	CPPUNIT_ASSERT_DOUBLES_EQUAL(-2.0, streamedPointMinus123.getY(), maxTolerance);
+//	CPPUNIT_ASSERT_DOUBLES_EQUAL(-3.0, streamedPointMinus123.getZ(), maxTolerance);
+
 }
 
 

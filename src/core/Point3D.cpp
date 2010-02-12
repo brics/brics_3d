@@ -177,7 +177,7 @@ istream& operator>>(istream &inStream, Point3D &point) {
 }
 
 ostream& operator<<(ostream &outStream, const Point3D &point) {
-	outStream << point.x << " " << point.y << " " << point.z;
+	outStream << point.getX() << " " << point.getY() << " " << point.getZ();
 
 	return outStream;
 }
