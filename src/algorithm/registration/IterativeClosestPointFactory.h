@@ -10,6 +10,7 @@
 #define ITERATIVECLOSESTPOINTFACTORY_H_
 
 #include "algorithm/registration/IIterativeClosestPoint.h"
+#include "algorithm/registration/IIterativeClosestPointSetup.h"
 #include <string>
 
 #include <boost/shared_ptr.hpp>
@@ -18,6 +19,7 @@
 namespace BRICS_3D {
 
 typedef boost::shared_ptr<IIterativeClosestPoint> IIterativeClosestPointPtr;
+typedef boost::shared_ptr<IIterativeClosestPointSetup> IIterativeClosestPointSetupPtr;
 
 /**
  * @ingroup registration
@@ -67,6 +69,17 @@ public:
 	 * If it is not installed the default configuration is choosen.<br>
 	 */
 	IIterativeClosestPointPtr createIterativeClosestPoint(std::string configurationFile);
+
+	/**
+	 * @brief Get an ICP setup handle, if available
+	 * @return Returns the handle to the IIterativeClosestPointSetup interface of the last invocation of
+	 * createIterativeClosestPoint if available. Otherwise returns 0.
+	 */
+	IIterativeClosestPointSetupPtr getIcpSetupHandle();
+
+private:
+
+	IIterativeClosestPointSetupPtr icpConfigurator;
 
 };
 

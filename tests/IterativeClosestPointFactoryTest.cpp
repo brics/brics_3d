@@ -48,11 +48,13 @@ void IterativeClosestPointFactoryTest::testDefault() {
 void IterativeClosestPointFactoryTest::testUnitTestConfig() {
 	icpFactory = new IterativeClosestPointFactory();
 	IIterativeClosestPointPtr icp;
+	IIterativeClosestPointSetupPtr icpConfigurator;
 	icp = icpFactory->createIterativeClosestPoint(filename);
+	icpConfigurator = icpFactory->getIcpSetupHandle();
 	CPPUNIT_ASSERT(icp != 0);
 
-	CPPUNIT_ASSERT_EQUAL(25, icp->getMaxIterations());
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.001, icp->getConvergenceThreshold(), maxTolerance);
+	CPPUNIT_ASSERT_EQUAL(25, icpConfigurator->getMaxIterations());
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.001, icpConfigurator->getConvergenceThreshold(), maxTolerance);
 
 	//IterativeClosestPoint* genericIcpImpl;
 	boost::shared_ptr<IterativeClosestPoint> genericIcpImpl;

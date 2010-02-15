@@ -15,7 +15,7 @@ namespace BRICS_3D {
 
 /**
  * @ingroup registration
- * @brief Stateful abstract interface for ICP
+ * @brief Abstract stateful interface for ICP
  *
  * This is a stateful interface, that relies on previous states e.g. invocations of setData(), setModel() or
  * performNextIteration().
@@ -60,7 +60,7 @@ public:
 	virtual PointCloud3D* getModel() = 0;
 
 	/**
-	 * @brief Perform one step/iteration of the ICP algoritham
+	 * @brief Perform one step/iteration of the ICP algorithm
 	 *
 	 * This is a stateful function, that relies on previous states. Thus the output is dependent on
 	 * what kind of data was set in setData() and setModel() and how many time performNextIteration()

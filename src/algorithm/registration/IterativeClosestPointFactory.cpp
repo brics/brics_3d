@@ -29,9 +29,8 @@ using std::string;
 namespace BRICS_3D {
 
 
-
 IterativeClosestPointFactory::IterativeClosestPointFactory() {
-
+//	this->icpConfigurator = 0; //boost does not support this?
 }
 
 IterativeClosestPointFactory::~IterativeClosestPointFactory() {
@@ -58,11 +57,14 @@ IIterativeClosestPointPtr IterativeClosestPointFactory::createIterativeClosestPo
 
 	/* set up icp */
 	IIterativeClosestPointPtr icp; //abstract interface to ICP
+//	IIterativeClosestPointSetupPtr icpConfigurator; //setup interface
 
 	string icpImplementation;
 	configReader.getAttribute("IterativeClosestPoint", "implementation", &icpImplementation);
 	if (icpImplementation.compare("IterativeClosestPoint6DSLAM") == 0) {
 		icp = IIterativeClosestPointPtr(new IterativeClosestPoint6DSLAM());
+		boost::shared_ptr<IterativeClosestPoint6DSLAM> icpTmpHandle = boost::dynamic_pointer_cast<IterativeClosestPoint6DSLAM>(icp); //downcast
+		icpConfigurator = boost::dynamic_pointer_cast<IIterativeClosestPointSetup>(icp); //upcast to setup interface
 		summary << "# Implementation: IterativeClosestPoint6DSLAM" << endl;
 
 	} else if (icpImplementation.compare("IterativeClosestPoint") == 0) {
@@ -127,6 +129,8 @@ IIterativeClosestPointPtr IterativeClosestPointFactory::createIterativeClosestPo
 
 
 		icp = IIterativeClosestPointPtr(new IterativeClosestPoint(assigner, estimator));
+		boost::shared_ptr<IterativeClosestPoint> icpTmpHandle = boost::dynamic_pointer_cast<IterativeClosestPoint>(icp); //downcast
+		icpConfigurator = boost::dynamic_pointer_cast<IIterativeClosestPointSetup>(icp); //upcast to setup interface
 
 	} else { //Neither IterativeClosestPoint6DSLAM nor IterativeClosestPoint
 		cout << "WARNING: Errors during parsing configuration file. Factory fill provide default configuration." << endl;
@@ -136,19 +140,28 @@ IIterativeClosestPointPtr IterativeClosestPointFactory::createIterativeClosestPo
 	/*
 	 * process parameters of icp
 	 */
+//	IIterativeClosestPointSetup* icpConfigurator;
+
+//	std::tr1::shared_ptr<Basesp0(new Derived); // http://bytes.com/topic/c/answers/542252-boost-shared_ptr-polymorphism
+//	std::tr1::shared_ptr<Derivedsp1 = dynamic_pointer_cast<Derived>(sp0);
+//	boost::shared_ptr<Derived> dp=boost::dynamic_pointer_cast<Derived>(bp);
+
+
+	assert(icpConfigurator != 0); //cast worked => icp implementation implements IIterativeClosestPointSetup interface
+
 	int maxIterations;
 	if (configReader.getAttribute("IterativeClosestPoint", "maxIterations", &maxIterations)) {
-		icp->setMaxIterations(maxIterations);
+		icpConfigurator->setMaxIterations(maxIterations);
 	}
 
 	double convergenceThreshold;
 	if (configReader.getAttribute("IterativeClosestPoint", "convergenceThreshold", &convergenceThreshold)) {
-		icp->setConvergenceThreshold(convergenceThreshold);
+		icpConfigurator->setConvergenceThreshold(convergenceThreshold);
 	}
 
 	summary << "#" << endl << "# Parameters:" << endl;
-	summary << "#  maxIterations = " << icp->getMaxIterations() << endl;
-	summary << "#  convergenceThreshold = " << icp->getConvergenceThreshold() << endl;
+	summary << "#  maxIterations = " << icpConfigurator->getMaxIterations() << endl;
+	summary << "#  convergenceThreshold = " << icpConfigurator->getConvergenceThreshold() << endl;
 	summary << "#" << endl << "###########################################################" << endl;
 
 	cout << summary.str();
@@ -156,6 +169,11 @@ IIterativeClosestPointPtr IterativeClosestPointFactory::createIterativeClosestPo
 	return icp;
 
 }
+
+IIterativeClosestPointSetupPtr IterativeClosestPointFactory::getIcpSetupHandle() {
+	return this->icpConfigurator;
+}
+
 
 }
 

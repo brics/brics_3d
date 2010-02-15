@@ -226,6 +226,53 @@ void IterativeClosestPointTest::testSimpleAlignmentAPX() {
 	delete resultTransformation;
 }
 
+void IterativeClosestPointTest::testStatefullInterface() {
+	/* manipulate second point cloud */
+	AngleAxis<double> rotation(M_PI_2l/4.0, Vector3d(1,0,0));
+	Transform3d transformation;
+	transformation = rotation;
+	IHomogeneousMatrix44* homogeneousTrans = new HomogeneousMatrix44(&transformation);
+	pointCloudCubeCopy->homogeneousTransformation(homogeneousTrans);
+
+	/* set up ICP */
+	IPointCorrespondence* assigner;
+	assigner = new PointCorrespondenceKDTree();
+	IRigidTransformationEstimation* estimator = new RigidTransformationEstimationSVD();
+	icp = new IterativeClosestPoint(assigner, estimator);
+
+	/* perform ICP*/
+	IHomogeneousMatrix44* resultTransformation;// = new HomogeneousMatrix44();
+//	icp->match(pointCloudCube, pointCloudCubeCopy, resultTransformation);
+	icp->setModel(pointCloudCube);
+	icp->setData(pointCloudCubeCopy);
+	for (int i = 0; i < 3; ++i) { //here we know empirically that 3 iterations are enough
+			icp->performNextIteration();
+	}
+
+	resultTransformation = icp->getAccumulatedTransfomation();
+	CPPUNIT_ASSERT(resultTransformation != 0);
+
+	/* test if initial and resulting homogeneous transformations are the same */
+	const double* matrix1 = homogeneousTrans->getRawData();
+	const double* matrix2 = resultTransformation->getRawData();
+
+	for (int i = 0; i < 16; ++i) {
+//		cout << matrix1[i] << ", " << matrix2[i] << endl; //DBG output
+		CPPUNIT_ASSERT_DOUBLES_EQUAL(abs(matrix1[i]), abs(matrix2[i]), maxTolerance);
+//		CPPUNIT_ASSERT_DOUBLES_EQUAL(matrix1[i], matrix2[i], maxTolerance);
+	}
+
+	/* test if aligned point cloud is the more or less same as the initial one */
+	for (unsigned int i = 0;  i < pointCloudCube->getSize(); ++ i) {
+		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].getX(), (*pointCloudCubeCopy->getPointCloud())[i].getX(), maxTolerance);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].getY(), (*pointCloudCubeCopy->getPointCloud())[i].getY(), maxTolerance);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].getZ(), (*pointCloudCubeCopy->getPointCloud())[i].getZ(), maxTolerance);
+	}
+
+
+	delete homogeneousTrans;
+}
+
 }  // namespace unitTests
 
 /* EOF */

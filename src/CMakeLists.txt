@@ -72,6 +72,7 @@ SET (ALGORITHM_LIBRARY_SOURCES
 	./algorithm/registration/RigidTransformationEstimationAPX
 	./algorithm/registration/RigidTransformationEstimationORTHO
 	./algorithm/registration/IIterativeClosestPoint
+	./algorithm/registration/IIterativeClosestPointDetailed
 	./algorithm/registration/IterativeClosestPoint
 	./algorithm/registration/IterativeClosestPoint6DSLAM
 	./algorithm/registration/IterativeClosestPointFactory
@@ -83,6 +84,7 @@ SET (UTIL_LIBRARY_SOURCES
 	./util/ConfigurationFileHandler
 	./util/IpaDatasetLoader
 	./util/Timer
+	#./util/Benchmark
 )	
 
 #optional sources

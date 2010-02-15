@@ -46,12 +46,6 @@ IterativeClosestPoint::~IterativeClosestPoint() {
 	delete this->assigner;
 	delete this->estimator;
 
-	if (this->model != 0) { // might be unused
-		delete this->model;
-	}
-	if (this->data != 0) { // might be unused
-		delete this->data;
-	}
 	if (this->intermadiateTransformation != 0) { // might be unused
 		delete this->intermadiateTransformation;
 	}
@@ -171,8 +165,11 @@ double IterativeClosestPoint::performNextIteration() {
 	assert(this->data != 0);
 
 	double error;
-	if (intermadiateTransformation == 0) { // do only one
+	if (this->intermadiateTransformation == 0) { // do only once
 			this->intermadiateTransformation = new HomogeneousMatrix44();
+	}
+	if (this->resultTransformation == 0) { // do only once
+			this->resultTransformation = new HomogeneousMatrix44();
 	}
 	std::vector<CorrespondencePoint3DPair>* pointPairs = new std::vector<CorrespondencePoint3DPair>();
 
@@ -186,7 +183,7 @@ double IterativeClosestPoint::performNextIteration() {
 	/* estimate transformation */
 	error = estimator->estimateTransformation(pointPairs, this->intermadiateTransformation);
 	//cout << "Estimated transformation: " << endl  << *tmpResultTransformation; //DBG output
-	*this->resultTransformation = *((*this->resultTransformation) * (*this->intermadiateTransformation)); // accumulate transformations
+	*(this->resultTransformation) = *((*(this->resultTransformation)) * (*(this->intermadiateTransformation))); // accumulate transformations
 
 	/* perform transformation on data point cloud */
 	this->data->homogeneousTransformation(this->intermadiateTransformation);

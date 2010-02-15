@@ -10,6 +10,7 @@
 #define ITERATIVECLOSESTPOINT_H_
 
 #include "algorithm/registration/IIterativeClosestPoint.h"
+#include "algorithm/registration/IIterativeClosestPointSetup.h"
 #include "algorithm/registration/IIterativeClosestPointDetailed.h"
 #include "algorithm/registration/IPointCorrespondence.h"
 #include "algorithm/registration/IRigidTransformationEstimation.h"
@@ -24,7 +25,7 @@ namespace BRICS_3D {
  * It follows the "strategy" software design pattern (except that context and strategy are implemented in the same class).
  * That means the actual point correspondence and the rigid transformation estimation algorithms are exchangeable during runtime.
  */
-class IterativeClosestPoint : public IIterativeClosestPoint, public IIterativeClosestPointDetailed {
+class IterativeClosestPoint : public IIterativeClosestPoint, public IIterativeClosestPointSetup, public IIterativeClosestPointDetailed {
 public:
 
 	/**

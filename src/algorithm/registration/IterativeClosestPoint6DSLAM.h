@@ -10,6 +10,7 @@
 #define ITERATIVECLOSESTPOINT6DSLAM_H_
 
 #include "algorithm/registration/IIterativeClosestPoint.h"
+#include "algorithm/registration/IIterativeClosestPointSetup.h"
 #include <string>
 
 namespace BRICS_3D {
@@ -18,7 +19,7 @@ namespace BRICS_3D {
  * @ingroup registration
  * @brief Wrapper class for 6DSLAM ICP implementation
  */
-class IterativeClosestPoint6DSLAM : public IIterativeClosestPoint {
+class IterativeClosestPoint6DSLAM : public IIterativeClosestPoint, public IIterativeClosestPointSetup {
 public:
 
 	/**
