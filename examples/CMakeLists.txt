@@ -12,6 +12,7 @@ INCLUDE_DIRECTORIES(
     ${Boost_INCLUDE_DIR}
     ${OPENSCENEGRAPH_INCLUDE_DIRS}
     ${EIGEN2_INCLUDE_DIR}
+    ${STANN_INCLUDE_DIRS}
 )
 
 LINK_DIRECTORIES(
@@ -19,6 +20,7 @@ LINK_DIRECTORIES(
    ${CMAKE_HOME_DIRECTORY}/external/6dslam/lib
    ${CGAL_LIBRARIES_DIR}
    ${CGAL_3RD_PARTY_LIBRARIES_DIRS}
+   ${OpenCV_LINK_DIRECTORIES}
 )
 
 
@@ -80,7 +82,21 @@ IF (USE_OSG)
     	${OSGGA_LIBRARY_DEBUG}
     	${OSGVIEWER_LIBRARY_DEBUG}
     )
+    
+    ADD_EXECUTABLE(point3D_benchmark point3D_benchmark) 
+    TARGET_LINK_LIBRARIES(point3D_benchmark 
+        brics_3dpm_core 
+        brics_3dpm_algorithm 
+        brics_3dpm_util
+        ${OSG_LIBRARY_DEBUG}
+    	${OSGGA_LIBRARY_DEBUG}
+    	${OSGVIEWER_LIBRARY_DEBUG}
+    )
+    
 ENDIF(USE_OSG)
+
+#ADD_EXECUTABLE(flann_test flann_test)
+#TARGET_LINK_LIBRARIES(flann_test brics_3dpm_core brics_3dpm_algorithm flann_s)
 
 ADD_EXECUTABLE(alpha_shapes alpha_shapes)
 #TARGET_LINK_LIBRARIES(alpha_shapes CGAL)
@@ -91,6 +107,9 @@ TARGET_LINK_LIBRARIES(alpha_shapes ${CGAL_LIBRARY})
 
 #ADD_EXECUTABLE(icp_test icp_test) #requires IVT to be installed
 #TARGET_LINK_LIBRARIES(icp_test ivt QtCore brics_3dpm_core brics_3dpm_algorithm brics_3dpm_util)
+
+
+
 
 ADD_DEFINITIONS(-DMAX_OPENMP_NUM_THREADS=4 -DOPENMP_NUM_THREADS=4)
 

@@ -84,7 +84,7 @@ SET (UTIL_LIBRARY_SOURCES
 	./util/ConfigurationFileHandler
 	./util/IpaDatasetLoader
 	./util/Timer
-	#./util/Benchmark
+	./util/Benchmark
 )	
 
 #optional sources

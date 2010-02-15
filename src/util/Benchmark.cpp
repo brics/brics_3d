@@ -1,0 +1,98 @@
+/**
+ * @file 
+ * Benchmark.cpp
+ *
+ * @date: Feb 5, 2010
+ * @author: sblume
+ */
+
+#include "Benchmark.h"
+
+using namespace std;
+
+#include <sstream>
+#include <iomanip> 	//for setw and setfill
+#include <ctime>
+#include <sys/stat.h> //for mkdir
+#include <stdexcept>
+
+
+namespace BRICS_3D {
+
+std::string Benchmark::timeStamp = ""; // deduced from time-stamp
+std::string Benchmark::directoryName = ""; // deduced from time-stamp
+#ifdef WIN32
+	std::string Benchmark::seperator = "\\";
+#else
+	std::string Benchmark::seperator = "/";
+#endif
+
+Benchmark::Benchmark() {
+	Benchmark("unnamedBenchmark");
+}
+
+Benchmark::Benchmark(std::string benchmarkName) {
+	this->benchmarkName = benchmarkName;
+	setupTargetFile();
+}
+
+Benchmark::~Benchmark() {
+	output.flush();
+	output.close();
+}
+
+void Benchmark::setupTargetFile() {
+	string pathName = std::string(BRICS_LOGFILES_DIR);
+
+	if (Benchmark::timeStamp.compare("") == 0) { // set only once
+		stringstream tmpFileName;
+
+		time_t rawtime;
+		struct tm* timeinfo;
+
+		time(&rawtime);
+		timeinfo = localtime(&rawtime);
+
+		tmpFileName << "20" // This will have to be adjusted in year 2100 ;-)
+				<< (timeinfo->tm_year)-100 << "-"
+				<< setw(2) << setfill('0')
+				<<	(timeinfo->tm_mon)+1 << "-"
+				<< setw(2) << setfill('0')
+				<<	timeinfo->tm_mday << "_"
+				<< setw(2) << setfill('0')
+				<<	timeinfo->tm_hour << "-"
+				<< setw(2) << setfill('0')
+				<<	timeinfo->tm_min << "-"
+				<< setw(2) << setfill('0')
+				<<	timeinfo->tm_sec;
+
+//		cout << "tmpFileName " << tmpFileName.str() << endl;
+		Benchmark::timeStamp = tmpFileName.str();
+
+		Benchmark::directoryName = pathName +
+				Benchmark::seperator +
+				Benchmark::timeStamp;
+
+		int err;
+#ifdef WIN32 //__MSDOS__
+		err = mkdir (directoryName.c_str());
+#else  /*  Unix */
+		err = mkdir (Benchmark::directoryName.c_str(), ACCESSPERMS);
+#endif
+		if (err < 0) {
+			string error = "ERROR: cannot create folder" + Benchmark::directoryName;
+			throw runtime_error(error.c_str());
+		}
+	}
+
+	/* concatenate resulting filename string */
+	fileName = Benchmark::directoryName + Benchmark::seperator + benchmarkName + ".txt";
+	cout << "INFO: Logging benchmark results to: " << fileName << endl;
+
+	output.open(fileName.c_str(), ios::trunc);
+
+}
+
+}
+
+/* EOF */

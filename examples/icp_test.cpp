@@ -27,6 +27,7 @@
 #include "algorithm/registration/RigidTransformationEstimationAPX.h"
 #include "algorithm/registration/RigidTransformationEstimationORTHO.h"
 #include "algorithm/registration/IterativeClosestPoint.h"
+#include "algorithm/registration/IIterativeClosestPointSetup.h"
 
 #include <Eigen/Geometry>
 
@@ -98,8 +99,11 @@ int main(int argc, char **argv) {
 	int pointCorrespondence = 1; //TODO pointCorrespondence switch e.g. input parameter,...
 
 	IIterativeClosestPoint* icp; //abstract interface to ICP
+	IIterativeClosestPointSetup* icpConfigurator; //abstract interface to ICP
 	IPointCorrespondence* assigner; //only needed for generic icp
 
+	IterativeClosestPoint* concreteIcp;
+	IterativeClosestPoint6DSLAM* concreteIcp6DSLAM;
 
 	/* set up assigner */
 	INearestNeighbor* nearestNeigbourFinder = new NearestNeighborFLANN();
@@ -133,11 +137,18 @@ int main(int argc, char **argv) {
 
 	switch (algorithm) {
 		case 0:
-			icp = new IterativeClosestPoint(assigner, estimator);
+//			icp = new IterativeClosestPoint(assigner, estimator);
+			concreteIcp = new IterativeClosestPoint(assigner, estimator);
+			icp = dynamic_cast<IIterativeClosestPoint*>(concreteIcp);
+			icpConfigurator = dynamic_cast<IIterativeClosestPointSetup*>(concreteIcp);
+
 			cout << "INFO: Using generic icp." << endl;
 			break;
 		case 1:
-			icp = new IterativeClosestPoint6DSLAM();
+//			icp = new IterativeClosestPoint6DSLAM();
+			concreteIcp6DSLAM = new IterativeClosestPoint6DSLAM();
+			icp = dynamic_cast<IIterativeClosestPoint*>(concreteIcp6DSLAM);
+			icpConfigurator = dynamic_cast<IIterativeClosestPointSetup*>(concreteIcp6DSLAM);
 			cout << "INFO: Using 6Dslam icp." << endl;
 			break;
 		default:
@@ -148,7 +159,7 @@ int main(int argc, char **argv) {
 
 	/* invoke ICP */
 	IHomogeneousMatrix44* resultTransformation = new HomogeneousMatrix44();
-	icp->setMaxIterations(100);
+	icpConfigurator->setMaxIterations(100);
 	icp->match(pointCloud1, pointCloud2, resultTransformation);
 
 

@@ -8,6 +8,7 @@ PROJECT(BRICS_3D)
 ADD_DEFINITIONS(-DBRICS_IMGAGES_DIR="${CMAKE_HOME_DIRECTORY}/examples/test_data/depth_images")
 ADD_DEFINITIONS(-DBRICS_MODELS_DIR="${CMAKE_HOME_DIRECTORY}/examples/test_data/3d_models")
 ADD_DEFINITIONS(-DBRICS_CONFIGURATIONS_DIR="${CMAKE_HOME_DIRECTORY}/examples/test_data")
+ADD_DEFINITIONS(-DBRICS_LOGFILES_DIR="${CMAKE_HOME_DIRECTORY}/examples/test_data/logfiles")
 
 ## check required prerequisites
 SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/external/cmake_modules")
