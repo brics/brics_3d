@@ -13,16 +13,20 @@ using namespace std;
 #include <sstream>
 #include <iomanip> 	//for setw and setfill
 #include <ctime>
-#include <sys/stat.h> //for mkdir
 #include <stdexcept>
 
+#ifdef WIN32
+	#include <direct.h>
+#else
+	#include <sys/stat.h> //for mkdir
+#endif
 
 namespace BRICS_3D {
 
 std::string Benchmark::timeStamp = ""; // deduced from time-stamp
 std::string Benchmark::directoryName = ""; // deduced from time-stamp
 #ifdef WIN32
-	std::string Benchmark::seperator = "\\";
+	std::string Benchmark::seperator = "\\"; // one \ is escape character...
 #else
 	std::string Benchmark::seperator = "/";
 #endif
@@ -75,7 +79,7 @@ void Benchmark::setupTargetFile() {
 
 		int err;
 #ifdef WIN32 //__MSDOS__
-		err = mkdir (directoryName.c_str());
+		err = _mkdir (directoryName.c_str());
 #else  /*  Unix */
 		err = mkdir (Benchmark::directoryName.c_str(), ACCESSPERMS);
 #endif
