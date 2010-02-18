@@ -57,7 +57,9 @@ SET (CORE_LIBRARY_SOURCES
 
 SET (ALGORITHM_LIBRARY_SOURCES
 	./algorithm/DepthImageToPointCloudTransformation
-#	./algorithm/filter/IOctree
+	./algorithm/filter/IOctree
+    ./algorithm/filter/IOctreeSetup
+	./algorithm/filter/Octree
     ./algorithm/nearestNeighbor/INearestNeighbor
     ./algorithm/nearestNeighbor/NearestNeighborANN
     ./algorithm/nearestNeighbor/NearestNeighborFLANN

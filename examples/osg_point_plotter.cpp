@@ -22,6 +22,7 @@
 #include <util/OSGPointCloudVisualizer.h>
 #include <core/PointCloud3D.h>
 #include <algorithm/DepthImageToPointCloudTransformation.h>
+#include <algorithm/filter/Octree.h>
 
 using namespace std;
 using namespace BRICS_3D;
@@ -60,9 +61,21 @@ int main(int argc, char **argv) {
 	img2cloudTramsformer->transformDepthImageToPointCloud(depthImage, pointCloud, 0);
 	cout << "Size of point cloud: " << pointCloud->getSize() << endl;
 
+	/* (optionally) reduce  point cloud with octree filter */
+	Octree* octreeFilter = new Octree();
+	octreeFilter->setVoxelSize(5.0); //value deduce from roughly knowing the bounding box
+	PointCloud3D* reducedPointCloud = new PointCloud3D();
+	octreeFilter->createOctree(pointCloud, reducedPointCloud);
+
 	/* visualize point cloud */
 	OSGPointCloudVisualizer* visualizer = new OSGPointCloudVisualizer();
-	visualizer->visualizePointCloud(pointCloud);
+//	visualizer->visualizePointCloud(pointCloud);
+	visualizer->visualizePointCloud(reducedPointCloud);
+
+	delete visualizer;
+	delete reducedPointCloud;
+	delete pointCloud;
+	delete depthImgageLoader;
 
 	return 0;
 }
