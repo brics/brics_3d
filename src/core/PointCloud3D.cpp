@@ -37,10 +37,13 @@ void PointCloud3D::addPoint(Point3D point) {
 
 std::vector<Point3D> *PointCloud3D::getPointCloud() {
 	return pointCloud;
-
 }
 
 void PointCloud3D::setPointCloud(std::vector<Point3D> *pointCloud) {
+	if (pointCloud != NULL) {
+		pointCloud->clear();
+		delete pointCloud;
+	}
 	this->pointCloud = pointCloud;
 }
 

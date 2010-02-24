@@ -18,10 +18,7 @@
 namespace BRICS_3D {
 
 /**
- * @class PointCloud3D
  * @brief Class to represent a Cartesian 3D point cloud
- * @author Sebastian Blumenthal
- * @date Aug 25, 2009
  */
 class PointCloud3D {
 public:
@@ -43,16 +40,16 @@ public:
 	void addPoint(Point3D point);
 
 	/**
-	 * @brief Get the reference to the point cloud
+	 * @brief Get the pointer to the point cloud
 	 * @return Pointer to point cloud
 	 */
-    std::vector<Point3D> *getPointCloud();
+    std::vector<Point3D>* getPointCloud();
 
 	/**
-	 * @brief Set the reference to the point cloud
+	 * @brief Set the pointer to the point cloud
 	 * @param pointCloud Pointer to new point cloud
 	 */
-    void setPointCloud(std::vector<Point3D> *pointCloud);
+    void setPointCloud(std::vector<Point3D>* pointCloud);
 
     /**
      * @brief Get the number of points in the point cloud
@@ -110,7 +107,7 @@ public:
 protected:
 
 	///Pointer to vector which represents a Cartesian point cloud
-	std::vector<Point3D> *pointCloud;
+	std::vector<Point3D>* pointCloud;
 };
 
 }

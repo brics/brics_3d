@@ -54,6 +54,9 @@ SET (CORE_LIBRARY_SOURCES
 	./core/CorrespondenceIndexPair
 	./core/CorrespondencePoint3DPair
 	./core/Triangle
+	./core/ITriangleMesh
+	./core/TriangleMeshExplicit
+	./core/TriangleMeshImplicit
 )
 
 SET (ALGORITHM_LIBRARY_SOURCES

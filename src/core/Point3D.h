@@ -131,7 +131,7 @@ public:
 	/**
 	 * @brief Overridden assign operator
 	 * @param point Reference to right operand
-	 * @param Reference to left operand
+	 * @return Reference to left operand
 	 */
 	virtual Point3D& operator=(const Point3D &point);
 
@@ -145,7 +145,7 @@ public:
 	/**
 	 * @brief Overridden >> operator.
 	 *
-	 * Reads a point from a stream an stores it. E.g. e.g. std::cin >> pointObj;
+	 * Reads a point from a stream an stores it. e.g. std::cin >> pointObj;
 	 *
 	 * @param inStream The input stream
 	 * @param point Reference to point where input is stored
