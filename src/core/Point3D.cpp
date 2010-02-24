@@ -91,7 +91,7 @@ Point3D Point3D::operator +(const Point3D *point) {
 
 Point3D Point3D::operator -(const Point3D *point) {
 	Point3D result;
-	result.x = this->x - point->x; //TODO: !!! change to get and set ?!?!
+	result.x = this->x - point->x;
 	result.y = this->y - point->y;
 	result.z = this->z - point->z;
 

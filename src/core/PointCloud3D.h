@@ -15,11 +15,6 @@
 
 #include "core/Point3D.h"
 
-//using namespace std;
-
-/**
- * @namespace BRICS_3D
- */
 namespace BRICS_3D {
 
 /**
@@ -89,7 +84,7 @@ public:
 	 * Reads a point cloud from a stream an stores it. E.g. e.g. std::cin >> pointCloudObj;
 	 *
 	 * @param inStream The input stream
-	 * @param pointCloud Pointer to point where input is stored
+	 * @param pointCloud Reference to point where input is stored
 	 * @return Input stream
 	 */
 	friend istream& operator>>(istream &inStream, PointCloud3D &pointCloud);
@@ -100,7 +95,7 @@ public:
 	 * Writes a point cloud to a stream e.g. std::cout << pointCloudObj;
 	 *
 	 * @param outStream The output stream
-	 * @param pointCloud Pointer to point which data is forwarded to output stream
+	 * @param pointCloud Reference to point which data is forwarded to output stream
 	 * @return Output stream
 	 */
 	friend ostream& operator<<(ostream &outStream, PointCloud3D &pointCloud);
@@ -110,7 +105,7 @@ public:
 	 *
 	 * @param[in] transformation The homogeneous transformation matrix that will be applied
 	 */
-	void homogeneousTransformation(IHomogeneousMatrix44 *transformation);
+	void homogeneousTransformation(IHomogeneousMatrix44* transformation);
 
 protected:
 

@@ -53,6 +53,7 @@ SET (CORE_LIBRARY_SOURCES
 	./core/ColoredPoint3D
 	./core/CorrespondenceIndexPair
 	./core/CorrespondencePoint3DPair
+	./core/Triangle
 )
 
 SET (ALGORITHM_LIBRARY_SOURCES

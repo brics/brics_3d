@@ -58,7 +58,7 @@ public:
 	 * @brief Copy constructor
 	 * @param[in] point Pointer to point that will be copied
 	 */
-	Point3D(Point3D *point);
+	Point3D(Point3D* point);
 
 	/**
 	 * @brief Standard destructor
@@ -105,21 +105,21 @@ public:
 	 * @brief Copy raw data to input buffer (array)
 	 * @param[out] pointBuffer Pointer to buffer, where to store the raw data
 	 */
-	virtual void getRawData(Coordinate *pointBuffer);
+	virtual void getRawData(Coordinate* pointBuffer);
 
 	/**
 	 * @brief Add a point to another point e.i each coordinate is added.
 	 * @param[in] point Pointer to point that will be added
 	 * @return Result of addition
 	 */
-	virtual Point3D operator+(const Point3D *point);
+	virtual Point3D operator+(const Point3D* point);
 
 	/**
 	 * @brief Subtract a point to another point e.i each coordinate is substracted
 	 * @param[in] point Pointer to point that will be subtracted
 	 * @return Result of substraction
 	 */
-	virtual Point3D operator-(const Point3D *point);
+	virtual Point3D operator-(const Point3D* point);
 
 	/**
 	 * @brief Multiply a point by a scalar
@@ -128,6 +128,11 @@ public:
 	 */
 	virtual Point3D operator*(double scalar);
 
+	/**
+	 * @brief Overridden assign operator
+	 * @param point Reference to right operand
+	 * @param Reference to left operand
+	 */
 	virtual Point3D& operator=(const Point3D &point);
 
 	/**
@@ -143,7 +148,7 @@ public:
 	 * Reads a point from a stream an stores it. E.g. e.g. std::cin >> pointObj;
 	 *
 	 * @param inStream The input stream
-	 * @param point Pointer to point where input is stored
+	 * @param point Reference to point where input is stored
 	 * @return Input stream
 	 */
 	friend istream& operator>>(istream &inStream, Point3D &point);
@@ -154,7 +159,7 @@ public:
 	 * Writes a point to a stream e.g. std::cout << pointObj;
 	 *
 	 * @param outStream The output stream
-	 * @param point Pointer to point which data is forwarded to output stream
+	 * @param point Reference to point which data is forwarded to output stream
 	 * @return Output stream
 	 */
 	friend ostream& operator<<(ostream &outStream, const Point3D &point);
