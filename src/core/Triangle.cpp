@@ -19,8 +19,14 @@ Triangle::Triangle() {
 
 Triangle::Triangle(Triangle* triangle) {
 	for (int i = 0; i <= 2; ++i) {
-		vertices[i] = Point3D(triangle->getVertex(0));
+		vertices[i] = Point3D(triangle->getVertex(i));
 	}
+}
+
+Triangle::Triangle(Point3D vertex1, Point3D vertex2, Point3D vertex3) {
+	vertices[0] = vertex1;
+	vertices[1] = vertex2;
+	vertices[2] = vertex3;
 }
 
 Triangle::~Triangle() {
