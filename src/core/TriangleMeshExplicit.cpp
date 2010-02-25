@@ -47,7 +47,7 @@ int TriangleMeshExplicit::getNumberOfVertices() {
 
 Point3D* TriangleMeshExplicit::getTriangleVertex(int triangleIndex, int vertexIndex) {
 	/* check if parameters are in range */
-	assert ((0 <= triangleIndex) && (vertexIndex < this->getSize()));
+	assert ((0 <= triangleIndex) && (triangleIndex < this->getSize()));
 	assert ((0 <= vertexIndex) && (vertexIndex <= 2));
 
 	return (*triangles)[triangleIndex].getVertex(vertexIndex);
