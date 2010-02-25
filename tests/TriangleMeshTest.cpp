@@ -58,7 +58,7 @@ void TriangleMeshTest::tearDown() {
 	delete vertex111;
 }
 
-void TriangleMeshTest::testExplicitConstructor() {
+void TriangleMeshTest::testExplicitMeshConstructor() {
 	TriangleMeshExplicit* mesh = new TriangleMeshExplicit();
 
 	CPPUNIT_ASSERT_EQUAL(0, mesh->getSize());
@@ -74,7 +74,7 @@ void TriangleMeshTest::testExplicitConstructor() {
 	delete mesh;
 }
 
-void TriangleMeshTest::testImplicitConstructor() {
+void TriangleMeshTest::testImplicitMeshConstructor() {
 	TriangleMeshImplicit* mesh = new TriangleMeshImplicit();
 
 	CPPUNIT_ASSERT_EQUAL(0, mesh->getSize());
@@ -90,7 +90,7 @@ void TriangleMeshTest::testImplicitConstructor() {
 	delete mesh;
 }
 
-void TriangleMeshTest::testPolymorphConstructor() {
+void TriangleMeshTest::testPolymorphMeshConstructor() {
 	abstractMesh = new TriangleMeshExplicit();
 
 	CPPUNIT_ASSERT_EQUAL(0, abstractMesh->getSize());
@@ -117,6 +117,43 @@ void TriangleMeshTest::testPolymorphConstructor() {
 	CPPUNIT_ASSERT_EQUAL(4, abstractMesh->getSize());
 
 	delete abstractMesh;
+}
+
+void TriangleMeshTest::testImplicitMeshModification() {
+	TriangleMeshImplicit* mesh = new TriangleMeshImplicit();
+
+	CPPUNIT_ASSERT_EQUAL(0, mesh->getSize());
+
+	                                             // index
+	(*mesh->getVertices()).push_back(vertex000); // 0
+	(*mesh->getVertices()).push_back(vertex100); // 1
+	(*mesh->getVertices()).push_back(vertex101); // 2
+	(*mesh->getVertices()).push_back(vertex001); // 3
+	(*mesh->getVertices()).push_back(vertex110); // 4
+	(*mesh->getVertices()).push_back(vertex111); // 5
+	CPPUNIT_ASSERT_EQUAL(0, mesh->getSize());
+
+	(*mesh->getIndices()).push_back(0);
+	(*mesh->getIndices()).push_back(1);
+	(*mesh->getIndices()).push_back(2);
+	CPPUNIT_ASSERT_EQUAL(1, mesh->getSize());
+
+	(*mesh->getIndices()).push_back(2);
+	(*mesh->getIndices()).push_back(3);
+	(*mesh->getIndices()).push_back(0);
+	CPPUNIT_ASSERT_EQUAL(2, mesh->getSize());
+
+	(*mesh->getIndices()).push_back(2);
+	(*mesh->getIndices()).push_back(1);
+	(*mesh->getIndices()).push_back(4);
+	CPPUNIT_ASSERT_EQUAL(3, mesh->getSize());
+
+	(*mesh->getIndices()).push_back(2);
+	(*mesh->getIndices()).push_back(4);
+	(*mesh->getIndices()).push_back(5);
+	CPPUNIT_ASSERT_EQUAL(4, mesh->getSize());
+
+	delete mesh;
 }
 
 }

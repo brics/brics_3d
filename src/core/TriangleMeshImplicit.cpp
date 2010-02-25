@@ -30,6 +30,35 @@ TriangleMeshImplicit::~TriangleMeshImplicit() {
 	}
 }
 
+
+std::vector<Point3D>* TriangleMeshImplicit::getVertices() {
+	return vertices;
+}
+
+
+void TriangleMeshImplicit::setVertices(std::vector<Point3D>* vertices) {
+	if (this->vertices != NULL) {
+		this->vertices->clear();
+		delete this->vertices;
+	}
+	this->vertices = vertices;
+}
+
+
+std::vector<int>* TriangleMeshImplicit::getIndices() {
+	return indices;
+}
+
+
+void TriangleMeshImplicit::setIndices(std::vector<int>* indices) {
+	if (this->indices != NULL) {
+		this->indices->clear();
+		delete this->indices;
+	}
+	this->indices = indices;
+}
+
+
 int TriangleMeshImplicit::getSize() {
 	assert((static_cast<int>(indices->size()) % 3) == 0); //plausibility check if index triples are consistent
 	return (static_cast<int>(indices->size()) / 3);

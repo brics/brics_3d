@@ -30,9 +30,9 @@ std::vector<Triangle>* TriangleMeshExplicit::getTriangles() {
 }
 
 void TriangleMeshExplicit::setTriangles(std::vector<Triangle>* triangles) {
-	if (triangles != NULL) {
-		triangles->clear();
-		delete triangles;
+	if (this->triangles != NULL) {
+		this->triangles->clear();
+		delete this->triangles;
 	}
 	this->triangles = triangles;
 }

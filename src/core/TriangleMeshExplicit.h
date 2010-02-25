@@ -33,7 +33,7 @@ public:
 	 * To get access to the vertices of the mesh, prefer getTriangleVertex(),
 	 * as that function is more generic and complies to the ITriangleMesh interface.
 	 *
-	 * @return Pointer to point cloud
+	 * @return Pointer to triangles
 	 */
     std::vector<Triangle>* getTriangles();
 

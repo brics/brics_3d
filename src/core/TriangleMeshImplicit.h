@@ -27,6 +27,35 @@ public:
 	 */
 	virtual ~TriangleMeshImplicit();
 
+	/**
+	 * @brief Get the pointer to the vertices
+	 * To get access to the vertices of the mesh, prefer getTriangleVertex(),
+	 * as that function is more generic and complies to the ITriangleMesh interface.
+	 *
+	 * @return Pointer to vertices
+	 */
+    std::vector<Point3D>* getVertices();
+
+	/**
+	 * @brief Set the pointer to the vertices
+	 * @param vertices Pointer to new vertex set
+	 */
+    void setVertices(std::vector<Point3D>* vertices);
+
+	/**
+	 * @brief Get the pointer to the vertex indices
+	 * To get access to the vertices of the mesh, prefer getTriangleVertex(),
+	 * as that function is more generic and complies to the ITriangleMesh interface.
+	 *
+	 * @return Pointer to indices
+	 */
+    std::vector<int>* getIndices();
+
+	/**
+	 * @brief Set the pointer to the indices
+	 * @param indices Pointer to new index set
+	 */
+    void setIndices(std::vector<int>* indices);
 
 	int getSize();
 

@@ -24,18 +24,20 @@ namespace unitTests {
 class TriangleMeshTest : public CPPUNIT_NS::TestFixture {
 
 	CPPUNIT_TEST_SUITE( TriangleMeshTest );
-	CPPUNIT_TEST( testExplicitConstructor );
-	CPPUNIT_TEST( testImplicitConstructor );
-	CPPUNIT_TEST( testPolymorphConstructor );
+	CPPUNIT_TEST( testExplicitMeshConstructor );
+	CPPUNIT_TEST( testImplicitMeshConstructor );
+	CPPUNIT_TEST( testPolymorphMeshConstructor );
+	CPPUNIT_TEST( testImplicitMeshModification );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
 	void setUp();
 	void tearDown();
 
-	void testExplicitConstructor();
-	void testImplicitConstructor();
-	void testPolymorphConstructor();
+	void testExplicitMeshConstructor();
+	void testImplicitMeshConstructor();
+	void testPolymorphMeshConstructor();
+	void testImplicitMeshModification();
 
 private:
 
