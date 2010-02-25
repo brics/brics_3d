@@ -41,6 +41,10 @@ int TriangleMeshExplicit::getSize() {
 	return static_cast<int>(triangles->size());
 }
 
+int TriangleMeshExplicit::getNumberOfVertices() {
+	return (this->getSize() * 3); //each triangle has three dedicated vertices.
+}
+
 Point3D* TriangleMeshExplicit::getTriangleVertex(int triangleIndex, int vertexIndex) {
 	/* check if parameters are in range */
 	assert ((0 <= triangleIndex) && (vertexIndex < this->getSize()));

@@ -45,6 +45,8 @@ public:
 
 	int getSize();
 
+	int getNumberOfVertices();
+
 	Point3D* getTriangleVertex(int triangleIndex, int vertexIndex);
 
 	int addTriangle(Point3D vertex1, Point3D vertex2, Point3D vertex3);

@@ -64,6 +64,10 @@ int TriangleMeshImplicit::getSize() {
 	return (static_cast<int>(indices->size()) / 3);
 }
 
+int TriangleMeshImplicit::getNumberOfVertices() {
+	return (static_cast<int>(vertices->size()));
+}
+
 Point3D* TriangleMeshImplicit::getTriangleVertex(int triangleIndex, int vertexIndex) {
 	/* check if parameters are in range */
 	assert ((0 <= triangleIndex) && (vertexIndex < this->getSize()));

@@ -71,6 +71,8 @@ void TriangleMeshTest::testExplicitMeshConstructor() {
 	mesh->addTriangle(testTriangle4);
 	CPPUNIT_ASSERT_EQUAL(4, mesh->getSize());
 
+	CPPUNIT_ASSERT_EQUAL(12, mesh->getNumberOfVertices());
+
 	delete mesh;
 }
 
@@ -86,6 +88,8 @@ void TriangleMeshTest::testImplicitMeshConstructor() {
 	CPPUNIT_ASSERT_EQUAL(3, mesh->getSize());
 	mesh->addTriangle(*vertex100, *vertex110, *vertex111);
 	CPPUNIT_ASSERT_EQUAL(4, mesh->getSize());
+
+	CPPUNIT_ASSERT_EQUAL(12, mesh->getNumberOfVertices());
 
 	delete mesh;
 }
@@ -103,6 +107,8 @@ void TriangleMeshTest::testPolymorphMeshConstructor() {
 	abstractMesh->addTriangle(*vertex100, *vertex110, *vertex111);
 	CPPUNIT_ASSERT_EQUAL(4, abstractMesh->getSize());
 
+	CPPUNIT_ASSERT_EQUAL(12, abstractMesh->getNumberOfVertices());
+
 	delete abstractMesh;
 	abstractMesh = new TriangleMeshImplicit();
 
@@ -116,6 +122,8 @@ void TriangleMeshTest::testPolymorphMeshConstructor() {
 	abstractMesh->addTriangle(*vertex100, *vertex110, *vertex111);
 	CPPUNIT_ASSERT_EQUAL(4, abstractMesh->getSize());
 
+	CPPUNIT_ASSERT_EQUAL(12, abstractMesh->getNumberOfVertices());
+
 	delete abstractMesh;
 }
 
@@ -123,7 +131,7 @@ void TriangleMeshTest::testImplicitMeshModification() {
 	TriangleMeshImplicit* mesh = new TriangleMeshImplicit();
 
 	CPPUNIT_ASSERT_EQUAL(0, mesh->getSize());
-
+	CPPUNIT_ASSERT_EQUAL(0, mesh->getNumberOfVertices());
 	                                             // index
 	(*mesh->getVertices()).push_back(vertex000); // 0
 	(*mesh->getVertices()).push_back(vertex100); // 1
@@ -152,6 +160,8 @@ void TriangleMeshTest::testImplicitMeshModification() {
 	(*mesh->getIndices()).push_back(4);
 	(*mesh->getIndices()).push_back(5);
 	CPPUNIT_ASSERT_EQUAL(4, mesh->getSize());
+
+	CPPUNIT_ASSERT_EQUAL(6, mesh->getNumberOfVertices());
 
 	delete mesh;
 }

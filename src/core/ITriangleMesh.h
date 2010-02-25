@@ -41,6 +41,12 @@ public:
 	virtual int getSize() = 0;
 
 	/**
+	 * @brief Get the number of vertices in the mesh
+	 * @return Returns the number of vertices in the mesh. The output depends on the underlying representation!
+	 */
+	virtual int getNumberOfVertices() = 0;
+
+	/**
 	 * @brief Get a vertex that belongs to a triangle
 	 *
 	 * @param triangleIndex The index of a triangle. The fist triangle has index 0, the second has 1 and so on...
