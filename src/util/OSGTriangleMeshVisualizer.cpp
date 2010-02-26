@@ -67,6 +67,7 @@ osg::TriangleMesh* OSGTriangleMeshVisualizer::createTriangleMesh(ITriangleMesh* 
 	//this is a smart converter... ;-)
 	TriangleMeshImplicit* meshImplicit = dynamic_cast<TriangleMeshImplicit*>(mesh);
 	if (meshImplicit != NULL) { //here we exploit knowledge about the implicit triangle representation
+
 		nVertices = meshImplicit->getNumberOfVertices();
 		nTriangles = meshImplicit->getSize(); //TODO: correct size
 		vertices = new osg::Vec3Array(nVertices);
@@ -76,7 +77,7 @@ osg::TriangleMesh* OSGTriangleMeshVisualizer::createTriangleMesh(ITriangleMesh* 
 			tmpVertex = (*meshImplicit->getVertices())[i];
 			(*vertices)[i] = osg::Vec3(
 					//static_cast<value_type>(tmpVertex.getX()),
-					tmpVertex.getX(), // TODO: cast
+					tmpVertex.getX(), // TODO: cast ?
 					tmpVertex.getY(),
 					tmpVertex.getZ());
 		}
@@ -100,24 +101,19 @@ osg::TriangleMesh* OSGTriangleMeshVisualizer::createTriangleMesh(ITriangleMesh* 
 		for (int i =0 ; i < nTriangles; ++i) { // loop over all triangles
 			for (int j = 0; j <= 2; ++j) { // loop over the three vertices per triangle
 				tmpVertex = *mesh->getTriangleVertex(i,j);
-//				std::cout << tmpVertex << std::endl;
-						(*vertices)[i] = osg::Vec3(
+						(*vertices)[indexCount] = osg::Vec3(
 					//static_cast<value_type>(tmpVertex.getX()),
 					tmpVertex.getX(), // TODO: cast?
 					tmpVertex.getY(),
 					tmpVertex.getZ());
 
 				(*indices)[indexCount] = indexCount; //one-to-one mapping
-//				std::cout << "idx " << indexCount << std::endl;
 				indexCount++;
 			}
 		}
 	}
 
 	osg::TriangleMesh* osgMesh = new osg::TriangleMesh();
-	for (int i = 0; i < indices->size(); ++i) {
-		std::cout << static_cast<int>((*indices)[i])  << " ";
-	}
 	std::cout << std::endl << *mesh;
 	osgMesh->setVertices(vertices);
 	osgMesh->setIndices(indices);

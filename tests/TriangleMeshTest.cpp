@@ -39,8 +39,8 @@ void TriangleMeshTest::setUp() {
 
 	testTriangle1 = new Triangle(*vertex000, *vertex100, *vertex101);
 	testTriangle2 = new Triangle(*vertex101, *vertex001, *vertex000);
-	testTriangle3 = new Triangle(*vertex100, *vertex110, *vertex111);
-	testTriangle4 = new Triangle(*vertex100, *vertex110, *vertex111);
+	testTriangle3 = new Triangle(*vertex100, *vertex110, *vertex101);
+	testTriangle4 = new Triangle(*vertex101, *vertex110, *vertex111);
 }
 
 void TriangleMeshTest::tearDown() {

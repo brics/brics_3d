@@ -35,20 +35,22 @@ int main(int argc, char **argv) {
 	Point3D* vertex000 = new Point3D(0,0,0);
 	Point3D* vertex100 = new Point3D(1,0,0);
 	Point3D* vertex101 = new Point3D(1,0,1);
-	Point3D* vertex001 = new Point3D(0,0,1);
+//	Point3D* vertex001 = new Point3D(0,0,1);
+	Point3D* vertex001 = new Point3D(0,0.2,1);
 	Point3D* vertex110 = new Point3D(1,1,0);
-	Point3D* vertex111 = new Point3D(1,1,1);
+//	Point3D* vertex111 = new Point3D(1,1,1);
+	Point3D* vertex111 = new Point3D(0.8,1,1);
 
 	Triangle* testTriangle1 = new Triangle(*vertex000, *vertex100, *vertex101);
 	Triangle* testTriangle2 = new Triangle(*vertex101, *vertex001, *vertex000);
 	Triangle* testTriangle3 = new Triangle(*vertex100, *vertex110, *vertex101); //...
-	Triangle* testTriangle4 = new Triangle(*vertex100, *vertex110, *vertex111);
+	Triangle* testTriangle4 = new Triangle(*vertex101, *vertex110, *vertex111);
 
 	TriangleMeshExplicit* meshExplicit = new TriangleMeshExplicit();
 	meshExplicit->addTriangle(testTriangle1);
-//	meshExplicit->addTriangle(testTriangle2);
-//	meshExplicit->addTriangle(testTriangle3);
-//	meshExplicit->addTriangle(testTriangle4);
+	meshExplicit->addTriangle(testTriangle2);
+	meshExplicit->addTriangle(testTriangle3);
+	meshExplicit->addTriangle(testTriangle4);
 
 
 
@@ -76,6 +78,7 @@ int main(int argc, char **argv) {
 	(*meshImplicit->getIndices()).push_back(2);
 	(*meshImplicit->getIndices()).push_back(4);
 	(*meshImplicit->getIndices()).push_back(5);
+
 
 	/* visualize triangle mesh */
 	OSGTriangleMeshVisualizer* visualizer = new OSGTriangleMeshVisualizer();
