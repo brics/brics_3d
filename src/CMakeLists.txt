@@ -82,6 +82,9 @@ SET (ALGORITHM_LIBRARY_SOURCES
 	./algorithm/registration/IterativeClosestPoint
 	./algorithm/registration/IterativeClosestPoint6DSLAM
 	./algorithm/registration/IterativeClosestPointFactory
+	./algorithm/meshGeneration/IDelaunayTriangulation
+	
+	
 
 )
 
@@ -97,6 +100,7 @@ SET (UTIL_LIBRARY_SOURCES
 IF (USE_OSG)
     list(APPEND UTIL_LIBRARY_SOURCES ./util/OSGPointCloudVisualizer)
     list(APPEND UTIL_LIBRARY_SOURCES ./util/OSGTriangleMeshVisualizer)
+    list(APPEND ALGORITHM_LIBRARY_SOURCES ./algorithm/meshGeneration/DelaunayTriangulationOSG)
     list(APPEND BRICS_3D_LIBRARIES_INCLUDE_DIRS ${OSG_INCLUDE_DIR})
 ENDIF(USE_OSG)
 

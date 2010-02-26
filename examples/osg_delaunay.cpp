@@ -119,7 +119,7 @@ int main(int argc, char **argv) {
 	gm->setVertexArray(points);
 	gm->addPrimitiveSet(trig->getTriangles());
 	osg::Vec4Array* colors = new osg::Vec4Array(1);
-	colors->push_back(osg::Vec4(1,0,0,1));
+	colors->push_back(osg::Vec4(0,1,0,0.3));
 	gm->setColorArray(colors);
 	gm->setColorBinding(osg::Geometry::BIND_OVERALL);
 

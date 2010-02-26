@@ -114,7 +114,7 @@ osg::TriangleMesh* OSGTriangleMeshVisualizer::createTriangleMesh(ITriangleMesh* 
 	}
 
 	osg::TriangleMesh* osgMesh = new osg::TriangleMesh();
-	std::cout << std::endl << *mesh;
+//	std::cout << std::endl << *mesh;
 	osgMesh->setVertices(vertices);
 	osgMesh->setIndices(indices);
 	return osgMesh;
