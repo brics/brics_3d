@@ -28,6 +28,7 @@
 #include "algorithm/registration/RigidTransformationEstimationORTHO.h"
 #include "algorithm/registration/IterativeClosestPoint.h"
 #include "algorithm/registration/IIterativeClosestPointSetup.h"
+#include "util/Timer.h"
 
 #include <Eigen/Geometry>
 
@@ -64,6 +65,8 @@ int main(int argc, char **argv) {
 		cout << "Usage: " << argv[0] << " <filename>" << " <filename>" << endl;
 		return -1;
 	}
+
+	Timer timer0;
 
 	PointCloud3D* pointCloud1 = new PointCloud3D();
 	pointCloud1->readFromTxtFile(filename1);
@@ -160,7 +163,9 @@ int main(int argc, char **argv) {
 	/* invoke ICP */
 	IHomogeneousMatrix44* resultTransformation = new HomogeneousMatrix44();
 	icpConfigurator->setMaxIterations(100);
+	timer0.reset();
 	icp->match(pointCloud1, pointCloud2, resultTransformation);
+	cout <<  "Time for matching [ms]: " << timer0.getElapsedTime() << endl;
 
 
 	viewer->visualizePointCloud(pointCloud2, 1.0f, 1.0f, 1.0f, 1.0f);
