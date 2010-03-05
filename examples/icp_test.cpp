@@ -57,9 +57,9 @@ int main(int argc, char **argv) {
 		filename2 = defaultFilename2;
 
 		cout << "Trying to get default files: " << filename1 << ", " << filename2 << endl;
-	} else if (argc == 2) {
-		string filename1 = argv[1];
-		string filename2 = argv[2];
+	} else if (argc == 3) {
+		filename1 = argv[1];
+		filename2 = argv[2];
 		cout << filename1 << ", " << filename2 << endl;
 	} else {
 		cout << "Usage: " << argv[0] << " <filename>" << " <filename>" << endl;
