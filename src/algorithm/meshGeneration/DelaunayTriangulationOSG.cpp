@@ -62,7 +62,7 @@ void DelaunayTriangulationOSG::triangulate(PointCloud3D* pointCloud, ITriangleMe
 	constraint->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINE_LOOP,0,3) );
 
 	/* add constraint to triangulator */
-	trig->addInputConstraint(constraint.get());
+	//trig->addInputConstraint(constraint.get());
 
 	trig->triangulate();
 
@@ -116,7 +116,7 @@ void DelaunayTriangulationOSG::triangulate(PointCloud3D* pointCloud, ITriangleMe
 //	   std::cout << tri->_p1->_vertex << ", ";
 //	   std::cout << tri->_p2->_vertex << ", ";
 //	   std::cout << tri->_p3->_vertex << "\n";
-	   std::cout << std::endl;
+//	   std::cout << std::endl;
 
 	   mesh->addTriangle(tmpVertex1, tmpVertex2, tmpVertex3);
 	}

@@ -38,7 +38,9 @@ IterativeClosestPointFactory::~IterativeClosestPointFactory() {
 }
 
 IIterativeClosestPointPtr IterativeClosestPointFactory::createIterativeClosestPoint() {
-	return IIterativeClosestPointPtr(new IterativeClosestPoint());
+	IPointCorrespondence* assigner = new PointCorrespondenceKDTree();;
+	IRigidTransformationEstimation* estimator = new RigidTransformationEstimationSVD();
+	return IIterativeClosestPointPtr(new IterativeClosestPoint(assigner, estimator));
 }
 
 IIterativeClosestPointPtr IterativeClosestPointFactory::createIterativeClosestPoint(std::string configurationFile) {
