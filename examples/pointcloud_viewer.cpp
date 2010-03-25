@@ -10,6 +10,7 @@
 #include <iostream>
 #include <util/OSGPointCloudVisualizer.h>
 #include <core/PointCloud3D.h>
+#include <algorithm/filter/Octree.h>
 #include <cstring>
 
 using namespace std;
@@ -21,6 +22,8 @@ int main(int argc, char **argv) {
 
 	/* check argument */
 	string filename;
+	bool useOctree = false;
+	double voxelSize = 0.0;
 	if (argc == 1) {
 		cout << "Usage: " << argv[0] << " <filename>" << endl;
 
@@ -32,6 +35,11 @@ int main(int argc, char **argv) {
 	} else if (argc == 2) {
 		filename = argv[1];
 		cout << filename << endl;
+	} else if (argc == 3) {
+		filename = argv[1];
+		voxelSize = atof(argv[2]);
+		cout << filename << ", with voxel size = " << voxelSize <<endl;
+		useOctree = true;
 	} else {
 		cerr << "Usage: " << argv[0] << " <filename>" << endl;
 		return -1;
@@ -41,6 +49,18 @@ int main(int argc, char **argv) {
 	PointCloud3D* pointCloud = new PointCloud3D();
 	pointCloud->readFromTxtFile(filename);
 	cout << "Size of cloud: " << pointCloud->getSize() << endl;
+
+	/* optionally reduce with octree */
+	if (useOctree == true) {
+		Octree* octreeReductionFilter = new Octree();
+		octreeReductionFilter->setVoxelSize(voxelSize);
+		PointCloud3D* reducedPointCloud = new PointCloud3D();
+		octreeReductionFilter->createOctree(pointCloud, reducedPointCloud);
+		delete pointCloud;
+		pointCloud = reducedPointCloud;
+		cout << "Octree reduction filtering performed with voxel size: " << voxelSize <<endl;
+		cout << "Size of reduced cloud: " << pointCloud->getSize() << endl;
+	}
 
 	/* visualize point cloud */
 	OSGPointCloudVisualizer* visualizer = new OSGPointCloudVisualizer();
