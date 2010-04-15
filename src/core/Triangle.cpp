@@ -55,6 +55,8 @@ ostream& operator<<(ostream &outStream, Triangle &triangle) {
 	outStream << *(triangle.getVertex(0))  << ", ";
 	outStream << *(triangle.getVertex(1)) << ", ";
 	outStream << *(triangle.getVertex(2));
+
+	return outStream;
 }
 
 }
