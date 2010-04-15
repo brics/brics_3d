@@ -14,13 +14,21 @@
 
 namespace BRICS_3D {
 
+enum axis {
+	x,
+	y,
+	z
+};
+
 class IDelaunayTriangulation {
 public:
 	IDelaunayTriangulation(){};
 
 	virtual ~IDelaunayTriangulation(){};
 
-	virtual void triangulate(PointCloud3D* pointCloud, ITriangleMesh* mesh) = 0;
+	virtual void triangulate(PointCloud3D* pointCloud, ITriangleMesh* mesh, axis ignore = z) = 0;
+
+//	virtual void triangulate(PointCloud3D* pointCloud, ITetrahedronSet* tetrahedrons) = 0;
 };
 
 }

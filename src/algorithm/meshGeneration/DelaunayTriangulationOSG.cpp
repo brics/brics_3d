@@ -29,7 +29,7 @@ DelaunayTriangulationOSG::~DelaunayTriangulationOSG() {
 
 }
 
-void DelaunayTriangulationOSG::triangulate(PointCloud3D* pointCloud, ITriangleMesh* mesh) {
+void DelaunayTriangulationOSG::triangulate(PointCloud3D* pointCloud, ITriangleMesh* mesh, axis ignore) {
 
 //	if (mesh != 0) {
 //		delete mesh;

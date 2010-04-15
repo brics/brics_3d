@@ -104,6 +104,16 @@ IF (USE_OSG)
     	${OSGVIEWER_LIBRARY_DEBUG}
     )
     
+    ADD_EXECUTABLE(icp_benchmark icp_benchmark) 
+    TARGET_LINK_LIBRARIES(icp_benchmark
+        brics_3dpm_core 
+        brics_3dpm_algorithm
+        brics_3dpm_util
+    	${OSG_LIBRARY_DEBUG}
+    	${OSGGA_LIBRARY_DEBUG}
+    	${OSGVIEWER_LIBRARY_DEBUG}
+    )
+    
     ADD_EXECUTABLE(point3D_benchmark point3D_benchmark) 
     TARGET_LINK_LIBRARIES(point3D_benchmark 
         brics_3dpm_core 
@@ -118,6 +128,12 @@ ENDIF(USE_OSG)
 
 #ADD_EXECUTABLE(flann_test flann_test)
 #TARGET_LINK_LIBRARIES(flann_test brics_3dpm_core brics_3dpm_algorithm flann_s)
+
+ADD_EXECUTABLE(rigidTransformation_benchmark rigidTransformation_benchmark)
+TARGET_LINK_LIBRARIES(rigidTransformation_benchmark brics_3dpm_core brics_3dpm_algorithm brics_3dpm_util)
+
+ADD_EXECUTABLE(pointCorrespondence_benchmark pointCorrespondence_benchmark)
+TARGET_LINK_LIBRARIES(pointCorrespondence_benchmark brics_3dpm_core brics_3dpm_algorithm brics_3dpm_util)
 
 ADD_EXECUTABLE(alpha_shapes alpha_shapes)
 #TARGET_LINK_LIBRARIES(alpha_shapes CGAL)

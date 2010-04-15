@@ -120,6 +120,11 @@ private:
 	///Pointer to the model for the stateful interface (IIterativeClosestPointDetailed)
 	IHomogeneousMatrix44* resultTransformation;
 
+public:
+
+	double icpResultError; //FIXME move to getter methods in IIterativeClosestPoint
+	int icpresultIterations;
+
 };
 
 }

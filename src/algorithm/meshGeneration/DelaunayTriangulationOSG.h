@@ -19,7 +19,7 @@ public:
 
 	virtual ~DelaunayTriangulationOSG();
 
-	void triangulate(PointCloud3D* pointCloud, ITriangleMesh* mesh);
+	void triangulate(PointCloud3D* pointCloud, ITriangleMesh* mesh, axis ignore = z);
 };
 
 }

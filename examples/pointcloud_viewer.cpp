@@ -65,6 +65,7 @@ int main(int argc, char **argv) {
 	/* visualize point cloud */
 	OSGPointCloudVisualizer* visualizer = new OSGPointCloudVisualizer();
 	visualizer->visualizePointCloud(pointCloud);
+//	visualizer->visualizePointCloud(pointCloud, 0.0f, 1.0f, 0.0f, 1.0f); //green
 
 	return 0;
 }

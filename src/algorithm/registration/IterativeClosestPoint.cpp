@@ -93,11 +93,13 @@ void IterativeClosestPoint::match(PointCloud3D* model, PointCloud3D* data, IHomo
 		if ((std::abs(error - previousError) < convergenceThreshold) &&
 				(std::abs(error - previousPreviousError) < convergenceThreshold)) {
 			cout << "INFO: ICP converged after " << i << " iterations. " << endl; //DBG output
+			icpresultIterations = i;//benchmark only
 			break;
 		}
 	}
 
 	cout << "INFO: RMS Error is: " << error << endl; //DBG output
+	icpResultError = error;//benchmark only
 	delete pointPairs;
 	delete tmpResultTransformation;
 
