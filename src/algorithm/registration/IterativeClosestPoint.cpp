@@ -84,7 +84,7 @@ void IterativeClosestPoint::match(PointCloud3D* model, PointCloud3D* data, IHomo
 		/* estimate transformation */
 		error = estimator->estimateTransformation(pointPairs, tmpResultTransformation);
 //		cout << "Estimated transformation: " << endl  << *tmpResultTransformation; //DBG output
-		*resultTransformation = *((*resultTransformation) * (*tmpResultTransformation)); // accumulate transformations
+		*resultTransformation = *((*tmpResultTransformation) * (*resultTransformation)); // accumulate transformations
 
 		/* perform transformation on data point cloud */
 		data->homogeneousTransformation(tmpResultTransformation);

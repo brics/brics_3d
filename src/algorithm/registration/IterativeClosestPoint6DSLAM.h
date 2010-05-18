@@ -18,6 +18,7 @@ namespace BRICS_3D {
 /**
  * @ingroup registration
  * @brief Wrapper class for 6DSLAM ICP implementation
+ * @deprecated
  */
 class IterativeClosestPoint6DSLAM : public IIterativeClosestPoint, public IIterativeClosestPointSetup {
 public:

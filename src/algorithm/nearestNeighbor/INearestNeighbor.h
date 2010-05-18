@@ -17,12 +17,6 @@ using std::vector;
 namespace BRICS_3D {
 
 /**
- * @defgroup nearestNeighbor NearestNeighbor
- * @brief This module contains algorithms for nearest neighbor search
- *
- */
-
-/**
  * @ingroup nearestNeighbor
  * @brief Abstract interface for the nearest neighbor search algorithm
  *

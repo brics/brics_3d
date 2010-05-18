@@ -15,14 +15,6 @@
 namespace BRICS_3D {
 
 /**
- * @defgroup registration Registration
- * @brief This module contains algorithms for registration of point clouds.
- *
- * The module comprises in particular the Iterative Closest Point algorithm (ICP) and atomic sub components.
- *
- */
-
-/**
  * @ingroup registration
  * @brief Abstract stateless interface for the Iterative Closest Point (ICP) registration algorithm
  *
@@ -46,6 +38,9 @@ public:
 	 * @param[in] model Pointer to point cloud that represents the model
 	 * @param[in,out] data Pointer to point cloud that represents the data (points will be transformed during iterations)
 	 * @param[out] resultTransformation Pointer to resulting homogeneous transformation to align both point clouds
+	 *
+	 * <b>NOTE:</b> To apply an initial transformation ("initial guess") to one of the point clouds: invoke the homogeneous
+	 * transformation directly on the point cloud data-type before starting the ICP registration. See also Point3D::homogeneousTransformation()
 	 */
 	virtual void match(PointCloud3D* model, PointCloud3D* data, IHomogeneousMatrix44* resultTransformation) = 0;
 

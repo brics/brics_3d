@@ -66,7 +66,10 @@ public:
 	 * what kind of data was set in setData() and setModel() and how many time performNextIteration()
 	 * has been invoked before. <br>
 	 * <br>Assumption:<br> model and data are set before! <br>
-	 * Note that the data will me updated during this operation.
+	 * Note that the data will be updated during this operation.
+	 *
+	 * <b>NOTE:</b> To apply an initial transformation ("initial guess") to one of the point clouds: invoke the homogeneous
+	 * transformation directly on the point cloud data-type before starting the ICP registration. See also Point3D::homogeneousTransformation()
 	 */
 	virtual double performNextIteration() = 0;
 
