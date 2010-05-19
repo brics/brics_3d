@@ -104,6 +104,8 @@ ENDIF (WIN32)
 SET(CMAKE_BUILD_TYPE DEBUG) #enable debug mode (e.g. for embedded gdb in eclipse )
 #SET(CMAKE_VERBOSE_MAKEFILE ON) #shows compilation commands,etc.
 
+include(UseCodeCoverage) # for codecoverage tools with gcc (optional)
+
 # set parameters for build paths
 SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_HOME_DIRECTORY}/bin/ CACHE PATH "Configure the executable output path.")
 SET(LIBRARY_OUTPUT_PATH ${CMAKE_HOME_DIRECTORY}/lib/ CACHE PATH "Configure the library output path.")
