@@ -18,7 +18,7 @@ namespace BRICS_3D {
 /**
  * @brief Simple benchmark suite
  *
- * This class allows to sore benchmarking results in an automated way. The basic usage is like: <br> <br>
+ * This class allows to store benchmarking results in an automated way. The basic usage is like: <br> <br>
  * <code>
  * Benchmark benchmark("myNiceBenchmark"); <br>
  * benchmark.output << "some important result" << std::endl" <br>

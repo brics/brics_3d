@@ -15,7 +15,8 @@ namespace BRICS_3D {
 
 
 /**
- * @brief Abstract interface for the octree algorithm.
+ * @brief Abstract interface for the octree size reduction algorithm.
+ * @ingroup filtering
  *
  * More information can be found here: http://en.wikipedia.org/wiki/Octree
  *

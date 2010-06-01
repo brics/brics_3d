@@ -81,6 +81,19 @@
  * @namespace BRICS_3D 
  * @brief The BRICS 3D perception and modeling library.
  */
+
+/**
+ * @defgroup depth_perception Depth perception
+ * @brief This module has simple capabilities for depth perception.
+ * 
+ */
+
+/**
+ * @defgroup filtering Filtering
+ * @brief This module contains algorithms for filtering of point clouds. 
+ *
+ * For example the Octree based size reduction filter can be found here.
+ */
   
 /**
  * @defgroup registration Registration
@@ -91,8 +104,21 @@
  */
   
  /**
+  * @defgroup mesh_generation Mesh generation
+  * @brief This module offers algorithms for mesh generation.
+  *
+  * The module contains Delaunay triangulation and related methods.
+  */
+  
+ /** 
+  * @defgroup visualization Visualization
+  * @brief This module has tools for visualization od 3D representations
+  *
+  */ 
+  
+ /**
  * @defgroup nearestNeighbor NearestNeighbor
- * @brief This module contains algorithms for nearest neighbor search
+ * @brief This module contains algorithms for nearest neighbor search.
  *
  */
   

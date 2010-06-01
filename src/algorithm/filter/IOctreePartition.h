@@ -19,7 +19,7 @@ public:
 	IOctreePartition(){};
 	virtual ~IOctreePartition(){};
 
-	void partitionPointCloud(PointCloud3D* pointCloud, std::vector <PointCloud*> pointCloudCells) = 0;
+	void partitionPointCloud(PointCloud3D* pointCloud, std::vector <PointCloud3D*> pointCloudCells) = 0;
 };
 
 }

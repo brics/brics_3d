@@ -9,6 +9,9 @@
 #include "Octree.h"
 #include "6dslam/src/octtree.h"
 #include "assert.h"
+#include <stdexcept>
+
+using std::runtime_error;
 
 namespace BRICS_3D {
 
@@ -21,13 +24,17 @@ Octree::~Octree() {
 }
 
 void Octree::createOctree(PointCloud3D* originalPointCloud, PointCloud3D* resultPointCloud) {
+	assert(originalPointCloud != 0);
+	assert(resultPointCloud != 0);
+
+	resultPointCloud->getPointCloud()->clear();
+
 	if (voxelSize <=0) {
-		resultPointCloud = originalPointCloud; //TODO shallow copy ?!?
+		for (int i = 0; i < static_cast<int>(originalPointCloud->getSize()); ++i) { //just copy data
+			resultPointCloud->addPoint((*originalPointCloud->getPointCloud())[i]); //TODO check if copy is created!
+		}
 		return;
 	}
-
-	assert( originalPointCloud != 0);
-	assert( resultPointCloud != 0);
 
 	/* prepare data */
 	double** tmpPointCloudPoints = new double*[originalPointCloud->getSize()];
@@ -68,6 +75,9 @@ void Octree::createOctree(PointCloud3D* originalPointCloud, PointCloud3D* result
 }
 
 void Octree::setVoxelSize(double voxelSize) {
+	if (voxelSize < 0.0) {
+		throw runtime_error("ERROR: voxelSize for Octree cannot be less than 0.");
+	}
 	this->voxelSize = voxelSize;
 }
 
