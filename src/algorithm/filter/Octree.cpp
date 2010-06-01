@@ -31,7 +31,7 @@ void Octree::createOctree(PointCloud3D* originalPointCloud, PointCloud3D* result
 
 	if (voxelSize <=0) {
 		for (int i = 0; i < static_cast<int>(originalPointCloud->getSize()); ++i) { //just copy data
-			resultPointCloud->addPoint((*originalPointCloud->getPointCloud())[i]); //TODO check if copy is created!
+			resultPointCloud->addPoint((*originalPointCloud->getPointCloud())[i]);
 		}
 		return;
 	}

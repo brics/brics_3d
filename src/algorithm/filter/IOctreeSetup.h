@@ -19,6 +19,10 @@ public:
 	IOctreeSetup(){};
 	virtual ~IOctreeSetup(){};
 
+	/**
+	 *
+	 * NOTE: the current implementation interprets voxelSize as the from the center to one of the cube faces.
+	 */
 	virtual void setVoxelSize(double voxelSize) = 0;
 
 	virtual double getVoxelSize() = 0;

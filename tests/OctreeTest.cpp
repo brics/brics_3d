@@ -103,10 +103,40 @@ void OctreeTest::testSizeReduction() {
 
 	octreeComponent->setVoxelSize(2.0);
 	octreeComponent->createOctree(pointCloudCube, pointCloudResult);
-//	CPPUNIT_ASSERT_EQUAL(1u, pointCloudResult->getSize());
-	CPPUNIT_ASSERT_EQUAL(8u, pointCloudResult->getSize()); //TODO check why there is at least one octree decomposition?
+	CPPUNIT_ASSERT_EQUAL(1u, pointCloudResult->getSize());
 
-	CPPUNIT_ASSERT_EQUAL(10u, pointCloudCube->getSize()); //input size must not change
+	/* again no filtering, check if result cloud is independent from input (might be a very subtile error) */
+	octreeComponent->setVoxelSize(0.0);
+	octreeComponent->createOctree(pointCloudCube, pointCloudResult);
+	CPPUNIT_ASSERT_EQUAL(10u, pointCloudResult->getSize());
+	Point3D inputPoint;
+	Point3D resultPoint;
+	inputPoint = (*pointCloudCube->getPointCloud())[6]; //pick one arbitrary point here the 7th in the cloud
+	resultPoint = (*pointCloudResult->getPointCloud())[6];
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, inputPoint.getX(), maxTolerance); //preconditions
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, inputPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, inputPoint.getZ(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.getZ(), maxTolerance);
+
+	(*pointCloudCube->getPointCloud())[6].setX(2.0); //modify input point cloud
+	(*pointCloudCube->getPointCloud())[6].setY(3.0);
+	(*pointCloudCube->getPointCloud())[6].setZ(4.0);
+
+	inputPoint = (*pointCloudCube->getPointCloud())[6];
+	resultPoint = (*pointCloudResult->getPointCloud())[6];
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, inputPoint.getX(), maxTolerance); //postconditions
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, inputPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, inputPoint.getZ(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultPoint.getZ(), maxTolerance);
+
+	/* input size must not change after all operations */
+	CPPUNIT_ASSERT_EQUAL(10u, pointCloudCube->getSize());
+
+
 
 	delete pointCloudResult;
 	delete octreeComponent;

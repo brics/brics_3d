@@ -6,11 +6,15 @@ PROJECT(6D_SLAM)
 
 
 ## set definitions (derived from Makefile.options)
-# for linux
 ADD_DEFINITIONS(-DMAX_OPENMP_NUM_THREADS=4 -DOPENMP_NUM_THREADS=4)
-# optimization
-ADD_DEFINITIONS(-O3 -Wall -finline-functions)
-ADD_DEFINITIONS(-pipe -march=native)
+
+# for linux
+if ( CMAKE_COMPILER_IS_GNUCXX )
+    ADD_DEFINITIONS(-Wno-deprecated)
+    # optimization
+    ADD_DEFINITIONS(-O3 -Wall -finline-functions)
+    ADD_DEFINITIONS(-pipe -march=native)
+endif ( CMAKE_COMPILER_IS_GNUCXX )
 
 #for show binary:
 # -lglut -lGL -lGLU -L/usr/X11R6/lib -lXmu -lXt -lXi -lm -lXext -lX11 -lpthread -ldl -lstdc++ 

@@ -34,11 +34,23 @@ OctTree::OctTree(double **pts, int n, double voxelSize) {
   center[2] = 0.5 * (zmin+zmax);
   x_size = y_size = z_size = max(max(0.5 * (xmax-xmin), 0.5 * (ymax-ymin)), 0.5 * (zmax-zmin));
 
+
   // set up values
   child = new OctTree*[8];
   child[0] = child[1] = child[2] = child[3] = 0;
-  child[4] = child[5] = child[6] = child[7] = 0; 
+  child[4] = child[5] = child[6] = child[7] = 0;
   leaf = false;
+
+  // if bucket is too small stop building tree
+  // -----------------------------------------
+  if ((z_size <= voxelSize)) {
+    // copy points
+    for (int i = 0; i < n; ++i) {
+      points.push_back(pts[i]);
+    }
+    leaf = true;
+    return;
+  }
 
   // calculate new buckets
   double newcenter[8][3];
