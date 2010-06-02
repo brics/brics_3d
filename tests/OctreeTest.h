@@ -14,7 +14,7 @@
 
 #include "algorithm/filter/IOctree.h"
 #include "algorithm/filter/IOctreeSetup.h"
-//#include "algorithm/filter/IOctreePartition.h"
+#include "algorithm/filter/IOctreePartition.h"
 #include "algorithm/filter/Octree.h"
 
 using namespace std;
@@ -44,6 +44,7 @@ private:
 
 	Octree* octreeComponent;
 	IOctreeSetup* octreeSetup;
+	IOctreePartition* octreePartition;
 
 	static const double maxTolerance = 0.00001;
 

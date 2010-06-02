@@ -27,6 +27,8 @@ public:
   
   void GetOctTreeCenter(vector<double*>&c);
 
+  void GetOctTreePartition(vector<vector<double*> >&partition);
+
 protected:
   
   OctTree(vector<double*> &splitPoints, double center[3], 

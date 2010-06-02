@@ -61,6 +61,10 @@ void OctreeTest::testConstructor() {
 	CPPUNIT_ASSERT(octreeSetup != 0);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, octreeSetup->getVoxelSize(), maxTolerance);
 
+	CPPUNIT_ASSERT(octreePartition == 0);
+	octreePartition = dynamic_cast<IOctreePartition*>(octreeComponent);
+	CPPUNIT_ASSERT(octreePartition != 0);
+
 	delete octreeComponent;
 }
 
@@ -143,7 +147,96 @@ void OctreeTest::testSizeReduction() {
 }
 
 void OctreeTest::testPartition() {
-	CPPUNIT_FAIL("TODO: implement test");
+	octreeComponent = new Octree();
+	int pointCount = 0;
+
+	vector<PointCloud3D*>* partition = new vector<PointCloud3D*>();
+	CPPUNIT_ASSERT_EQUAL(0, static_cast<int>(partition->size()));
+
+	octreeComponent->partitionPointCloud(pointCloudCube, partition); //only one partition with default parameter 0.0
+	CPPUNIT_ASSERT_EQUAL(1, static_cast<int>(partition->size()));
+
+	/*
+	 * check if total amount of points is "invariant"
+	 * Note that the input point cloud and a merged point cloud (of the partition) might not have the same ordering,
+	 * as the algorithm recursively sorts points into buckets. Hence only the size is constant/invariant
+	 */
+	pointCount = 0;
+	for (unsigned int i = 0; i < partition->size(); ++i) {
+		for (unsigned int j = 0; j < (*(*partition)[i]).getSize(); ++j) {
+			pointCount++;
+//			Point3D tmpPoint = (*(*(*partition)[i]).getPointCloud())[j];
+//			cout << "Point in partition: " << tmpPoint << endl;
+		}
+	}
+	CPPUNIT_ASSERT_EQUAL(10, pointCount);
+
+	/* perform test again with another voxel size */
+	octreeComponent->setVoxelSize(0.05);
+	octreeComponent->partitionPointCloud(pointCloudCube, partition);
+	CPPUNIT_ASSERT_EQUAL(10, static_cast<int>(partition->size()));
+
+	/* check if total amount of points is "invariant" */
+	pointCount = 0;
+	for (unsigned int i = 0; i < partition->size(); ++i) {
+		for (unsigned int j = 0; j < (*(*partition)[i]).getSize(); ++j) {
+			pointCount++;
+//			Point3D tmpPoint = (*(*(*partition)[i]).getPointCloud())[j];
+//			cout << "Point in partition: " << tmpPoint << endl;
+		}
+	}
+	CPPUNIT_ASSERT_EQUAL(10, pointCount);
+
+	/* perform test again with another voxel size */
+	octreeComponent->setVoxelSize(0.1);
+	octreeComponent->partitionPointCloud(pointCloudCube, partition);
+	CPPUNIT_ASSERT_EQUAL(9,static_cast<int>(partition->size()));
+
+	/* check if total amount of points is "invariant" */
+	pointCount = 0;
+	for (unsigned int i = 0; i < partition->size(); ++i) {
+		for (unsigned int j = 0; j < (*(*partition)[i]).getSize(); ++j) {
+			pointCount++;
+		}
+	}
+	CPPUNIT_ASSERT_EQUAL(10, pointCount);
+
+	/* perform test again with another voxel size */
+	octreeComponent->setVoxelSize(0.2);
+	octreeComponent->partitionPointCloud(pointCloudCube, partition);
+	CPPUNIT_ASSERT_EQUAL(8, static_cast<int>(partition->size()));
+
+	/* check if total amount of points is "invariant" */
+	pointCount = 0;
+	for (unsigned int i = 0; i < partition->size(); ++i) {
+		for (unsigned int j = 0; j < (*(*partition)[i]).getSize(); ++j) {
+			pointCount++;
+		}
+	}
+	CPPUNIT_ASSERT_EQUAL(10, pointCount);
+
+	/* perform test again with another voxel size */
+	octreeComponent->setVoxelSize(2.0);
+	octreeComponent->partitionPointCloud(pointCloudCube, partition);
+	CPPUNIT_ASSERT_EQUAL(1, static_cast<int>(partition->size()));
+
+	/* check if total amount of points is "invariant" */
+	pointCount = 0;
+	for (unsigned int i = 0; i < partition->size(); ++i) {
+		for (unsigned int j = 0; j < (*(*partition)[i]).getSize(); ++j) {
+			pointCount++;
+		}
+	}
+	CPPUNIT_ASSERT_EQUAL(10, pointCount);
+
+
+	for (unsigned int i = 0; i < partition->size(); ++i) {
+		if ((*partition)[i] != 0) {
+			delete (*partition)[i];
+		}
+	}
+	delete partition;
+	delete octreeComponent;
 }
 
 }

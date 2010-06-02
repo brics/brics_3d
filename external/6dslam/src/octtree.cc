@@ -267,6 +267,22 @@ void OctTree::GetOctTreeCenter(vector<double*> &c)
   }
 }
 
+void OctTree::GetOctTreePartition(vector<vector<double*> >&partition) {
+	if (leaf == true) {
+		vector<double*> cellPoints;
+		for (unsigned int i = 0; i < this->points.size(); ++i) { // copy the points
+			cellPoints.push_back(points[i]);
+		}
+		partition.push_back(cellPoints);
+		return;
+	}
+
+	for( int i = 0; i < 8; i++){
+		if (child[i] != 0) {
+			child[i]->GetOctTreePartition(partition);
+		}
+	}
+}
 
 /**
  * Destructor
