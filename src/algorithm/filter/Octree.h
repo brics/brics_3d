@@ -15,10 +15,21 @@
 
 namespace BRICS_3D {
 
+/**
+ * @brief Implementation of the Octree component.
+ * @ingroup filtering
+ */
 class Octree : public IOctree, public IOctreePartition, public IOctreeSetup {
 public:
+
+	/**
+	 * @brief Standard constructor.
+	 */
 	Octree();
 
+	/**
+	 * @brief Standard destructor.
+	 */
 	virtual ~Octree();
 
 	void createOctree(PointCloud3D* originalPointCloud, PointCloud3D* resultPointCloud);
@@ -31,6 +42,7 @@ public:
 
 private:
 
+	/// The maximum voxel size of the smallest cube in the Octree
 	double voxelSize;
 
 };

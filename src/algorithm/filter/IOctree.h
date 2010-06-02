@@ -15,11 +15,12 @@ namespace BRICS_3D {
 
 
 /**
- * @brief Abstract interface for the octree size reduction algorithm.
+ * @brief Abstract interface for the point cloud size reduction algorithm.
+ *
+ * This interface allows to partition a point cloud into several point cloud with the help of an Octree.
+ * Each leaf cell of the octree forms a partition.
+ *
  * @ingroup filtering
- *
- * More information can be found here: http://en.wikipedia.org/wiki/Octree
- *
  */
 class IOctree {
 public:

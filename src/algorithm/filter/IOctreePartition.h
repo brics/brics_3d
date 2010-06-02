@@ -14,11 +14,36 @@
 
 namespace BRICS_3D {
 
+/**
+ * @brief Abstract interface for spatial partition of point clouds.
+ *
+ * This interface allows to partition a point cloud into several point cloud with the help of an Octree.
+ * Each leaf cell of the octree forms a partition.
+ *
+ * @todo Rename this interface to "IOctreeReduction".
+ * @ingroup filtering
+ */
 class IOctreePartition {
 public:
+
+	/**
+	 * @brief Standard constructor.
+	 */
 	IOctreePartition(){};
+
+	/**
+	 * @brief Standard destructor.
+	 */
 	virtual ~IOctreePartition(){};
 
+	/**
+	 * @brief Partitions a point cloud into sub points clouds.
+	 *
+	 * The behavior of the subdivision can be influenced with the parameter voxel size: IOctreeSetup::setVoxelSize()
+	 *
+	 * @param[in] pointCloud The input point cloud the will be partitioned.
+	 * @param[out] pointCloudCells Resulting vector of point clouds. Each point cloud represents one cell of the partition.
+	 */
 	virtual void partitionPointCloud(PointCloud3D* pointCloud, std::vector<PointCloud3D*>* pointCloudCells) = 0;
 };
 
