@@ -23,7 +23,7 @@ Octree::~Octree() {
 
 }
 
-void Octree::createOctree(PointCloud3D* originalPointCloud, PointCloud3D* resultPointCloud) {
+void Octree::reducePointCloud(PointCloud3D* originalPointCloud, PointCloud3D* resultPointCloud) {
 	assert(originalPointCloud != 0);
 	assert(resultPointCloud != 0);
 
@@ -129,6 +129,10 @@ void Octree::partitionPointCloud(PointCloud3D* pointCloud, std::vector<PointClou
 
 	/* clean up */
 	delete octree;
+	for (int i = 0; i < static_cast<int>(pointCloud->getSize()); ++i) {
+		delete [] tmpPointCloudPoints[i];
+	}
+	delete [] tmpPointCloudPoints;
 }
 
 void Octree::setVoxelSize(double voxelSize) {

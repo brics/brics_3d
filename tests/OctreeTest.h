@@ -12,7 +12,7 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "algorithm/filter/IOctree.h"
+#include "algorithm/filter/IOctreeReductionFilter.h"
 #include "algorithm/filter/IOctreeSetup.h"
 #include "algorithm/filter/IOctreePartition.h"
 #include "algorithm/filter/Octree.h"

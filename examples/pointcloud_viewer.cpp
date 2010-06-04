@@ -55,7 +55,7 @@ int main(int argc, char **argv) {
 		Octree* octreeReductionFilter = new Octree();
 		octreeReductionFilter->setVoxelSize(voxelSize);
 		PointCloud3D* reducedPointCloud = new PointCloud3D();
-		octreeReductionFilter->createOctree(pointCloud, reducedPointCloud);
+		octreeReductionFilter->reducePointCloud(pointCloud, reducedPointCloud);
 		delete pointCloud;
 		pointCloud = reducedPointCloud;
 		cout << "Octree reduction filtering performed with voxel size: " << voxelSize <<endl;

@@ -9,7 +9,7 @@
 #ifndef OCTREE_H_
 #define OCTREE_H_
 
-#include "algorithm/filter/IOctree.h"
+#include "algorithm/filter/IOctreeReductionFilter.h"
 #include "algorithm/filter/IOctreePartition.h"
 #include "algorithm/filter/IOctreeSetup.h"
 
@@ -19,7 +19,7 @@ namespace BRICS_3D {
  * @brief Implementation of the Octree component.
  * @ingroup filtering
  */
-class Octree : public IOctree, public IOctreePartition, public IOctreeSetup {
+class Octree : public IOctreeReductionFilter, public IOctreePartition, public IOctreeSetup {
 public:
 
 	/**
@@ -32,7 +32,7 @@ public:
 	 */
 	virtual ~Octree();
 
-	void createOctree(PointCloud3D* originalPointCloud, PointCloud3D* resultPointCloud);
+	void reducePointCloud(PointCloud3D* originalPointCloud, PointCloud3D* resultPointCloud);
 
 	void partitionPointCloud(PointCloud3D* pointCloud, std::vector<PointCloud3D*>* pointCloudCells);
 

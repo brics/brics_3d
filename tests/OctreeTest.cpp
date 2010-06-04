@@ -89,29 +89,29 @@ void OctreeTest::testSizeReduction() {
 
 	PointCloud3D* pointCloudResult = new PointCloud3D();
 
-	octreeComponent->createOctree(pointCloudCube, pointCloudResult);
+	octreeComponent->reducePointCloud(pointCloudCube, pointCloudResult);
 	CPPUNIT_ASSERT_EQUAL(10u, pointCloudCube->getSize()); //input size must not change
 	CPPUNIT_ASSERT_EQUAL(pointCloudCube->getSize(), pointCloudResult->getSize()); //no filtering involved with standard parameters
 
 	octreeComponent->setVoxelSize(0.05); //no change (too fine grid in this case)
-	octreeComponent->createOctree(pointCloudCube, pointCloudResult);
+	octreeComponent->reducePointCloud(pointCloudCube, pointCloudResult);
 	CPPUNIT_ASSERT_EQUAL(10u, pointCloudResult->getSize());
 
 	octreeComponent->setVoxelSize(0.1);
-	octreeComponent->createOctree(pointCloudCube, pointCloudResult);
+	octreeComponent->reducePointCloud(pointCloudCube, pointCloudResult);
 	CPPUNIT_ASSERT_EQUAL(9u, pointCloudResult->getSize());
 
 	octreeComponent->setVoxelSize(0.2);
-	octreeComponent->createOctree(pointCloudCube, pointCloudResult);
+	octreeComponent->reducePointCloud(pointCloudCube, pointCloudResult);
 	CPPUNIT_ASSERT_EQUAL(8u, pointCloudResult->getSize());
 
 	octreeComponent->setVoxelSize(2.0);
-	octreeComponent->createOctree(pointCloudCube, pointCloudResult);
+	octreeComponent->reducePointCloud(pointCloudCube, pointCloudResult);
 	CPPUNIT_ASSERT_EQUAL(1u, pointCloudResult->getSize());
 
 	/* again no filtering, check if result cloud is independent from input (might be a very subtile error) */
 	octreeComponent->setVoxelSize(0.0);
-	octreeComponent->createOctree(pointCloudCube, pointCloudResult);
+	octreeComponent->reducePointCloud(pointCloudCube, pointCloudResult);
 	CPPUNIT_ASSERT_EQUAL(10u, pointCloudResult->getSize());
 	Point3D inputPoint;
 	Point3D resultPoint;
@@ -171,6 +171,13 @@ void OctreeTest::testPartition() {
 	}
 	CPPUNIT_ASSERT_EQUAL(10, pointCount);
 
+	/* little bit of cleaning up */
+	for (unsigned int i = 0; i < partition->size(); ++i) {
+		if ((*partition)[i] != 0) {
+			delete (*partition)[i];
+		}
+	}
+
 	/* perform test again with another voxel size */
 	octreeComponent->setVoxelSize(0.05);
 	octreeComponent->partitionPointCloud(pointCloudCube, partition);
@@ -187,6 +194,13 @@ void OctreeTest::testPartition() {
 	}
 	CPPUNIT_ASSERT_EQUAL(10, pointCount);
 
+	/* little bit of cleaning up */
+	for (unsigned int i = 0; i < partition->size(); ++i) {
+		if ((*partition)[i] != 0) {
+			delete (*partition)[i];
+		}
+	}
+
 	/* perform test again with another voxel size */
 	octreeComponent->setVoxelSize(0.1);
 	octreeComponent->partitionPointCloud(pointCloudCube, partition);
@@ -200,6 +214,13 @@ void OctreeTest::testPartition() {
 		}
 	}
 	CPPUNIT_ASSERT_EQUAL(10, pointCount);
+
+	/* little bit of cleaning up */
+	for (unsigned int i = 0; i < partition->size(); ++i) {
+		if ((*partition)[i] != 0) {
+			delete (*partition)[i];
+		}
+	}
 
 	/* perform test again with another voxel size */
 	octreeComponent->setVoxelSize(0.2);
@@ -215,6 +236,13 @@ void OctreeTest::testPartition() {
 	}
 	CPPUNIT_ASSERT_EQUAL(10, pointCount);
 
+	/* little bit of cleaning up */
+	for (unsigned int i = 0; i < partition->size(); ++i) {
+		if ((*partition)[i] != 0) {
+			delete (*partition)[i];
+		}
+	}
+
 	/* perform test again with another voxel size */
 	octreeComponent->setVoxelSize(2.0);
 	octreeComponent->partitionPointCloud(pointCloudCube, partition);
@@ -229,12 +257,14 @@ void OctreeTest::testPartition() {
 	}
 	CPPUNIT_ASSERT_EQUAL(10, pointCount);
 
-
+	/* little bit of cleaning up */
 	for (unsigned int i = 0; i < partition->size(); ++i) {
 		if ((*partition)[i] != 0) {
 			delete (*partition)[i];
 		}
 	}
+
+
 	delete partition;
 	delete octreeComponent;
 }

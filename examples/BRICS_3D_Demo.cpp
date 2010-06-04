@@ -88,7 +88,7 @@ int main(int argc, char **argv) {
 	Octree* octreeFilter = new Octree();
 	octreeFilter->setVoxelSize(4.0); //value deduce from roughly knowing the bounding box
 	PointCloud3D* reducedPointCloud = new PointCloud3D();
-	octreeFilter->createOctree(pointCloud1, reducedPointCloud);
+	octreeFilter->reducePointCloud(pointCloud1, reducedPointCloud);
 //	delete pointCloud;
 //	pointCloud = reducedPointCloud;
 
