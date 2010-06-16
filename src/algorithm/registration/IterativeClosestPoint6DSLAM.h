@@ -35,6 +35,12 @@ public:
 
 	void match(PointCloud3D* model, PointCloud3D* data, IHomogeneousMatrix44* resultTransformation);
 
+	//dummy functions
+	void setAssigner(IPointCorrespondence* assigner) {};
+	void setEstimator(IRigidTransformationEstimation* estimator) {};
+	IPointCorrespondence* getAssigner() const {return 0;};
+	IRigidTransformationEstimation* getEstimator() const {return 0;};
+
 private:
 
 	double getConvergenceThreshold() const;

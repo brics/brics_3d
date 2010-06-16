@@ -38,6 +38,7 @@ class IterativeClosestPointTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testSimpleAlignmentHELIX );
 	CPPUNIT_TEST( testSimpleAlignmentAPX );
 	CPPUNIT_TEST( testStatefullInterface );
+	CPPUNIT_TEST( testSetupInterface );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -50,6 +51,7 @@ public:
 	void testSimpleAlignmentHELIX();
 	void testSimpleAlignmentAPX();
 	void testStatefullInterface();
+	void testSetupInterface();
 
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW //Required by Eigen2
 

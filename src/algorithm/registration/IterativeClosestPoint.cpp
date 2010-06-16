@@ -10,9 +10,11 @@
 #include "core/HomogeneousMatrix44.h" //TODO? now it depends  on implementation of HomogeneousMatrix44
 #include <cmath>
 #include <assert.h>
+#include <stdexcept>
 
 using std::cout;
 using std::endl;
+using std::runtime_error;
 
 namespace BRICS_3D {
 
@@ -130,6 +132,9 @@ void IterativeClosestPoint::setAssigner(IPointCorrespondence* assigner)
 
 void IterativeClosestPoint::setConvergenceThreshold(double convergenceThreshold)
 {
+	if (convergenceThreshold < 0.0) {
+		throw runtime_error("ERROR: convergenceThreshold for ICP cannot be less than 0.");
+	}
 	this->convergenceThreshold = convergenceThreshold;
 }
 
@@ -140,6 +145,9 @@ void IterativeClosestPoint::setEstimator(IRigidTransformationEstimation* estimat
 
 void IterativeClosestPoint::setMaxIterations(int maxIterations)
 {
+	if (maxIterations < 0.0) {
+		throw runtime_error("ERROR: maxIterations for ICP cannot be less than 0.");
+	}
 	this->maxIterations = maxIterations;
 }
 

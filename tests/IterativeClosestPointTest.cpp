@@ -10,6 +10,7 @@
 
 #include <sstream>
 #include <cmath>
+#include <stdexcept>
 
 using namespace Eigen;
 
@@ -271,6 +272,73 @@ void IterativeClosestPointTest::testStatefullInterface() {
 
 
 	delete homogeneousTrans;
+}
+
+void IterativeClosestPointTest::testSetupInterface(){
+	IPointCorrespondence* assigner0 = 0;
+	IPointCorrespondence* assigner1 = 0;
+	IPointCorrespondence* assigner2 = 0;
+	assigner0 = new PointCorrespondenceKDTree();
+	IRigidTransformationEstimation* estimator0 = 0;
+	IRigidTransformationEstimation* estimator1 = 0;
+	IRigidTransformationEstimation* estimator2 = 0;
+	estimator0 = new RigidTransformationEstimationSVD();
+	IIterativeClosestPointSetup* icpSetup = 0;
+
+	icp = new IterativeClosestPoint(assigner0, estimator0);
+	CPPUNIT_ASSERT(icpSetup == 0);
+	icpSetup = dynamic_cast<IIterativeClosestPointSetup*>(icp);
+	CPPUNIT_ASSERT(icpSetup != 0);
+
+	/* check subalgorithms, set within constructor */
+	CPPUNIT_ASSERT(assigner0 != assigner1);
+	assigner1 = icpSetup->getAssigner();
+	CPPUNIT_ASSERT(assigner0 == assigner1);
+
+	CPPUNIT_ASSERT(estimator0 != estimator1);
+	estimator1 = icpSetup->getEstimator();
+	CPPUNIT_ASSERT(estimator0 == estimator1);
+
+	/* check subalgorithms, set within setup iterface */
+	delete assigner0;
+	delete estimator0;
+	assigner1 = new PointCorrespondenceKDTree();
+	estimator1 = new RigidTransformationEstimationSVD();
+	icp->setAssigner(assigner1);
+	icp->setEstimator(estimator1);
+
+	CPPUNIT_ASSERT(assigner1 != assigner2);
+	assigner2 = icpSetup->getAssigner();
+	CPPUNIT_ASSERT(assigner1 == assigner2);
+
+	CPPUNIT_ASSERT(estimator1 != estimator2);
+	estimator2 = icpSetup->getEstimator();
+	CPPUNIT_ASSERT(estimator1 == estimator2);
+
+	/* check parameters in setup interface */
+	int maxIterations = 123;
+	icpSetup->setMaxIterations(maxIterations);
+	CPPUNIT_ASSERT_EQUAL(maxIterations, icpSetup->getMaxIterations());
+
+	maxIterations = 456;
+	icpSetup->setMaxIterations(maxIterations);
+	CPPUNIT_ASSERT_EQUAL(maxIterations, icpSetup->getMaxIterations());
+
+	maxIterations = -1;
+	CPPUNIT_ASSERT_THROW(icpSetup->setMaxIterations(maxIterations), runtime_error);
+
+	double convergenceThreshold = 0.01;
+	icpSetup->setConvergenceThreshold(convergenceThreshold);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(convergenceThreshold, icpSetup->getConvergenceThreshold(), maxTolerance);
+
+	convergenceThreshold = 456;
+	icpSetup->setConvergenceThreshold(convergenceThreshold);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(convergenceThreshold, icpSetup->getConvergenceThreshold(), maxTolerance);
+
+	convergenceThreshold = -1.0;
+	CPPUNIT_ASSERT_THROW(icpSetup->setConvergenceThreshold(convergenceThreshold), runtime_error);
+
+
 }
 
 }  // namespace unitTests

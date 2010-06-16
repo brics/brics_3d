@@ -53,30 +53,13 @@ public:
 
 	void setMaxIterations(int maxIterations);
 
-	/**
-	 * @brief Get the assigner algorithm that establishes point correspondences (e.g. k-d tree)
-	 * @return Read-only pointer to assigner algorithm
-	 */
-    IPointCorrespondence* getAssigner() const;
-
-	/**
-	 * @brief Get the transformation estimation (error minimization) strategy
-	 * @return Read-only pointer to transformation estimator
-	 */
-	IRigidTransformationEstimation* getEstimator() const;
-
-	/**
-	 * @brief Set the assigner algorithm that establishes point correspondences (e.g. k-d tree)
-	 * @param[in] assigner Pointer to assigner algorithm
-	 */
 	void setAssigner(IPointCorrespondence* assigner);
 
-	/**
-	 * @brief Set the transformation estimation (error minimization) strategy
-	 * @param[in] estimator Pointer to transformation estimator
-	 */
 	void setEstimator(IRigidTransformationEstimation* estimator);
 
+    IPointCorrespondence* getAssigner() const;
+
+	IRigidTransformationEstimation* getEstimator() const;
 
 	void setData(PointCloud3D* data);
 
