@@ -276,6 +276,9 @@ void Point3DTest::testIdentity() {
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->getX(), maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->getY(), maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->getZ(), maxTolerance);
+
+	delete homogeneousTransformation2;
+	delete homogeneousTransformation;
 }
 
 void Point3DTest::testRotation90X(){
@@ -292,6 +295,8 @@ void Point3DTest::testRotation90X(){
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->getX(), maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, point111->getY(), maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->getZ(), maxTolerance);
+
+	delete homogeneousTransformation;
 }
 
 void Point3DTest::testRotation90Y(){
@@ -308,6 +313,8 @@ void Point3DTest::testRotation90Y(){
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->getX(), maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->getY(), maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, point111->getZ(), maxTolerance);
+
+	delete homogeneousTransformation;
 }
 
 void Point3DTest::testRotation90Z(){
@@ -324,6 +331,8 @@ void Point3DTest::testRotation90Z(){
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, point111->getX(), maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->getY(), maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, point111->getZ(), maxTolerance);
+
+	delete homogeneousTransformation;
 }
 
 void Point3DTest::testTranslation(){
@@ -340,6 +349,8 @@ void Point3DTest::testTranslation(){
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, point111->getX(), maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, point111->getY(), maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, point111->getZ(), maxTolerance);
+
+	delete homogeneousTransformation;
 }
 
 }

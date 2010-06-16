@@ -196,6 +196,9 @@ void ColoredPoint3DTest::testIdentity() {
 	CPPUNIT_ASSERT(point111->red == 1);
 	CPPUNIT_ASSERT(point111->green == 1);
 	CPPUNIT_ASSERT(point111->blue == 1);
+
+	delete homogeneousTransformation2;
+	delete homogeneousTransformation;
 }
 
 void ColoredPoint3DTest::testTranslation() {
@@ -216,6 +219,8 @@ void ColoredPoint3DTest::testTranslation() {
 	CPPUNIT_ASSERT(point111->red == 1);
 	CPPUNIT_ASSERT(point111->green == 1);
 	CPPUNIT_ASSERT(point111->blue == 1);
+
+	delete homogeneousTransformation;
 }
 
 }

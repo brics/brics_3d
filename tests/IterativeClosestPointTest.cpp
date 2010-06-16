@@ -288,7 +288,7 @@ void IterativeClosestPointTest::testStatefullInterface() {
 		CPPUNIT_ASSERT_DOUBLES_EQUAL((*pointCloudCube->getPointCloud())[i].getZ(), (*pointCloudCubeCopy->getPointCloud())[i].getZ(), maxTolerance);
 	}
 
-
+	delete tmpResultTransformation;
 	delete homogeneousTrans;
 }
 

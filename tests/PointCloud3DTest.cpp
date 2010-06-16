@@ -267,6 +267,7 @@ void PointCloud3DTest::testTransformation() {
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(point110->getY(), resultPoint.getY(), maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(point110->getZ(), resultPoint.getZ(), maxTolerance);
 
+	delete homogeneousTransformation;
 }
 
 }

@@ -42,6 +42,15 @@ void NearestNeighborTest::setUp() {
 }
 
 void NearestNeighborTest::tearDown() {
+	delete point000;
+	delete point001;
+	delete point011;
+	delete point010;
+	delete point100;
+	delete point101;
+	delete point111;
+	delete point110;
+
 	delete pointCloudCube;
 	delete pointCloudCubeCopy;
 	delete nearestNeigbor;

@@ -135,6 +135,9 @@ void PointCorrespondenceTest::testSimpleCorrespondence() {
 //	}
 
 //	CPPUNIT_ASSERT(false);
+
+	delete pointPairs;
+	delete homogeneousTrans;
 }
 
 }

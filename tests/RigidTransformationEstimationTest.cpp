@@ -47,6 +47,15 @@ void RigidTransformationEstimationTest::setUp() {
 }
 
 void RigidTransformationEstimationTest::tearDown() {
+	delete point000;
+	delete point001;
+	delete point011;
+	delete point010;
+	delete point100;
+	delete point101;
+	delete point111;
+	delete point110;
+
 	delete pointCloudCube;
 	delete pointCloudCubeCopy;
 
@@ -106,6 +115,10 @@ void RigidTransformationEstimationTest::testSVDTransformation(){
 	double errorResult2 = 0.0;
 	errorResult2 = estimator->estimateTransformation(pointPairs, reusultTransformation);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(errorResult1, errorResult2, maxTolerance);
+
+	delete reusultTransformation;
+	delete pointPairs;
+	delete homogeneousTrans;
 }
 
 void RigidTransformationEstimationTest::testQUATTransformation() {
@@ -145,6 +158,10 @@ void RigidTransformationEstimationTest::testQUATTransformation() {
 	double errorResult2 = 0.0;
 	errorResult2 = abstractEstimator->estimateTransformation(pointPairs, reusultTransformation);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(errorResult1, errorResult2, maxTolerance);
+
+	delete reusultTransformation;
+	delete pointPairs;
+	delete homogeneousTrans;
 }
 
 void RigidTransformationEstimationTest::testHELIXTransformation() {
@@ -184,6 +201,10 @@ void RigidTransformationEstimationTest::testHELIXTransformation() {
 	double errorResult2 = 0.0;
 	errorResult2 = abstractEstimator->estimateTransformation(pointPairs, reusultTransformation);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(errorResult1, errorResult2, maxTolerance);
+
+	delete reusultTransformation;
+	delete pointPairs;
+	delete homogeneousTrans;
 }
 
 void RigidTransformationEstimationTest::testAPXTransformation() {
@@ -223,6 +244,10 @@ void RigidTransformationEstimationTest::testAPXTransformation() {
 	double errorResult2 = 0.0;
 	errorResult2 = abstractEstimator->estimateTransformation(pointPairs, reusultTransformation);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(errorResult1, errorResult2, maxTolerance);
+
+	delete reusultTransformation;
+	delete pointPairs;
+	delete homogeneousTrans;
 }
 
 void RigidTransformationEstimationTest::testORTHOTransformation() {
