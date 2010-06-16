@@ -234,6 +234,8 @@ void IterativeClosestPointTest::testStatefullInterface() {
 	transformation = rotation;
 	IHomogeneousMatrix44* homogeneousTrans = new HomogeneousMatrix44(&transformation);
 	pointCloudCubeCopy->homogeneousTransformation(homogeneousTrans);
+	PointCloud3D* tmpPointCloudCube;
+	PointCloud3D* tmpPointCloudCubeCopy;
 
 	/* set up ICP */
 	IPointCorrespondence* assigner;
@@ -241,13 +243,27 @@ void IterativeClosestPointTest::testStatefullInterface() {
 	IRigidTransformationEstimation* estimator = new RigidTransformationEstimationSVD();
 	icp = new IterativeClosestPoint(assigner, estimator);
 
-	/* perform ICP*/
+
 	IHomogeneousMatrix44* resultTransformation;// = new HomogeneousMatrix44();
-//	icp->match(pointCloudCube, pointCloudCubeCopy, resultTransformation);
+	IHomogeneousMatrix44* tmpResultTransformation = new HomogeneousMatrix44();
 	icp->setModel(pointCloudCube);
 	icp->setData(pointCloudCubeCopy);
+	tmpPointCloudCube = icp->getModel();
+	tmpPointCloudCubeCopy = icp->getData();
+	for (unsigned int i = 0; i < pointCloudCube->getSize(); ++i) { // "model" and "data" should not have changed...
+		CPPUNIT_ASSERT_DOUBLES_EQUAL((*pointCloudCube->getPointCloud())[i].getX(), (*tmpPointCloudCube->getPointCloud())[i].getX(), maxTolerance);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL((*pointCloudCube->getPointCloud())[i].getY(), (*tmpPointCloudCube->getPointCloud())[i].getY(), maxTolerance);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL((*pointCloudCube->getPointCloud())[i].getZ(), (*tmpPointCloudCube->getPointCloud())[i].getZ(), maxTolerance);
+
+		CPPUNIT_ASSERT_DOUBLES_EQUAL((*pointCloudCubeCopy->getPointCloud())[i].getX(), (*tmpPointCloudCubeCopy->getPointCloud())[i].getX(), maxTolerance);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL((*pointCloudCubeCopy->getPointCloud())[i].getY(), (*tmpPointCloudCubeCopy->getPointCloud())[i].getY(), maxTolerance);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL((*pointCloudCubeCopy->getPointCloud())[i].getZ(), (*tmpPointCloudCubeCopy->getPointCloud())[i].getZ(), maxTolerance);
+	}
+
+	/* perform ICP */
 	for (int i = 0; i < 3; ++i) { //here we know empirically that 3 iterations are enough
 			icp->performNextIteration();
+			*tmpResultTransformation = *((*icp->getLastEstimatedTransformation()) * (*tmpResultTransformation));
 	}
 
 	resultTransformation = icp->getAccumulatedTransfomation();
@@ -256,18 +272,20 @@ void IterativeClosestPointTest::testStatefullInterface() {
 	/* test if initial and resulting homogeneous transformations are the same */
 	const double* matrix1 = homogeneousTrans->getRawData();
 	const double* matrix2 = resultTransformation->getRawData();
+	const double* matrix3 = tmpResultTransformation->getRawData();
 
 	for (int i = 0; i < 16; ++i) {
 //		cout << matrix1[i] << ", " << matrix2[i] << endl; //DBG output
 		CPPUNIT_ASSERT_DOUBLES_EQUAL(abs(matrix1[i]), abs(matrix2[i]), maxTolerance);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL(abs(matrix2[i]), abs(matrix3[i]), maxTolerance);
 //		CPPUNIT_ASSERT_DOUBLES_EQUAL(matrix1[i], matrix2[i], maxTolerance);
 	}
 
 	/* test if aligned point cloud is the more or less same as the initial one */
 	for (unsigned int i = 0;  i < pointCloudCube->getSize(); ++ i) {
-		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].getX(), (*pointCloudCubeCopy->getPointCloud())[i].getX(), maxTolerance);
-		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].getY(), (*pointCloudCubeCopy->getPointCloud())[i].getY(), maxTolerance);
-		CPPUNIT_ASSERT_DOUBLES_EQUAL((int)(*pointCloudCube->getPointCloud())[i].getZ(), (*pointCloudCubeCopy->getPointCloud())[i].getZ(), maxTolerance);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL((*pointCloudCube->getPointCloud())[i].getX(), (*pointCloudCubeCopy->getPointCloud())[i].getX(), maxTolerance);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL((*pointCloudCube->getPointCloud())[i].getY(), (*pointCloudCubeCopy->getPointCloud())[i].getY(), maxTolerance);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL((*pointCloudCube->getPointCloud())[i].getZ(), (*pointCloudCubeCopy->getPointCloud())[i].getZ(), maxTolerance);
 	}
 
 
@@ -299,7 +317,7 @@ void IterativeClosestPointTest::testSetupInterface(){
 	estimator1 = icpSetup->getEstimator();
 	CPPUNIT_ASSERT(estimator0 == estimator1);
 
-	/* check subalgorithms, set within setup iterface */
+	/* check subalgorithms, set within setup interface */
 	delete assigner0;
 	delete estimator0;
 	assigner1 = new PointCorrespondenceKDTree();
