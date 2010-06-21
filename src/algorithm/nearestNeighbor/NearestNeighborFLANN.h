@@ -10,6 +10,8 @@
 #define NEARESTNEIGHBORFLANN_H_
 
 #include "algorithm/nearestNeighbor/INearestNeighbor.h"
+#include "algorithm/nearestNeighbor/INearestPoint3DNeighbor.h"
+#include "algorithm/nearestNeighbor/INearestNeighborSetup.h"
 #include "flann/src/cpp/flann.h"
 
 namespace BRICS_3D {
@@ -19,7 +21,7 @@ namespace BRICS_3D {
  * @brief Implementation for the nearest neighbor search algorithm with the FLANN library.
  *
  */
-class NearestNeighborFLANN : public INearestNeighbor {
+class NearestNeighborFLANN : public INearestNeighbor, public INearestPoint3DNeighbor, public INearestNeighborSetup {
 public:
 
 	/**
@@ -38,7 +40,7 @@ public:
 
 	int findNearestNeigbor(vector<float>* query);
 	int findNearestNeigbor(vector<double>* query);
-	int findNearestNeigbor(Point3D* query);
+	void findNearestNeigbor(Point3D* query, std::vector<int>* resultIndices, unsigned int k = 1);
 
 	FLANNParameters getParameters() const;
 

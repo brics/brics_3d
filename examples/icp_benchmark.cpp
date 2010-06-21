@@ -132,7 +132,7 @@ int main(int argc, char **argv) {
 	IIterativeClosestPoint* icp = 0; //abstract interface to ICP
 	IIterativeClosestPointSetup* icpConfigurator = 0; //abstract interface to ICP
 	IPointCorrespondence* assigner = 0; //only needed for generic icp
-	INearestNeighbor* nearestNeigbourFinder = 0;
+	INearestPoint3DNeighbor* nearestNeigbourFinder = 0;
 	IRigidTransformationEstimation* estimator = 0;
 
 	IterativeClosestPoint* concreteIcp = 0;

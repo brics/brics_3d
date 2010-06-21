@@ -10,6 +10,8 @@
 #define NEARESTNEIGHBORSTANN_H_
 
 #include "INearestNeighbor.h"
+#include "algorithm/nearestNeighbor/INearestPoint3DNeighbor.h"
+#include "algorithm/nearestNeighbor/INearestNeighborSetup.h"
 #include "stann/include/dpoint.hpp"
 #include "stann/include/sfcnn.hpp"
 
@@ -29,7 +31,7 @@ typedef reviver::dpoint<double, STANNDimension> STANNPoint;
  * <b>IMPORTANT NOTE: Currently this wrapper only supports dimensionality of 3!</b>
  *
  */
-class NearestNeighborSTANN: public BRICS_3D::INearestNeighbor {
+class NearestNeighborSTANN: public BRICS_3D::INearestNeighbor, public INearestPoint3DNeighbor, public INearestNeighborSetup {
 public:
 
 	/**
@@ -48,7 +50,7 @@ public:
 
 	int findNearestNeigbor(vector<float>* query);
 	int findNearestNeigbor(vector<double>* query);
-	int findNearestNeigbor(Point3D* query);
+	void findNearestNeigbor(Point3D* query, std::vector<int>* resultIndices, unsigned int k = 1);
 
 protected:
 
@@ -61,11 +63,8 @@ protected:
 	/// Vector with the resulting indices (should be only one index)
 	vector<long unsigned int> resultIndices;
 
-	/// Vector with the resulting distances (should be only one distance). FLANN search method returns this as the squared distance.
+	/// Vector with the resulting distances (should be only one distance). STANN search method returns this as the squared distance.
 	vector <double> squaredResultDistances;
-
-	/// Here we are only looking the <b>the</b> nearest neighbor, so k = 1
-	const static long int k = 1;
 
 };
 

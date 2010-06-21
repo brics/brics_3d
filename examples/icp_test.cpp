@@ -109,7 +109,7 @@ int main(int argc, char **argv) {
 	IterativeClosestPoint6DSLAM* concreteIcp6DSLAM;
 
 	/* set up assigner */
-	INearestNeighbor* nearestNeigbourFinder = new NearestNeighborFLANN();
+	INearestPoint3DNeighbor* nearestNeigbourFinder = new NearestNeighborFLANN();
 //	nearestNeigbourFinder->setMaxDistance(1);
 	NearestNeighborFLANN* nearestNeigbourFinderFLANN = dynamic_cast<NearestNeighborFLANN*>(nearestNeigbourFinder); //polymorph down cast
 	FLANNParameters parameters;

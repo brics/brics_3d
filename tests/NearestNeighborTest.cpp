@@ -9,6 +9,9 @@
 #include "NearestNeighborTest.h"
 
 #include <sstream>
+#include <stdexcept>
+
+using std::runtime_error;
 
 namespace unitTests {
 
@@ -53,16 +56,16 @@ void NearestNeighborTest::tearDown() {
 
 	delete pointCloudCube;
 	delete pointCloudCubeCopy;
-	delete nearestNeigbor;
+	delete nearestNeigborFLANN;
 	delete nearestNeigborANN;
 	delete nearestNeigborSTANN;
 	delete abstractNearestNeigbor;
 }
 
 void NearestNeighborTest::testFLANNConstructor() {
-	CPPUNIT_ASSERT(nearestNeigbor == 0);
-	nearestNeigbor = new NearestNeighborFLANN();
-	CPPUNIT_ASSERT(nearestNeigbor != 0);
+	CPPUNIT_ASSERT(nearestNeigborFLANN == 0);
+	nearestNeigborFLANN = new NearestNeighborFLANN();
+	CPPUNIT_ASSERT(nearestNeigborFLANN != 0);
 
 	/* polymorph variant */
 	CPPUNIT_ASSERT(abstractNearestNeigbor == 0);
@@ -71,24 +74,137 @@ void NearestNeighborTest::testFLANNConstructor() {
 }
 
 void NearestNeighborTest::testFLANNSimple() {
-	nearestNeigbor = new NearestNeighborFLANN();
-	CPPUNIT_ASSERT_EQUAL(-1, nearestNeigbor->getDimension());
-	nearestNeigbor->setData(pointCloudCube);
-	CPPUNIT_ASSERT_EQUAL(3, nearestNeigbor->getDimension());
-
+	nearestNeigborFLANN = new NearestNeighborFLANN();
+	CPPUNIT_ASSERT_EQUAL(-1, nearestNeigborFLANN->getDimension());
+	nearestNeigborFLANN->setData(pointCloudCube);
+	CPPUNIT_ASSERT_EQUAL(3, nearestNeigborFLANN->getDimension());
 
 	int indexResult;
+	vector<int> resultIndices;
 
 	for (unsigned int i = 0;  i < pointCloudCube->getSize(); ++ i) {
-		indexResult = nearestNeigbor->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[i]);
+		nearestNeigborFLANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[i], &resultIndices);
+		CPPUNIT_ASSERT(resultIndices.size() > 0);
+		indexResult = resultIndices[0];
 		CPPUNIT_ASSERT_EQUAL(static_cast<int>(i), indexResult); // must find the same (index)
 	}
 
-	nearestNeigbor->setMaxDistance(-1);
+//	for (unsigned int i = 0;  i < pointCloudCube->getSize(); ++ i) {
+//		indexResult = nearestNeigbor->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[i]);
+//		CPPUNIT_ASSERT_EQUAL(static_cast<int>(i), indexResult); // must find the same (index)
+//	}
+//
+//	nearestNeigbor->setMaxDistance(-1);
+//	for (unsigned int i = 0;  i < pointCloudCube->getSize(); ++ i) {
+//		indexResult = nearestNeigbor->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[i]);
+//		CPPUNIT_ASSERT_EQUAL(-1, indexResult); // can't find any thing
+//	}
+
+}
+
+void NearestNeighborTest::testFLANNExtended() {
+	nearestNeigborFLANN = new NearestNeighborFLANN();
+	CPPUNIT_ASSERT_EQUAL(-1, nearestNeigborFLANN->getDimension());
+	nearestNeigborFLANN->setData(pointCloudCube);
+	CPPUNIT_ASSERT_EQUAL(3, nearestNeigborFLANN->getDimension());
+
+	int indexResult;
+	vector<int> resultIndices;
+	unsigned int k = 1;
+
 	for (unsigned int i = 0;  i < pointCloudCube->getSize(); ++ i) {
-		indexResult = nearestNeigbor->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[i]);
-		CPPUNIT_ASSERT_EQUAL(-1, indexResult); // can't find any thing
+		nearestNeigborFLANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[i], &resultIndices);
+		CPPUNIT_ASSERT_EQUAL(1, static_cast<int>(resultIndices.size()));
+		indexResult = resultIndices[0];
+		CPPUNIT_ASSERT_EQUAL(static_cast<int>(i), indexResult); // must find the same (index)
 	}
+
+	nearestNeigborFLANN->setMaxDistance(-1); // nothing should change
+	for (unsigned int i = 0;  i < pointCloudCube->getSize(); ++ i) {
+		nearestNeigborFLANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[i], &resultIndices);
+		CPPUNIT_ASSERT_EQUAL(1, static_cast<int>(resultIndices.size()));
+		indexResult = resultIndices[0];
+		CPPUNIT_ASSERT_EQUAL(static_cast<int>(i), indexResult); // must find the same (index)
+	}
+
+	/* now increase k */
+	for (k = 1; k < pointCloudCube->getSize() ; ++k) {
+		for (unsigned int i = 0;  i < pointCloudCube->getSize(); ++ i) {
+			nearestNeigborFLANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[i], &resultIndices, k);
+			CPPUNIT_ASSERT_EQUAL(k, static_cast<unsigned int>(resultIndices.size()));
+			indexResult = resultIndices[0];
+			CPPUNIT_ASSERT_EQUAL(static_cast<int>(i), indexResult); // must find the same (index)
+		}
+	}
+
+	k = pointCloudCube->getSize() + 1; //k is bigger than number of points...
+	CPPUNIT_ASSERT_THROW(nearestNeigborFLANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k), runtime_error);
+
+	/* lets see how maxDistance and k influence each other */
+	k = pointCloudCube->getSize(); // maximum
+	int expectedFoundNeighbors;
+
+	nearestNeigborFLANN->setMaxDistance(0.1); // all neighbors too far away, except the query point
+	expectedFoundNeighbors = 1;
+	nearestNeigborFLANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k);
+	CPPUNIT_ASSERT_EQUAL(expectedFoundNeighbors, static_cast<int>(resultIndices.size()));
+
+	nearestNeigborFLANN->setMaxDistance(0.999); // slightly before border line to 4 neighbors
+	expectedFoundNeighbors = 1;
+	nearestNeigborFLANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k);
+	CPPUNIT_ASSERT_EQUAL(expectedFoundNeighbors, static_cast<int>(resultIndices.size()));
+
+	nearestNeigborFLANN->setMaxDistance(1.0); // at border line to 4 neighbors
+	expectedFoundNeighbors = 4;
+	nearestNeigborFLANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k);
+	CPPUNIT_ASSERT_EQUAL(expectedFoundNeighbors, static_cast<int>(resultIndices.size()));
+
+	nearestNeigborFLANN->setMaxDistance(sqrt(2.0)-0.001); // slightly before border line to 7 neighbors
+	expectedFoundNeighbors = 4;
+	nearestNeigborFLANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k);
+	CPPUNIT_ASSERT_EQUAL(expectedFoundNeighbors, static_cast<int>(resultIndices.size()));
+
+	nearestNeigborFLANN->setMaxDistance(sqrt(2.0)); // at border line to 7 neighbors
+	expectedFoundNeighbors = 7;
+	nearestNeigborFLANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k);
+	CPPUNIT_ASSERT_EQUAL(expectedFoundNeighbors, static_cast<int>(resultIndices.size()));
+
+	nearestNeigborFLANN->setMaxDistance(sqrt(3.0)-0.001); // slightly before border line to 8 neighbors
+	expectedFoundNeighbors = 7;
+	nearestNeigborFLANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k);
+	CPPUNIT_ASSERT_EQUAL(expectedFoundNeighbors, static_cast<int>(resultIndices.size()));
+
+	nearestNeigborFLANN->setMaxDistance(sqrt(3.0)); // at  border line to 8 neighbors
+	expectedFoundNeighbors = 8;
+	nearestNeigborFLANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k);
+	CPPUNIT_ASSERT_EQUAL(expectedFoundNeighbors, static_cast<int>(resultIndices.size()));
+
+	nearestNeigborFLANN->setMaxDistance(-1); // skip MaxDistance
+	expectedFoundNeighbors = 8;
+	nearestNeigborFLANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k);
+	CPPUNIT_ASSERT_EQUAL(expectedFoundNeighbors, static_cast<int>(resultIndices.size()));
+
+	k = 4; // some arbitrary value
+
+	nearestNeigborFLANN->setMaxDistance(0.1); // all neighbors too far away, except the query point
+	expectedFoundNeighbors = 1;
+	nearestNeigborFLANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k);
+	CPPUNIT_ASSERT_EQUAL(expectedFoundNeighbors, static_cast<int>(resultIndices.size()));
+
+	nearestNeigborFLANN->setMaxDistance(1.0); // at border line to 4 neighbors
+	expectedFoundNeighbors = 4;
+	nearestNeigborFLANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k);
+	CPPUNIT_ASSERT_EQUAL(expectedFoundNeighbors, static_cast<int>(resultIndices.size()));
+
+	nearestNeigborFLANN->setMaxDistance(sqrt(3.0)); // at  border line to 8 neighbors
+	expectedFoundNeighbors = 4;
+	nearestNeigborFLANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k);
+	CPPUNIT_ASSERT_EQUAL(expectedFoundNeighbors, static_cast<int>(resultIndices.size()));
+
+	nearestNeigborFLANN->setMaxDistance(-1); // skip MaxDistance
+	expectedFoundNeighbors = 4;
+	nearestNeigborFLANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k);
+	CPPUNIT_ASSERT_EQUAL(expectedFoundNeighbors, static_cast<int>(resultIndices.size()));
 
 }
 
@@ -109,19 +225,134 @@ void NearestNeighborTest::testSTANNSimple() {
 	nearestNeigborSTANN->setData(pointCloudCube);
 	CPPUNIT_ASSERT_EQUAL(3, nearestNeigborSTANN->getDimension());
 
-
 	int indexResult;
+	vector<int> resultIndices;
 
 	for (unsigned int i = 0;  i < pointCloudCube->getSize(); ++ i) {
-		indexResult = nearestNeigborSTANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[i]);
+		nearestNeigborSTANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[i], &resultIndices);
+		CPPUNIT_ASSERT(resultIndices.size() > 0);
+		indexResult = resultIndices[0];
 		CPPUNIT_ASSERT_EQUAL(static_cast<int>(i), indexResult); // must find the same (index)
 	}
 
-	nearestNeigborSTANN->setMaxDistance(-1);
+//	int indexResult;
+//
+//	for (unsigned int i = 0;  i < pointCloudCube->getSize(); ++ i) {
+//		indexResult = nearestNeigborSTANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[i]);
+//		CPPUNIT_ASSERT_EQUAL(static_cast<int>(i), indexResult); // must find the same (index)
+//	}
+//
+//	nearestNeigborSTANN->setMaxDistance(-1);
+//	for (unsigned int i = 0;  i < pointCloudCube->getSize(); ++ i) {
+//		indexResult = nearestNeigborSTANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[i]);
+//		CPPUNIT_ASSERT_EQUAL(-1, indexResult); // can't find any thing
+//	}
+
+}
+
+void NearestNeighborTest::testSTANNExtended() {
+	nearestNeigborSTANN = new NearestNeighborSTANN();
+	CPPUNIT_ASSERT_EQUAL(-1, nearestNeigborSTANN->getDimension());
+	nearestNeigborSTANN->setData(pointCloudCube);
+	CPPUNIT_ASSERT_EQUAL(3, nearestNeigborSTANN->getDimension());
+
+	int indexResult;
+	vector<int> resultIndices;
+	unsigned int k = 1;
+
 	for (unsigned int i = 0;  i < pointCloudCube->getSize(); ++ i) {
-		indexResult = nearestNeigborSTANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[i]);
-		CPPUNIT_ASSERT_EQUAL(-1, indexResult); // can't find any thing
+		nearestNeigborSTANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[i], &resultIndices);
+		CPPUNIT_ASSERT_EQUAL(1, static_cast<int>(resultIndices.size()));
+		indexResult = resultIndices[0];
+		CPPUNIT_ASSERT_EQUAL(static_cast<int>(i), indexResult); // must find the same (index)
 	}
+
+	nearestNeigborSTANN->setMaxDistance(-1); // nothing should change
+	for (unsigned int i = 0;  i < pointCloudCube->getSize(); ++ i) {
+		nearestNeigborSTANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[i], &resultIndices);
+		CPPUNIT_ASSERT_EQUAL(1, static_cast<int>(resultIndices.size()));
+		indexResult = resultIndices[0];
+		CPPUNIT_ASSERT_EQUAL(static_cast<int>(i), indexResult); // must find the same (index)
+	}
+
+	/* now increase k */
+	for (k = 1; k < pointCloudCube->getSize() ; ++k) {
+		for (unsigned int i = 0;  i < pointCloudCube->getSize(); ++ i) {
+			nearestNeigborSTANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[i], &resultIndices, k);
+			CPPUNIT_ASSERT_EQUAL(k, static_cast<unsigned int>(resultIndices.size()));
+			indexResult = resultIndices[0];
+			CPPUNIT_ASSERT_EQUAL(static_cast<int>(i), indexResult); // must find the same (index)
+		}
+	}
+
+	k = pointCloudCube->getSize() + 1; //k is bigger than number of points...
+	CPPUNIT_ASSERT_THROW(nearestNeigborSTANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k), runtime_error);
+
+	/* lets see how maxDistance and k influence each other */
+	k = pointCloudCube->getSize(); // maximum
+	int expectedFoundNeighbors;
+
+	nearestNeigborSTANN->setMaxDistance(0.1); // all neighbors too far away, except the query point
+	expectedFoundNeighbors = 1;
+	nearestNeigborSTANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k);
+	CPPUNIT_ASSERT_EQUAL(expectedFoundNeighbors, static_cast<int>(resultIndices.size()));
+
+	nearestNeigborSTANN->setMaxDistance(0.999); // slightly before border line to 4 neighbors
+	expectedFoundNeighbors = 1;
+	nearestNeigborSTANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k);
+	CPPUNIT_ASSERT_EQUAL(expectedFoundNeighbors, static_cast<int>(resultIndices.size()));
+
+	nearestNeigborSTANN->setMaxDistance(1.0); // at border line to 4 neighbors
+	expectedFoundNeighbors = 4;
+	nearestNeigborSTANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k);
+	CPPUNIT_ASSERT_EQUAL(expectedFoundNeighbors, static_cast<int>(resultIndices.size()));
+
+	nearestNeigborSTANN->setMaxDistance(sqrt(2.0)-0.001); // slightly before border line to 7 neighbors
+	expectedFoundNeighbors = 4;
+	nearestNeigborSTANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k);
+	CPPUNIT_ASSERT_EQUAL(expectedFoundNeighbors, static_cast<int>(resultIndices.size()));
+
+	nearestNeigborSTANN->setMaxDistance(sqrt(2.0)); // at border line to 7 neighbors
+	expectedFoundNeighbors = 7;
+	nearestNeigborSTANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k);
+	CPPUNIT_ASSERT_EQUAL(expectedFoundNeighbors, static_cast<int>(resultIndices.size()));
+
+	nearestNeigborSTANN->setMaxDistance(sqrt(3.0)-0.001); // slightly before border line to 8 neighbors
+	expectedFoundNeighbors = 7;
+	nearestNeigborSTANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k);
+	CPPUNIT_ASSERT_EQUAL(expectedFoundNeighbors, static_cast<int>(resultIndices.size()));
+
+	nearestNeigborSTANN->setMaxDistance(sqrt(3.0)); // at  border line to 8 neighbors
+	expectedFoundNeighbors = 8;
+	nearestNeigborSTANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k);
+	CPPUNIT_ASSERT_EQUAL(expectedFoundNeighbors, static_cast<int>(resultIndices.size()));
+
+	nearestNeigborSTANN->setMaxDistance(-1); // skip MaxDistance
+	expectedFoundNeighbors = 8;
+	nearestNeigborSTANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k);
+	CPPUNIT_ASSERT_EQUAL(expectedFoundNeighbors, static_cast<int>(resultIndices.size()));
+
+	k = 4; // some arbitrary value
+
+	nearestNeigborSTANN->setMaxDistance(0.1); // all neighbors too far away, except the query point
+	expectedFoundNeighbors = 1;
+	nearestNeigborSTANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k);
+	CPPUNIT_ASSERT_EQUAL(expectedFoundNeighbors, static_cast<int>(resultIndices.size()));
+
+	nearestNeigborSTANN->setMaxDistance(1.0); // at border line to 4 neighbors
+	expectedFoundNeighbors = 4;
+	nearestNeigborSTANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k);
+	CPPUNIT_ASSERT_EQUAL(expectedFoundNeighbors, static_cast<int>(resultIndices.size()));
+
+	nearestNeigborSTANN->setMaxDistance(sqrt(3.0)); // at  border line to 8 neighbors
+	expectedFoundNeighbors = 4;
+	nearestNeigborSTANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k);
+	CPPUNIT_ASSERT_EQUAL(expectedFoundNeighbors, static_cast<int>(resultIndices.size()));
+
+	nearestNeigborSTANN->setMaxDistance(-1); // skip MaxDistance
+	expectedFoundNeighbors = 4;
+	nearestNeigborSTANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k);
+	CPPUNIT_ASSERT_EQUAL(expectedFoundNeighbors, static_cast<int>(resultIndices.size()));
 
 }
 
@@ -144,20 +375,123 @@ void NearestNeighborTest::testANNSimple() {
 
 
 	int indexResult;
+	vector<int> resultIndices;
 
 	for (unsigned int i = 0;  i < pointCloudCube->getSize(); ++ i) {
-		indexResult = nearestNeigborANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[i]);
+		nearestNeigborANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[i], &resultIndices);
+		CPPUNIT_ASSERT(resultIndices.size() > 0);
+		indexResult = resultIndices[0];
 		CPPUNIT_ASSERT_EQUAL(static_cast<int>(i), indexResult); // must find the same (index)
 	}
 
-	nearestNeigborANN->setMaxDistance(-1);
-	for (unsigned int i = 0;  i < pointCloudCube->getSize(); ++ i) {
-		indexResult = nearestNeigborANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[i]);
-		CPPUNIT_ASSERT_EQUAL(-1, indexResult); // can't find any thing
-	}
 
 }
 
+void NearestNeighborTest::testANNExtended() {
+	nearestNeigborANN = new NearestNeighborANN();
+	CPPUNIT_ASSERT_EQUAL(-1, nearestNeigborANN->getDimension());
+	nearestNeigborANN->setData(pointCloudCube);
+	CPPUNIT_ASSERT_EQUAL(3, nearestNeigborANN->getDimension());
+
+	int indexResult;
+	vector<int> resultIndices;
+	unsigned int k = 1;
+
+	for (unsigned int i = 0;  i < pointCloudCube->getSize(); ++ i) {
+		nearestNeigborANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[i], &resultIndices);
+		CPPUNIT_ASSERT_EQUAL(1, static_cast<int>(resultIndices.size()));
+		indexResult = resultIndices[0];
+		CPPUNIT_ASSERT_EQUAL(static_cast<int>(i), indexResult); // must find the same (index)
+	}
+
+	nearestNeigborANN->setMaxDistance(-1); // nothing should change
+	for (unsigned int i = 0;  i < pointCloudCube->getSize(); ++ i) {
+		nearestNeigborANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[i], &resultIndices);
+		CPPUNIT_ASSERT_EQUAL(1, static_cast<int>(resultIndices.size()));
+		indexResult = resultIndices[0];
+		CPPUNIT_ASSERT_EQUAL(static_cast<int>(i), indexResult); // must find the same (index)
+	}
+
+	/* now increase k */
+	for (k = 1; k < pointCloudCube->getSize() ; ++k) {
+		for (unsigned int i = 0;  i < pointCloudCube->getSize(); ++ i) {
+			nearestNeigborANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[i], &resultIndices, k);
+			CPPUNIT_ASSERT_EQUAL(k, static_cast<unsigned int>(resultIndices.size()));
+			indexResult = resultIndices[0];
+			CPPUNIT_ASSERT_EQUAL(static_cast<int>(i), indexResult); // must find the same (index)
+		}
+	}
+
+	k = pointCloudCube->getSize() + 1; //k is bigger than number of points...
+	CPPUNIT_ASSERT_THROW(nearestNeigborANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k), runtime_error);
+
+	/* lets see how maxDistance and k influence each other */
+	k = pointCloudCube->getSize(); // maximum
+	int expectedFoundNeighbors;
+
+	nearestNeigborANN->setMaxDistance(0.1); // all neighbors too far away, except the query point
+	expectedFoundNeighbors = 1;
+	nearestNeigborANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k);
+	CPPUNIT_ASSERT_EQUAL(expectedFoundNeighbors, static_cast<int>(resultIndices.size()));
+
+	nearestNeigborANN->setMaxDistance(0.999); // slightly before border line to 4 neighbors
+	expectedFoundNeighbors = 1;
+	nearestNeigborANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k);
+	CPPUNIT_ASSERT_EQUAL(expectedFoundNeighbors, static_cast<int>(resultIndices.size()));
+
+	nearestNeigborANN->setMaxDistance(1.0); // at border line to 4 neighbors
+	expectedFoundNeighbors = 4;
+	nearestNeigborANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k);
+	CPPUNIT_ASSERT_EQUAL(expectedFoundNeighbors, static_cast<int>(resultIndices.size()));
+
+	nearestNeigborANN->setMaxDistance(sqrt(2.0)-0.001); // slightly before border line to 7 neighbors
+	expectedFoundNeighbors = 4;
+	nearestNeigborANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k);
+	CPPUNIT_ASSERT_EQUAL(expectedFoundNeighbors, static_cast<int>(resultIndices.size()));
+
+	nearestNeigborANN->setMaxDistance(sqrt(2.0)); // at border line to 7 neighbors
+	expectedFoundNeighbors = 7;
+	nearestNeigborANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k);
+	CPPUNIT_ASSERT_EQUAL(expectedFoundNeighbors, static_cast<int>(resultIndices.size()));
+
+	nearestNeigborANN->setMaxDistance(sqrt(3.0)-0.001); // slightly before border line to 8 neighbors
+	expectedFoundNeighbors = 7;
+	nearestNeigborANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k);
+	CPPUNIT_ASSERT_EQUAL(expectedFoundNeighbors, static_cast<int>(resultIndices.size()));
+
+	nearestNeigborANN->setMaxDistance(sqrt(3.0)); // at  border line to 8 neighbors
+	expectedFoundNeighbors = 8;
+	nearestNeigborANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k);
+	CPPUNIT_ASSERT_EQUAL(expectedFoundNeighbors, static_cast<int>(resultIndices.size()));
+
+	nearestNeigborANN->setMaxDistance(-1); // skip MaxDistance
+	expectedFoundNeighbors = 8;
+	nearestNeigborANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k);
+	CPPUNIT_ASSERT_EQUAL(expectedFoundNeighbors, static_cast<int>(resultIndices.size()));
+
+	k = 4; // some arbitrary value
+
+	nearestNeigborANN->setMaxDistance(0.1); // all neighbors too far away, except the query point
+	expectedFoundNeighbors = 1;
+	nearestNeigborANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k);
+	CPPUNIT_ASSERT_EQUAL(expectedFoundNeighbors, static_cast<int>(resultIndices.size()));
+
+	nearestNeigborANN->setMaxDistance(1.0); // at border line to 4 neighbors
+	expectedFoundNeighbors = 4;
+	nearestNeigborANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k);
+	CPPUNIT_ASSERT_EQUAL(expectedFoundNeighbors, static_cast<int>(resultIndices.size()));
+
+	nearestNeigborANN->setMaxDistance(sqrt(3.0)); // at  border line to 8 neighbors
+	expectedFoundNeighbors = 4;
+	nearestNeigborANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k);
+	CPPUNIT_ASSERT_EQUAL(expectedFoundNeighbors, static_cast<int>(resultIndices.size()));
+
+	nearestNeigborANN->setMaxDistance(-1); // skip MaxDistance
+	expectedFoundNeighbors = 4;
+	nearestNeigborANN->findNearestNeigbor(&(*pointCloudCube->getPointCloud())[0], &resultIndices, k);
+	CPPUNIT_ASSERT_EQUAL(expectedFoundNeighbors, static_cast<int>(resultIndices.size()));
+
+}
 }
 
 /* EOF */

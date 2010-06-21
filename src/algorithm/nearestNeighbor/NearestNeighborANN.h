@@ -10,7 +10,9 @@
 #define NEARESTNEIGHBORANN_H_
 
 
-#include "INearestNeighbor.h"
+#include "algorithm/nearestNeighbor/INearestNeighbor.h"
+#include "algorithm/nearestNeighbor/INearestPoint3DNeighbor.h"
+#include "algorithm/nearestNeighbor/INearestNeighborSetup.h"
 #include "ann/include/ANN/ANN.h"
 
 namespace BRICS_3D {
@@ -23,7 +25,7 @@ namespace BRICS_3D {
  * Further information about the ANN library can be found here: http://www.cs.umd.edu/~mount/ANN/
  *
  */
-class NearestNeighborANN: public BRICS_3D::INearestNeighbor {
+class NearestNeighborANN: public INearestNeighbor, public INearestPoint3DNeighbor, public INearestNeighborSetup {
 public:
 
 	/**
@@ -42,7 +44,7 @@ public:
 
 	int findNearestNeigbor(vector<float>* query);
 	int findNearestNeigbor(vector<double>* query);
-	int findNearestNeigbor(Point3D* query);
+	void findNearestNeigbor(Point3D* query, std::vector<int>* resultIndices, unsigned int k = 1);
 
 private:
 

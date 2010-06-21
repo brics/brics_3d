@@ -107,7 +107,7 @@ int main(int argc, char **argv) {
 	 * 3 STANN
 	 */
 	int pointCorrespondence = 0;
-	INearestNeighbor* nearestNeigbourFinder = 0;
+	INearestPoint3DNeighbor* nearestNeigbourFinder = 0;
 	IPointCorrespondence* assigner = 0;
 
 

@@ -29,10 +29,13 @@ class NearestNeighborTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST_SUITE( NearestNeighborTest );
 	CPPUNIT_TEST( testFLANNConstructor );
 	CPPUNIT_TEST( testFLANNSimple );
+	CPPUNIT_TEST( testFLANNExtended );
 	CPPUNIT_TEST( testSTANNConstructor );
 	CPPUNIT_TEST( testSTANNSimple );
+	CPPUNIT_TEST( testSTANNExtended );
 	CPPUNIT_TEST( testANNConstructor );
 	CPPUNIT_TEST( testANNSimple );
+	CPPUNIT_TEST( testANNExtended );
 	CPPUNIT_TEST_SUITE_END();
 
 
@@ -42,15 +45,18 @@ public:
 
 	void testFLANNConstructor();
 	void testFLANNSimple();
+	void testFLANNExtended();
 	void testSTANNConstructor();
 	void testSTANNSimple();
+	void testSTANNExtended();
 	void testANNConstructor();
 	void testANNSimple();
+	void testANNExtended();
 
 private:
 
 	INearestNeighbor* abstractNearestNeigbor;
-	NearestNeighborFLANN* nearestNeigbor; //TODO rename
+	NearestNeighborFLANN* nearestNeigborFLANN;
 	NearestNeighborSTANN* nearestNeigborSTANN;
 	NearestNeighborANN* nearestNeigborANN;
 

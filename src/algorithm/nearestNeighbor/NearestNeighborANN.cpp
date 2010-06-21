@@ -8,13 +8,15 @@
 
 #include "NearestNeighborANN.h"
 #include <assert.h>
+#include <stdexcept>
+
+using std::runtime_error;
 
 namespace BRICS_3D {
 
 NearestNeighborANN::NearestNeighborANN() {
 	this->dimension = -1;
-	this->maxDistance = 50.0; //this value has no specific meaning - it is just a default value
-
+	this->maxDistance = -1; //default = disable
 	k = 1;
 	eps	= 0;
 	maxPts = 1000;
@@ -79,12 +81,20 @@ int NearestNeighborANN::findNearestNeigbor(vector<double>* query) {
 	return -1;
 }
 
-int NearestNeighborANN::findNearestNeigbor(Point3D* query) {
+void NearestNeighborANN::findNearestNeigbor(Point3D* query, std::vector<int>* resultIndices, unsigned int k) {
 	assert (query != 0);
+	assert (resultIndices != 0);
 	assert (dimension == 3);
 
-	nnIndex = new ANNidx[k];						// allocate near neigh indices
-	distances = new ANNdist[k];						// allocate near neighbor distances
+	if (static_cast<int>(k) > kdTree->nPoints()) {
+		throw runtime_error("Number of neighbors k is bigger than the amount of data points.");
+	}
+
+	this->k = static_cast<int>(k);
+	resultIndices->clear();
+
+	nnIndex = new ANNidx[k];					// allocate near neigh indices
+	distances = new ANNdist[k];					// allocate near neighbor distances
 	queryPoint = annAllocPt(dimension);			// allocate query point
 
 	queryPoint[0] = static_cast<ANNcoord>( query->getX() );
@@ -93,9 +103,9 @@ int NearestNeighborANN::findNearestNeigbor(Point3D* query) {
 
 	kdTree->annkSearch(						// search
 			queryPoint,						// query point
-			k,								// number of near neighbors
-			nnIndex,							// nearest neighbors (returned)
-			distances,							// distance (returned)
+			this->k,							// number of near neighbors
+			nnIndex,						// nearest neighbors (returned)
+			distances,						// distance (returned)
 			eps);							// error bound
 
 //	std::cout << "\tNN:\tIndex\tDistance\n";
@@ -104,17 +114,22 @@ int NearestNeighborANN::findNearestNeigbor(Point3D* query) {
 //		std::cout << "\t" << i << "\t" << nnIndex[i] << "\t" << distances[i] << "\n";
 //	}
 
-	double resultDistance = static_cast<double>(sqrt(distances[0]));			// unsquare distance
-	int resultIndex = nnIndex[0];
+	BRICS_3D::Coordinate resultDistance; //distance has same data-type as Coordinate, although the meaning is different TODO: global distance typedef?
+	int resultIndex;
+	for (int i = 0; i < this->k; i++) {
+		resultDistance = static_cast<BRICS_3D::Coordinate>(sqrt(distances[i]));	//unsquare distance
+		resultIndex = nnIndex[i];
+		if (resultDistance <= maxDistance || maxDistance < 0.0) { //if max distance is < 0 then the distance should have no influence
+			resultIndices->push_back(resultIndex);
+		}
+	}
+
+
 
 	annDeallocPt(queryPoint);					// clean things up
     delete [] nnIndex;
     delete [] distances;
 
-	if (resultDistance <= maxDistance) {
-		return resultIndex;
-	}
-	return -1;
 }
 
 }

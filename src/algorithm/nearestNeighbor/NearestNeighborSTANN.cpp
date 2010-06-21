@@ -9,16 +9,17 @@
 #include "NearestNeighborSTANN.h"
 #include <assert.h>
 #include <cmath>
-
+#include <stdexcept>
 
 using std::cout;
 using std::endl;
+using std::runtime_error;
 
 namespace BRICS_3D {
 
 NearestNeighborSTANN::NearestNeighborSTANN() {
 	this->dimension = -1;
-	this->maxDistance = 50.0; //this value has no specific meaning - it is just a default value
+	this->maxDistance = -1; //default = disable
 
 	nearestNeigborHandle = 0;
 	points.clear();
@@ -108,9 +109,7 @@ int NearestNeighborSTANN::findNearestNeigbor(vector<double>* query) {
 	resultIndices.clear();
 	squaredResultDistances.clear();
 	nearestNeigborHandle->ksearch(queryPoint, 1, resultIndices, squaredResultDistances); //query, k=1, result
-	assert( static_cast<unsigned int>(resultIndices.size()) == static_cast<unsigned int>(k));
 	assert( static_cast<unsigned int>(resultIndices.size()) > 0);
-	assert( static_cast<unsigned int>(squaredResultDistances.size()) == static_cast<unsigned int>(k));
 	assert( static_cast<unsigned int>(squaredResultDistances.size()) > 0);
 
 	if ( sqrt(squaredResultDistances[0]) <= maxDistance) {
@@ -119,29 +118,39 @@ int NearestNeighborSTANN::findNearestNeigbor(vector<double>* query) {
 	return -1;
 }
 
-int NearestNeighborSTANN::findNearestNeigbor(Point3D* query) {
-	assert (query!=0);
+void NearestNeighborSTANN::findNearestNeigbor(Point3D* query, std::vector<int>* resultIndices, unsigned int k) {
+	assert (query != 0);
+	assert (resultIndices != 0);
 	assert (STANNDimension == 3);
 
+	if (static_cast<unsigned int>(k) > this->points.size()) {
+		throw runtime_error("Number of neighbors k is bigger than the amount of data points.");
+	}
+
+	resultIndices->clear();
 	double tmpX = (*query).getX();
 	double tmpY = (*query).getY();
 	double tmpZ = (*query).getZ();
 
 
 	STANNPoint queryPoint(tmpX, tmpY, tmpZ);
-	resultIndices.clear();
+	this->resultIndices.clear();
 	squaredResultDistances.clear();
-	nearestNeigborHandle->ksearch(queryPoint, 1, resultIndices, squaredResultDistances); //query, k=1, result
-	assert( static_cast<unsigned int>(resultIndices.size()) == static_cast<unsigned int>(k));
-	assert( static_cast<unsigned int>(resultIndices.size()) > 0);
+	nearestNeigborHandle->ksearch(queryPoint, k, this->resultIndices, squaredResultDistances); //query, k=1, result
+	assert( static_cast<unsigned int>(this->resultIndices.size()) == static_cast<unsigned int>(k));
+	assert( static_cast<unsigned int>(this->resultIndices.size()) > 0);
 	assert( static_cast<unsigned int>(squaredResultDistances.size()) == static_cast<unsigned int>(k));
 	assert( static_cast<unsigned int>(squaredResultDistances.size()) > 0);
 
-	if ( sqrt(squaredResultDistances[0]) <= maxDistance) {
-		return static_cast<int>(resultIndices[0]);
+	BRICS_3D::Coordinate resultDistance; //distance has same data-type as Coordinate, although the meaning is different
+	int resultIndex;
+	for (int i = 0; i < static_cast<int>(k); i++) {
+		resultDistance = static_cast<BRICS_3D::Coordinate>(sqrt(squaredResultDistances[i])); //seems to return squared distance (although documentation does not suggest)
+		resultIndex = static_cast<int>(this->resultIndices[i]);
+		if (resultDistance <= maxDistance || maxDistance < 0.0) { //if max distance is < 0 then the distance should have no influence
+			resultIndices->push_back(resultIndex);
+		}
 	}
-	return -1;
-
 }
 
 }

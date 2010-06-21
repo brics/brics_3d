@@ -66,6 +66,8 @@ SET (ALGORITHM_LIBRARY_SOURCES
     ./algorithm/filter/IOctreeSetup
 	./algorithm/filter/Octree
     ./algorithm/nearestNeighbor/INearestNeighbor
+    ./algorithm/nearestNeighbor/INearestNeighborSetup
+    ./algorithm/nearestNeighbor/INearestPoint3DNeighbor
     ./algorithm/nearestNeighbor/NearestNeighborANN
     ./algorithm/nearestNeighbor/NearestNeighborFLANN
     ./algorithm/nearestNeighbor/NearestNeighborSTANN
