@@ -58,7 +58,7 @@ public:
 	 *
 	 * <b>NOTE:</b> setData() must be invoked before.
 	 */
-	virtual int findNearestNeigbor(vector<float>* query) = 0;
+	virtual int findNearestNeighbor(vector<float>* query) = 0;
 
 	/**
 	 * @brief Find the nearest neighbor of the query with respect to the data.
@@ -70,7 +70,7 @@ public:
 	 *
 	 * <b>NOTE:</b> setData() must be invoked before.
 	 */
-	virtual int findNearestNeigbor(vector<double>* query)= 0;
+	virtual int findNearestNeighbor(vector<double>* query)= 0;
 
 };
 

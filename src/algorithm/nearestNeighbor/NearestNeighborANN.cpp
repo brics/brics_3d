@@ -73,15 +73,15 @@ void NearestNeighborANN::setData(PointCloud3D* data) {
 
 }
 
-int NearestNeighborANN::findNearestNeigbor(vector<float>* query) {
+int NearestNeighborANN::findNearestNeighbor(vector<float>* query) {
 	return -1;
 }
 
-int NearestNeighborANN::findNearestNeigbor(vector<double>* query) {
+int NearestNeighborANN::findNearestNeighbor(vector<double>* query) {
 	return -1;
 }
 
-void NearestNeighborANN::findNearestNeigbor(Point3D* query, std::vector<int>* resultIndices, unsigned int k) {
+void NearestNeighborANN::findNearestNeighbor(Point3D* query, std::vector<int>* resultIndices, unsigned int k) {
 	assert (query != 0);
 	assert (resultIndices != 0);
 	assert (dimension == 3);

@@ -54,7 +54,7 @@ public:
 	 *
 	 * <b>NOTE:</b> setData() must be invoked before.
 	 */
-	virtual void findNearestNeigbor(Point3D* query, std::vector<int>* resultIndices, unsigned int k = 1) = 0; //TODO typo: findNearestNeighbor
+	virtual void findNearestNeighbor(Point3D* query, std::vector<int>* resultIndices, unsigned int k = 1) = 0; //TODO typo: findNearestNeighbor
 };
 
 }  // namespace BRICS_3D

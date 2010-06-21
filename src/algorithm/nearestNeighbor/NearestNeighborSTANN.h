@@ -48,9 +48,9 @@ public:
 	void setData(vector< vector<double> >* data);
 	void setData(PointCloud3D* data);
 
-	int findNearestNeigbor(vector<float>* query);
-	int findNearestNeigbor(vector<double>* query);
-	void findNearestNeigbor(Point3D* query, std::vector<int>* resultIndices, unsigned int k = 1);
+	int findNearestNeighbor(vector<float>* query);
+	int findNearestNeighbor(vector<double>* query);
+	void findNearestNeighbor(Point3D* query, std::vector<int>* resultIndices, unsigned int k = 1);
 
 protected:
 
