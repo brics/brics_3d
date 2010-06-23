@@ -47,7 +47,7 @@ void PointCorrespondenceGenericNN::createNearestNeighborCorrespondence(PointClou
 
 	for (unsigned int i = 0; i < pointCloud2->getSize(); i++) {
 
-		nearestNeighborAlgorithm->findNearestNeighbor( &(*pointCloud2->getPointCloud())[i], &resultIndices, k);
+		nearestNeighborAlgorithm->findNearestNeighbors( &(*pointCloud2->getPointCloud())[i], &resultIndices, k);
 
 		if (resultIndices.size() > 0) {
 			resultIndex = resultIndices[0];

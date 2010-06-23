@@ -38,9 +38,9 @@ public:
 	void setData(vector< vector<double> >* data);
 	void setData(PointCloud3D* data);
 
-	int findNearestNeighbor(vector<float>* query);
-	int findNearestNeighbor(vector<double>* query);
-	void findNearestNeighbor(Point3D* query, std::vector<int>* resultIndices, unsigned int k = 1);
+	void findNearestNeighbors(vector<float>* query, std::vector<int>* resultIndices, unsigned int k = 1);
+	void findNearestNeighbors(vector<double>* query, std::vector<int>* resultIndices, unsigned int k = 1);
+	void findNearestNeighbors(Point3D* query, std::vector<int>* resultIndices, unsigned int k = 1);
 
 	FLANNParameters getParameters() const;
 

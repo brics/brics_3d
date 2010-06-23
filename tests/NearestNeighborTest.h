@@ -30,12 +30,15 @@ class NearestNeighborTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testFLANNConstructor );
 	CPPUNIT_TEST( testFLANNSimple );
 	CPPUNIT_TEST( testFLANNExtended );
+	CPPUNIT_TEST( testFLANNHighDimension );
 	CPPUNIT_TEST( testSTANNConstructor );
 	CPPUNIT_TEST( testSTANNSimple );
 	CPPUNIT_TEST( testSTANNExtended );
+	CPPUNIT_TEST( testSTANNHighDimension );
 	CPPUNIT_TEST( testANNConstructor );
 	CPPUNIT_TEST( testANNSimple );
 	CPPUNIT_TEST( testANNExtended );
+	CPPUNIT_TEST( testANNHighDimension );
 	CPPUNIT_TEST_SUITE_END();
 
 
@@ -46,12 +49,15 @@ public:
 	void testFLANNConstructor();
 	void testFLANNSimple();
 	void testFLANNExtended();
+	void testFLANNHighDimension();
 	void testSTANNConstructor();
 	void testSTANNSimple();
 	void testSTANNExtended();
+	void testSTANNHighDimension();
 	void testANNConstructor();
 	void testANNSimple();
 	void testANNExtended();
+	void testANNHighDimension();
 
 private:
 

@@ -38,11 +38,35 @@ NearestNeighborFLANN::~NearestNeighborFLANN() {
 }
 
 void NearestNeighborFLANN::setData(vector<vector<float> >* data) {
-
+	assert(false); //TODO: implement
 }
+
 void NearestNeighborFLANN::setData(vector<vector<double> >* data) {
+	assert(data != 0);
 
+	if (index_id != 0) { // clean up if previous versions exist
+		flann_free_index(index_id, &parameters);
+	}
+
+	dimension = (*data)[0].size();
+	rows = data->size();
+	cols = dimension;
+
+	dataMatrix = new float[rows * cols];
+
+	// convert data
+	int matrixIndex = 0;
+	for (int rowIndex = 0; rowIndex < rows; ++rowIndex) {
+		for (int j = 0; j < dimension; ++j) {
+			dataMatrix[matrixIndex + j] = static_cast<float> ( (*data)[rowIndex][j] );
+		}
+		matrixIndex += dimension;
+	}
+
+	// create underlying data structure
+	index_id = flann_build_index(dataMatrix, rows, cols, &speedup, &parameters);
 }
+
 void NearestNeighborFLANN::setData(PointCloud3D* data) {
 	assert(data != 0);
 
@@ -70,14 +94,49 @@ void NearestNeighborFLANN::setData(PointCloud3D* data) {
 
 }
 
-int NearestNeighborFLANN::findNearestNeighbor(vector<float>* query) {
-	return -1;
-}
-int NearestNeighborFLANN::findNearestNeighbor(vector<double>* query) {
-	return -1;
+void NearestNeighborFLANN::findNearestNeighbors(vector<float>* query, std::vector<int>* resultIndices, unsigned int k) {
+	assert(false); //TODO: implement
 }
 
-void NearestNeighborFLANN::findNearestNeighbor(Point3D* query, std::vector<int>* resultIndices, unsigned int k) {
+void NearestNeighborFLANN::findNearestNeighbors(vector<double>* query, std::vector<int>* resultIndices, unsigned int k) {
+	assert (query != 0);
+	assert (resultIndices != 0);
+//	assert (static_cast<int>(query->size()) == dimension);
+
+	if (static_cast<int>(query->size()) != dimension) {
+		throw runtime_error("Mismatch of query and data dimension.");
+	}
+	if (static_cast<int>(k) > this->rows) {
+		throw runtime_error("Number of neighbors k is bigger than the amount of data points.");
+	}
+
+	resultIndices->clear();
+	int nn = static_cast<int>(k);
+	int tcount = 1;
+	int result[nn];
+	float dists[nn];
+
+	float* queryData = new float[dimension]; //TODO: is there also a double version?!?
+	for (int i = 0; i < dimension; ++i) {
+		queryData[i] = static_cast<float>( (*query)[i] );
+	}
+
+	flann_find_nearest_neighbors_index(index_id, queryData, tcount, result, dists, nn, parameters.checks, &parameters);
+
+	BRICS_3D::Coordinate resultDistance; //distance has same data-type as Coordinate, although the meaning is different TODO: global distance typedef?
+	int resultIndex;
+	for (int i = 0; i < nn; i++) {
+		resultDistance = static_cast<BRICS_3D::Coordinate>(sqrt(dists[i])); //seems to return squared distance (although documentation does not suggest)
+		resultIndex = result[i];
+		if (resultDistance <= maxDistance || maxDistance < 0.0) { //if max distance is < 0 then the distance should have no influence
+			resultIndices->push_back(resultIndex);
+		}
+	}
+
+	delete[] queryData;
+}
+
+void NearestNeighborFLANN::findNearestNeighbors(Point3D* query, std::vector<int>* resultIndices, unsigned int k) {
 	assert (query != 0);
 	assert (resultIndices != 0);
 	assert (dimension == 3);

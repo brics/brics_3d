@@ -21,56 +21,75 @@ NearestNeighborSTANN::NearestNeighborSTANN() {
 	this->dimension = -1;
 	this->maxDistance = -1; //default = disable
 
+	nearestPoint3DNeigborHandle = 0;
 	nearestNeigborHandle = 0;
-	points.clear();
+
+	points3D = new vector<STANNPoint3D>();
+	points = new vector<STANNPoint>;
+	resultIndices = new vector<long unsigned int>();
+	squaredResultDistances = new vector <double>();
+
 
 }
 
 NearestNeighborSTANN::~NearestNeighborSTANN() {
+	if (nearestPoint3DNeigborHandle != 0) {
+		delete nearestPoint3DNeigborHandle;
+	}
 	if (nearestNeigborHandle != 0) {
 		delete nearestNeigborHandle;
 	}
-	points.clear();
+
+	points3D->clear();
+	points->clear();
+	resultIndices->clear();
+	squaredResultDistances->clear();
+
+	delete points3D;
+	delete points;
+	delete resultIndices;
+	delete squaredResultDistances;
 }
 
 void NearestNeighborSTANN::setData(vector<vector<float> >* data) {
-
+	assert(false); //TODO: implement
 }
 
 void NearestNeighborSTANN::setData(vector<vector<double> >* data) {
 	assert (data != 0);
-	assert( (*data)[0].size() == STANNDimension);
+
+	if ((*data)[0].size() != STANNDimension) {
+		throw runtime_error("Mismatch of data and preconfigured dimension. Please set constant \"STANNDimension\" accordingly. ");
+	}
 
 	if (nearestNeigborHandle != 0) {
 		delete nearestNeigborHandle; // clean up old stuff first
-		points.clear();
 	}
 
-	double tmpX = 0.0;
-	double tmpY = 0.0;
-	double tmpZ = 0.0;
+	dimension = (*data)[0].size();
+	points->clear();
 
+	/* fill in the data into the STANN specific representation */
 	for (int i = 0; i < static_cast<int>(data->size()); ++i) {
-		tmpX = ((*data)[i])[0];
-		tmpY = ((*data)[i])[1];
-		tmpZ = ((*data)[i])[2];
-		STANNPoint tmpPoint(tmpX, tmpY, tmpZ);
-		points.push_back(tmpPoint);
-//		cout << tmpPoint;
+		STANNPoint tmpPoint;
+		for (int j = 0; j < dimension; ++j) {
+			tmpPoint[j] = (*data)[i][j];
+		}
+		points->push_back(tmpPoint);
 	}
 
-	nearestNeigborHandle = new sfcnn<STANNPoint, STANNDimension, double> (&points[0], static_cast<int>(data->size())); // create morton ordering
+	nearestNeigborHandle = new sfcnn<STANNPoint, STANNDimension, double> (&(*points)[0], static_cast<int>(data->size())); // create morton ordering
 }
 
 void NearestNeighborSTANN::setData(PointCloud3D* data) {
 	assert (data != 0);
-	assert(STANNDimension == 3);
+	assert(STANNPoint3DDimension == 3);
 
 	this->dimension = 3;
 
-	if (nearestNeigborHandle != 0) {
-		delete nearestNeigborHandle; // clean up old stuff first
-		points.clear();
+	if (nearestPoint3DNeigborHandle != 0) {
+		delete nearestPoint3DNeigborHandle; // clean up old stuff first
+		points3D->clear();
 	}
 
 	double tmpX = 0.0;
@@ -81,49 +100,63 @@ void NearestNeighborSTANN::setData(PointCloud3D* data) {
 		tmpX = (*data->getPointCloud())[i].getX();
 		tmpY = (*data->getPointCloud())[i].getY();
 		tmpZ = (*data->getPointCloud())[i].getZ();
-		STANNPoint tmpPoint(tmpX, tmpY, tmpZ);
-		points.push_back(tmpPoint);
+		STANNPoint3D tmpPoint(tmpX, tmpY, tmpZ);
+		points3D->push_back(tmpPoint);
 //		cout << tmpPoint;
 	}
 
-	nearestNeigborHandle = new sfcnn<STANNPoint, STANNDimension, double> (&points[0], static_cast<int>(data->getSize())); // create morton ordering
+	nearestPoint3DNeigborHandle = new sfcnn<STANNPoint3D, STANNPoint3DDimension, double> (&(*points3D)[0], static_cast<int>(data->getSize())); // create morton ordering
 
-
-	//STANNPoint
 }
 
-int NearestNeighborSTANN::findNearestNeighbor(vector<float>* query) {
-	return -1;
+void NearestNeighborSTANN::findNearestNeighbors(vector<float>* query, std::vector<int>* resultIndices, unsigned int k) {
+	assert(false); //TODO: implement
 }
 
-int NearestNeighborSTANN::findNearestNeighbor(vector<double>* query) {
-	assert (query!=0);
-	assert (query->size() == STANNDimension);
-
-	double tmpX = (*query)[0];
-	double tmpY = (*query)[1];
-	double tmpZ = (*query)[2];
-
-
-	STANNPoint queryPoint(tmpX, tmpY, tmpZ);
-	resultIndices.clear();
-	squaredResultDistances.clear();
-	nearestNeigborHandle->ksearch(queryPoint, 1, resultIndices, squaredResultDistances); //query, k=1, result
-	assert( static_cast<unsigned int>(resultIndices.size()) > 0);
-	assert( static_cast<unsigned int>(squaredResultDistances.size()) > 0);
-
-	if ( sqrt(squaredResultDistances[0]) <= maxDistance) {
-		return static_cast<int>(resultIndices[0]);
-	}
-	return -1;
-}
-
-void NearestNeighborSTANN::findNearestNeighbor(Point3D* query, std::vector<int>* resultIndices, unsigned int k) {
+void NearestNeighborSTANN::findNearestNeighbors(vector<double>* query, std::vector<int>* resultIndices, unsigned int k) {
 	assert (query != 0);
 	assert (resultIndices != 0);
-	assert (STANNDimension == 3);
 
-	if (static_cast<unsigned int>(k) > this->points.size()) {
+	if (static_cast<int>(query->size()) != dimension) {
+		throw runtime_error("Mismatch of query and data dimension.");
+	}
+	if (static_cast<unsigned int>(k) > this->points->size()) {
+		throw runtime_error("Number of neighbors k is bigger than the amount of data points.");
+	}
+
+	STANNPoint queryPoint;
+	for (int i = 0; i < dimension; ++i) {
+		queryPoint[i] = (*query)[i];
+	}
+
+	squaredResultDistances->clear();
+	this->resultIndices->clear(); //clear internal vector
+	resultIndices->clear(); //result vector
+
+	nearestNeigborHandle->ksearch(queryPoint, k, *(this->resultIndices), *squaredResultDistances);
+	assert( static_cast<unsigned int>(this->resultIndices->size()) == static_cast<unsigned int>(k));
+	assert( static_cast<unsigned int>(this->resultIndices->size()) > 0);
+	assert( static_cast<unsigned int>(squaredResultDistances->size()) == static_cast<unsigned int>(k));
+	assert( static_cast<unsigned int>(squaredResultDistances->size()) > 0);
+
+	BRICS_3D::Coordinate resultDistance; //distance has same data-type as Coordinate, although the meaning is different
+	int resultIndex;
+	for (int i = 0; i < static_cast<int>(k); i++) {
+		resultDistance = static_cast<BRICS_3D::Coordinate>(sqrt((*squaredResultDistances)[i])); //seems to return squared distance (although documentation does not suggest)
+		resultIndex = static_cast<int>((*(this->resultIndices))[i]);
+		if (resultDistance <= maxDistance || maxDistance < 0.0) { //if max distance is < 0 then the distance should have no influence
+			resultIndices->push_back(resultIndex);
+		}
+	}
+
+}
+
+void NearestNeighborSTANN::findNearestNeighbors(Point3D* query, std::vector<int>* resultIndices, unsigned int k) {
+	assert (query != 0);
+	assert (resultIndices != 0);
+	assert (STANNPoint3DDimension == 3);
+
+	if (static_cast<unsigned int>(k) > this->points3D->size()) {
 		throw runtime_error("Number of neighbors k is bigger than the amount of data points.");
 	}
 
@@ -133,20 +166,20 @@ void NearestNeighborSTANN::findNearestNeighbor(Point3D* query, std::vector<int>*
 	double tmpZ = (*query).getZ();
 
 
-	STANNPoint queryPoint(tmpX, tmpY, tmpZ);
-	this->resultIndices.clear();
-	squaredResultDistances.clear();
-	nearestNeigborHandle->ksearch(queryPoint, k, this->resultIndices, squaredResultDistances); //query, k=1, result
-	assert( static_cast<unsigned int>(this->resultIndices.size()) == static_cast<unsigned int>(k));
-	assert( static_cast<unsigned int>(this->resultIndices.size()) > 0);
-	assert( static_cast<unsigned int>(squaredResultDistances.size()) == static_cast<unsigned int>(k));
-	assert( static_cast<unsigned int>(squaredResultDistances.size()) > 0);
+	STANNPoint3D queryPoint(tmpX, tmpY, tmpZ);
+	this->resultIndices->clear();
+	squaredResultDistances->clear();
+	nearestPoint3DNeigborHandle->ksearch(queryPoint, k, *(this->resultIndices), *squaredResultDistances);
+	assert( static_cast<unsigned int>(this->resultIndices->size()) == static_cast<unsigned int>(k));
+	assert( static_cast<unsigned int>(this->resultIndices->size()) > 0);
+	assert( static_cast<unsigned int>(squaredResultDistances->size()) == static_cast<unsigned int>(k));
+	assert( static_cast<unsigned int>(squaredResultDistances->size()) > 0);
 
 	BRICS_3D::Coordinate resultDistance; //distance has same data-type as Coordinate, although the meaning is different
 	int resultIndex;
 	for (int i = 0; i < static_cast<int>(k); i++) {
-		resultDistance = static_cast<BRICS_3D::Coordinate>(sqrt(squaredResultDistances[i])); //seems to return squared distance (although documentation does not suggest)
-		resultIndex = static_cast<int>(this->resultIndices[i]);
+		resultDistance = static_cast<BRICS_3D::Coordinate>(sqrt((*squaredResultDistances)[i])); //seems to return squared distance (although documentation does not suggest)
+		resultIndex = static_cast<int>((*(this->resultIndices))[i]);
 		if (resultDistance <= maxDistance || maxDistance < 0.0) { //if max distance is < 0 then the distance should have no influence
 			resultIndices->push_back(resultIndex);
 		}

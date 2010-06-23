@@ -49,28 +49,28 @@ public:
 	virtual void setData(vector< vector<double> >* data) = 0;
 
 	/**
-	 * @brief Find the nearest neighbor of the query with respect to the data.
-	 *
-	 * @param[in] query Content of this vector will be queried to the data.
-	 * Make sure it has the same size as the dimension of the data set.
-	 * @return Returns the index of the nearest neighbor respect to the data.
-	 * If the nearest neighbor exceeds the maximum distance <code> -1 </code> will be returned.
+	 * @param[in] query Vector that will be queried to the data.
+	 * Please make sure that it has the dame dimensionality as the data, set with setData(). Otherwise an
+	 * exception is thrown.
+	 * @param[out] resultIndices Returns the indices of the $k$ nearest neighbors with respect to the data point cloud.
+	 * If the nearest neighbor exceeds the maximum distance the returned vector will be empty.
+	 * @param[in] k Sets how many nearest neighbors will be searched.
 	 *
 	 * <b>NOTE:</b> setData() must be invoked before.
 	 */
-	virtual int findNearestNeighbor(vector<float>* query) = 0;
+	virtual void findNearestNeighbors(vector<float>* query, std::vector<int>* resultIndices, unsigned int k = 1) = 0;
 
 	/**
-	 * @brief Find the nearest neighbor of the query with respect to the data.
-	 *
-	 * @param[in] query Content of this vector will be queried to the data.
-	 * Make sure it has the same size as the dimension of the data set.
-	 * @return Returns the index of the nearest neighbor respect to the data.
-	 * If the nearest neighbor exceeds the maximum distance <code> -1 </code> will be returned.
+	 * @param[in] query Vector that will be queried to the data.
+	 * Please make sure that it has the dame dimensionality as the data, set with setData(). Otherwise an
+	 * exception is thrown.
+	 * @param[out] resultIndices Returns the indices of the $k$ nearest neighbors with respect to the data point cloud.
+	 * If the nearest neighbor exceeds the maximum distance the returned vector will be empty.
+	 * @param[in] k Sets how many nearest neighbors will be searched.
 	 *
 	 * <b>NOTE:</b> setData() must be invoked before.
 	 */
-	virtual int findNearestNeighbor(vector<double>* query)= 0;
+	virtual void findNearestNeighbors(vector<double>* query, std::vector<int>* resultIndices, unsigned int k = 1) = 0;
 
 };
 

@@ -33,14 +33,39 @@ NearestNeighborANN::~NearestNeighborANN() {
 	if (dataPoints != 0) {
 			annDeallocPts(dataPoints);
 	}
-	annClose();									// done with ANN
+	annClose(); // done with ANN
 }
 
 void NearestNeighborANN::setData(vector<vector<float> >* data) {
-
+	assert(false); //TODO: implement
 }
 
 void NearestNeighborANN::setData(vector<vector<double> >* data) {
+	assert(data != 0);
+	assert(data->size() >= 1); // at least one element!
+
+	if (kdTree != 0) {
+		    delete kdTree;
+	}
+	if (dataPoints != 0) {
+			annDeallocPts(dataPoints);
+	}
+
+	dimension = (*data)[0].size();
+	dataPoints = annAllocPts(data->size(), dimension);			// allocate data points
+	int nPts = static_cast<int>(data->size());									// read data points
+
+	/* fill in the data int the ANN specific representation */
+	for (int i = 0; i < static_cast<int>(data->size()); ++i) {
+		for (int j = 0; j < dimension; ++j) {
+			dataPoints[i][j] = static_cast<ANNcoord>( (*data)[i][j] );
+		}
+	}
+
+	kdTree = new ANNkd_tree(					// build search structure
+					dataPoints,					// the data points
+					nPts,						// number of points
+					dimension);					// dimension of space
 
 }
 
@@ -73,15 +98,57 @@ void NearestNeighborANN::setData(PointCloud3D* data) {
 
 }
 
-int NearestNeighborANN::findNearestNeighbor(vector<float>* query) {
-	return -1;
+void NearestNeighborANN::findNearestNeighbors(vector<float>* query, std::vector<int>* resultIndices, unsigned int k) {
+	assert (false); //TODO: implement
 }
 
-int NearestNeighborANN::findNearestNeighbor(vector<double>* query) {
-	return -1;
+void NearestNeighborANN::findNearestNeighbors(vector<double>* query, std::vector<int>* resultIndices, unsigned int k) {
+	assert (query != 0);
+	assert (resultIndices != 0);
+//	assert (static_cast<int>(query->size()) == dimension);
+
+	if (static_cast<int>(query->size()) != dimension) {
+		throw runtime_error("Mismatch of query and data dimension.");
+	}
+	if (static_cast<int>(k) > kdTree->nPoints()) {
+		throw runtime_error("Number of neighbors k is bigger than the amount of data points.");
+	}
+
+	this->k = static_cast<int>(k);
+	resultIndices->clear();
+
+	nnIndex = new ANNidx[k];					// allocate near neigh indices
+	distances = new ANNdist[k];					// allocate near neighbor distances
+	queryPoint = annAllocPt(dimension);			// allocate query point
+
+	for (int i = 0; i < dimension; ++i) {
+		queryPoint[i] = static_cast<ANNcoord>( (*query)[i] );
+	}
+
+	kdTree->annkSearch(						// search
+			queryPoint,						// query point
+			this->k,							// number of near neighbors
+			nnIndex,						// nearest neighbors (returned)
+			distances,						// distance (returned)
+			eps);							// error bound
+
+	BRICS_3D::Coordinate resultDistance; //distance has same data-type as Coordinate, although the meaning is different TODO: global distance typedef?
+	int resultIndex;
+	for (int i = 0; i < this->k; i++) {
+		resultDistance = static_cast<BRICS_3D::Coordinate>(sqrt(distances[i]));	//unsquare distance
+		resultIndex = nnIndex[i];
+		if (resultDistance <= maxDistance || maxDistance < 0.0) { //if max distance is < 0 then the distance should have no influence
+			resultIndices->push_back(resultIndex);
+		}
+	}
+
+	annDeallocPt(queryPoint);					// clean things up
+    delete [] nnIndex;
+    delete [] distances;
+
 }
 
-void NearestNeighborANN::findNearestNeighbor(Point3D* query, std::vector<int>* resultIndices, unsigned int k) {
+void NearestNeighborANN::findNearestNeighbors(Point3D* query, std::vector<int>* resultIndices, unsigned int k) {
 	assert (query != 0);
 	assert (resultIndices != 0);
 	assert (dimension == 3);
