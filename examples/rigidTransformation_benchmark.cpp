@@ -85,7 +85,7 @@ int main(int argc, char **argv) {
 
 	/* manipulate second point cloud */
 	Translation<double,3> translation(1, 1, 1);
-	AngleAxis<double> rotation(M_PI_2l/4.0, Vector3d(1,0,0));
+	AngleAxis<double> rotation(M_PI_2/4.0, Vector3d(1,0,0));
 	Transform3d transformation;
 //	transformation = rotation;
 	transformation = translation;
