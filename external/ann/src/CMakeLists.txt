@@ -33,10 +33,17 @@ SET(ANN_LIBRARY_SOURCES
 	perf
 )
 
+SET(ANN_LIBRARY_LIBS
+
+)
+IF ( CMAKE_COMPILER_IS_GNUCXX )
+	list(ANN_LIBRARY_LIBS               m)
+ENDIF ( CMAKE_COMPILER_IS_GNUCXX )
+
 
 # compile library
 ADD_LIBRARY(ANN ${ANN_LIBRARY_SOURCES})
-TARGET_LINK_LIBRARIES(ANN m) #TODO check if necessary and test it it works for windows
+TARGET_LINK_LIBRARIES(ANN ${ANN_LIBRARY_LIBS}) #TODO check if necessary and test it it works for windows
 
 
 

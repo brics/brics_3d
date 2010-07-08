@@ -112,9 +112,10 @@ void NearestNeighborFLANN::findNearestNeighbors(vector<double>* query, std::vect
 
 	resultIndices->clear();
 	int nn = static_cast<int>(k);
+	const int f = 3;
 	int tcount = 1;
-	int result[nn];
-	float dists[nn];
+	int result[f];
+	float dists[f]; //TODO dynamic array (should be nn)
 
 	float* queryData = new float[dimension]; //TODO: is there also a double version?!?
 	for (int i = 0; i < dimension; ++i) {
@@ -148,8 +149,8 @@ void NearestNeighborFLANN::findNearestNeighbors(Point3D* query, std::vector<int>
 	resultIndices->clear();
 	int nn = static_cast<int>(k);
 	int tcount = 1;
-	int result[nn];
-	float dists[nn];
+	int result[21];
+	float dists[21]; //TODO dynamic array
 
 	float* queryData = new float[dimension];
 	queryData[0] = static_cast<float> (query->getX());

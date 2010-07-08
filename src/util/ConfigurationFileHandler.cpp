@@ -85,8 +85,10 @@ ConfigurationFileHandler::ConfigurationFileHandler(const std::string filename) {
 }
 
 ConfigurationFileHandler::~ConfigurationFileHandler() {
+#ifdef BRICS_XERCES_ENABLE
 	delete parser;
 	XMLPlatformUtils::Terminate();
+#endif BRICS_XERCES_ENABLE
 }
 
 bool ConfigurationFileHandler::getAttribute(std::string algorithm, std::string attribute, std::string* result) {

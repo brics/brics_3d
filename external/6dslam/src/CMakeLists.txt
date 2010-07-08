@@ -5,6 +5,7 @@
 INCLUDE_DIRECTORIES(
     . 
     #${CMAKE_HOME_DIRECTORY}/src/newmat
+    ${Boost_INCLUDE_DIR}
 )
 
 
@@ -104,9 +105,9 @@ TARGET_LINK_LIBRARIES(6dslam_core newmat_cmake scanlib ${DL_LIB})
 # compile shared file IO (Scan) libraries
 ADD_LIBRARY(scan_io_uos SHARED ${SCAN_IO_UOS_LIBRARY})
 
-# compile binaries
-ADD_EXECUTABLE(slam6D slam6D)
-TARGET_LINK_LIBRARIES(slam6D 6dslam_core)
+## compile binaries
+#ADD_EXECUTABLE(slam6D slam6D)
+#TARGET_LINK_LIBRARIES(slam6D 6dslam_core)
 
 
 

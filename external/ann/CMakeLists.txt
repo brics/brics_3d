@@ -5,9 +5,14 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 PROJECT(ANN)
 
-## optimization
-ADD_DEFINITIONS(-O3 -Wall)
+## optimization for linux
+if ( CMAKE_COMPILER_IS_GNUCXX )
+	ADD_DEFINITIONS(-O3 -Wall)
+endif ( CMAKE_COMPILER_IS_GNUCXX )
 
+#if (WIN32)
+	ADD_DEFINITIONS(-DDLL_EXPORTS)
+#endif (WIN32)
 
 ## set parameters
 # set parameters for compiler

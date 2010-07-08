@@ -16,9 +16,9 @@ static LONG64 winTicksPerSecond = 0;
 
 Timer::Timer() {
 #ifdef WIN32
-	if(!winTicksPerSecond) {
-		QueryPerformanceFrequency((LARGE_INTEGER*)&winTicksPerSecond);
-	}
+//	if(!winTicksPerSecond) { //FIXME
+//		QueryPerformanceFrequency((LARGE_INTEGER*)&winTicksPerSecond);
+//	}
 #endif
 	reset();
 }
@@ -36,10 +36,12 @@ long double Timer::getElapsedTime() {
 }
 long double Timer::getCurrentTime() {
 #ifdef WIN32
-	LARGE_INTEGER tick;
-	QueryPerformanceCounter(&tick);
-	tick.QuadPart = tick.QuadPart * 1.0e3 / winTicksPerSecond;
-	return tick.u.LowPart;
+//	LARGE_INTEGER tick;
+//	QueryPerformanceCounter(&tick);
+//	tick.QuadPart = tick.QuadPart * 1.0e3 / winTicksPerSecond;
+//	return tick.u.LowPart;
+	// TODO implement me
+	return -1.0;
 #else
 	struct timeval thisTime;
 	gettimeofday(&thisTime, 0);

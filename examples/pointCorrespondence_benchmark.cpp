@@ -13,7 +13,6 @@
 
 #include <iostream>
 #include <sstream>
-#include "util/OSGPointCloudVisualizer.h"
 #include "core/PointCloud3D.h"
 #include "core/HomogeneousMatrix44.h"
 #include "algorithm/nearestNeighbor/NearestNeighborANN.h"

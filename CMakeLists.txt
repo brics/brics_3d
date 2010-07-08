@@ -24,6 +24,7 @@ ELSE (OpenCV_FOUND)
 ENDIF (OpenCV_FOUND)
 
 # search for Boost library (not yet necessary!)
+SET(Boost_ADDITIONAL_VERSIONS "1.39" "1.39.0" "1.40" "1.40.0" "1.41" "1.41.0"  "1.42" "1.42.0")
 FIND_PACKAGE(Boost)
 IF (NOT Boost_INCLUDE_DIR)
   MESSAGE(SEND_ERROR "WARNING: Boost not found")
@@ -113,6 +114,7 @@ SET(LIBRARY_OUTPUT_PATH ${CMAKE_HOME_DIRECTORY}/lib/ CACHE PATH "Configure the l
 #SET(LIBRARY_INSTALL_DIR /usr/local/lib/brics CACHE PATH "The subdirectory to the header prefix")
 
 ## do compilations
+ADD_SUBDIRECTORY(./external/6dslam)
 ADD_SUBDIRECTORY(./external/flann)
 ADD_SUBDIRECTORY(./external/ann)
 ADD_SUBDIRECTORY(./src) #compile everything in src to create the libraries
