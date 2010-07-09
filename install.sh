@@ -1,23 +1,7 @@
 #!/bin/bash
 # author: Sebastian Blumenthal
-# date: 24.09.2009
+# date: 09.07.2010
 
-echo "Starting to install BRICS_3D library."
-
-
-echo ""
-echo "Compilation of 6DSLAM precondition:"
-if [ ! -d ./external/6dslam/build ]
-then 
-   mkdir ./external/6dslam/build 
-fi
-cd ./external/6dslam/build/
-cmake ..
-make
-cd ../../../
-
-
-echo ""
 echo "Compilation of BRICS_3D library:"
 if [ ! -d ./build ]
 then 
