@@ -207,7 +207,7 @@ void PointCloud3DTest::testStreaming() {
 void PointCloud3DTest::testTransformation() {
 
 	/* rotate 90° about X */
-	AngleAxis<double> rotation(M_PI_2l, Vector3d(1,0,0));
+	AngleAxis<double> rotation(M_PI_2, Vector3d(1,0,0));
 	transformation = rotation;
 
 	IHomogeneousMatrix44 *homogeneousTransformation = new HomogeneousMatrix44(&transformation);

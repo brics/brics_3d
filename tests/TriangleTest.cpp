@@ -103,7 +103,7 @@ void TriangleTest::testTransformation() {
 	/*
 	 * rotate 90° abouz x axis
 	 */
-	AngleAxis<double> rotation(M_PI_2l, Vector3d(1,0,0));
+	AngleAxis<double> rotation(M_PI_2, Vector3d(1,0,0));
 	Transform3d transformation;
 	transformation = rotation;
 	HomogeneousMatrix44* homogeneousTransformation = new HomogeneousMatrix44(&transformation);

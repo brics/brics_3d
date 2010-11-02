@@ -361,7 +361,7 @@ void Point3DDecoratorTest::testTransfomration() {
 	/*
 	 * rotate 90° abouz x axis
 	 */
-	AngleAxis<double> rotation(M_PI_2l, Vector3d(1,0,0));
+	AngleAxis<double> rotation(M_PI_2, Vector3d(1,0,0));
 	Transform3d transformation;
 	transformation = rotation;
 //	cout << transformation * referenceVector << endl; // expected

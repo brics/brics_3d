@@ -256,8 +256,8 @@ void ColoredPointCloud3DTest::testStreaming() {
 void ColoredPointCloud3DTest::testTransformation() {
 
 	/* rotate 90° about X */
-//	AngleAxis<double> rotation(M_PI_2l, Vector3d(1,0,0));
-	AngleAxis<double> rotation(M_PI_2l*0.389475, Vector3d(1,0,0)); // pvector pointCloudCube->getPointCloud()
+//	AngleAxis<double> rotation(M_PI_2, Vector3d(1,0,0));
+	AngleAxis<double> rotation(M_PI_2*0.389475, Vector3d(1,0,0)); // pvector pointCloudCube->getPointCloud()
 	transformation = rotation;
 
 	IHomogeneousMatrix44 *homogeneousTransformation = new HomogeneousMatrix44(&transformation);

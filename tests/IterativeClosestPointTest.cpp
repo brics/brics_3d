@@ -78,7 +78,7 @@ void IterativeClosestPointTest::testConstructor() {
 
 void IterativeClosestPointTest::testSimpleAlignmentSVD() {
 	/* manipulate second point cloud */
-	AngleAxis<double> rotation(M_PI_2l/4.0, Vector3d(1,0,0));
+	AngleAxis<double> rotation(M_PI_2/4.0, Vector3d(1,0,0));
 	Transform3d transformation;
 	transformation = rotation;
 	IHomogeneousMatrix44* homogeneousTrans = new HomogeneousMatrix44(&transformation);
@@ -118,7 +118,7 @@ void IterativeClosestPointTest::testSimpleAlignmentSVD() {
 
 void IterativeClosestPointTest::testSimpleAlignmentQUAT() {
 	/* manipulate second point cloud */
-	AngleAxis<double> rotation(M_PI_2l/4.0, Vector3d(1,0,0));
+	AngleAxis<double> rotation(M_PI_2/4.0, Vector3d(1,0,0));
 	Transform3d transformation;
 	transformation = rotation;
 	IHomogeneousMatrix44* homogeneousTrans = new HomogeneousMatrix44(&transformation);
@@ -155,7 +155,7 @@ void IterativeClosestPointTest::testSimpleAlignmentQUAT() {
 
 void IterativeClosestPointTest::testSimpleAlignmentHELIX() {
 	/* manipulate second point cloud */
-	AngleAxis<double> rotation(M_PI_2l/4.0, Vector3d(1,0,0));
+	AngleAxis<double> rotation(M_PI_2/4.0, Vector3d(1,0,0));
 	Transform3d transformation;
 	transformation = rotation;
 	IHomogeneousMatrix44* homogeneousTrans = new HomogeneousMatrix44(&transformation);
@@ -192,7 +192,7 @@ void IterativeClosestPointTest::testSimpleAlignmentHELIX() {
 
 void IterativeClosestPointTest::testSimpleAlignmentAPX() {
 	/* manipulate second point cloud */
-	AngleAxis<double> rotation(M_PI_2l/4.0, Vector3d(1,0,0));
+	AngleAxis<double> rotation(M_PI_2/4.0, Vector3d(1,0,0));
 	Transform3d transformation;
 	transformation = rotation;
 	IHomogeneousMatrix44* homogeneousTrans = new HomogeneousMatrix44(&transformation);
@@ -229,7 +229,7 @@ void IterativeClosestPointTest::testSimpleAlignmentAPX() {
 
 void IterativeClosestPointTest::testStatefullInterface() {
 	/* manipulate second point cloud */
-	AngleAxis<double> rotation(M_PI_2l/4.0, Vector3d(1,0,0));
+	AngleAxis<double> rotation(M_PI_2/4.0, Vector3d(1,0,0));
 	Transform3d transformation;
 	transformation = rotation;
 	IHomogeneousMatrix44* homogeneousTrans = new HomogeneousMatrix44(&transformation);

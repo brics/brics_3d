@@ -283,7 +283,7 @@ void Point3DTest::testIdentity() {
 
 void Point3DTest::testRotation90X(){
 
-	AngleAxis<double> rotation(M_PI_2l, Vector3d(1,0,0));
+	AngleAxis<double> rotation(M_PI_2, Vector3d(1,0,0));
 	transformation = rotation;
 //	cout << transformation * referenceVector << endl; // expected
 
@@ -301,7 +301,7 @@ void Point3DTest::testRotation90X(){
 
 void Point3DTest::testRotation90Y(){
 
-	AngleAxis<double> rotation(M_PI_2l, Vector3d(0,1,0));
+	AngleAxis<double> rotation(M_PI_2, Vector3d(0,1,0));
 	transformation = rotation;
 //	cout << transformation * referenceVector << endl; // expected
 
@@ -319,7 +319,7 @@ void Point3DTest::testRotation90Y(){
 
 void Point3DTest::testRotation90Z(){
 
-	AngleAxis<double> rotation(M_PI_2l, Vector3d(0,0,1));
+	AngleAxis<double> rotation(M_PI_2, Vector3d(0,0,1));
 	transformation = rotation;
 //	cout << transformation * referenceVector << endl; // expected
 

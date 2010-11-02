@@ -79,7 +79,7 @@ void RigidTransformationEstimationTest::testConstructor() {
 void RigidTransformationEstimationTest::testSVDTransformation(){
 
 	/* manipulate second point cloud */
-	AngleAxis<double> rotation(M_PI_2l/4.0, Vector3d(1,0,0));
+	AngleAxis<double> rotation(M_PI_2/4.0, Vector3d(1,0,0));
 	Transform3d transformation;
 	transformation = rotation;
 	IHomogeneousMatrix44* homogeneousTrans = new HomogeneousMatrix44(&transformation);
@@ -123,7 +123,7 @@ void RigidTransformationEstimationTest::testSVDTransformation(){
 
 void RigidTransformationEstimationTest::testQUATTransformation() {
 	/* manipulate second point cloud */
-	AngleAxis<double> rotation(M_PI_2l/4.0, Vector3d(1,0,0));
+	AngleAxis<double> rotation(M_PI_2/4.0, Vector3d(1,0,0));
 	Transform3d transformation;
 	transformation = rotation;
 	IHomogeneousMatrix44* homogeneousTrans = new HomogeneousMatrix44(&transformation);
@@ -166,7 +166,7 @@ void RigidTransformationEstimationTest::testQUATTransformation() {
 
 void RigidTransformationEstimationTest::testHELIXTransformation() {
 	/* manipulate second point cloud */
-	AngleAxis<double> rotation(M_PI_2l/4.0, Vector3d(1,0,0));
+	AngleAxis<double> rotation(M_PI_2/4.0, Vector3d(1,0,0));
 	Transform3d transformation;
 	transformation = rotation;
 	IHomogeneousMatrix44* homogeneousTrans = new HomogeneousMatrix44(&transformation);
@@ -209,7 +209,7 @@ void RigidTransformationEstimationTest::testHELIXTransformation() {
 
 void RigidTransformationEstimationTest::testAPXTransformation() {
 	/* manipulate second point cloud */
-	AngleAxis<double> rotation(M_PI_2l/4.0, Vector3d(1,0,0));
+	AngleAxis<double> rotation(M_PI_2/4.0, Vector3d(1,0,0));
 	Transform3d transformation;
 	transformation = rotation;
 	IHomogeneousMatrix44* homogeneousTrans = new HomogeneousMatrix44(&transformation);
@@ -252,7 +252,7 @@ void RigidTransformationEstimationTest::testAPXTransformation() {
 
 void RigidTransformationEstimationTest::testORTHOTransformation() {
 	/* manipulate second point cloud */
-	AngleAxis<double> rotation(M_PI_2l/4.0, Vector3d(1,0,0));
+	AngleAxis<double> rotation(M_PI_2/4.0, Vector3d(1,0,0));
 	Transform3d transformation;
 	transformation = rotation;
 	IHomogeneousMatrix44* homogeneousTrans = new HomogeneousMatrix44(&transformation);
