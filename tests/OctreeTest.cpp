@@ -14,6 +14,10 @@ namespace unitTests {
 CPPUNIT_TEST_SUITE_REGISTRATION( OctreeTest );
 
 void OctreeTest::setUp() {
+	octreeComponent = 0;
+	octreePartition = 0;
+	octreeSetup = 0;
+
 	pointCloudCube = new PointCloud3D();
 
 	point000 = new Point3D(0,0,0);
@@ -48,6 +52,7 @@ void OctreeTest::tearDown() {
 	delete point110;
 
 	delete pointCloudCube;
+
 }
 
 void OctreeTest::testConstructor() {

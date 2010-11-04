@@ -22,6 +22,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( PointCloud3DTest );
 
 void PointCloud3DTest::setUp() {
 	pointCloudCube = new PointCloud3D();
+	pointCloudCubeCopy = 0;
 
 	point000 = new Point3D(0,0,0);
 	point001 = new Point3D(0,0,1);
@@ -52,7 +53,10 @@ void PointCloud3DTest::tearDown() {
 	delete point111;
 	delete point110;
 
-	delete pointCloudCube;
+	if (pointCloudCube) {
+		delete pointCloudCube;
+		pointCloudCube = 0;
+	}
 }
 
 void PointCloud3DTest::testConstructor() {

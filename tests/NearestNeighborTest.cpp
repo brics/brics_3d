@@ -39,6 +39,12 @@ void NearestNeighborTest::setUp() {
 	pointCloudCube->addPoint(point110);
 
 	pointCloudCubeCopy = new PointCloud3D();
+
+	nearestNeigborFLANN = 0;
+	nearestNeigborANN = 0;
+	nearestNeigborSTANN = 0;
+	abstractNearestNeigbor = 0;
+
 }
 
 void NearestNeighborTest::tearDown() {
@@ -53,10 +59,27 @@ void NearestNeighborTest::tearDown() {
 
 	delete pointCloudCube;
 	delete pointCloudCubeCopy;
-	delete nearestNeigborFLANN;
-	delete nearestNeigborANN;
-	delete nearestNeigborSTANN;
-	delete abstractNearestNeigbor;
+
+	if (nearestNeigborFLANN) {
+		delete nearestNeigborFLANN;
+		nearestNeigborFLANN = 0;
+	}
+
+	if (nearestNeigborANN) {
+		delete nearestNeigborANN;
+		nearestNeigborANN = 0;
+	}
+
+	if (nearestNeigborSTANN) {
+		delete nearestNeigborSTANN;
+		nearestNeigborSTANN = 0;
+	}
+
+	if (abstractNearestNeigbor) {
+		delete abstractNearestNeigbor;
+		abstractNearestNeigbor = 0;
+	}
+
 }
 
 void NearestNeighborTest::testFLANNConstructor() {

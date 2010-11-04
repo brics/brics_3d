@@ -44,6 +44,9 @@ void IterativeClosestPointTest::setUp() {
 	stringstream tmpSteam;
 	tmpSteam << *pointCloudCube;
 	tmpSteam >> *pointCloudCubeCopy;
+
+	icp = 0;
+	abstractIcp = 0;
 }
 
 void IterativeClosestPointTest::tearDown() {
@@ -59,8 +62,15 @@ void IterativeClosestPointTest::tearDown() {
 	delete pointCloudCube;
 	delete pointCloudCubeCopy;
 
-	delete icp;
-	delete abstractIcp;
+	if (icp) {
+		delete icp;
+		icp = 0;
+	}
+
+	if (abstractIcp) {
+		delete abstractIcp;
+		abstractIcp = 0;
+	}
 }
 
 void IterativeClosestPointTest::testConstructor() {

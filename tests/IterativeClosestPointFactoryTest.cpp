@@ -19,15 +19,16 @@ namespace unitTests {
 CPPUNIT_TEST_SUITE_REGISTRATION( IterativeClosestPointFactoryTest );
 
 void IterativeClosestPointFactoryTest::setUp() {
-
+	icpFactory = 0;
 	char defaultFilename[255] = { BRICS_CONFIGURATIONS_DIR};
 	strcat(defaultFilename, "/unitTestConfig.xml\0");
 	filename = defaultFilename;
 }
 
 void IterativeClosestPointFactoryTest::tearDown() {
-	if(icpFactory) {
+	if (icpFactory) {
 		delete icpFactory;
+		icpFactory = 0;
 	}
 }
 

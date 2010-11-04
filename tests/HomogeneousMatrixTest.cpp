@@ -15,7 +15,7 @@ namespace unitTests {
 CPPUNIT_TEST_SUITE_REGISTRATION( HomogeneousMatrixTest );
 
 void HomogeneousMatrixTest::setUp() {
-
+	matrix = 0;
 }
 
 void HomogeneousMatrixTest::tearDown() {

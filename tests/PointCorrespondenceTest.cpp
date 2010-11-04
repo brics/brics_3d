@@ -17,6 +17,9 @@ namespace unitTests {
 CPPUNIT_TEST_SUITE_REGISTRATION( PointCorrespondenceTest );
 
 void PointCorrespondenceTest::setUp() {
+	assigner = 0;
+	abstractAssigner = 0;
+
 	pointCloudCube = new PointCloud3D();
 
 	point000 = new Point3D(0,0,0);
@@ -55,8 +58,15 @@ void PointCorrespondenceTest::tearDown() {
 	delete pointCloudCube;
 	delete pointCloudCubeCopy;
 
-	delete assigner;
-	delete abstractAssigner;
+	if (assigner) {
+		delete assigner;
+		assigner = 0;
+	}
+
+	if (abstractAssigner) {
+		delete abstractAssigner;
+		abstractAssigner = 0;
+	}
 }
 
 void PointCorrespondenceTest::testConstructor() {

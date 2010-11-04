@@ -14,6 +14,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION( ConfigurationFileHandlerTest );
 
 void ConfigurationFileHandlerTest::setUp() {
 
+	xmlHandler = 0;
+
 	char defaultFilename[255] = { BRICS_CONFIGURATIONS_DIR};
 	strcat(defaultFilename, "/unitTestConfig.xml\0");
 	filename = defaultFilename;
@@ -21,7 +23,10 @@ void ConfigurationFileHandlerTest::setUp() {
 }
 
 void ConfigurationFileHandlerTest::tearDown() {
-	delete xmlHandler;
+	if (xmlHandler) {
+		delete xmlHandler;
+		xmlHandler = 0;
+	}
 }
 
 void ConfigurationFileHandlerTest::testConstructor() {
@@ -30,7 +35,10 @@ void ConfigurationFileHandlerTest::testConstructor() {
 	xmlHandler = new ConfigurationFileHandler(filename);
 	CPPUNIT_ASSERT(xmlHandler != 0);
 
-//	delete xmlHandler;
+	if (xmlHandler) {
+		delete xmlHandler;
+		xmlHandler = 0;
+	}
 }
 
 void ConfigurationFileHandlerTest::testParsing() {

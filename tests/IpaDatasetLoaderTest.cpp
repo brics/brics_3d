@@ -14,7 +14,7 @@ namespace unitTests {
 CPPUNIT_TEST_SUITE_REGISTRATION( IpaDatasetLoaderTest );
 
 void IpaDatasetLoaderTest::setUp() {
-
+	loader = 0;
 	char defaultFilename[255] = { BRICS_IMGAGES_DIR };
 	strcat(defaultFilename, "/pringlesGreenMedian_0\0");
 	filename = defaultFilename;
@@ -22,8 +22,9 @@ void IpaDatasetLoaderTest::setUp() {
 }
 
 void IpaDatasetLoaderTest::tearDown() {
-	if (loader != 0) {
+	if (loader) {
 		delete loader;
+		loader = 0;
 	}
 }
 

@@ -14,6 +14,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( TriangleMeshTest );
 
 
 void TriangleMeshTest::setUp() {
+	abstractMesh = 0;
 
 	/* only to get a rough idea:
 	 *

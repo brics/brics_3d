@@ -20,6 +20,8 @@ namespace unitTests {
 CPPUNIT_TEST_SUITE_REGISTRATION( RigidTransformationEstimationTest );
 
 void RigidTransformationEstimationTest::setUp() {
+	estimator = 0;
+	abstractEstimator = 0;
 	pointCloudCube = new PointCloud3D();
 
 	point000 = new Point3D(0,0,0);
@@ -59,8 +61,16 @@ void RigidTransformationEstimationTest::tearDown() {
 	delete pointCloudCube;
 	delete pointCloudCubeCopy;
 
-	delete estimator;
-	delete abstractEstimator;
+	if (estimator) {
+		delete estimator;
+		estimator = 0;
+	}
+
+	if (abstractEstimator) {
+		delete abstractEstimator;
+		abstractEstimator = 0;
+	}
+
 }
 
 void RigidTransformationEstimationTest::testConstructor() {
