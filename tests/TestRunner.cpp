@@ -8,9 +8,11 @@
  * @author: sblume
  */
 
+#include <fstream>
 #include <cppunit/CompilerOutputter.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/ui/text/TestRunner.h>
+#include <cppunit/XmlOutputter.h>
 
 
 int main(int argc, char* argv[]) {
@@ -23,8 +25,25 @@ int main(int argc, char* argv[]) {
 	CppUnit::TextUi::TestRunner runner;
 	runner.addTest(suite);
 
-	// Change the default outputter to a compiler error format outputter
-	runner.setOutputter(new CppUnit::CompilerOutputter(&runner.result(), std::cerr));
+	// Check the set parameters.
+	bool useXmlOutput = false;
+	if (argc == 2) {
+		std::string parameter = argv[1];
+		if (parameter.compare("--report-xml") == 0) {
+			useXmlOutput = true;
+		}
+	}
+
+	// Decide which output format to take.
+	std::ofstream outputStream;
+	if (useXmlOutput) {
+		// Change the default outputter to a XML outputter
+		outputStream.open("unit_test_results.xml");
+		runner.setOutputter(new CppUnit::XmlOutputter(&runner.result(), outputStream, std::string("ISO-8859-1")));
+	} else {
+		// Change the default outputter to a compiler error format outputter
+		runner.setOutputter(new CppUnit::CompilerOutputter(&runner.result(), std::cerr));
+	}
 
 	// Run the tests.
 	bool wasSucessful = runner.run();
