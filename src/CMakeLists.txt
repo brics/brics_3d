@@ -57,6 +57,7 @@ SET (CORE_LIBRARY_SOURCES
 	./core/ITriangleMesh
 	./core/TriangleMeshExplicit
 	./core/TriangleMeshImplicit
+    ./core/Logger
 )
 
 SET (ALGORITHM_LIBRARY_SOURCES
