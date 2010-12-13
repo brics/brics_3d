@@ -73,8 +73,6 @@ void LoggerTest::testLoggerInfoWithLevels() {
 
 	messageBuffer.clear();
 	LOG(INFO) << testMessage;
-	std::cout << "expectedLogMessage:" << expectedLogMessage;
-	std::cout << "messageBuffer:" << messageBuffer;
 	CPPUNIT_ASSERT( expectedLogMessage.compare(messageBuffer) == 0);
 
 
@@ -102,7 +100,7 @@ void LoggerTest::testLoggerWarningWithLevels() {
 
 	/* Set level to INFO and check */
 	Logger::setMinLoglevel(Logger::INFO);
-	expectedLogMessage = "[INFO] ";
+	expectedLogMessage = "[WARNING] ";
 	expectedLogMessage.append(testMessage);
 	expectedLogMessage.append("\n");
 
@@ -113,12 +111,10 @@ void LoggerTest::testLoggerWarningWithLevels() {
 
 	/* Set level to WARNING and check */
 	Logger::setMinLoglevel(Logger::WARNING);
-	expectedLogMessage = "";
+	//take previous defined message
 
 	messageBuffer.clear();
 	LOG(WARNING) << testMessage;
-	std::cout << "expectedLogMessage:" << expectedLogMessage;
-	std::cout << "messageBuffer:" << messageBuffer;
 	CPPUNIT_ASSERT( expectedLogMessage.compare(messageBuffer) == 0);
 
 
@@ -146,7 +142,7 @@ void LoggerTest::testLoggerErrorWithLevels() {
 
 	/* Set level to INFO and check */
 	Logger::setMinLoglevel(Logger::INFO);
-	expectedLogMessage = "[INFO] ";
+	expectedLogMessage = "[ERROR] ";
 	expectedLogMessage.append(testMessage);
 	expectedLogMessage.append("\n");
 
@@ -157,18 +153,16 @@ void LoggerTest::testLoggerErrorWithLevels() {
 
 	/* Set level to WARNING and check */
 	Logger::setMinLoglevel(Logger::WARNING);
-	expectedLogMessage = "";
+	//take previous defined message
 
 	messageBuffer.clear();
 	LOG(ERROR) << testMessage;
-	std::cout << "expectedLogMessage:" << expectedLogMessage;
-	std::cout << "messageBuffer:" << messageBuffer;
 	CPPUNIT_ASSERT( expectedLogMessage.compare(messageBuffer) == 0);
 
 
 	/* Set level to LOGERROR and check */
 	Logger::setMinLoglevel(Logger::LOGERROR);
-	expectedLogMessage = "";
+	//take previous defined message
 
 	messageBuffer.clear();
 	LOG(ERROR) << testMessage;
