@@ -13,9 +13,12 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/ui/text/TestRunner.h>
 #include <cppunit/XmlOutputter.h>
-
+#include "core/Logger.h" // control the BRICS logger module
 
 int main(int argc, char* argv[]) {
+
+	// Configure logging output
+	BRICS_3D::Logger::setMinLoglevel(BRICS_3D::Logger::WARNING);
 
 	/*see also: http://cppunit.sourceforge.net/doc/lastest/money_example.html#sec_running_test */
 	// Get the top level suite from the registry

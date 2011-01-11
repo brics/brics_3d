@@ -19,7 +19,6 @@ LoggerTestListener::LoggerTestListener(){
 
 void LoggerTestListener::write(Logger::Loglevel level, std::string message) {
 	CPPUNIT_ASSERT(messageBufferHandle != 0);
-	std::cout << "message: in logger listener" << message;
 	(*messageBufferHandle) = message;
 }
 
@@ -39,6 +38,7 @@ void LoggerTest::tearDown() {
 	}
 
 	Logger::setMinLoglevel(unitTestlogLevel); //restore the initial logger level
+	Logger::setListener(0); //un set the listener
 }
 
 void LoggerTest::testSimpleLogging() {

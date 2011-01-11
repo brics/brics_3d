@@ -22,7 +22,7 @@ ConfigurationFileHandler::ConfigurationFileHandler(const std::string filename) {
 	this->filename = filename;
 
 #ifdef BRICS_XERCES_ENABLE
-	cout << "INFO: opening configuration file " << filename << endl;
+	LOG(INFO) << "Opening configuration file " << filename;
 
 	// Initialize the XML4C2 system.
 	try {
@@ -63,22 +63,22 @@ ConfigurationFileHandler::ConfigurationFileHandler(const std::string filename) {
 		int errorCount = parser->getErrorCount();
 		if (errorCount > 0) {
 			errorsOccured = true;
-			cerr << "ERROR: XML document has " << errorsOccured << " error(s)." << endl;
+			LOG(ERROR) << "XML document has " << errorsOccured << " error(s).";
 		}
 
 	} catch (const XMLException& e) {
-		cerr << "ERROR: An error occured during parsing\n   Message: " << e.getMessage() << endl;
+		LOG(ERROR) << "An error occured during parsing\n   Message: " << e.getMessage();
 		errorsOccured = true;
 	} catch (const DOMException& e) {
-		cerr <<  "ERROR: A DOM error occured during parsing\n   DOMException code: " << e.code << endl;
+		LOG(ERROR) << "A DOM error occured during parsing\n   DOMException code: " << e.code;
 		errorsOccured = true;
 	} catch (...) {
-		cerr <<  "ERROR: An error occured during parsing\n" << endl;
+		LOG(ERROR) << "An error occured during parsing\n" << endl;
 		errorsOccured = true;
 	}
 
 #else
-	std::cout << "WARNING: Xerces is not enabled. No XML I/O support." << std::endl;
+	LOG(WARNIG) <<  Xerces is not enabled. No XML I/O support.";
 	errorsOccured = true;
 #endif
 
@@ -106,9 +106,9 @@ bool ConfigurationFileHandler::getAttribute(std::string algorithm, std::string a
     DOMDocument* doc = parser->getDocument();
     DOMNodeList* root = doc->getElementsByTagName(algorithmName);
     if (root->getLength() > 1) {
-        cout << "WARNING: More than one " << algorithm << " found, taking the first one" << endl;
+        LOG(WARNING) << "More than one " << algorithm << " found, taking the first one";
     } else if(root->getLength() < 1) {
-        cout << "WARNING: No algorithm called " << algorithm << " found." << endl;
+    	LOG(WARNING) << "No algorithm called " << algorithm << " found.";
 		return false;
     }
 
@@ -150,9 +150,9 @@ bool ConfigurationFileHandler::getAttribute(std::string algorithm, std::string a
     DOMDocument* doc = parser->getDocument();
     DOMNodeList* root = doc->getElementsByTagName(algorithmName);
     if (root->getLength() > 1) {
-        cout << "WARNING: More than one " << algorithm << " found, taking the first one" << endl;
+    	LOG(WARNING) << "More than one " << algorithm << " found, taking the first one";
     } else if(root->getLength() < 1) {
-    	cout << "WARNING: No algorithm called " << algorithm << " found." << endl;
+    	LOG(WARNING) << "No algorithm called " << algorithm << " found.";
 		return false; //TODO release resources
     }
 
@@ -191,9 +191,9 @@ bool ConfigurationFileHandler::getAttribute(std::string algorithm, std::string a
     DOMDocument* doc = parser->getDocument();
     DOMNodeList* root = doc->getElementsByTagName(algorithmName);
     if (root->getLength() > 1) {
-    	cout << "WARNING: More than one " << algorithm << " found, taking the first one" << endl;
+    	LOG(WARNING) << "More than one " << algorithm << " found, taking the first one";
     } else if(root->getLength() < 1) {
-    	cout << "WARNING: No algorithm called " << algorithm << " found." << endl;
+    	LOG(WARNING) << "No algorithm called " << algorithm << " found.";
 		return false; //TODO release resouces
     }
 
@@ -232,9 +232,9 @@ bool ConfigurationFileHandler::getSubAlgorithm(std::string algorithm, std::strin
     DOMDocument* doc = parser->getDocument();
     DOMNodeList* root = doc->getElementsByTagName(algorithmName);
     if (root->getLength() > 1) {
-    	cout << "WARNING: More than one " << algorithm << " found, taking the first one" << endl;
+    	LOG(WARNING) << "More than one " << algorithm << " found, taking the first one";
     } else if(root->getLength() < 1) {
-    	cout << "WARNING: No algorithm called " << algorithm << " found." << endl;
+    	LOG(WARNING) << "No algorithm called " << algorithm << " found.";
 		return false; //TODO release resouces
     }
 

@@ -45,9 +45,7 @@ bool IpaDatasetLoader::loadColoredPointCloud(std::string pathAndName) {
 	xyzImage = (IplImage*)cvLoad(imageFileName.c_str());
 	if (xyzImage == 0)
 	{
-		std::cerr << "ERROR - ColoredPointCloud::LoadColoredPointCloud:" << std::endl;
-		std::cerr << "\t ... Could not load xyz image" << std::endl;
-		std::cerr << "\t ... '" << imageFileName << "'\n";
+		LOG(ERROR) << "ColoredPointCloud::LoadColoredPointCloud: Could not load xyz image " << imageFileName;
 		return false;
 	}
 
@@ -78,8 +76,7 @@ IplImage* IpaDatasetLoader::getColorImage() {
 
 bool IpaDatasetLoader::getData(int i, int j, double& x, double& y, double& z, unsigned char& R, unsigned char& G, unsigned char& B) {
 	if (xyzImage == NULL || colorImage == NULL) {
-		std::cerr << "ERROR - ColoredPointCloud::GetData:" << std::endl;
-		std::cerr << "\t ... Color image or intensity image is a NULL-pointer'\n";
+		LOG(ERROR) << "ColoredPointCloud::GetData: Color image or intensity image is a NULL-pointer";
 		return false;
 	}
 
@@ -89,8 +86,8 @@ bool IpaDatasetLoader::getData(int i, int j, double& x, double& y, double& z, un
 			j >= xyzImage->height ||
 			j >= colorImage->height ||
 			j < 0) {
-		std::cerr << "ERROR - ColoredPointCloud::GetData:" << std::endl;
-		std::cerr << "\t ... Parameter of color image or intensity image is aout of bounds'\n";
+
+		LOG(ERROR) << "ColoredPointCloud::GetData: Parameter of color image or intensity image is out of bounds";
 		return false;
 	}
 
@@ -155,7 +152,6 @@ ColoredPointCloud3D* IpaDatasetLoader::getColoredPointCloud() {
 
 			if (!((red == 0) && (green == 0) && (blue == 0))) { //discard "black" points as they don't belong to the object itself
 				pointCloud->addPoint(ColoredPoint3D(new Point3D(x, y, z), red, green, blue));
-				std::cout << ".";
 			}
 		}
 	}

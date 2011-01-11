@@ -14,6 +14,7 @@
 
 #include <string>
 
+#include "core/Logger.h"
 
 #ifdef BRICS_XERCES_ENABLE
 #include <xercesc/util/PlatformUtils.hpp>

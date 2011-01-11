@@ -110,7 +110,7 @@ void RigidTransformationEstimationTest::testSVDTransformation(){
 	IHomogeneousMatrix44* reusultTransformation = new HomogeneousMatrix44();
 	estimator = new RigidTransformationEstimationSVD();
 	errorResult1 = estimator->estimateTransformation(pointPairs, reusultTransformation);
-	cout << "INFO: SVD RMS point-to-point error is " << errorResult1 << endl;
+	LOG(DEBUG) << "SVD RMS point-to-point error is " << errorResult1;
 
 	/* test if initial and resulting homogeneous transformations are the same */
 	const double* matrix1 = homogeneousTrans->getRawData();
@@ -154,7 +154,7 @@ void RigidTransformationEstimationTest::testQUATTransformation() {
 	IHomogeneousMatrix44* reusultTransformation = new HomogeneousMatrix44();
 	abstractEstimator = new RigidTransformationEstimationQUAT();
 	errorResult1 = abstractEstimator->estimateTransformation(pointPairs, reusultTransformation);
-	cout << "INFO: QUAT RMS point-to-point error is " << errorResult1 << endl;
+	LOG(DEBUG) << "QUAT RMS point-to-point error is " << errorResult1;
 
 	/* test if initial and resulting homogeneous transformations are the same */
 	const double* matrix1 = homogeneousTrans->getRawData();
@@ -197,7 +197,7 @@ void RigidTransformationEstimationTest::testHELIXTransformation() {
 	IHomogeneousMatrix44* reusultTransformation = new HomogeneousMatrix44();
 	abstractEstimator = new RigidTransformationEstimationHELIX();
 	errorResult1 = abstractEstimator->estimateTransformation(pointPairs, reusultTransformation);
-	cout << "INFO: HELIX RMS point-to-point error is " << errorResult1 << endl;
+	LOG(DEBUG)  << "HELIX RMS point-to-point error is " << errorResult1;
 
 	/* test if initial and resulting homogeneous transformations are the same */
 	const double* matrix1 = homogeneousTrans->getRawData();
@@ -240,7 +240,7 @@ void RigidTransformationEstimationTest::testAPXTransformation() {
 	IHomogeneousMatrix44* reusultTransformation = new HomogeneousMatrix44();
 	abstractEstimator = new RigidTransformationEstimationAPX();
 	errorResult1 = abstractEstimator->estimateTransformation(pointPairs, reusultTransformation);
-	cout << "INFO: APX RMS point-to-point error is " << errorResult1 << endl;
+	LOG(DEBUG) << "APX RMS point-to-point error is " << errorResult1;
 
 	/* test if initial and resulting homogeneous transformations are the same */
 	const double* matrix1 = homogeneousTrans->getRawData();

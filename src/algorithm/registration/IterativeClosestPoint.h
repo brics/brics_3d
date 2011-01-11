@@ -9,6 +9,7 @@
 #ifndef ITERATIVECLOSESTPOINT_H_
 #define ITERATIVECLOSESTPOINT_H_
 
+#include "core/Logger.h"
 #include "algorithm/registration/IIterativeClosestPoint.h"
 #include "algorithm/registration/IIterativeClosestPointSetup.h"
 #include "algorithm/registration/IIterativeClosestPointDetailed.h"

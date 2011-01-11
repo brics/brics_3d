@@ -79,7 +79,7 @@ public:
 	//! Sets wether log messages shall include the filename and line of where LOG() was called
 	static void setUseFilename(bool useFilename);
 
-	//! Sets a new listener for log messages.
+	//! Sets a new listener for log messages. To remove the listener (maybe because it has been destructed) pass the NULL reference.
 	static void setListener(Listener* listener);
 
 	//! Initiates writing log output. The actual writing occurs

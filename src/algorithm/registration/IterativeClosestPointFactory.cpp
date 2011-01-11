@@ -166,7 +166,7 @@ IIterativeClosestPointPtr IterativeClosestPointFactory::createIterativeClosestPo
 	summary << "#  convergenceThreshold = " << icpConfigurator->getConvergenceThreshold() << endl;
 	summary << "#" << endl << "###########################################################" << endl;
 
-	cout << summary.str();
+	LOG(INFO) << "Summary: " << std::endl << summary.str();
 
 	return icp;
 

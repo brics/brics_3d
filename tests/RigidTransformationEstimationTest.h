@@ -14,6 +14,7 @@
 
 #include "core/PointCloud3D.h"
 #include "core/HomogeneousMatrix44.h"
+#include "core/Logger.h"
 #include "algorithm/registration/RigidTransformationEstimationSVD.h"
 #include "algorithm/registration/RigidTransformationEstimationQUAT.h"
 #include "algorithm/registration/RigidTransformationEstimationHELIX.h"

@@ -29,6 +29,8 @@
 #include <vector>
 #include <string>
 
+#include "core/Logger.h" // control the BRICS logger module
+
 namespace ECUT {
 
 /*!

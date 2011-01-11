@@ -11,6 +11,7 @@
 
 #include "core/PointCloud3D.h"
 #include "core/ColoredPointCloud3D.h"
+#include "core/Logger.h"
 
 #ifdef WIN32
 	#include <windows.h>
