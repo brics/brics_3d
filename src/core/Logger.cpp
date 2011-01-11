@@ -46,6 +46,10 @@ void Logger::setMinLoglevel(Loglevel minLoglevel) {
 	Logger::minLoglevel = minLoglevel;
 }
 
+Logger::Loglevel Logger::getMinLoglevel() {
+	return Logger::minLoglevel;
+}
+
 void Logger::setUseFilename(bool useFilenames) {
 	Logger::useFilename = useFilenames;
 }
@@ -68,7 +72,7 @@ void Logger::setListener(Listener* listener) {
 }
 
 std::string& Logger::levelToString(Loglevel loglevel) {
-	static std::string names[] = {"INFO", "WARNING", "ERROR", "FATAL"};
+	static std::string names[] = {"DEBUG", "INFO", "WARNING", "ERROR", "FATAL"};
 	return names[loglevel];
 }
 	

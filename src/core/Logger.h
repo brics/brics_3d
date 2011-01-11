@@ -22,6 +22,7 @@ namespace BRICS_3D {
 
 //! Various defines for logging
 #define LOG(level) LOG_BRICS_ ## level
+#define LOG_BRICS_DEBUG Logger(Logger::LOGDEBUG).write(__FILE__, __LINE__)
 #define LOG_BRICS_INFO Logger(Logger::INFO).write(__FILE__, __LINE__)
 #define LOG_BRICS_WARNING Logger(Logger::WARNING).write(__FILE__, __LINE__)
 #define LOG_BRICS_ERROR Logger(Logger::LOGERROR).write(__FILE__, __LINE__)
@@ -47,10 +48,11 @@ class Logger {
 public:
 	//! Enum for possible log levels. Order is important here
 	enum Loglevel {
-		INFO = 0,
-		WARNING = 1,
-		LOGERROR = 2, // because windows redefines ERROR
-		FATAL = 3
+		LOGDEBUG = 0,
+		INFO = 1,
+		WARNING = 2,
+		LOGERROR = 3, // because windows redefines ERROR
+		FATAL = 4
 	};
 
 	//! Simple observer class to handle log messages in custom way
@@ -65,8 +67,11 @@ public:
 	//! Destructor. Calls flush() if required.
 	virtual ~Logger();
 	
-	//! Sets minimum log level. Below \a level, nothing will be logged.
+	//! Sets minimum log level. Below \a minLoglevel, nothing will be logged.
 	static void setMinLoglevel(Loglevel minLoglevel);
+
+	//! Returns ths minimum log level. Below \a minLoglevel, nothing is logged.
+	static Loglevel getMinLoglevel();
 
 	//! Writes log output to the file with given \a filename.
 	static void setLogfile(std::string filename, bool append = false);
