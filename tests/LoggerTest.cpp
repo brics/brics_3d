@@ -28,6 +28,8 @@ void LoggerTest::setUp() {
 	listener = new LoggerTestListener();
 	listener->setMessageBufferHandle(&messageBuffer);
 	Logger::setListener(listener);
+
+	unitTestlogLevel = Logger::getMinLoglevel();
 }
 
 void LoggerTest::tearDown() {
@@ -35,6 +37,8 @@ void LoggerTest::tearDown() {
 		delete listener;
 		listener = 0;
 	}
+
+	Logger::setMinLoglevel(unitTestlogLevel); //restore the initial logger level
 }
 
 void LoggerTest::testSimpleLogging() {
@@ -52,15 +56,79 @@ void LoggerTest::testSimpleLogging() {
 	CPPUNIT_ASSERT( expectedLogMessage.compare(messageBuffer) == 0);
 }
 
+void LoggerTest::testLoggerDebugWithLevels() {
+	std::string testMessage = "This is some text to test the Logger module. Please ignore this.";
+	std::string expectedLogMessage;
+
+	expectedLogMessage = "[DEBUG] ";
+	expectedLogMessage.append(testMessage);
+	expectedLogMessage.append("\n");
+
+	/* Set level to DEBUG and check */
+	Logger::setMinLoglevel(Logger::LOGDEBUG);
+	//take previous defined message
+
+	messageBuffer.clear();
+	LOG(DEBUG) << testMessage;
+	CPPUNIT_ASSERT( expectedLogMessage.compare(messageBuffer) == 0);
+
+
+	/* Set level to INFO and check */
+	Logger::setMinLoglevel(Logger::INFO);
+	expectedLogMessage = "";
+
+	messageBuffer.clear();
+	LOG(DEBUG) << testMessage;
+	CPPUNIT_ASSERT( expectedLogMessage.compare(messageBuffer) == 0);
+
+
+	/* Set level to WARNING and check */
+	Logger::setMinLoglevel(Logger::WARNING);
+	expectedLogMessage = "";
+
+	messageBuffer.clear();
+	LOG(DEBUG) << testMessage;
+	CPPUNIT_ASSERT( expectedLogMessage.compare(messageBuffer) == 0);
+
+
+	/* Set level to LOGERROR and check */
+	Logger::setMinLoglevel(Logger::LOGERROR);
+	expectedLogMessage = "";
+
+	messageBuffer.clear();
+	LOG(DEBUG) << testMessage;
+	CPPUNIT_ASSERT( expectedLogMessage.compare(messageBuffer) == 0);
+
+
+	/* Set level to FATAL and check */
+	Logger::setMinLoglevel(Logger::FATAL);
+	expectedLogMessage = "";
+
+	messageBuffer.clear();
+	LOG(DEBUG) << testMessage;
+	CPPUNIT_ASSERT( expectedLogMessage.compare(messageBuffer) == 0);
+}
+
 void LoggerTest::testLoggerInfoWithLevels() {
 	std::string testMessage = "This is some text to test the Logger module. Please ignore this.";
 	std::string expectedLogMessage;
 
-	/* Set level to INFO and check */
-	Logger::setMinLoglevel(Logger::INFO);
 	expectedLogMessage = "[INFO] ";
 	expectedLogMessage.append(testMessage);
 	expectedLogMessage.append("\n");
+
+	/* Set level to DEBUG and check */
+	Logger::setMinLoglevel(Logger::LOGDEBUG);
+	//take previous defined message
+
+	messageBuffer.clear();
+	LOG(INFO) << testMessage;
+	CPPUNIT_ASSERT( expectedLogMessage.compare(messageBuffer) == 0);
+
+
+	/* Set level to INFO and check */
+	Logger::setMinLoglevel(Logger::INFO);
+	//take previous defined message
 
 	messageBuffer.clear();
 	LOG(INFO) << testMessage;
@@ -98,11 +166,22 @@ void LoggerTest::testLoggerWarningWithLevels() {
 	std::string testMessage = "This is some text to test the Logger module. Please ignore this.";
 	std::string expectedLogMessage;
 
-	/* Set level to INFO and check */
-	Logger::setMinLoglevel(Logger::INFO);
 	expectedLogMessage = "[WARNING] ";
 	expectedLogMessage.append(testMessage);
 	expectedLogMessage.append("\n");
+
+	/* Set level to DEBUG and check */
+	Logger::setMinLoglevel(Logger::LOGDEBUG);
+	//take previous defined message
+
+	messageBuffer.clear();
+	LOG(WARNING) << testMessage;
+	CPPUNIT_ASSERT( expectedLogMessage.compare(messageBuffer) == 0);
+
+
+	/* Set level to INFO and check */
+	Logger::setMinLoglevel(Logger::INFO);
+	//take previous defined message
 
 	messageBuffer.clear();
 	LOG(WARNING) << testMessage;
@@ -140,11 +219,22 @@ void LoggerTest::testLoggerErrorWithLevels() {
 	std::string testMessage = "This is some text to test the Logger module. Please ignore this.";
 	std::string expectedLogMessage;
 
-	/* Set level to INFO and check */
-	Logger::setMinLoglevel(Logger::INFO);
 	expectedLogMessage = "[ERROR] ";
 	expectedLogMessage.append(testMessage);
 	expectedLogMessage.append("\n");
+
+	/* Set level to DEBUG and check */
+	Logger::setMinLoglevel(Logger::LOGDEBUG);
+	//take previous defined message
+
+	messageBuffer.clear();
+	LOG(ERROR) << testMessage;
+	CPPUNIT_ASSERT( expectedLogMessage.compare(messageBuffer) == 0);
+
+
+	/* Set level to INFO and check */
+	Logger::setMinLoglevel(Logger::INFO);
+	//take previous defined message
 
 	messageBuffer.clear();
 	LOG(ERROR) << testMessage;

@@ -38,6 +38,7 @@ class LoggerTest : public CPPUNIT_NS::TestFixture {
 
 	CPPUNIT_TEST_SUITE( LoggerTest );
 	CPPUNIT_TEST( testSimpleLogging );
+	CPPUNIT_TEST( testLoggerDebugWithLevels );
 	CPPUNIT_TEST( testLoggerInfoWithLevels );
 	CPPUNIT_TEST( testLoggerWarningWithLevels );
 	CPPUNIT_TEST( testLoggerErrorWithLevels );
@@ -49,6 +50,7 @@ public:
 	void tearDown();
 
 	void testSimpleLogging();
+	void testLoggerDebugWithLevels();
 	void testLoggerInfoWithLevels();
 	void testLoggerWarningWithLevels();
 	void testLoggerErrorWithLevels();
@@ -57,6 +59,7 @@ private:
 
 	LoggerTestListener* listener;
 	std::string messageBuffer;
+	Logger::Loglevel unitTestlogLevel; //the log level that the other unit tests use - this needs to be restored ofter the Logger has been tested.
 
 };
 
