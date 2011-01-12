@@ -9,9 +9,9 @@
 #ifndef OCTREE_H_
 #define OCTREE_H_
 
-#include "algorithm/filter/IOctreeReductionFilter.h"
-#include "algorithm/filter/IOctreePartition.h"
-#include "algorithm/filter/IOctreeSetup.h"
+#include "algorithm/filtering/IOctreeReductionFilter.h"
+#include "algorithm/filtering/IOctreePartition.h"
+#include "algorithm/filtering/IOctreeSetup.h"
 
 namespace BRICS_3D {
 
