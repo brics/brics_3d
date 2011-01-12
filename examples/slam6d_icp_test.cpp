@@ -12,7 +12,7 @@
 #include <iostream>
 #include <util/DepthImageLoader.h>
 #include <core/PointCloud3D.h>
-#include <algorithm/DepthImageToPointCloudTransformation.h>
+#include <algorithm/depthPerception/DepthImageToPointCloudTransformation.h>
 
 using namespace BRICS_3D;
 

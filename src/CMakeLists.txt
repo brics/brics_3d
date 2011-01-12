@@ -61,7 +61,7 @@ SET (CORE_LIBRARY_SOURCES
 )
 
 SET (ALGORITHM_LIBRARY_SOURCES
-	./algorithm/DepthImageToPointCloudTransformation
+	./algorithm/depthPerception/DepthImageToPointCloudTransformation
 	./algorithm/filtering/IOctreeReductionFilter
 	./algorithm/filtering/IOctreePartition	
     ./algorithm/filtering/IOctreeSetup
