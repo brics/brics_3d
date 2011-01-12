@@ -73,6 +73,10 @@ void OSGPointCloudVisualizer::addColoredPointCloud(ColoredPointCloud3D* pointClo
 	rootGeode->addChild(createColoredPointCloudNode(pointCloud, alpha));
 }
 
+//void OSGPointCloudVisualizer::addColoredPointCloud(PointCloud3D* coloredPointCloud, float alpha) {
+//	rootGeode->addChild(createColoredPointCloudNode(coloredPointCloud, alpha));
+//}
+
 void OSGPointCloudVisualizer::visualizePointCloud(PointCloud3D *pointCloud, float red, float green, float blue, float alpha)
 {
 	osg::Point* point=new osg::Point;
@@ -206,6 +210,121 @@ osg::Node* OSGPointCloudVisualizer::createColoredPointCloudNode(ColoredPointClou
 		red = (*pointCloud->getPointCloud())[i].red;
 		green = (*pointCloud->getPointCloud())[i].green;
 		blue = (*pointCloud->getPointCloud())[i].blue;
+		tmpColor.set(red, green, blue, alpha);
+		colours->push_back(tmpColor);
+
+		/*
+		 * If geode gets bigger than 10000 (targetNumVertices) points than create a new child node.
+		 * This is necessary to improve the performance due to graphics adapter internals.
+		 */
+		if (vertices->size() >= targetNumVertices) {
+			// finishing setting up the current geometry and add it to the geode.
+			geometry->setUseDisplayList(true);
+			geometry->setUseVertexBufferObjects(true);
+			geometry->setVertexArray(vertices);
+			//geometry->setNormalArray(normals);
+			//geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+			geometry->setColorArray(colours);
+			geometry->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+
+			geometry->addPrimitiveSet(new osg::DrawArrays(GL_POINTS, 0, vertices->size())); //GL_POINTS
+
+			geode->addDrawable(geometry);
+
+			// allocate a new geometry
+			geometry = new osg::Geometry;
+
+			vertices = new osg::Vec3Array;
+			//normals = new osg::Vec3Array;
+			colours = new osg::Vec4ubArray;
+
+			vertices->reserve(targetNumVertices);
+			//normals->reserve(targetNumVertices);
+			colours->reserve(targetNumVertices);
+
+		}
+
+	}
+
+	geometry->setUseDisplayList(true);
+	geometry->setVertexArray(vertices);
+	geometry->addPrimitiveSet(new osg::DrawArrays(GL_POINTS, 0, vertices->size()));
+	geometry->setColorArray(colours);
+	geometry->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+	geometry->setDrawCallback(new DrawCallback);
+
+	geode->addDrawable(geometry);
+	geode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+
+	osg::Group* group = new osg::Group;
+	group->addChild(geode);
+
+	return group;
+}
+
+osg::Node* OSGPointCloudVisualizer::createColoredPointCloudNode(PointCloud3D* coloredPointCloud, float alpha) {
+	float red = 0.0;
+	float green = 0.0;
+	float blue = 0.0;
+
+	unsigned int targetNumVertices = 10000; //maximal points per geode
+
+	osg::Geode* geode = new osg::Geode;
+	osg::Geometry* geometry = new osg::Geometry;
+
+	osg::Vec3Array* vertices = new osg::Vec3Array;
+	//osg::Vec3Array* normals = new osg::Vec3Array;
+	osg::Vec4ubArray* colours = new osg::Vec4ubArray; //every point has color
+//	osg::Vec4Array* colours = new osg::Vec4Array(1); //all point have same color
+//	(*colours)[0].set(red, green, blue, alpha); //set colours (r,g,b,a)
+
+	vertices->reserve(targetNumVertices);
+	//normals->reserve(targetNumVertices);
+	colours->reserve(targetNumVertices);
+
+	//feed point cloud into osg "geode(s)"
+	unsigned int j = 0;
+	unsigned int i = 0;
+	for (i = 0; i < coloredPointCloud->getSize(); ++i, j += 2) {
+
+		osg::Vec3 tmpPoint;
+		tmpPoint.set((float) ((*coloredPointCloud->getPointCloud())[i].getX()),
+				(float) ((*coloredPointCloud->getPointCloud())[i].getY()),
+				(float) ((*coloredPointCloud->getPointCloud())[i].getZ()));
+		vertices->push_back(tmpPoint);
+
+		osg::Vec4ub tmpColor;
+
+		/* default color (= white) if no colored decoration layer is found */
+		red = 1.0;
+		green = 1.0;
+		blue = 1.0;
+
+		/* find the uttermost decoration layer that contains color information */
+		Point3D* currentPoint = &((*coloredPointCloud->getPointCloud())[i]);
+		Point3DDecorator* currentPointDecorationLayer;
+
+		std::cout << "Result of cast to Point3DDecorator: " << dynamic_cast<Point3DDecorator*>(currentPoint) << std::endl;
+		std::cout << "Result of cast to ColoredPoint3D: " << dynamic_cast<ColoredPoint3D*>(currentPoint) << std::endl;
+		while (dynamic_cast<Point3DDecorator*>(currentPoint) != 0) { // is of type "Point3DDecorator*"
+			currentPointDecorationLayer = dynamic_cast<Point3DDecorator*>(currentPoint);
+			if (dynamic_cast<ColoredPoint3D*>(currentPoint) != 0) {
+				ColoredPoint3D* tmpColorLayerHandle = dynamic_cast<ColoredPoint3D*>(currentPoint);
+				red = tmpColorLayerHandle->red;
+				green = tmpColorLayerHandle->green;
+				blue = tmpColorLayerHandle->blue;
+				std::cout << "€" << std::endl;
+				break; //finish at first found layer -> uttermost color layer is taken
+
+			}
+		}
+
+		/**** TODO continue here **************/
+
+//		red = (*pointCloud->getPointCloud())[i].red;
+//		green = (*pointCloud->getPointCloud())[i].green;
+//		blue = (*pointCloud->getPointCloud())[i].blue;
+
 		tmpColor.set(red, green, blue, alpha);
 		colours->push_back(tmpColor);
 

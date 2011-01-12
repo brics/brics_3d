@@ -62,10 +62,12 @@ public:
 	 * So this method only allows to specify more than the one cloud in visualizePointCloud.
 	 * It is possible to mix colored with non-colored point clouds.
 	 *
-	 * @param[in] pointCloud Pointer to colored point cloud that will be added to scene grpah.
+	 * @param[in] pointCloud Pointer to colored point cloud that will be added to scene graph.
 	 * @param alpha Specifies the amount of the alpha channel of the point cloud. Range is 0.0f to 1.0f
 	 */
-	void addColoredPointCloud(ColoredPointCloud3D* pointCloud, float alpha=1.0f);
+	void addColoredPointCloud(ColoredPointCloud3D* pointCloud, float alpha=1.0f); /// @deprecated
+
+	//void addColoredPointCloud(PointCloud3D* coloredPointCloud, float alpha=1.0f);
 
 	/**
 	 * @brief Visualizes a point cloud within the OSG framework
@@ -106,6 +108,8 @@ public:
 	 * @param alpha Specifies the amount of the alpha channel of the point cloud. Range is 0.0f to 1.0f
 	 */
 	osg::Node* createColoredPointCloudNode(ColoredPointCloud3D* pointCloud, float alpha=1.0f);
+
+	osg::Node* createColoredPointCloudNode(PointCloud3D* coloredPointCloud, float alpha=1.0f);
 
 private:
 
