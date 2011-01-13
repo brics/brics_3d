@@ -21,8 +21,8 @@
 #include <util/DepthImageLoader.h>
 #include <util/OSGPointCloudVisualizer.h>
 #include <core/PointCloud3D.h>
-#include <algorithm/DepthImageToPointCloudTransformation.h>
-#include <algorithm/filter/Octree.h>
+#include <algorithm/depthPerception/DepthImageToPointCloudTransformation.h>
+#include <algorithm/filtering/Octree.h>
 
 using namespace std;
 using namespace BRICS_3D;

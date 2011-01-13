@@ -13,6 +13,8 @@
 #include <iostream>
 #include <string>
 
+#include <boost/ptr_container/ptr_vector.hpp>
+
 using namespace BRICS_3D;
 using std::cout;
 using std::cerr;
@@ -40,6 +42,53 @@ int main(int argc, char **argv) {
 	}
 
 
+	PointCloud3D* pointCloudCube = new ColoredPointCloud3D();
+
+	Point3D* point000 = new ColoredPoint3D(new Point3D(0,0,0),0.3,1,1);
+	Point3D* point001 = new ColoredPoint3D(new Point3D(0,0,1),1,0.4,1);
+	Point3D* point011 = new ColoredPoint3D(new Point3D(0,1,1),1,0.3,1);
+	Point3D* point010 = new ColoredPoint3D(new Point3D(0,1,0),0.0,1,1);
+	Point3D* point100 = new ColoredPoint3D(new Point3D(1,0,0),1,1,0.2);
+	Point3D* point101 = new ColoredPoint3D(new Point3D(1,0,1),1,0.3,1);
+	Point3D* point111 = new ColoredPoint3D(new Point3D(1,1,1),0.0,1,0.0);
+	Point3D* point110 = new ColoredPoint3D(new Point3D(1,1,0),0.2,0.5,1);
+
+	pointCloudCube->addPoint(point000);
+	pointCloudCube->addPoint(point001);
+	pointCloudCube->addPoint(point011);
+//	pointCloudCube->addPoint(point010);
+//	pointCloudCube->addPoint(point100);
+//	pointCloudCube->addPoint(point101);
+//	pointCloudCube->addPoint(point111);
+//	pointCloudCube->addPoint(point110);
+
+	std::vector<Point3D*> test;
+//	boost::ptr_vector_owner<Point3D> test;
+//	std::vector<Point3D> test;
+	test.push_back(new ColoredPoint3D(new Point3D(0,1,0),0.0,1,1));
+
+	test.push_back(point101);
+	test.push_back(point111);
+	test.push_back(point110);
+
+//	test.push_back(new ColoredPoint3D(new Point3D(0,1,0),0.0,1,1));
+
+	ColoredPoint3D* testColoredPoint;
+	testColoredPoint = dynamic_cast<ColoredPoint3D*>(point011);
+	cout << "testPoint cast1: " << testColoredPoint << endl;
+	cout << *testColoredPoint << endl << endl;
+	Point3D* testPoint;
+	Point3D* testPoint2;
+	testPoint = &((*pointCloudCube->getPointCloud())[2]);
+	testPoint2 = (test[0]);
+//	testPoint2 = &(test[0]);
+	cout << *testPoint << endl;
+	cout << *testPoint2 << endl;
+	testColoredPoint = dynamic_cast<ColoredPoint3D*>(testPoint2);
+	cout << "testPoint cast2: " << testColoredPoint << endl;
+
+	test.clear();
+
 	IpaDatasetLoader* loader = new IpaDatasetLoader();
 	loader->loadColoredPointCloud(filename);
 
@@ -62,15 +111,16 @@ int main(int argc, char **argv) {
 	pointCloud->homogeneousTransformation(matrix);
 
 	OSGPointCloudVisualizer* visualizer = new OSGPointCloudVisualizer();
-	visualizer->addPointCloud(pointCloud);
+//	visualizer->addPointCloud(pointCloud);
+//	visualizer->addColoredPointCloud(pointCloud);
+//	visualizer->addColoredPointCloud(pointCloudCube);
 
-//	for (int i = 0; i < 1000; ++i) { //evil test
-//		visualizer->addPointCloud(pointCloud);
-//	}
+//	visualizer->visualizeColoredPointCloud(pointCloudCube);
+	visualizer->visualizePointCloud(pointCloud);
 
-
-	visualizer->visualizeColoredPointCloud(rgbPointCloud);
-
+	delete testColoredPoint;
+	delete matrix;
+	delete pointCloudCube;
 	delete rgbPointCloud;
 	delete loader;
 

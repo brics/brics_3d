@@ -9,7 +9,7 @@
 #include <util/DepthImageLoader.h>
 #include <util/OSGPointCloudVisualizer.h>
 #include <core/PointCloud3D.h>
-#include <algorithm/DepthImageToPointCloudTransformation.h>
+#include <algorithm/depthPerception/DepthImageToPointCloudTransformation.h>
 
 
 

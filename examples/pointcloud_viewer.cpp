@@ -10,7 +10,7 @@
 #include <iostream>
 #include <util/OSGPointCloudVisualizer.h>
 #include <core/PointCloud3D.h>
-#include <algorithm/filter/Octree.h>
+#include <algorithm/filtering/Octree.h>
 #include <cstring>
 
 using namespace std;

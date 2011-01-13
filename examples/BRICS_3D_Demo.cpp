@@ -13,9 +13,9 @@
 #include <core/HomogeneousMatrix44.h>
 #include <core/TriangleMeshImplicit.h>
 #include <core/TriangleMeshExplicit.h>
-#include <algorithm/filter/Octree.h>
+#include <algorithm/filtering/Octree.h>
 #include <algorithm/registration/IterativeClosestPointFactory.h>
-#include <algorithm/DepthImageToPointCloudTransformation.h>
+#include <algorithm/depthPerception/DepthImageToPointCloudTransformation.h>
 #include <algorithm/meshGeneration/DelaunayTriangulationOSG.h>
 
 
