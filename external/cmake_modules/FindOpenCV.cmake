@@ -141,29 +141,29 @@ FIND_PATH(OpenCV_CVCAM_INCLUDE_DIR
 # some are optionally, some may not exist on Linux
 #
 FIND_LIBRARY(OpenCV_CV_LIBRARY   
-  NAMES cv opencv
+  NAMES cv opencv opencv_imgproc
   PATHS ${OpenCV_ROOT_DIR}  
   PATH_SUFFIXES  ${OpenCV_LIBDIR_SUFFIXES} )
 FIND_LIBRARY(OpenCV_CVAUX_LIBRARY
-  NAMES cvaux
+  NAMES cvaux opencv_calib3d  opencv_contrib opencv_gpu #TODO just a guess
   PATHS ${OpenCV_ROOT_DIR}  PATH_SUFFIXES ${OpenCV_LIBDIR_SUFFIXES} )
 FIND_LIBRARY(OpenCV_CVCAM_LIBRARY   
-  NAMES cvcam
+  NAMES cvcam opencv_video #TODO just a guess
   PATHS ${OpenCV_ROOT_DIR}  PATH_SUFFIXES ${OpenCV_LIBDIR_SUFFIXES} ) 
 FIND_LIBRARY(OpenCV_CVHAARTRAINING_LIBRARY
-  NAMES cvhaartraining
+  NAMES cvhaartraining opencv_objdetect
   PATHS ${OpenCV_ROOT_DIR}  PATH_SUFFIXES ${OpenCV_LIBDIR_SUFFIXES} ) 
 FIND_LIBRARY(OpenCV_CXCORE_LIBRARY  
-  NAMES cxcore
+  NAMES cxcore opencv_core
   PATHS ${OpenCV_ROOT_DIR}  PATH_SUFFIXES ${OpenCV_LIBDIR_SUFFIXES} )
 FIND_LIBRARY(OpenCV_CXTS_LIBRARY   
   NAMES cxts
   PATHS ${OpenCV_ROOT_DIR}  PATH_SUFFIXES ${OpenCV_LIBDIR_SUFFIXES} )
 FIND_LIBRARY(OpenCV_HIGHGUI_LIBRARY  
-  NAMES highgui
+  NAMES highgui opencv_highgui
   PATHS ${OpenCV_ROOT_DIR}  PATH_SUFFIXES ${OpenCV_LIBDIR_SUFFIXES} )
 FIND_LIBRARY(OpenCV_ML_LIBRARY  
-  NAMES ml
+  NAMES ml opencv_ml opencv_features2d opencv_flann
   PATHS ${OpenCV_ROOT_DIR}  PATH_SUFFIXES ${OpenCV_LIBDIR_SUFFIXES} )
 FIND_LIBRARY(OpenCV_TRS_LIBRARY  
   NAMES trs
