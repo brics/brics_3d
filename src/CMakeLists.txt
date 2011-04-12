@@ -87,8 +87,13 @@ SET (ALGORITHM_LIBRARY_SOURCES
 	./algorithm/registration/IterativeClosestPoint6DSLAM
 	./algorithm/registration/IterativeClosestPointFactory
 	./algorithm/meshGeneration/IDelaunayTriangulation
-	
-	
+		
+./algorithm/segmentation/evaluation/Comparator
+./algorithm/segmentation/evaluation/Evaluator
+./algorithm/segmentation/evaluation/FileReader
+./algorithm/segmentation/evaluation/FileWriter
+./algorithm/segmentation/evaluation/MetricCalculator
+./algorithm/segmentation/evaluation/gnuplot_i
 
 )
 
