@@ -172,8 +172,13 @@ ADD_EXECUTABLE(icp_alpha_shapes_stream_test icp_alpha_shapes_stream_test)
 TARGET_LINK_LIBRARIES(icp_alpha_shapes_stream_test ${CGAL_LIBRARY} scanlib 6dslam_core newmat_cmake ${DL_LIB} brics_3dpm_core brics_3dpm_algorithm brics_3dpm_util)
 
 #Executables for evaluation and comparison demo
+
 ADD_EXECUTABLE(demoEvaluation demoEvaluation)
 TARGET_LINK_LIBRARIES(demoEvaluation brics_3dpm_algorithm)
 
 ADD_EXECUTABLE(demoComparison demoComparison)
 TARGET_LINK_LIBRARIES(demoComparison brics_3dpm_algorithm)
+
+#Executables for 3D segmentation demo
+ADD_EXECUTABLE(demoSegmentationPlane demoSegmentationPlane)
+TARGET_LINK_LIBRARIES(demoSegmentationPlane brics_3dpm_algorithm)

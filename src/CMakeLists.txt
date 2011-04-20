@@ -95,6 +95,12 @@ SET (ALGORITHM_LIBRARY_SOURCES
 ./algorithm/segmentation/evaluation/MetricCalculator
 ./algorithm/segmentation/evaluation/gnuplot_i
 
+./algorithm/segmentation/ISACMethods
+./algorithm/segmentation/IObjectModel
+
+
+	./algorithm/segmentation/SACMethodRANSAC_ROS
+	./algorithm/segmentation/ObjectModelPlane
 )
 
 SET (UTIL_LIBRARY_SOURCES
