@@ -28,15 +28,15 @@ void ObjectModelPlane::getSamples(int &iterations, std::vector<int> &samples){
 	points = inputPointCloud->getPointCloud();
 	// We're assuming that indices_ have already been set in the constructor
 	//ToDo ROS_ASSERT (this->indices_->size () != 0);
-cout<<"[Checkpoint]: 1.b.iv.1 \n";
+
 	samples.resize (3);
 	double trand = inputPointCloud->getSize() / (RAND_MAX + 1.0);
-cout<<"[Checkpoint]: 1.b.iv.2 \n";
+
 	// Get a random number between 1 and max_indices
 	int idx = (int)(rand () * trand);
 	// Get the index
 	samples[0] = idx;
-cout<<"[Checkpoint]: 1.b.iv.3 \n";
+
 	// Get a second point which is different than the first
 	do
 	{
@@ -45,16 +45,15 @@ cout<<"[Checkpoint]: 1.b.iv.3 \n";
 		iterations++;
 	} while (samples[1] == samples[0]);
 	iterations--;
-cout<<"[Checkpoint]: 1.b.iv.4 \n";
 	// Get the values at the two points
 	Eigen::Vector4f p0, p1, p2;
 	// SSE friendly data check
 	p1 = Eigen::Vector4f (this->points->data()[samples[1]].getX(), this->points->data()[samples[1]].getY(), this->points->data()[samples[1]].getZ(), 0);
 	p0 = Eigen::Vector4f (this->points->data()[samples[0]].getX(), this->points->data()[samples[0]].getY(), this->points->data()[samples[0]].getZ(), 0);
-cout<<"[Checkpoint]: 1.b.iv.5 \n";
+
 	// Compute the segment values (in 3d) between p1 and p0
 	p1 -= p0;
-cout<<"[Checkpoint]: 1.b.iv.6 \n";
+
 	Eigen::Vector4f dy1dy2;
 	int iter = 0;
 	do
@@ -79,14 +78,14 @@ cout<<"[Checkpoint]: 1.b.iv.6 \n";
 		if (iter > MAX_ITERATIONS_COLLINEAR )
 		{
 			//ROS_WARN ("[pcl::SampleConsensusModelPlane::getSamples] WARNING: Could not select 3 non collinear points in %d iterations!", MAX_ITERATIONS_COLLINEAR);
-			cout<< "cannot find collinear points";
+			cout<< "cannot find collinear points"<<endl;
 			break;
 		}
 		iterations++;
 	}
 	while ( (dy1dy2[0] == dy1dy2[1]) && (dy1dy2[2] == dy1dy2[1]) );
 	iterations--;
-cout<<"[Checkpoint]: 1.b.iv.7 \n";
+
 }
 
 bool ObjectModelPlane::computeModelCoefficients (const std::vector<int> &samples, Eigen::VectorXf &model_coefficients){
@@ -123,6 +122,7 @@ bool ObjectModelPlane::computeModelCoefficients (const std::vector<int> &samples
 	// ... + d = 0
 	//Todo original: model_coefficients[3] = -1 * (model_coefficients.template start<4>().dot (p0));
 	model_coefficients[3] = -1 * (model_coefficients.dot (p0));
+
 	return (true);
 }
 

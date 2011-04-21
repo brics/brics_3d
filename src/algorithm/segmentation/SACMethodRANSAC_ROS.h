@@ -17,7 +17,7 @@ class SACMethodRANSAC_ROS : public ISACMethods {
 
 public:
 
-	SACMethodRANSAC_ROS();//:ISACMethods(){};
+	SACMethodRANSAC_ROS();
 	bool computeModel ();
 	virtual ~SACMethodRANSAC_ROS();
 };

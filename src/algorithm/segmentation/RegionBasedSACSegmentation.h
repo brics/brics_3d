@@ -16,7 +16,11 @@
 #include "ObjectModelPlane.h"
 
 //SAC Methods Supported
+#include "SACMethodALMeDS.h"
 #include "SACMethodRANSAC_ROS.h"
+#include "SACMethodMSAC_ROS.h"
+#include "SACMethodLMeDS_ROS.h"
+#include "SACMethodMLESAC_ROS.h"
 
 namespace BRICS_3D{
 class RegionBasedSACSegmentation {
@@ -79,19 +83,27 @@ public:
 	const static int SACMODEL_NORMAL_PLANE = 11;
 
 	/** Defining the SAC methods supported*/
-	const static int SAC_RANSAC = 0;
-	const static int SAC_LMEDS = 1;
-	const static int SAC_MSAC = 2;
-	const static int SAC_RRANSAC = 3;
-	const static int SAC_RMSAC = 4;
-	const static int SAC_MLESAC = 5;
+	const static int SAC_ALMeDS = 0;
+	const static int SAC_RANSAC = 1;
+	const static int SAC_LMEDS = 2;
+	const static int SAC_MSAC = 3;
+	const static int SAC_MLESAC = 4;
 
+	/**
+	 * Default Constructor
+	 */
+	RegionBasedSACSegmentation(){
+		this->threshold = -1;
+		this->maxIterations = 10000;
+		this->probability = 0.99;
+	}
 	/**
 	 * \brief Set the pointcloud to be processed
 	 * \param Pointcloud to be processed
 	 */
 	inline void setInputPointCloud(PointCloud3D *input) {
 		this->inputPointCloud = input;
+
 	}
 
 	/** \brief Set the distance to model threshold.
@@ -246,62 +258,51 @@ public:
 	virtual inline void initSACMethod(const int method_type) {
 		// Build the sample consensus method
 		switch (method_type) {
+		case SAC_ALMeDS: {
+			cout<<"[initSAC] Using a method of type: SAC_ALMeDS with a model threshold of "<<threshold<<endl;
+			sacMethod = new SACMethodALMeDS();
+			sacMethod->setObjectModel(objectModel);
+			sacMethod->setDistanceThreshold(threshold);
+			sacMethod->setPointCloud(inputPointCloud);
+			break;
+		}
 		case SAC_RANSAC:
-		default: {
-			cout<< "[initSAC] Using a method of type: SAC_RANSAC with a model threshold of "<<threshold<<endl;
-
+		{
+			cout<< "[initSAC] Using a method of type: SAC_RANSAC_ROS with a model threshold of "<<threshold<<endl;
 			sacMethod = new SACMethodRANSAC_ROS();
 			sacMethod->setObjectModel(objectModel);
 			sacMethod->setDistanceThreshold(threshold);
 			sacMethod->setPointCloud(inputPointCloud);
 			break;
 		}
-		/*case SAC_LMEDS: {
-			ROS_DEBUG(
-					"[pcl::%s::initSAC] Using a method of type: SAC_LMEDS with a model threshold of %f",
-					getName().c_str(), threshold_);
-			sac_.reset(new LeastMedianSquares<PointT> (model_, threshold_));
-			break;
+		case SAC_LMEDS: {
+			cout<<"[initSAC] Using a method of type: SAC_LMeDS_ROS with a model threshold of "<<threshold<<endl;
+						sacMethod = new SACMethodLMeDS_ROS();
+						sacMethod->setObjectModel(objectModel);
+						sacMethod->setDistanceThreshold(threshold);
+						sacMethod->setPointCloud(inputPointCloud);
+						break;
 		}
 		case SAC_MSAC: {
-			ROS_DEBUG(
-					"[pcl::%s::initSAC] Using a method of type: SAC_MSAC with a model threshold of %f",
-					getName().c_str(), threshold_);
-			sac_.reset(
-					new MEstimatorSampleConsensus<PointT> (model_, threshold_));
-			break;
-		}
-		case SAC_RRANSAC: {
-			ROS_DEBUG(
-					"[pcl::%s::initSAC] Using a method of type: SAC_RRANSAC with a model threshold of %f",
-					getName().c_str(), threshold_);
-			sac_.reset(
-					new RandomizedRandomSampleConsensus<PointT> (model_,
-							threshold_));
-			break;
-		}
-		case SAC_RMSAC: {
-			ROS_DEBUG(
-					"[pcl::%s::initSAC] Using a method of type: SAC_RMSAC with a model threshold of %f",
-					getName().c_str(), threshold_);
-			sac_.reset(
-					new RandomizedMEstimatorSampleConsensus<PointT> (model_,
-							threshold_));
-			break;
+			cout<<"[initSAC] Using a method of type: SAC_MSAC_ROS with a model threshold of "<<threshold<<endl;
+						sacMethod = new SACMethodMSAC_ROS();
+						sacMethod->setObjectModel(objectModel);
+						sacMethod->setDistanceThreshold(threshold);
+						sacMethod->setPointCloud(inputPointCloud);
+							break;
 		}
 		case SAC_MLESAC: {
-			ROS_DEBUG(
-					"[pcl::%s::initSAC] Using a method of type: SAC_MLESAC with a model threshold of %f",
-					getName().c_str(), threshold_);
-			sac_.reset(
-					new MaximumLikelihoodSampleConsensus<PointT> (model_,
-							threshold_));
+			cout<<"[initSAC] Using a method of type: SAC_MLESAC_ROS with a model threshold of "<<threshold<<endl;
+						sacMethod = new SACMethodMLESAC_ROS();
+						sacMethod->setObjectModel(objectModel);
+						sacMethod->setDistanceThreshold(threshold);
+						sacMethod->setPointCloud(inputPointCloud);
 			break;
-		}*/
+		}
 		}
 		// Set the Sample Consensus parameters if they are given/changed
 		if (sacMethod->getProbability() != probability) {
-			cout<<"[initSAC] Setting the desired probability to "<<endl;
+			cout<<"[initSAC] Setting the desired probability to "<< this->probability<<endl;
 			sacMethod->setProbability(probability);
 		}
 
@@ -320,11 +321,11 @@ public:
 	virtual void
 	segment (std::vector<int> &inliers, Eigen::VectorXf &model_coefficients)
 	{
-cout<<"[Checkpoint]: 1.a \n";
+
 		// Initialize the Sample Consensus model and set its parameters
 		if (!initSACModel (modelType))
 		{
-			cout<<"[segment] Error initializing the SAC model!";
+			cout<<"[segment] Error initializing the SAC model!"<<endl;
 			return;
 		}
 
@@ -332,21 +333,21 @@ cout<<"[Checkpoint]: 1.a \n";
 		initSACMethod(SACMethodType);
 
 		//Compute the model
-cout<<"[Checkpoint]: 1.b \n";
+
 		if (!sacMethod->computeModel())
 		{
-			cout<<"[segment] Error segmenting the model! No solution found";
+			cout<<"[segment] Error segmenting the model! No solution found"<<endl;
 		}
-cout<<"[Checkpoint]: 1.c \n";
+
 
 		// Get the model inliers
 		sacMethod->getInliers(inliers);
-cout<<"[Checkpoint]: 1.d \n";
+
 
 		// Get the model coefficients
 		Eigen::VectorXf coeff;
 		sacMethod->getModelCoefficients (coeff);
-cout<<"[Checkpoint]: 1.e \n";
+
 
 		// If the user needs optimized coefficients
 		if (optimizeCoefficients)
@@ -357,14 +358,16 @@ cout<<"[Checkpoint]: 1.e \n";
 			this->modelCoefficients =coeff_refined;
 			// Refine inliers
 			objectModel->selectWithinDistance(coeff_refined,threshold,inliers);
-			cout<<"[Checkpoint]: 1.f \n";
+
 		}
 		else
 		{
 			this->modelCoefficients = coeff;
-			cout<<"[Checkpoint]: 1.g \n";
+
 		}
-		cout<<"[Checkpoint]: 1.h \n";
+
+		model_coefficients=this->modelCoefficients;
+
 	}
 };
 }

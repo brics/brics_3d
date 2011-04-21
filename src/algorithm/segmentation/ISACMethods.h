@@ -11,7 +11,8 @@
 #include "IObjectModel.h"
 #include "core/PointCloud3D.h"
 #include "ObjectModelPlane.h"
-
+#include <algorithm>
+#include <float.h>
 namespace BRICS_3D {
 
 class ISACMethods {

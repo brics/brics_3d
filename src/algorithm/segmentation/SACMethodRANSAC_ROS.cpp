@@ -12,31 +12,11 @@ namespace BRICS_3D {
 
 SACMethodRANSAC_ROS::SACMethodRANSAC_ROS(){
 	// TODO Auto-generated constructor stub
-	setDistanceThreshold(-1);
-	setProbability(0.99);
-	setMaxIterations(10000);
 }
 
 SACMethodRANSAC_ROS::~SACMethodRANSAC_ROS() {
 	// TODO Auto-generated destructor stub
 }
-
-/*
-SACMethodRANSAC_ROS::SACMethodRANSAC_ROS(IObjectModel *objectModel, PointCloud3D *pointCloud){
-	setDistanceThreshold(-1);
-	this->objectModel = objectModel;
-	setProbability(0.99);
-	setMaxIterations(10000);
-	this->inputPointCloud = pointCloud;
-}
-SACMethodRANSAC_ROS::SACMethodRANSAC_ROS(IObjectModel *objectModel,double threshold, PointCloud3D *pointCloud){
-	setDistanceThreshold(threshold);
-	this->objectModel = objectModel;
-	setProbability(0.99);
-	setMaxIterations(10000);
-	this->inputPointCloud = pointCloud;
-}
-*/
 
 bool SACMethodRANSAC_ROS::computeModel(){
 
@@ -44,7 +24,7 @@ bool SACMethodRANSAC_ROS::computeModel(){
 cout<<"[Checkpoint]: 1.b.i \n";
      if (this->threshold == -1)
      {
-       cout<<"[RANSAC::computeModel] No threshold set!";
+       cout<<"[RANSAC::computeModel] No threshold set!"<<endl;
        return (false);
      }
 
@@ -61,7 +41,7 @@ cout<<"[Checkpoint]: 1.b.ii \n";
      int n_inliers_count = 0;
 
 cout<<"[Checkpoint]: 1.b.iii \n";
-bool checkpointFlag = true;
+bool checkpointFlag = false;
      // Iterate
      while (this->iterations < k)
      {

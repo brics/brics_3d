@@ -97,10 +97,14 @@ SET (ALGORITHM_LIBRARY_SOURCES
 
 ./algorithm/segmentation/ISACMethods
 ./algorithm/segmentation/IObjectModel
-
-
+	
+	./algorithm/segmentation/SACMethodALMeDS
 	./algorithm/segmentation/SACMethodRANSAC_ROS
-	./algorithm/segmentation/ObjectModelPlane
+	./algorithm/segmentation/SACMethodMSAC_ROS
+	./algorithm/segmentation/SACMethodLMeDS_ROS
+	./algorithm/segmentation/SACMethodMLESAC_ROS	
+
+./algorithm/segmentation/ObjectModelPlane
 )
 
 SET (UTIL_LIBRARY_SOURCES
