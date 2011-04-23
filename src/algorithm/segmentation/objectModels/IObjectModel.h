@@ -110,7 +110,6 @@ public:
 	virtual bool doSamplesVerifyModel (const std::set<int> &indices,
 			const Eigen::VectorXf &model_coefficients, double threshold) = 0;
 
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/** \brief Provide a pointer to the input dataset
 	 * \param cloud the const boost shared pointer to a PointCloud message
 	 */

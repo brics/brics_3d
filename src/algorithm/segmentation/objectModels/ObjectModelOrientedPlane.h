@@ -23,7 +23,7 @@ private:
     double epsAngle;
 
 public:
-	ObjectModelOrientedPlane();
+	ObjectModelOrientedPlane(){};
 	virtual ~ObjectModelOrientedPlane(){};
 
 

@@ -14,7 +14,12 @@
 
 //Object Models Supported
 #include "algorithm/segmentation/objectModels/ObjectModelPlane.h"
+#include "algorithm/segmentation/objectModels/ObjectModelOrientedPlane.h"
+#include "algorithm/segmentation/objectModels/ObjectModelNormalPlane.h"
 #include "algorithm/segmentation/objectModels/ObjectModelCircle.h"
+#include "algorithm/segmentation/objectModels/ObjectModelCylinder.h"
+#include "algorithm/segmentation/objectModels/ObjectModelOrientedLine.h"
+#include "algorithm/segmentation/objectModels/ObjectModelLine.h"
 #include "algorithm/segmentation/objectModels/ObjectModelSphere.h"
 
 //SAC Methods Supported
@@ -71,18 +76,14 @@ public:
 
 	/**Defining the object model types ids supported */
 
-	const static int SACMODEL_PLANE = 0;
-	const static int SACMODEL_LINE = 1;
-	const static int SACMODEL_CIRCLE2D = 2;
-	const static int SACMODEL_CIRCLE3D = 3;
-	const static int SACMODEL_SPHERE = 4;
-	const static int SACMODEL_CYLINDER = 5;
-	const static int SACMODEL_CONE = 6;
-	const static int SACMODEL_TORUS = 7;
-	const static int SACMODEL_ORIENTED_LINE = 8;
-	const static int SACMODEL_ORIENTED_PLANE = 9;
-	const static int SACMODEL_PARALLEL_LINES = 10;
-	const static int SACMODEL_NORMAL_PLANE = 11;
+	const static int OBJMODEL_PLANE = 0;
+	const static int OBJMODEL_LINE = 1;
+	const static int OBJMODEL_CIRCLE = 2;
+	const static int OBJMODEL_SPHERE = 3;
+	const static int OBJMODEL_CYLINDER = 4;
+	const static int OBJMODEL_ORIENTED_LINE = 5;
+	const static int OBJMODEL_ORIENTED_PLANE = 6;
+	const static int OBJMODEL_NORMAL_PLANE = 7;
 
 	/** Defining the SAC methods supported*/
 	const static int SAC_ALMeDS = 0;
@@ -210,52 +211,50 @@ public:
 
 		// Build the model
 		switch (model_type) {
-		case SACMODEL_PLANE: {
+		case OBJMODEL_PLANE: {
 			cout << "[initSACModel] Using a model of type: OBJECT_MODEL_PLANE"<<endl;
 			objectModel = new ObjectModelPlane();
 			objectModel->setInputCloud(inputPointCloud);
 			break;
 		}
-		 case SACMODEL_CIRCLE2D:
-		 {
+		case OBJMODEL_CIRCLE:
+		{
 			cout << "[initSACModel] Using a model of type: OBJECT_MODEL_CIRCLE"<<endl;
 			objectModel = new ObjectModelCircle();
 			objectModel->setInputCloud(inputPointCloud);
 			break;
 
-		 }
-		 case SACMODEL_SPHERE:
-		 {
+		}
+		case OBJMODEL_SPHERE:
+		{
 			cout << "[initSACModel] Using a model of type: OBJECT_MODEL_SPHERE"<<endl;
-					objectModel = new ObjectModelSphere();
-					objectModel->setInputCloud(inputPointCloud);
-					break;
-		 }
-
-		/*case SACMODEL_LINE:
-			 {
-			 ROS_DEBUG ("[pcl::%s::initSACModel] Using a model of type: SACMODEL_LINE", getName ().c_str ());
-			 model_.reset (new SampleConsensusModelLine<PointT> (this->input_));
-			 break;
-			 }
-			 case SACMODEL_SPHERE:
-			 {
-			 ROS_DEBUG ("[pcl::%s::initSACModel] Using a model of type: SACMODEL_SPHERE", getName ().c_str ());
-			 model_.reset (new SampleConsensusModelSphere<PointT> (this->input_));
-			 break;
-			 }
-			 case SACMODEL_ORIENTED_LINE:
-			 {
-			 ROS_DEBUG ("[pcl::%s::initSACModel] Using a model of type: SACMODEL_ORIENTED_LINE", getName ().c_str ());
-			 model_.reset (new SampleConsensusModelOrientedLine<PointT> (this->input_));
-			 break;
-			 }
-			 case SACMODEL_ORIENTED_PLANE:
-			 {
-			 ROS_DEBUG ("[pcl::%s::initSACModel] Using a model of type: SACMODEL_ORIENTED_PLANE", getName ().c_str ());
-			 model_.reset (new SampleConsensusModelOrientedPlane<PointT> (this->input_));
-			 break;
-			 }*/
+			objectModel = new ObjectModelSphere();
+			objectModel->setInputCloud(inputPointCloud);
+			break;
+		}
+		case OBJMODEL_LINE:
+		{
+			cout << "[initSACModel] Using a model of type: OBJECT_MODEL_LINE"<<endl;
+			objectModel = new ObjectModelLine();
+			objectModel->setInputCloud(inputPointCloud);
+			break;
+		}
+		case OBJMODEL_ORIENTED_LINE:
+		{
+			//ToDo check the initialization
+			cout << "[initSACModel] Using a model of type: OBJECT_MODEL_SPHERE"<<endl;
+			objectModel = new ObjectModelOrientedLine();
+			objectModel->setInputCloud(inputPointCloud);
+			break;
+		}
+		case OBJMODEL_ORIENTED_PLANE:
+		{
+			//ToDo check the initialization
+			cout << "[initSACModel] Using a model of type: OBJECT_MODEL_PLANE"<<endl;
+			objectModel = new ObjectModelOrientedPlane();
+			objectModel->setInputCloud(inputPointCloud);
+			break;
+		}
 		default: {
 			cout << "[initSACModel] No valid model given!";
 			return (false);
@@ -289,26 +288,26 @@ public:
 		}
 		case SAC_LMEDS: {
 			cout<<"[initSAC] Using a method of type: SAC_LMeDS_ROS with a model threshold of "<<threshold<<endl;
-						sacMethod = new SACMethodLMeDS_ROS();
-						sacMethod->setObjectModel(objectModel);
-						sacMethod->setDistanceThreshold(threshold);
-						sacMethod->setPointCloud(inputPointCloud);
-						break;
+			sacMethod = new SACMethodLMeDS_ROS();
+			sacMethod->setObjectModel(objectModel);
+			sacMethod->setDistanceThreshold(threshold);
+			sacMethod->setPointCloud(inputPointCloud);
+			break;
 		}
 		case SAC_MSAC: {
 			cout<<"[initSAC] Using a method of type: SAC_MSAC_ROS with a model threshold of "<<threshold<<endl;
-						sacMethod = new SACMethodMSAC_ROS();
-						sacMethod->setObjectModel(objectModel);
-						sacMethod->setDistanceThreshold(threshold);
-						sacMethod->setPointCloud(inputPointCloud);
-							break;
+			sacMethod = new SACMethodMSAC_ROS();
+			sacMethod->setObjectModel(objectModel);
+			sacMethod->setDistanceThreshold(threshold);
+			sacMethod->setPointCloud(inputPointCloud);
+			break;
 		}
 		case SAC_MLESAC: {
 			cout<<"[initSAC] Using a method of type: SAC_MLESAC_ROS with a model threshold of "<<threshold<<endl;
-						sacMethod = new SACMethodMLESAC_ROS();
-						sacMethod->setObjectModel(objectModel);
-						sacMethod->setDistanceThreshold(threshold);
-						sacMethod->setPointCloud(inputPointCloud);
+			sacMethod = new SACMethodMLESAC_ROS();
+			sacMethod->setObjectModel(objectModel);
+			sacMethod->setDistanceThreshold(threshold);
+			sacMethod->setPointCloud(inputPointCloud);
 			break;
 		}
 		}

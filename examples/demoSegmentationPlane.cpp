@@ -40,7 +40,7 @@ int main(){
 	sacSegmenter.setInputPointCloud(&cloud);
 	sacSegmenter.setMaxIterations(1000);
 	sacSegmenter.setMethodType(sacSegmenter.SAC_RANSAC);
-	sacSegmenter.setModelType(sacSegmenter.SACMODEL_PLANE);
+	sacSegmenter.setModelType(sacSegmenter.OBJMODEL_PLANE);
 	sacSegmenter.setOptimizeCoefficients(true);
 	sacSegmenter.setProbability(0.99);
 
