@@ -8,10 +8,14 @@
 #ifndef IOBJECTMODEL_H_
 #define IOBJECTMODEL_H_
 
-#include "core/PointCloud3D.h"
+
 #include <Eigen/Geometry>
 #include <set>
 #include "algorithm/segmentation/features/ROSnormal3D.h"
+#include "core/Point3D.h"
+#include "core/PointCloud3D.h"
+#include <float.h>
+#include <boost/thread/mutex.hpp>
 
 using namespace std;
 
@@ -27,11 +31,14 @@ protected:
 	/** \brief Represents the point-cloud to be processed*/
 	PointCloud3D* inputPointCloud;
 
-	/** \brief Represents the indices of the point-cloud to be processed. Currently not used*/
-	vector<int> *indices;
-
 	/** \brief The minimum and maximum radius limits for the model. Applicable to all models that estimate a radius. */
 	double radiusMin, radiusMax;
+
+	/** \brief Define the maximum number of iterations for collinearity checks */
+	const static int MAX_ITERATIONS_COLLINEAR = 1000;
+
+	/** \brief Pointer to the vector of points in the pointcloud**/
+	std::vector<Point3D> *points;
 
 public:
 	IObjectModel(){};
@@ -111,47 +118,12 @@ public:
 	setInputCloud (PointCloud3D* cloud)
 	{
 		this->inputPointCloud = cloud;
-
+		this->points = inputPointCloud->getPointCloud();
 	}
 
-	/**
-	 *\brief Set the input cloud to be used and the indices to be used
-	 * \param input point cloud
-	 * \param indices of the pointcloud to be used
-	 */
-	inline void
-		setInputCloud (PointCloud3D* cloud,vector<int> *indices )
-		{
-			this->inputPointCloud = cloud;
-			this->indices= indices;
-
-		}
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/** \brief Get a pointer to the input point cloud dataset. */
 	inline PointCloud3D* getInputCloud () { return (inputPointCloud); }
 
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	/** \brief Provide a pointer to the vector of indices that represents the input data.
-	 * \param indices a pointer to the vector of indices that represents the input data.
-	 */
-	//toDo resolve indicesptr
-	//inline void setIndices (const IndicesPtr &indices) { indices_ = indices; }
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	/** \brief Provide the vector of indices that represents the input data.
-	 * \param indices the vector of indices that represents the input data.
-	 */
-	//toDo resolve indicesptr
-	//inline void setIndices (std::vector<int> &indices) { indices_ = boost::make_shared <std::vector<int> > (indices); }
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	/** \brief Get a pointer to the vector of indices used. */
-	//
-	//inline IndicesPtr getIndices () { return (indices_); }
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	/** \brief Return an unique id for each type of model employed. */
-	//virtual int getModelType () = 0;
 
 	/** \brief Set the minimum and maximum allowable radius limits for the model (applicable to models that estimate
 	 * a radius)
@@ -178,7 +150,22 @@ public:
 		maxRadius = radiusMax;
 	}
 
-//	virtual ~IObjectModel(){};
+
+	/** \brief Compute the smallest angle between two vectors in the [ 0, PI ) interval in 3D.
+	    * \param v1 the first 3D vector (represented as a \a Eigen::Vector4f)
+	    * \param v2 the second 3D vector (represented as a \a Eigen::Vector4f)
+	    */
+	  inline double
+	    getAngle3D (const Eigen::Vector4f &v1, const Eigen::Vector4f &v2)
+	  {
+	    // Compute the actual angle
+	    double rad = v1.dot (v2) / sqrt (v1.squaredNorm () * v2.squaredNorm ());
+	    if (rad < -1.0) rad = -1.0;
+	    if (rad >  1.0) rad = 1.0;
+	    return acos (rad);
+
+	    return (rad);
+	  }
 };
 }
 #endif /* IOBJECTMODEL_H_ */

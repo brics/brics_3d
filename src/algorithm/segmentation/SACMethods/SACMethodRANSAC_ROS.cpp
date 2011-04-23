@@ -21,14 +21,12 @@ SACMethodRANSAC_ROS::~SACMethodRANSAC_ROS() {
 bool SACMethodRANSAC_ROS::computeModel(){
 
 	// Warn and exit if no threshold was set
-cout<<"[Checkpoint]: 1.b.i \n";
      if (this->threshold == -1)
      {
        cout<<"[RANSAC::computeModel] No threshold set!"<<endl;
        return (false);
      }
 
-cout<<"[Checkpoint]: 1.b.ii \n";
      this->iterations = 0;
      int n_best_inliers_count = -1;
      double k = 1.0;
@@ -40,19 +38,18 @@ cout<<"[Checkpoint]: 1.b.ii \n";
 
      int n_inliers_count = 0;
 
-cout<<"[Checkpoint]: 1.b.iii \n";
-bool checkpointFlag = false;
+
      // Iterate
      while (this->iterations < k)
      {
-if(checkpointFlag==true)cout<<"[Checkpoint]: 1.b.iv \n";
+
        // Get X samples which satisfy the model criteria
        this->objectModel->getSamples(this->iterations,selection);
 
-if(checkpointFlag==true)cout<<"[Checkpoint]: 1.b.v \n";
+
        if (selection.size () == 0) break;
 
-if(checkpointFlag==true)cout<<"[Checkpoint]: 1.b.vi \n";
+
        // Search for inliers in the point cloud for the current plane model M
        if (!this->objectModel->computeModelCoefficients (selection, modelCoefficients))
        {
@@ -60,12 +57,12 @@ if(checkpointFlag==true)cout<<"[Checkpoint]: 1.b.vi \n";
          continue;
        }
 
-if(checkpointFlag==true)cout<<"[Checkpoint]: 1.b.vii \n";
+
        // Select the inliers that are within threshold_ from the model
        this->objectModel->selectWithinDistance (modelCoefficients, this->threshold, inliers);
        n_inliers_count = inliers.size ();
 
-if(checkpointFlag==true)cout<<"[Checkpoint]: 1.b.viii \n";
+
        // Better match ?
        if (n_inliers_count > n_best_inliers_count)
        {
@@ -84,17 +81,17 @@ if(checkpointFlag==true)cout<<"[Checkpoint]: 1.b.viii \n";
          k = log (1 - this->probability) / log (p_no_outliers);
        }
 
-if(checkpointFlag==true)cout<<"[Checkpoint]: 1.b.ix \n";
+
        this->iterations++;
        if (this->iterations > this->maxIterations)
        {
            cout<<"[RANSAC::computeModel] RANSAC reached the maximum number of trials";
          break;
        }
-checkpointFlag=false;
+
      }
 
-cout<<"[Checkpoint]: 1.b.x \n";
+
      if (this->model.size () == 0)
        return (false);
      return (true);

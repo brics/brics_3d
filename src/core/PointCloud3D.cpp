@@ -106,9 +106,10 @@ void PointCloud3D::readFromTxtFile(std::string filename) {
 	string line;
 
 	inputFile.open(filename.c_str());
-	cout << "INFO: Reading point cloud from: " << filename << endl;
 
-	while(getline(inputFile, line)) {
+	if(inputFile.is_open()){
+		cout << "INFO: Reading point cloud from: " << filename << endl;
+		while(getline(inputFile, line)) {
 		Point3D tmpPoint;
 		stringstream lineStream(line);
 		if (!inputFile.good()) {
@@ -117,8 +118,10 @@ void PointCloud3D::readFromTxtFile(std::string filename) {
 		lineStream >> tmpPoint;
 		this->addPoint(&tmpPoint);
 	}
-
 	inputFile.close();
+	} else {
+		cout << "INFO: Error reading point cloud from: " << filename << endl;
+	}
 }
 
 istream& operator>>(istream &inStream, PointCloud3D &pointCloud) {

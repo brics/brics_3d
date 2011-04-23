@@ -9,7 +9,7 @@
 #define SACMETHODMSAC_ROS_H_
 
 #include "ISACMethods.h"
-#include "IObjectModel.h"
+
 
 namespace BRICS_3D {
 

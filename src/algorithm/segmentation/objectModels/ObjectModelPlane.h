@@ -7,9 +7,8 @@
 
 #ifndef OBJECTMODELPLANE_H_
 #define OBJECTMODELPLANE_H_
-#include "algorithm/segmentation/IObjectModel.h"
-#include "core/Point3D.h"
-#include "core/PointCloud3D.h"
+#include "algorithm/segmentation/objectModels/IObjectModel.h"
+
 
 /**
  * Implementation of IObjectModel for SAC-Model Plane from ROS-PCL.
@@ -49,16 +48,9 @@ pointToPlaneDistanceSigned (const Point3D &p, const Eigen::Vector4f &plane_coeff
 
 class ObjectModelPlane:public IObjectModel {
 
-private:
-	/** \brief Define the maximum number of iterations for collinearity checks */
-	const static int MAX_ITERATIONS_COLLINEAR = 1000;
-	bool isInitialised;
-	std::vector<Point3D> *points;	/** Pointer to the vector of points in the pointcloud**/
-
 public:
-	ObjectModelPlane():IObjectModel(){};
-//	ObjectModelPlane(PointCloud3D* p);
-//	ObjectModelPlane(PointCloud3D* p, std::vector<int> &indices);
+	ObjectModelPlane():IObjectModel(){
+	};
 
 	void getSamples (int &iterations, std::vector<int> &samples);
 	bool computeModelCoefficients (const std::vector<int> &samples, Eigen::VectorXf &model_coefficients);

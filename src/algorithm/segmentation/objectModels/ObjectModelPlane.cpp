@@ -7,23 +7,11 @@
  */
 
 #include "ObjectModelPlane.h"
-#include "algorithm/segmentation/IObjectModel.h"
+
 
 namespace BRICS_3D {
 
 
-/*ObjectModelPlane::ObjectModelPlane(PointCloud3D* p){
-	setInputCloud(p);
-	points = p->getPointCloud();
-	if (inputPointCloud->getSize()!=0) isInitialised=true;
-}
-
-ObjectModelPlane::ObjectModelPlane(PointCloud3D* p, std::vector<int> &indices){
-	setInputCloud(p,indices);
-	points = p->getPointCloud();
-	if (p->getSize()!=0 && indices.size()!=0) isInitialised=true;
-}
-*/
 void ObjectModelPlane::getSamples(int &iterations, std::vector<int> &samples){
 	points = inputPointCloud->getPointCloud();
 	// We're assuming that indices_ have already been set in the constructor
@@ -221,11 +209,13 @@ ObjectModelPlane::selectWithinDistance (const Eigen::VectorXf &model_coefficient
 
 void
 ObjectModelPlane::getInlierDistance (std::vector<int> &inliers, const Eigen::VectorXf &model_coefficients,  std::vector<double> &distances) {
+	// Needs a valid model coefficients
+	//ToDo ROS_ASSERT (model_coefficients.size () == 4);
+
+	distances.resize (inliers.size());
+
 	for (size_t i = 0; i < inliers.size (); ++i)
 	{
-		// Needs a valid set of model coefficients
-		//Todo ROS_ASSERT (model_coefficients.size () == 4);
-
 		// Calculate the distance from the point to the plane normal as the dot product
 		// D = (P-A).N/|N|
 		distances[i]=fabs (model_coefficients[0] * this->points->data()[inliers[i]].getX() +

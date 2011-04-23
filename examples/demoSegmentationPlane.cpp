@@ -15,8 +15,16 @@ int main(){
 	BRICS_3D::PointCloud3D cloud;
 
 	//read the points into the pointcloud
-	cloud.readFromTxtFile("demoCloud.txt");
+	//Please modify the path if there is a file read error.
+	cloud.readFromTxtFile("./trunk/src/algorithm/segmentation/evaluation/data/demoCloud.txt");
+
+	if (cloud.getSize()>0){
 	cout<< "INFO: Current PointCloud Size: " <<cloud.getSize()<<endl;
+	} else {
+		cout<< "INFO: Current PointCloud Size: " <<cloud.getSize()<<endl;
+		return 0;
+	}
+
 
 	//Create the vector to hold the model coefficients
 	Eigen::VectorXf modelCoefficients;
@@ -31,7 +39,7 @@ int main(){
 	sacSegmenter.setDistanceThreshold(0.01);
 	sacSegmenter.setInputPointCloud(&cloud);
 	sacSegmenter.setMaxIterations(1000);
-	sacSegmenter.setMethodType(sacSegmenter.SAC_LMEDS);
+	sacSegmenter.setMethodType(sacSegmenter.SAC_RANSAC);
 	sacSegmenter.setModelType(sacSegmenter.SACMODEL_PLANE);
 	sacSegmenter.setOptimizeCoefficients(true);
 	sacSegmenter.setProbability(0.99);

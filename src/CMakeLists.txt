@@ -95,16 +95,24 @@ SET (ALGORITHM_LIBRARY_SOURCES
 ./algorithm/segmentation/evaluation/MetricCalculator
 ./algorithm/segmentation/evaluation/gnuplot_i
 
-./algorithm/segmentation/ISACMethods
-./algorithm/segmentation/IObjectModel
-	
-	./algorithm/segmentation/SACMethodALMeDS
-	./algorithm/segmentation/SACMethodRANSAC_ROS
-	./algorithm/segmentation/SACMethodMSAC_ROS
-	./algorithm/segmentation/SACMethodLMeDS_ROS
-	./algorithm/segmentation/SACMethodMLESAC_ROS	
 
-./algorithm/segmentation/ObjectModelPlane
+./algorithm/segmentation/objectModels/IObjectModel
+./algorithm/segmentation/objectModels/ObjectModelPlane
+./algorithm/segmentation/objectModels/ObjectModelOrientedPlane
+./algorithm/segmentation/objectModels/ObjectModelCircle
+./algorithm/segmentation/objectModels/ObjectModelSphere
+./algorithm/segmentation/objectModels/ObjectModelLine
+./algorithm/segmentation/objectModels/ObjectModelOrientedLine
+	
+	./algorithm/segmentation/SACMethods/ISACMethods	
+	./algorithm/segmentation/SACMethods/SACMethodALMeDS
+	./algorithm/segmentation/SACMethods/SACMethodRANSAC_ROS
+	./algorithm/segmentation/SACMethods/SACMethodMSAC_ROS
+	./algorithm/segmentation/SACMethods/SACMethodLMeDS_ROS
+	./algorithm/segmentation/SACMethods/SACMethodMLESAC_ROS	
+
+./algorithm/segmentation/RegionBasedSACSegmentation.h
+
 )
 
 SET (UTIL_LIBRARY_SOURCES

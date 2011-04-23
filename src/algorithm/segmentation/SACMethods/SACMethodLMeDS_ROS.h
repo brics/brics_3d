@@ -7,8 +7,8 @@
 
 #ifndef SACMETHODLMEDS_H_
 #define SACMETHODLMEDS_H_
+
 #include "ISACMethods.h"
-#include "IObjectModel.h"
 
 namespace BRICS_3D {
 

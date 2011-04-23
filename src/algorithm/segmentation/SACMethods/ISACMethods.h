@@ -8,9 +8,8 @@
 #ifndef ISACMETHODS_H_
 #define ISACMETHODS_H_
 
-#include "IObjectModel.h"
+#include "algorithm/segmentation/objectModels/IObjectModel.h"
 #include "core/PointCloud3D.h"
-#include "ObjectModelPlane.h"
 #include <algorithm>
 #include <float.h>
 namespace BRICS_3D {

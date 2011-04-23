@@ -8,19 +8,21 @@
 #ifndef REGIONBASEDSACSEGMENTATION_H_
 #define REGIONBASEDSACSEGMENTATION_H_
 
-#include "IObjectModel.h"
-#include "ISACMethods.h"
+#include "algorithm/segmentation/objectModels/IObjectModel.h"
+#include "algorithm/segmentation/SACMethods/ISACMethods.h"
 #include "core/PointCloud3D.h"
 
 //Object Models Supported
-#include "ObjectModelPlane.h"
+#include "algorithm/segmentation/objectModels/ObjectModelPlane.h"
+#include "algorithm/segmentation/objectModels/ObjectModelCircle.h"
+#include "algorithm/segmentation/objectModels/ObjectModelSphere.h"
 
 //SAC Methods Supported
-#include "SACMethodALMeDS.h"
-#include "SACMethodRANSAC_ROS.h"
-#include "SACMethodMSAC_ROS.h"
-#include "SACMethodLMeDS_ROS.h"
-#include "SACMethodMLESAC_ROS.h"
+#include "algorithm/segmentation/SACMethods/SACMethodALMeDS.h"
+#include "algorithm/segmentation/SACMethods/SACMethodRANSAC_ROS.h"
+#include "algorithm/segmentation/SACMethods/SACMethodMSAC_ROS.h"
+#include "algorithm/segmentation/SACMethods/SACMethodLMeDS_ROS.h"
+#include "algorithm/segmentation/SACMethods/SACMethodMLESAC_ROS.h"
 
 namespace BRICS_3D{
 class RegionBasedSACSegmentation {
@@ -209,21 +211,31 @@ public:
 		// Build the model
 		switch (model_type) {
 		case SACMODEL_PLANE: {
-			cout << "[initSACModel] Using a model of type: SACMODEL_PLANE"<<endl;
+			cout << "[initSACModel] Using a model of type: OBJECT_MODEL_PLANE"<<endl;
 			objectModel = new ObjectModelPlane();
 			objectModel->setInputCloud(inputPointCloud);
 			break;
 		}
+		 case SACMODEL_CIRCLE2D:
+		 {
+			cout << "[initSACModel] Using a model of type: OBJECT_MODEL_CIRCLE"<<endl;
+			objectModel = new ObjectModelCircle();
+			objectModel->setInputCloud(inputPointCloud);
+			break;
+
+		 }
+		 case SACMODEL_SPHERE:
+		 {
+			cout << "[initSACModel] Using a model of type: OBJECT_MODEL_SPHERE"<<endl;
+					objectModel = new ObjectModelSphere();
+					objectModel->setInputCloud(inputPointCloud);
+					break;
+		 }
+
 		/*case SACMODEL_LINE:
 			 {
 			 ROS_DEBUG ("[pcl::%s::initSACModel] Using a model of type: SACMODEL_LINE", getName ().c_str ());
 			 model_.reset (new SampleConsensusModelLine<PointT> (this->input_));
-			 break;
-			 }
-			 case SACMODEL_CIRCLE2D:
-			 {
-			 ROS_DEBUG ("[pcl::%s::initSACModel] Using a model of type: SACMODEL_CIRCLE2D", getName ().c_str ());
-			 model_.reset (new SampleConsensusModelCircle2D<PointT> (this->input_));
 			 break;
 			 }
 			 case SACMODEL_SPHERE:
