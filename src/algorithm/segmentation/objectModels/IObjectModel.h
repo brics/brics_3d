@@ -40,23 +40,37 @@ protected:
 	/** \brief Pointer to the vector of points in the pointcloud**/
 	std::vector<Point3D> *points;
 
+
 public:
 	IObjectModel(){};
 
+
+	/**
+	 * \brief returns the minimum number of samples required for a object model generation
+	 */
+	virtual int getNumberOfSamplesRequired()=0;
 
 	/** \brief Get a set of random data samples and return them as point indices. Pure virtual.
 	 * \param iterations the internal number of iterations used by SAC methods
 	 * \param samples the resultant model samples
 	 */
-	virtual void getSamples (int &iterations, std::vector<int> &samples) = 0;
+	//virtual void getSamples (int &iterations, std::vector<int> &samples) = 0;
 
 	/** \brief Check whether the given index samples can form a valid model, compute the model coefficients from
 	 * these samples and store them internally in model_coefficients_. Pure virtual.
 	 * \param samples the point indices found as possible good candidates for creating a valid model
 	 * \param model_coefficients the computed model coefficients
 	 */
-	virtual bool computeModelCoefficients (const std::vector<int> &samples, Eigen::VectorXf &model_coefficients)= 0;
+	//virtual bool computeModelCoefficients (const std::vector<int> &samples, Eigen::VectorXf &model_coefficients)= 0;
 
+
+	/**
+	 * \brief Compute the model coefficients by generating some random samples
+	 * \param model_coefficients: the computed model coefficients
+	 * \param isDegenerate: Whether degenerate samples are found from the input pointcloud or not
+	 * \param modelFound:	Whether a valid model is found from the sample or not
+	 */
+	virtual void computeRandomModel (int &iterations, Eigen::VectorXf &model_coefficients, bool &isDegenerate, bool &modelFound)= 0;
 
 	/** \brief Recompute the model coefficients using the given inlier set and return them to the user. Pure virtual.
 	 * @note: these are the coefficients of the model after refinement (e.g., after a least-squares optimization)

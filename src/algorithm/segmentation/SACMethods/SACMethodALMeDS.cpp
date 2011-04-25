@@ -19,6 +19,9 @@ SACMethodALMeDS::~SACMethodALMeDS() {
 }
 
 bool SACMethodALMeDS::computeModel(){
+
+
+
 	// Warn and exit if no threshold was set
 	if (this->threshold == -1)
 	{
@@ -30,7 +33,6 @@ bool SACMethodALMeDS::computeModel(){
 	double d_best_penalty = DBL_MAX;
 
 	std::vector<int> best_model;
-	std::vector<int> selection;
 	Eigen::VectorXf model_coefficients;
 	std::vector<double> distances;
 
@@ -39,20 +41,24 @@ bool SACMethodALMeDS::computeModel(){
 	// Iterate
 	while (this->iterations < this->maxIterations)
 	{
-		// Get X samples which satisfy the model criteria
-		this->objectModel->getSamples (this->iterations, selection);
 
-		if (selection.size () == 0) break;
+		//Compute a random model from the input pointcloud
+	       bool isDegenerate = false;
+	       bool modelFound = false;
 
-		// Search for inliers in the point cloud for the current plane model M
-		if (!this->objectModel->computeModelCoefficients (selection, model_coefficients))
-		{
-			this->iterations++;
-			continue;
-		}
+	       this->objectModel->computeRandomModel(this->iterations,model_coefficients,isDegenerate,modelFound);
+
+	       if (!isDegenerate) break;
+
+	       if(!modelFound){
+	    	   this->iterations++;
+	    	   continue;
+	       }
+
 
 		double d_cur_penalty = 0;
 		std::vector<int> inliers;
+
 		//Find the points inside threshold distance to the model
 		this->objectModel->selectWithinDistance (model_coefficients, this->threshold, inliers);
 
@@ -75,7 +81,6 @@ bool SACMethodALMeDS::computeModel(){
 			d_best_penalty = d_cur_penalty;
 
 			// Save the current model/coefficients selection as being the best so far
-			this->model              = selection;
 			this->modelCoefficients = model_coefficients;
 		}
 
@@ -83,11 +88,6 @@ bool SACMethodALMeDS::computeModel(){
 
 	}
 
-	if (this->model.size () == 0)
-	{
-		cout<<"[ALMeDS::computeModel] Unable to find a solution!"<<endl;
-		return (false);
-	}
 
 	// Classify the data points into inliers and outliers
 	// Sigma = 1.4826 * (1 + 5 / (n-d)) * sqrt (M)
@@ -108,6 +108,11 @@ bool SACMethodALMeDS::computeModel(){
 	// Resize the inliers vector
 	this->inliers.resize (n_inliers_count);
 
+	if (this->inliers.size () == 0)
+			{
+				cout<<"[ALMeDS::computeModel] Unable to find a solution!"<<endl;
+				return (false);
+			}
 	return (true);
 }
 

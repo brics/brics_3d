@@ -1,17 +1,21 @@
 /*
- * demoSegmentationPlane.cpp
+ * demoSegmentationNormalPlane.cpp
  *
- *  Created on: Apr 20, 2011
+ *  Created on: Apr 24, 2011
  *      Author: reon
  */
 
-#include "algorithm/segmentation/RegionBasedSACSegmentation.h"
+#include "algorithm/segmentation/RegionBasedSACSegmentationUsingNormals.h"
 #include "core/PointCloud3D.h"
 #include "core/Point3D.h"
 #include <iostream>
-using namespace std;
+#include "algorithm/segmentation/features/NormalEstimation.h"
+
 int main(){
-	//Create a pointcloud object
+
+//This is not a working copy. Will be updated once normal extraction is done.
+
+/*	//Create a pointcloud object
 	BRICS_3D::PointCloud3D cloud;
 
 	//read the points into the pointcloud
@@ -19,7 +23,7 @@ int main(){
 	cloud.readFromTxtFile("./trunk/src/algorithm/segmentation/evaluation/data/demoCloud.txt");
 
 	if (cloud.getSize()>0){
-		cout<< "INFO: Current PointCloud Size: " <<cloud.getSize()<<endl;
+	cout<< "INFO: Current PointCloud Size: " <<cloud.getSize()<<endl;
 	} else {
 		cout<< "INFO: Current PointCloud Size: " <<cloud.getSize()<<endl;
 		return 0;
@@ -40,13 +44,12 @@ int main(){
 	sacSegmenter.setInputPointCloud(&cloud);
 	sacSegmenter.setMaxIterations(1000);
 	sacSegmenter.setMethodType(sacSegmenter.SAC_RANSAC);
-	sacSegmenter.setModelType(sacSegmenter.OBJMODEL_PLANE_FROM_LINE_AND_POINT);
+	sacSegmenter.setModelType(sacSegmenter.OBJMODEL_PLANE);
 	sacSegmenter.setOptimizeCoefficients(true);
 	sacSegmenter.setProbability(0.99);
 
 	//Perform the segmentation
 	sacSegmenter.segment(inliers,modelCoefficients);
-
 
 	if (inliers.size() == 0)
 	{
@@ -59,5 +62,6 @@ int main(){
 	cout<<"The model-coefficients are: (" << modelCoefficients[0]<<", " << modelCoefficients[1]<<
 			", " << modelCoefficients[2]<<", " << modelCoefficients[3]<<")" <<endl;
 
-	return(1);
+	return(1);*/
 }
+

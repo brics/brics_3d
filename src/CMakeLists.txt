@@ -99,6 +99,8 @@ SET (ALGORITHM_LIBRARY_SOURCES
 ./algorithm/segmentation/objectModels/IObjectModel
 ./algorithm/segmentation/objectModels/IObjectModelUsingNormals
 ./algorithm/segmentation/objectModels/ObjectModelPlane
+./algorithm/segmentation/objectModels/ObjectModelPlaneFromLines
+./algorithm/segmentation/objectModels/ObjectModelPlaneFromLineAndPoint
 ./algorithm/segmentation/objectModels/ObjectModelOrientedPlane
 ./algorithm/segmentation/objectModels/ObjectModelNormalPlane
 ./algorithm/segmentation/objectModels/ObjectModelCircle
@@ -115,7 +117,7 @@ SET (ALGORITHM_LIBRARY_SOURCES
 	./algorithm/segmentation/SACMethods/SACMethodMLESAC_ROS	
 
 ./algorithm/segmentation/RegionBasedSACSegmentation.h
-
+./algorithm/segmentation/RegionBasedSACSegmentationUsingNormals.h
 
 )
 

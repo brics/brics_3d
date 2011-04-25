@@ -8,12 +8,11 @@
 #ifndef OBJECTMODELCYLINDER_H_
 #define OBJECTMODELCYLINDER_H_
 
-#include "algorithm/segmentation/objectModels/IObjectModel.h"
 #include "algorithm/segmentation/objectModels/IObjectModelUsingNormals.h"
 
 namespace BRICS_3D {
 
-class ObjectModelCylinder : public IObjectModel, public IObjectModelUsingNormals {
+class ObjectModelCylinder : public IObjectModelUsingNormals {
 
 public:
 	ObjectModelCylinder(){};
@@ -32,6 +31,9 @@ public:
 			PointCloud3D* projectedPointCloud);
 	bool doSamplesVerifyModel (const std::set<int> &indices, const Eigen::VectorXf &model_coefficients,
 			double threshold);
+	void computeRandomModel (int &iterations, Eigen::VectorXf &model_coefficients, bool &isDegenerate, bool &modelFound);
+
+	inline int getNumberOfSamplesRequired(){return 3;};
 
 protected:
 	/** \brief Get the distance from a point to a line (represented by a point and a direction)

@@ -11,6 +11,31 @@
 
 namespace BRICS_3D {
 
+void ObjectModelPlane::computeRandomModel (int &iterations, Eigen::VectorXf &model_coefficients, bool &isDegenerate,
+		bool &modelFound){
+
+	std::vector<int> samples;
+	std::vector<int> selection;
+	getSamples(iterations,selection);
+
+	if (selection.size () == 0){
+		isDegenerate = false;
+		modelFound = false;
+		return;
+	} else {
+
+		isDegenerate = true;
+
+	}
+
+	if (!computeModelCoefficients (selection, model_coefficients)){
+		modelFound = false;
+		return;
+	} else {
+		modelFound = true;
+		return;
+	}
+}
 
 void ObjectModelPlane::getSamples(int &iterations, std::vector<int> &samples){
 	points = inputPointCloud->getPointCloud();

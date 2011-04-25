@@ -182,3 +182,6 @@ TARGET_LINK_LIBRARIES(demoComparison brics_3dpm_algorithm)
 #Executables for 3D segmentation demo
 ADD_EXECUTABLE(demoSegmentationPlane demoSegmentationPlane)
 TARGET_LINK_LIBRARIES(demoSegmentationPlane brics_3dpm_algorithm)
+
+ADD_EXECUTABLE(demoSegmentationNormalPlane demoSegmentationNormalPlane)
+TARGET_LINK_LIBRARIES(demoSegmentationNormalPlane brics_3dpm_algorithm)

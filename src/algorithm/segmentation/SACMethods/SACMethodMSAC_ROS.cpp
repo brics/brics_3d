@@ -32,7 +32,6 @@ bool SACMethodMSAC_ROS::computeModel(){
 	double k = 1.0;
 
 	std::vector<int> best_model;
-	std::vector<int> selection;
 	Eigen::VectorXf model_coefficients;
 	std::vector<double> distances;
 
@@ -40,17 +39,18 @@ bool SACMethodMSAC_ROS::computeModel(){
 	// Iterate
 	while (this->iterations < k)
 	{
-		// Get X samples which satisfy the model criteria
-		this->objectModel->getSamples (this->iterations, selection);
+	       //Compute a random model from the input pointcloud
+	       bool isDegenerate = false;
+	       bool modelFound = false;
 
-		if (selection.size () == 0) break;
+	       this->objectModel->computeRandomModel(this->iterations,model_coefficients,isDegenerate,modelFound);
 
-		// Search for inliers in the point cloud for the current plane model M
-		if (!this->objectModel->computeModelCoefficients (selection, model_coefficients))
-		{
-			this->iterations++;
-			continue;
-		}
+	       if (!isDegenerate) break;
+
+	       if(!modelFound){
+	    	   this->iterations++;
+	    	   continue;
+	       }
 
 		double d_cur_penalty = 0;
 		// Iterate through the 3d points and calculate the distances from them to the model
@@ -64,7 +64,6 @@ bool SACMethodMSAC_ROS::computeModel(){
 			d_best_penalty = d_cur_penalty;
 
 			// Save the current model/coefficients selection as being the best so far
-			this->model              = selection;
 			this->modelCoefficients = model_coefficients;
 
 			n_inliers_count = 0;
@@ -75,7 +74,7 @@ bool SACMethodMSAC_ROS::computeModel(){
 
 			// Compute the k parameter (k=log(z)/log(1-w^n))
 			double w = (double)((double)n_inliers_count / (double)this->objectModel->getInputCloud()->getSize());
-			double p_no_outliers = 1 - pow (w, (double)selection.size ());
+			double p_no_outliers = 1 - pow (w, (double)this->objectModel->getNumberOfSamplesRequired());
 			p_no_outliers = std::max (std::numeric_limits<double>::epsilon (), p_no_outliers);       // Avoid division by -Inf
 			p_no_outliers = std::min (1 - std::numeric_limits<double>::epsilon (), p_no_outliers);   // Avoid division by 0.
 			k = log (1 - this->probability) / log (p_no_outliers);
@@ -91,12 +90,6 @@ bool SACMethodMSAC_ROS::computeModel(){
 		}
 	}
 
-	if (this->model.size () == 0)
-	{
-		cout<<"[MSAC::computeModel] Unable to find a solution!"<<endl;
-		return (false);
-	}
-
 	// Iterate through the 3d points and calculate the distances from them to the model again
 	this->objectModel->getDistancesToModel (this->modelCoefficients, distances);
 
@@ -109,6 +102,12 @@ bool SACMethodMSAC_ROS::computeModel(){
 
 	// Resize the inliers vector
 	this->inliers.resize (n_inliers_count);
+
+	if (this->inliers.size () == 0)
+	{
+		cout<<"[MSAC::computeModel] Unable to find a solution!"<<endl;
+		return (false);
+	}
 
 	return (true);
 

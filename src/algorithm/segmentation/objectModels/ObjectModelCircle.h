@@ -36,7 +36,9 @@ public:
 	void projectPoints (const std::vector<int> &inliers, const Eigen::VectorXf &model_coefficients,
 			PointCloud3D* projectedPointCloud);
 	bool doSamplesVerifyModel (const std::set<int> &indices, const Eigen::VectorXf &model_coefficients, double threshold);
+	void computeRandomModel (int &iterations, Eigen::VectorXf &model_coefficients, bool &isDegenerate, bool &modelFound);
 
+	inline int getNumberOfSamplesRequired(){return 2;};
 };
 
 }

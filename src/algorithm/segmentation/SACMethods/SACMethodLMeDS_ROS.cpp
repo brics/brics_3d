@@ -40,17 +40,18 @@ bool SACMethodLMeDS_ROS::computeModel(){
 	// Iterate
 	while (this->iterations < this->maxIterations)
 	{
-		// Get X samples which satisfy the model criteria
-		this->objectModel->getSamples (this->iterations, selection);
+	       //Compute a random model from the input pointcloud
+	       bool isDegenerate = false;
+	       bool modelFound = false;
 
-		if (selection.size () == 0) break;
+	       this->objectModel->computeRandomModel(this->iterations,model_coefficients,isDegenerate,modelFound);
 
-		// Search for inliers in the point cloud for the current plane model M
-		if (!this->objectModel->computeModelCoefficients (selection, model_coefficients))
-		{
-			this->iterations++;
-			continue;
-		}
+	       if (!isDegenerate) break;
+
+	       if(!modelFound){
+	    	   this->iterations++;
+	    	   continue;
+	       }
 
 		double d_cur_penalty = 0;
 		// d_cur_penalty = sum (min (dist, threshold))
@@ -73,16 +74,10 @@ bool SACMethodLMeDS_ROS::computeModel(){
 			d_best_penalty = d_cur_penalty;
 
 			// Save the current model/coefficients selection as being the best so far
-			this->model              = selection;
 			this->modelCoefficients = model_coefficients;
 		}
 
 		this->iterations++;
-	}
-	if (this->model.size () == 0)
-	{
-		cout<<"[LMeDS::computeModel] Unable to find a solution!"<<endl;
-		return (false);
 	}
 
 	// Classify the data points into inliers and outliers
@@ -104,6 +99,11 @@ bool SACMethodLMeDS_ROS::computeModel(){
 	// Resize the inliers vector
 	this->inliers.resize (n_inliers_count);
 
+	if (this->inliers.size () == 0)
+		{
+			cout<<"[LMeDS::computeModel] Unable to find a solution!"<<endl;
+			return (false);
+		}
 	return (true);
 }
 }

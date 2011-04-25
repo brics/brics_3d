@@ -10,11 +10,35 @@
 
 namespace BRICS_3D {
 
-/** \brief Get 3 random non-collinear points as data samples and return them as point indices.
- * \param iterations the internal number of iterations used by SAC methods
- * \param samples the resultant model samples
- * \note assumes unique points!
- */
+
+void ObjectModelCircle::computeRandomModel (int &iterations, Eigen::VectorXf &model_coefficients, bool &isDegenerate,
+		bool &modelFound){
+
+	std::vector<int> samples;
+	std::vector<int> selection;
+	getSamples(iterations,selection);
+
+	if (selection.size () == 0){
+		isDegenerate = false;
+		modelFound = false;
+		return;
+	} else {
+
+		isDegenerate = true;
+
+	}
+
+	if (!computeModelCoefficients (selection, model_coefficients)){
+		modelFound = false;
+		return;
+	} else {
+		modelFound = true;
+		return;
+	}
+
+
+}
+
 void
 ObjectModelCircle::getSamples (int &iterations, std::vector<int> &samples)
 {
@@ -78,11 +102,6 @@ ObjectModelCircle::getSamples (int &iterations, std::vector<int> &samples)
 	iterations--;
 }
 
-/** \brief Check whether the given index samples can form a valid 2D circle model, compute the model coefficients
- * from these samples and store them in model_coefficients. The circle coefficients are: x, y, R.
- * \param samples the point indices found as possible good candidates for creating a valid model
- * \param model_coefficients the resultant model coefficients
- */
 bool
 ObjectModelCircle::computeModelCoefficients (const std::vector<int> &samples, Eigen::VectorXf &model_coefficients)
 {
@@ -139,11 +158,6 @@ ObjectModelCircle:: getDistancesToModel (const Eigen::VectorXf &model_coefficien
 		) - model_coefficients[2]);
 }
 
-/** \brief Compute all distances from the inliers of the plane model to a given plane model.
- * \param estimated inliers to the model
- * \param model_coefficients the coefficients of a plane model that we need to compute distances to
- * \param distances the resultant estimated distances
- */
 
 void
 ObjectModelCircle::getInlierDistance (std::vector<int> &inliers, const Eigen::VectorXf &model_coefficients,
@@ -168,11 +182,6 @@ ObjectModelCircle::getInlierDistance (std::vector<int> &inliers, const Eigen::Ve
 	}
 }
 
-/** \brief Compute all distances from the cloud data to a given 2D circle model.
- * \param model_coefficients the coefficients of a 2D circle model that we need to compute distances to
- * \param threshold a maximum admissible distance threshold for determining the inliers from the outliers
- * \param inliers the resultant model inliers
- */
 void
 ObjectModelCircle::selectWithinDistance (const Eigen::VectorXf &model_coefficients, double threshold, std::vector<int> &inliers)
 {
@@ -204,12 +213,6 @@ ObjectModelCircle::selectWithinDistance (const Eigen::VectorXf &model_coefficien
 	inliers.resize (nr_p);
 }
 
-/** \brief Recompute the 2d circle coefficients using the given inlier set and return them to the user.
- * @note: these are the coefficients of the 2d circle model after refinement (eg. after SVD)
- * \param inliers the data inliers found as supporting the model
- * \param model_coefficients the initial guess for the optimization
- * \param optimized_coefficients the resultant recomputed coefficients after non-linear optimization
- */
 void
 ObjectModelCircle::optimizeModelCoefficients (const std::vector<int> &inliers, const Eigen::VectorXf &model_coefficients,
 		Eigen::VectorXf &optimized_coefficients)
@@ -275,13 +278,6 @@ ObjectModelCircle::optimizeModelCoefficients (const std::vector<int> &inliers, c
 	 */
 }
 
-/** \brief Create a new point cloud with inliers projected onto the 2d circle model.
- * \param inliers the data inliers that we want to project on the 2d circle model
- * \param model_coefficients the coefficients of a 2d circle model
- * \param projected_points the resultant projected points
- * \param copy_data_fields set to true if we need to copy the other data fields
- * \todo implement this.
- */
 void
 ObjectModelCircle::projectPoints (const std::vector<int> &inliers, const Eigen::VectorXf &model_coefficients,
 		PointCloud3D *projectedPointCloud)
@@ -290,40 +286,35 @@ ObjectModelCircle::projectPoints (const std::vector<int> &inliers, const Eigen::
 	//Todo ROS_ASSERT (model_coefficients.size () == 3);
 	std::vector<Point3D> *projectedPoints = projectedPointCloud->getPointCloud();
 	// Iterate through the 3d points and calculate the distances from them to the circle
-		for (size_t i = 0; i < inliers.size (); ++i)
-		{
-			float dx = this->points->data()[inliers[i]].getX() - model_coefficients[0];
-			float dy = this->points->data()[inliers[i]].getY() - model_coefficients[1];
-			float a = sqrt ( (model_coefficients[2] * model_coefficients[2]) / (dx * dx + dy * dy) );
+	for (size_t i = 0; i < inliers.size (); ++i)
+	{
+		float dx = this->points->data()[inliers[i]].getX() - model_coefficients[0];
+		float dy = this->points->data()[inliers[i]].getY() - model_coefficients[1];
+		float a = sqrt ( (model_coefficients[2] * model_coefficients[2]) / (dx * dx + dy * dy) );
 
-			projectedPoints->data()[i].setX(a * dx + model_coefficients[0]);
-			projectedPoints->data()[i].setY(a * dy + model_coefficients[1]);
-		}
+		projectedPoints->data()[i].setX(a * dx + model_coefficients[0]);
+		projectedPoints->data()[i].setY(a * dy + model_coefficients[1]);
+	}
 }
 
-/** \brief Verify whether a subset of indices verifies the given 2d circle model coefficients.
-  * \param indices the data indices that need to be tested against the 2d circle model
-  * \param model_coefficients the 2d circle model coefficients
-  * \param threshold a maximum admissible distance threshold for determining the inliers from the outliers
-  */
 bool
- ObjectModelCircle:: doSamplesVerifyModel (const std::set<int> &indices, const Eigen::VectorXf &model_coefficients, double threshold)
+ObjectModelCircle:: doSamplesVerifyModel (const std::set<int> &indices, const Eigen::VectorXf &model_coefficients, double threshold)
 {
-  // Needs a valid model coefficients
-  //ToDo ROS_ASSERT (model_coefficients.size () == 3);
+	// Needs a valid model coefficients
+	//ToDo ROS_ASSERT (model_coefficients.size () == 3);
 
-  for (std::set<int>::iterator it = indices.begin (); it != indices.end (); ++it)
-    // Calculate the distance from the point to the sphere as the difference between
-    //dist(point,sphere_origin) and sphere_radius
-    if (fabs (sqrt (
-                    ( this->points->data()[*it].getX() - model_coefficients[0] ) *
-                    ( this->points->data()[*it].getX() - model_coefficients[0] ) +
-                    ( this->points->data()[*it].getY() - model_coefficients[1] ) *
-                    ( this->points->data()[*it].getY() - model_coefficients[1] )
-                   ) - model_coefficients[2]) > threshold)
-      return (false);
+	for (std::set<int>::iterator it = indices.begin (); it != indices.end (); ++it)
+		// Calculate the distance from the point to the sphere as the difference between
+		//dist(point,sphere_origin) and sphere_radius
+		if (fabs (sqrt (
+				( this->points->data()[*it].getX() - model_coefficients[0] ) *
+				( this->points->data()[*it].getX() - model_coefficients[0] ) +
+				( this->points->data()[*it].getY() - model_coefficients[1] ) *
+				( this->points->data()[*it].getY() - model_coefficients[1] )
+		) - model_coefficients[2]) > threshold)
+			return (false);
 
-  return (true);
+	return (true);
 }
 
 

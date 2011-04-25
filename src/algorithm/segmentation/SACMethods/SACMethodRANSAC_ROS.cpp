@@ -33,8 +33,7 @@ bool SACMethodRANSAC_ROS::computeModel(){
 
      std::vector<int> best_model;
      std::vector<int> best_inliers, inliers;
-     std::vector<int> selection;
-     Eigen::VectorXf modelCoefficients;
+     Eigen::VectorXf model_coefficients;
 
      int n_inliers_count = 0;
 
@@ -42,24 +41,23 @@ bool SACMethodRANSAC_ROS::computeModel(){
      // Iterate
      while (this->iterations < k)
      {
+       //Compute a random model from the input pointcloud
+       bool isDegenerate = false;
+       bool modelFound = false;
 
-       // Get X samples which satisfy the model criteria
-       this->objectModel->getSamples(this->iterations,selection);
+       this->objectModel->computeRandomModel(this->iterations,model_coefficients,isDegenerate,modelFound);
 
+       if (!isDegenerate) break;
 
-       if (selection.size () == 0) break;
-
-
-       // Search for inliers in the point cloud for the current plane model M
-       if (!this->objectModel->computeModelCoefficients (selection, modelCoefficients))
-       {
-         this->iterations++;
-         continue;
+       if(!modelFound){
+    	   this->iterations++;
+    	   continue;
        }
 
 
+
        // Select the inliers that are within threshold_ from the model
-       this->objectModel->selectWithinDistance (modelCoefficients, this->threshold, inliers);
+       this->objectModel->selectWithinDistance (model_coefficients, this->threshold, inliers);
        n_inliers_count = inliers.size ();
 
 
@@ -70,12 +68,11 @@ bool SACMethodRANSAC_ROS::computeModel(){
 
          // Save the current model/inlier/coefficients selection as being the best so far
          this->inliers            = inliers;
-         this->model              = selection;
-         this->modelCoefficients = modelCoefficients;
+         this->modelCoefficients = model_coefficients;
 
          // Compute the k parameter (k=log(z)/log(1-w^n))
          double w = (double)((double)n_inliers_count / (double)this->objectModel->getInputCloud()->getSize());//Todo change this if using indices getIndices ()->size ());
-         double p_no_outliers = 1 - pow (w, (double)selection.size ());
+         double p_no_outliers = 1 - pow (w, (double)this->objectModel->getNumberOfSamplesRequired());
          p_no_outliers = std::max (std::numeric_limits<double>::epsilon (), p_no_outliers);       // Avoid division by -Inf
          p_no_outliers = std::min (1 - std::numeric_limits<double>::epsilon (), p_no_outliers);   // Avoid division by 0.
          k = log (1 - this->probability) / log (p_no_outliers);
@@ -92,7 +89,7 @@ bool SACMethodRANSAC_ROS::computeModel(){
      }
 
 
-     if (this->model.size () == 0)
+     if (this->inliers.size() == 0)
        return (false);
      return (true);
 }

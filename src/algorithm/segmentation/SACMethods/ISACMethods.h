@@ -28,9 +28,6 @@ protected:
 	/** \brief Desired probability of choosing at least one sample free from outliers. */
 	double probability;
 
-	/** \brief The model found after the last computeModel () as point cloud indices. */
-	std::vector<int> model;
-
 	/** \brief The indices of the points that were chosen as inliers after the last computeModel () call. */
 	std::vector<int> inliers;
 
@@ -150,16 +147,6 @@ public:
 		indices_subset.clear ();
 		while (indices_subset.size () < nr_samples)
 			indices_subset.insert ((int) (indices.size() * (rand () / (RAND_MAX + 1.0))));
-	}
-
-
-	/** \brief Return the best model found so far.
-	 * \param model the resultant model
-	 */
-	inline void
-	getModel (std::vector<int> &model)
-	{
-		model = this->model;
 	}
 
 

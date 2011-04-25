@@ -9,6 +9,32 @@
 
 namespace BRICS_3D {
 
+void ObjectModelLine::computeRandomModel (int &iterations, Eigen::VectorXf &model_coefficients, bool &isDegenerate,
+		bool &modelFound){
+
+std::vector<int> samples;
+std::vector<int> selection;
+getSamples(iterations,selection);
+
+if (selection.size () == 0){
+	isDegenerate = false;
+	modelFound = false;
+	return;
+} else {
+
+	isDegenerate = true;
+
+}
+
+if (!computeModelCoefficients (selection, model_coefficients)){
+	modelFound = false;
+	return;
+} else {
+	modelFound = true;
+	return;
+}
+}
+
 void ObjectModelLine::getSamples (int &iterations, std::vector<int> &samples){
 	// We're assuming that indices_ have already been set in the constructor
 	//ToDo ROS_ASSERT (this->indices_->size () != 0);

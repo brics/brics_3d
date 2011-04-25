@@ -9,11 +9,14 @@
 #define REGIONBASEDSACSEGMENTATION_H_
 
 #include "algorithm/segmentation/objectModels/IObjectModel.h"
+#include "algorithm/segmentation/objectModels/IObjectModelUsingNormals.h"
 #include "algorithm/segmentation/SACMethods/ISACMethods.h"
 #include "core/PointCloud3D.h"
 
 //Object Models Supported
 #include "algorithm/segmentation/objectModels/ObjectModelPlane.h"
+#include "algorithm/segmentation/objectModels/ObjectModelPlaneFromLines.h"
+#include "algorithm/segmentation/objectModels/ObjectModelPlaneFromLineAndPoint.h"
 #include "algorithm/segmentation/objectModels/ObjectModelOrientedPlane.h"
 #include "algorithm/segmentation/objectModels/ObjectModelNormalPlane.h"
 #include "algorithm/segmentation/objectModels/ObjectModelCircle.h"
@@ -35,6 +38,9 @@ class RegionBasedSACSegmentation {
 protected:
 	/** \brief The underlying data model used (i.e. what is it that we attempt to search for). */
 	IObjectModel *objectModel;
+
+	/** \brief The underlying normal based data model used (i.e. what is it that we attempt to search for). */
+	IObjectModelUsingNormals *objectModelUsingNormals;
 
 	/** \brief The underlying SAC method used. */
 	ISACMethods *sacMethod;
@@ -84,6 +90,8 @@ public:
 	const static int OBJMODEL_ORIENTED_LINE = 5;
 	const static int OBJMODEL_ORIENTED_PLANE = 6;
 	const static int OBJMODEL_NORMAL_PLANE = 7;
+	const static int OBJMODEL_PLANE_FROM_LINES = 8;
+	const static int OBJMODEL_PLANE_FROM_LINE_AND_POINT = 9;
 
 	/** Defining the SAC methods supported*/
 	const static int SAC_ALMeDS = 0;
@@ -252,6 +260,22 @@ public:
 			//ToDo check the initialization
 			cout << "[initSACModel] Using a model of type: OBJECT_MODEL_PLANE"<<endl;
 			objectModel = new ObjectModelOrientedPlane();
+			objectModel->setInputCloud(inputPointCloud);
+			break;
+		}
+		case OBJMODEL_PLANE_FROM_LINES:
+		{
+			//ToDo check the initialization
+			cout << "[initSACModel] Using a model of type: OBJECT_MODEL_PLANE_FROM_LINES"<<endl;
+			objectModel = new ObjectModelPlaneFromLines();
+			objectModel->setInputCloud(inputPointCloud);
+			break;
+		}
+		case OBJMODEL_PLANE_FROM_LINE_AND_POINT:
+		{
+			//ToDo check the initialization
+			cout << "[initSACModel] Using a model of type: OBJECT_MODEL_PLANE_FROM_LINE_AND_POINT"<<endl;
+			objectModel = new ObjectModelPlaneFromLineAndPoint;
 			objectModel->setInputCloud(inputPointCloud);
 			break;
 		}
