@@ -48,6 +48,9 @@ SET (CORE_LIBRARY_SOURCES
     ./core/HomogeneousMatrix44
 	./core/PointCloud3D
 	./core/ColoredPointCloud3D
+    ./core/Vector3D
+    ./core/Normal3D
+    ./core/NormalSet3D
 	./core/Point3D
 	./core/Point3DDecorator
 	./core/ColoredPoint3D
@@ -66,6 +69,7 @@ SET (ALGORITHM_LIBRARY_SOURCES
 	./algorithm/filtering/IOctreePartition	
     ./algorithm/filtering/IOctreeSetup
 	./algorithm/filtering/Octree
+    ./algorithm/filtering/INormalEstimation
     ./algorithm/nearestNeighbor/INearestNeighbor
     ./algorithm/nearestNeighbor/INearestNeighborSetup
     ./algorithm/nearestNeighbor/INearestPoint3DNeighbor
