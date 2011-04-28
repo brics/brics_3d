@@ -27,7 +27,7 @@ int main(){
 
 
 	//Create the vector to hold the model coefficients
-	Eigen::VectorXf modelCoefficients;
+	Eigen::VectorXd modelCoefficients;
 
 	//Create the vector to hold the indexes of the model inliers
 	std::vector<int> inliers;

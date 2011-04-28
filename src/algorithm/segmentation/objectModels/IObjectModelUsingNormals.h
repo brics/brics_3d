@@ -9,6 +9,7 @@
 #define IOBJECTMODELUSINGNORMALS_H_
 #include <vector>
 #include "algorithm/segmentation/objectModels/IObjectModel.h"
+#include "core/NormalSet3D.h"
 //using namespace std;
 namespace BRICS_3D {
 
@@ -16,8 +17,6 @@ namespace BRICS_3D {
 
 class IObjectModelUsingNormals : public IObjectModel{
 
-	typedef double pointNormal[3];
-	typedef std::vector<pointNormal> pointCloudNormals;
 
 protected:
 
@@ -25,10 +24,10 @@ protected:
 	double normalDistanceWeight;
 
 	/** \brief A pointer to vector of normals. */
-	pointCloudNormals *normals;
+	NormalSet3D *normals;
 
 	/** \brief Axis along which we need to search for a model perpendicular to */
-	Eigen::Vector3f axis;
+	Eigen::Vector3d axis;
 
 	/** \brief Set the angle epsilon (delta) threshold */
 	double epsAngle;
@@ -59,14 +58,14 @@ public:
 	 * \param ax the axis along which we need to search for a model perpendicular to
 	 */
 	inline void
-	setAxis (const Eigen::Vector3f &ax)
+	setAxis (const Eigen::Vector3d &ax)
 	{
 		this->axis = ax;
 	}
 
 
 	/** \brief Get the axis along which we need to search for a model perpendicular to. */
-	inline Eigen::Vector3f
+	inline Eigen::Vector3d
 	getAxis ()
 	{
 		return (this->axis);
@@ -95,14 +94,14 @@ public:
 	 * \param normals the const boost shared pointer to a PointCloud message
 	 */
 	inline void
-	setInputNormals (pointCloudNormals *normals)
+	setInputNormals (NormalSet3D *normals)
 	{
 		this->normals = normals;
 	}
 
 
 	/** \brief Get a pointer to the normals of the input XYZ point cloud dataset. */
-	inline pointCloudNormals*
+	inline NormalSet3D*
 	getInputNormals ()
 	{
 		return (this->normals);

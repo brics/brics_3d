@@ -11,7 +11,7 @@
 
 namespace BRICS_3D {
 
-void ObjectModelPlane::computeRandomModel (int &iterations, Eigen::VectorXf &model_coefficients, bool &isDegenerate,
+void ObjectModelPlane::computeRandomModel (int &iterations, Eigen::VectorXd &model_coefficients, bool &isDegenerate,
 		bool &modelFound){
 
 	std::vector<int> samples;
@@ -59,15 +59,15 @@ void ObjectModelPlane::getSamples(int &iterations, std::vector<int> &samples){
 	} while (samples[1] == samples[0]);
 	iterations--;
 	// Get the values at the two points
-	Eigen::Vector4f p0, p1, p2;
+	Eigen::Vector4d p0, p1, p2;
 	// SSE friendly data check
-	p1 = Eigen::Vector4f (this->points->data()[samples[1]].getX(), this->points->data()[samples[1]].getY(), this->points->data()[samples[1]].getZ(), 0);
-	p0 = Eigen::Vector4f (this->points->data()[samples[0]].getX(), this->points->data()[samples[0]].getY(), this->points->data()[samples[0]].getZ(), 0);
+	p1 = Eigen::Vector4d (this->points->data()[samples[1]].getX(), this->points->data()[samples[1]].getY(), this->points->data()[samples[1]].getZ(), 0);
+	p0 = Eigen::Vector4d (this->points->data()[samples[0]].getX(), this->points->data()[samples[0]].getY(), this->points->data()[samples[0]].getZ(), 0);
 
 	// Compute the segment values (in 3d) between p1 and p0
 	p1 -= p0;
 
-	Eigen::Vector4f dy1dy2;
+	Eigen::Vector4d dy1dy2;
 	int iter = 0;
 	do
 	{
@@ -81,7 +81,7 @@ void ObjectModelPlane::getSamples(int &iterations, std::vector<int> &samples){
 		iterations--;
 
 		// SSE friendly data check
-		p2 = Eigen::Vector4f (this->points->data()[samples[2]].getX(), this->points->data()[samples[2]].getY(), this->points->data()[samples[2]].getZ(), 0);
+		p2 = Eigen::Vector4d (this->points->data()[samples[2]].getX(), this->points->data()[samples[2]].getY(), this->points->data()[samples[2]].getZ(), 0);
 
 		// Compute the segment values (in 3d) between p2 and p0
 		p2 -= p0;
@@ -101,15 +101,15 @@ void ObjectModelPlane::getSamples(int &iterations, std::vector<int> &samples){
 
 }
 
-bool ObjectModelPlane::computeModelCoefficients (const std::vector<int> &samples, Eigen::VectorXf &model_coefficients){
+bool ObjectModelPlane::computeModelCoefficients (const std::vector<int> &samples, Eigen::VectorXd &model_coefficients){
 	// Need 3 samples
 	//ToDo ROS_ASSERT (samples.size () == 3);
 
-	Eigen::Vector4f p0, p1, p2;
+	Eigen::Vector4d p0, p1, p2;
 	// SSE friendly data check
-	p0 = Eigen::Vector4f (this->points->data()[samples[0]].getX(), this->points->data()[samples[0]].getY(), this->points->data()[samples[0]].getZ(), 0);
-	p1 = Eigen::Vector4f (this->points->data()[samples[1]].getX(), this->points->data()[samples[1]].getY(), this->points->data()[samples[1]].getZ(), 0);
-	p2 = Eigen::Vector4f (this->points->data()[samples[2]].getX(), this->points->data()[samples[2]].getY(), this->points->data()[samples[2]].getZ(), 0);
+	p0 = Eigen::Vector4d (this->points->data()[samples[0]].getX(), this->points->data()[samples[0]].getY(), this->points->data()[samples[0]].getZ(), 0);
+	p1 = Eigen::Vector4d (this->points->data()[samples[1]].getX(), this->points->data()[samples[1]].getY(), this->points->data()[samples[1]].getZ(), 0);
+	p2 = Eigen::Vector4d (this->points->data()[samples[2]].getX(), this->points->data()[samples[2]].getY(), this->points->data()[samples[2]].getZ(), 0);
 
 	// Compute the segment values (in 3d) between p1 and p0
 	p1 -= p0;
@@ -117,7 +117,7 @@ bool ObjectModelPlane::computeModelCoefficients (const std::vector<int> &samples
 	p2 -= p0;
 
 	// Avoid some crashes by checking for collinearity here
-	Eigen::Vector4f dy1dy2 = p1.cwise () / p2;
+	Eigen::Vector4d dy1dy2 = p1.cwise () / p2;
 	if ( (dy1dy2[0] == dy1dy2[1]) && (dy1dy2[2] == dy1dy2[1]) )          // Check for collinearity
 		return (false);
 
@@ -139,8 +139,8 @@ bool ObjectModelPlane::computeModelCoefficients (const std::vector<int> &samples
 	return (true);
 }
 
-void ObjectModelPlane::optimizeModelCoefficients (const std::vector<int> &inliers, const Eigen::VectorXf &model_coefficients,
-		Eigen::VectorXf &optimized_coefficients){
+void ObjectModelPlane::optimizeModelCoefficients (const std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,
+		Eigen::VectorXd &optimized_coefficients){
 	// Needs a valid set of model coefficients
 	//ToDo Check for this ROS_ASSERT (model_coefficients.size () == 4);
 
@@ -159,8 +159,8 @@ void ObjectModelPlane::optimizeModelCoefficients (const std::vector<int> &inlier
 		return;
 	}
 
-	Eigen::Vector4f plane_parameters;
-	float curvature;
+	Eigen::Vector4d plane_parameters;
+	double curvature;
 
 	// Use Least-Squares to fit the plane through all the given sample points and find out its coefficients
 
@@ -173,7 +173,7 @@ void ObjectModelPlane::optimizeModelCoefficients (const std::vector<int> &inlier
  * \param distances the resultant estimated distances
  */
 void
-ObjectModelPlane::getDistancesToModel (const Eigen::VectorXf &model_coefficients, std::vector<double> &distances)
+ObjectModelPlane::getDistancesToModel (const Eigen::VectorXd &model_coefficients, std::vector<double> &distances)
 {
 	// Needs a valid set of model coefficients
 	//Todo ROS_ASSERT (model_coefficients.size () == 4);
@@ -200,7 +200,7 @@ ObjectModelPlane::getDistancesToModel (const Eigen::VectorXf &model_coefficients
  * \param inliers the resultant model inliers
  */
 void
-ObjectModelPlane::selectWithinDistance (const Eigen::VectorXf &model_coefficients, double threshold, std::vector<int> &inliers)
+ObjectModelPlane::selectWithinDistance (const Eigen::VectorXd &model_coefficients, double threshold, std::vector<int> &inliers)
 {
 	// Needs a valid set of model coefficients
 	//Todo ROS_ASSERT (model_coefficients.size () == 4);
@@ -233,7 +233,7 @@ ObjectModelPlane::selectWithinDistance (const Eigen::VectorXf &model_coefficient
  */
 
 void
-ObjectModelPlane::getInlierDistance (std::vector<int> &inliers, const Eigen::VectorXf &model_coefficients,  std::vector<double> &distances) {
+ObjectModelPlane::getInlierDistance (std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,  std::vector<double> &distances) {
 	// Needs a valid model coefficients
 	//ToDo ROS_ASSERT (model_coefficients.size () == 4);
 
@@ -257,7 +257,7 @@ ObjectModelPlane::getInlierDistance (std::vector<int> &inliers, const Eigen::Vec
  * \param copy_data_fields set to true if we need to copy the other data fields
  */
 void
-ObjectModelPlane:: projectPoints (const std::vector<int> &inliers, const Eigen::VectorXf &model_coefficients,
+ObjectModelPlane:: projectPoints (const std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,
 		PointCloud3D* projectedPointCloud)
 {
 	// Needs a valid set of model coefficients
@@ -267,13 +267,13 @@ ObjectModelPlane:: projectPoints (const std::vector<int> &inliers, const Eigen::
 	projectedPoints = projectedPointCloud->getPointCloud();
 
 
-	Eigen::Vector4f mc = Eigen::Vector4f (model_coefficients[0], model_coefficients[1], model_coefficients[2], 0);
+	Eigen::Vector4d mc = Eigen::Vector4d (model_coefficients[0], model_coefficients[1], model_coefficients[2], 0);
 
 	// Iterate through the 3d points and calculate the distances from them to the plane
 	for (size_t i = 0; i < inliers.size (); ++i)
 	{
 		// Calculate the distance from the point to the plane
-		float distance_to_plane = model_coefficients[0] * this->points->data()[inliers[i]].getX() +
+		double distance_to_plane = model_coefficients[0] * this->points->data()[inliers[i]].getX() +
 				model_coefficients[1] * this->points->data()[inliers[i]].getY() +
 				model_coefficients[2] * this->points->data()[inliers[i]].getZ() +
 				model_coefficients[3];
@@ -292,7 +292,7 @@ ObjectModelPlane:: projectPoints (const std::vector<int> &inliers, const Eigen::
  * \param threshold a maximum admissible distance threshold for determining the inliers from the outliers
  */
 bool
-ObjectModelPlane::doSamplesVerifyModel (const std::set<int> &indices, const Eigen::VectorXf &model_coefficients, double threshold)
+ObjectModelPlane::doSamplesVerifyModel (const std::set<int> &indices, const Eigen::VectorXd &model_coefficients, double threshold)
 {
 	// Needs a valid set of model coefficients
 	//Todo ROS_ASSERT (model_coefficients.size () == 4);

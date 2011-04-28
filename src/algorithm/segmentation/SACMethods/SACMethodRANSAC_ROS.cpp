@@ -27,13 +27,14 @@ bool SACMethodRANSAC_ROS::computeModel(){
        return (false);
      }
 
+
      this->iterations = 0;
      int n_best_inliers_count = -1;
      double k = 1.0;
 
      std::vector<int> best_model;
      std::vector<int> best_inliers, inliers;
-     Eigen::VectorXf model_coefficients;
+     Eigen::VectorXd model_coefficients;
 
      int n_inliers_count = 0;
 
@@ -41,15 +42,18 @@ bool SACMethodRANSAC_ROS::computeModel(){
      // Iterate
      while (this->iterations < k)
      {
-       //Compute a random model from the input pointcloud
+
+         //Compute a random model from the input pointcloud
        bool isDegenerate = false;
        bool modelFound = false;
-
        this->objectModel->computeRandomModel(this->iterations,model_coefficients,isDegenerate,modelFound);
+
+
 
        if (!isDegenerate) break;
 
        if(!modelFound){
+
     	   this->iterations++;
     	   continue;
        }
@@ -59,6 +63,7 @@ bool SACMethodRANSAC_ROS::computeModel(){
        // Select the inliers that are within threshold_ from the model
        this->objectModel->selectWithinDistance (model_coefficients, this->threshold, inliers);
        n_inliers_count = inliers.size ();
+
 
 
        // Better match ?
@@ -80,6 +85,7 @@ bool SACMethodRANSAC_ROS::computeModel(){
 
 
        this->iterations++;
+
        if (this->iterations > this->maxIterations)
        {
            cout<<"[RANSAC::computeModel] RANSAC reached the maximum number of trials";

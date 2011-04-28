@@ -17,7 +17,7 @@ class ObjectModelOrientedPlane : public ObjectModelPlane {
 private:
 
 	/** \brief The axis along which we need to search for a plane perpendicular to. */
-    Eigen::Vector4f axis;
+    Eigen::Vector4d axis;
 
     /** \brief The maximum allowed difference between the plane normal and the given axis. */
     double epsAngle;
@@ -30,7 +30,7 @@ public:
     /** \brief Set the axis along which we need to search for a plane perpendicular to.
       * \param ax the axis along which we need to search for a plane perpendicular to
       */
-    inline void setAxis (const Eigen::Vector3f &ax)
+    inline void setAxis (const Eigen::Vector3d &ax)
     {
       axis.start<3> () = ax;
       axis[3] = 0;
@@ -38,7 +38,7 @@ public:
 
 
     /** \brief Get the axis along which we need to search for a plane perpendicular to. */
-    inline Eigen::Vector3f getAxis ()  { return (axis.start<3> ()); }
+    inline Eigen::Vector3d getAxis ()  { return (axis.start<3> ()); }
 
     /** \brief Set the angle epsilon (delta) threshold.
       * \param ea the maximum allowed difference between the plane normal and the given axis.
@@ -49,9 +49,9 @@ public:
     /** \brief Get the angle epsilon (delta) threshold. */
     inline double getEpsAngle () { return (epsAngle); }
 
-    void selectWithinDistance (const Eigen::VectorXf &model_coefficients, double threshold,
+    void selectWithinDistance (const Eigen::VectorXd &model_coefficients, double threshold,
     			std::vector<int> &inliers);
-    void getDistancesToModel (const Eigen::VectorXf &model_coefficients, std::vector<double> &distances);
+    void getDistancesToModel (const Eigen::VectorXd &model_coefficients, std::vector<double> &distances);
 
 };
 }

@@ -19,19 +19,19 @@ public:
 	virtual ~ObjectModelCylinder(){};
 
 	void getSamples (int &iterations, std::vector<int> &samples);
-	bool computeModelCoefficients (const std::vector<int> &samples, Eigen::VectorXf &model_coefficients);
-	void optimizeModelCoefficients (const std::vector<int> &inliers, const Eigen::VectorXf &model_coefficients,
-			Eigen::VectorXf &optimized_coefficients);
-	void getDistancesToModel (const Eigen::VectorXf &model_coefficients, std::vector<double> &distances);
-	void selectWithinDistance (const Eigen::VectorXf &model_coefficients, double threshold,
+	bool computeModelCoefficients (const std::vector<int> &samples, Eigen::VectorXd &model_coefficients);
+	void optimizeModelCoefficients (const std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,
+			Eigen::VectorXd &optimized_coefficients);
+	void getDistancesToModel (const Eigen::VectorXd &model_coefficients, std::vector<double> &distances);
+	void selectWithinDistance (const Eigen::VectorXd &model_coefficients, double threshold,
 			std::vector<int> &inliers);
-	void getInlierDistance (std::vector<int> &inliers, const Eigen::VectorXf &model_coefficients,
+	void getInlierDistance (std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,
 			std::vector<double> &distances);
-	void projectPoints (const std::vector<int> &inliers, const Eigen::VectorXf &model_coefficients,
+	void projectPoints (const std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,
 			PointCloud3D* projectedPointCloud);
-	bool doSamplesVerifyModel (const std::set<int> &indices, const Eigen::VectorXf &model_coefficients,
+	bool doSamplesVerifyModel (const std::set<int> &indices, const Eigen::VectorXd &model_coefficients,
 			double threshold);
-	void computeRandomModel (int &iterations, Eigen::VectorXf &model_coefficients, bool &isDegenerate, bool &modelFound);
+	void computeRandomModel (int &iterations, Eigen::VectorXd &model_coefficients, bool &isDegenerate, bool &modelFound);
 
 	inline int getNumberOfSamplesRequired(){return 3;};
 
@@ -41,7 +41,7 @@ protected:
 	 * \param model_coefficients the line coefficients (a point on the line, line direction)
 	 */
 	double
-	pointToLineDistance (const Eigen::Vector4f &pt, const Eigen::VectorXf &model_coefficients);
+	pointToLineDistance (const Eigen::Vector4d &pt, const Eigen::VectorXd &model_coefficients);
 
 	/** \brief Get the distance from a point to a line (represented by a point and a direction)
 	 * \param pt a point
@@ -49,8 +49,8 @@ protected:
 	 * \param line_dir the line direction
 	 */
 	double
-	pointToLineDistance (const Eigen::Vector4f &pt, const Eigen::Vector4f &line_pt,
-			const Eigen::Vector4f &line_dir);
+	pointToLineDistance (const Eigen::Vector4d &pt, const Eigen::Vector4d &line_pt,
+			const Eigen::Vector4d &line_dir);
 
 	/** \brief Project a point onto a line given by a point and a direction vector
 	 * \param pt the input point to project
@@ -59,8 +59,8 @@ protected:
 	 * \param pt_proj the resultant projected point
 	 */
 	inline void
-	projectPointToLine (const Eigen::Vector4f &pt, const Eigen::Vector4f &line_pt, const Eigen::Vector4f &line_dir,
-			Eigen::Vector4f &pt_proj)
+	projectPointToLine (const Eigen::Vector4d &pt, const Eigen::Vector4d &line_pt, const Eigen::Vector4d &line_dir,
+			Eigen::Vector4d &pt_proj)
 	{
 		double k = (pt.dot (line_dir) - line_pt.dot (line_dir)) / line_dir.dot (line_dir);
 		// Calculate the projection of the point on the line
@@ -74,16 +74,16 @@ protected:
 	 * \param pt_proj the resultant projected point
 	 */
 	inline void
-	projectPointToCylinder(const Eigen::Vector4f &pt, const Eigen::VectorXf &model_coefficients,
-			Eigen::Vector4f &pt_proj)
+	projectPointToCylinder(const Eigen::Vector4d &pt, const Eigen::VectorXd &model_coefficients,
+			Eigen::Vector4d &pt_proj)
 	{
-		Eigen::Vector4f line_pt  (model_coefficients[0], model_coefficients[1], model_coefficients[2], 0);
-		Eigen::Vector4f line_dir (model_coefficients[3], model_coefficients[4], model_coefficients[5], 0);
+		Eigen::Vector4d line_pt  (model_coefficients[0], model_coefficients[1], model_coefficients[2], 0);
+		Eigen::Vector4d line_dir (model_coefficients[3], model_coefficients[4], model_coefficients[5], 0);
 
 		double k = (pt.dot (line_dir) - line_pt.dot (line_dir)) * line_dir.dot (line_dir);
 		pt_proj = line_pt + k * line_dir;
 
-		Eigen::Vector4f dir = pt - pt_proj;
+		Eigen::Vector4d dir = pt - pt_proj;
 		dir.normalize ();
 
 		// Calculate the projection of the point onto the cylinder

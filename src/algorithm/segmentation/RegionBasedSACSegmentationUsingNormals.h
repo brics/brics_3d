@@ -15,7 +15,7 @@
 //This is not a working copy. Will be updated once normal extraction is done.
 
 
-
+#include "core/NormalSet3D.h"
 #include "RegionBasedSACSegmentation.h"
 
 
@@ -24,10 +24,8 @@
 #include "algorithm/segmentation/objectModels/ObjectModelCylinder.h"
 #include "algorithm/segmentation/objectModels/ObjectModelNormalPlane.h"
 
-namespace BRICS_3D {
 
-typedef double pointNormal[3];
-typedef std::vector<pointNormal> pointCloudNormals;
+namespace BRICS_3D {
 
 class RegionBasedSACSegmentationUsingNormals : public RegionBasedSACSegmentation{
 
@@ -40,34 +38,43 @@ private:
 	double normalDistanceWeight;
 
 	/** \brief A pointer to vector of normals */
-	pointCloudNormals *normals;
+	NormalSet3D *normalSet;
 
 	/** \brief Axis along which we need to search for a model perpendicular to */
-	Eigen::Vector3f axis;
+	Eigen::Vector3d axis;
 
 	/** \brief Set the angle epsilon (delta) threshold */
 	double epsAngle;
 
 public:
-	RegionBasedSACSegmentationUsingNormals(){};
-	virtual ~RegionBasedSACSegmentationUsingNormals();
+	RegionBasedSACSegmentationUsingNormals(){
+		this->threshold = -1;
+		this->maxIterations = 10000;
+		this->probability = 0.99;
+		this->radiusMax=DBL_MAX;
+		this->radiusMin=-DBL_MAX;
+		this->normalDistanceWeight = 0.1;
+		this->epsAngle=0.0;
+	};
+
+	~RegionBasedSACSegmentationUsingNormals(){};
 
 
     /** \brief Provide a pointer to the input dataset that contains the point normals of the XYZ dataset.
       * \param normals the const boost shared pointer to a PointCloud message
       */
     inline void
-      setInputNormals (pointCloudNormals *normals)
+      setInputNormals (NormalSet3D *normalSet)
     {
-      this->normals = normals;
+      this->normalSet = normalSet;
     }
 
 
     /** \brief Get a pointer to the normals of the input XYZ point cloud dataset. */
-    inline pointCloudNormals*
+    inline NormalSet3D*
       getInputNormals ()
     {
-      return (this->normals);
+      return (this->normalSet);
     }
 
 
@@ -95,14 +102,14 @@ public:
       * \param ax the axis along which we need to search for a model perpendicular to
       */
     inline void
-      setAxis (const Eigen::Vector3f &ax)
+      setAxis (const Eigen::Vector3d &ax)
     {
       this->axis = ax;
     }
 
 
     /** \brief Get the axis along which we need to search for a model perpendicular to. */
-    inline Eigen::Vector3f
+    inline Eigen::Vector3d
       getAxis ()
     {
       return (this->axis);
@@ -146,11 +153,11 @@ public:
     /** \brief Initialize the Sample Consensus model and set its parameters.
       * \param model_type the type of SAC model that is to be used
       */
-    virtual inline bool
+virtual    inline bool
       initSACModel (const int model_type)
     {
       // Check if input is synced with the normals
-      if (this->inputPointCloud->getSize() != this->normals->size())
+      if (this->inputPointCloud->getSize() != this->normalSet->getSize())
       {
         cout<<"[initSACModelUsing Normals] The number of points inthe input point cloud differs than the number of points in the normals!";
         return (false);
@@ -165,7 +172,7 @@ public:
 
           this->objectModelUsingNormals =  new ObjectModelCylinder();
           this->objectModelUsingNormals->setInputCloud(this->inputPointCloud);
-          this->objectModelUsingNormals->setInputNormals(this->normals);
+          this->objectModelUsingNormals->setInputNormals(this->normalSet);
 
           // Set the input normals
           double min_radius, max_radius;
@@ -188,7 +195,7 @@ public:
           this->objectModelUsingNormals = new ObjectModelNormalPlane();
 
           // Set the input normals
-          this->objectModelUsingNormals->setInputNormals(this->normals);
+          this->objectModelUsingNormals->setInputNormals(this->normalSet);
 
           if (normalDistanceWeight != this->objectModelUsingNormals->getNormalDistanceWeight ())
           {
@@ -217,6 +224,127 @@ public:
       }
       return (true);
     }
+
+
+
+
+	/** \brief Initialize the Sample Consensus method and set its parameters.
+	 * \param method_type the type of SAC method to be used
+	 */
+	virtual inline void initSACMethod(const int method_type) {
+		// Build the sample consensus method
+		switch (method_type) {
+		case SAC_ALMeDS: {
+			cout<<"[initSAC] Using a method of type: SAC_ALMeDS with a model threshold of "<<threshold<<endl;
+			sacMethod = new SACMethodALMeDS();
+			sacMethod->setObjectModel(objectModelUsingNormals);
+			sacMethod->setDistanceThreshold(threshold);
+			sacMethod->setPointCloud(inputPointCloud);
+			break;
+		}
+		case SAC_RANSAC:
+		{
+			cout<< "[initSAC] Using a method of type: SAC_RANSAC_ROS with a model threshold of "<<threshold<<endl;
+			sacMethod = new SACMethodRANSAC_ROS();
+			sacMethod->setObjectModel(objectModelUsingNormals);
+			sacMethod->setDistanceThreshold(threshold);
+			sacMethod->setPointCloud(inputPointCloud);
+			break;
+		}
+		case SAC_LMEDS: {
+			cout<<"[initSAC] Using a method of type: SAC_LMeDS_ROS with a model threshold of "<<threshold<<endl;
+			sacMethod = new SACMethodLMeDS_ROS();
+			sacMethod->setObjectModel(objectModelUsingNormals);
+			sacMethod->setDistanceThreshold(threshold);
+			sacMethod->setPointCloud(inputPointCloud);
+			break;
+		}
+		case SAC_MSAC: {
+			cout<<"[initSAC] Using a method of type: SAC_MSAC_ROS with a model threshold of "<<threshold<<endl;
+			sacMethod = new SACMethodMSAC_ROS();
+			sacMethod->setObjectModel(objectModelUsingNormals);
+			sacMethod->setDistanceThreshold(threshold);
+			sacMethod->setPointCloud(inputPointCloud);
+			break;
+		}
+		case SAC_MLESAC: {
+			cout<<"[initSAC] Using a method of type: SAC_MLESAC_ROS with a model threshold of "<<threshold<<endl;
+			sacMethod = new SACMethodMLESAC_ROS();
+			sacMethod->setObjectModel(objectModelUsingNormals);
+			sacMethod->setDistanceThreshold(threshold);
+			sacMethod->setPointCloud(inputPointCloud);
+			break;
+		}
+		}
+		// Set the Sample Consensus parameters if they are given/changed
+		if (sacMethod->getProbability() != probability) {
+			cout<<"[initSAC] Setting the desired probability to "<< this->probability<<endl;
+			sacMethod->setProbability(probability);
+		}
+
+		if (maxIterations!= -1 && sacMethod->getMaxIterations()
+				!= maxIterations) {
+			cout<<"[initSAC] Setting the maximum number of iterations to "<<maxIterations<<endl;
+			sacMethod->setMaxIterations(maxIterations);
+		}
+	}
+
+
+	/** \brief Base method for segmentation of a model in a PointCloud given by <setInputCloud (), setIndices ()>
+	 * \param inliers the resultant point indices that support the model found (inliers)
+	 * \param model_coefficients the resultant model coefficients
+	 */
+	virtual void
+	segment (std::vector<int> &inliers, Eigen::VectorXd &model_coefficients)
+	{
+
+		// Initialize the Sample Consensus model and set its parameters
+		if (!initSACModel (modelType))
+		{
+			cout<<"[segment] Error initializing the SAC model!"<<endl;
+			return;
+		}
+
+		// Initialize the Sample Consensus method and set its parameters
+		initSACMethod(SACMethodType);
+
+		//Compute the model
+
+		if (!sacMethod->computeModel())
+		{
+			cout<<"[segment] Error segmenting the model! No solution found"<<endl;
+		}
+
+
+		// Get the model inliers
+		sacMethod->getInliers(inliers);
+
+
+		// Get the model coefficients
+		Eigen::VectorXd coeff;
+		sacMethod->getModelCoefficients (coeff);
+
+
+		// If the user needs optimized coefficients
+		if (optimizeCoefficients)
+		{
+			Eigen::VectorXd coeff_refined;
+
+			objectModel->optimizeModelCoefficients(inliers,coeff,coeff_refined);
+			this->modelCoefficients =coeff_refined;
+			// Refine inliers
+			objectModel->selectWithinDistance(coeff_refined,threshold,inliers);
+
+		}
+		else
+		{
+			this->modelCoefficients = coeff;
+
+		}
+
+		model_coefficients=this->modelCoefficients;
+
+	}
 
 };
 

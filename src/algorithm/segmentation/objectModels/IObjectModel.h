@@ -61,7 +61,7 @@ public:
 	 * \param samples the point indices found as possible good candidates for creating a valid model
 	 * \param model_coefficients the computed model coefficients
 	 */
-	//virtual bool computeModelCoefficients (const std::vector<int> &samples, Eigen::VectorXf &model_coefficients)= 0;
+	//virtual bool computeModelCoefficients (const std::vector<int> &samples, Eigen::VectorXd &model_coefficients)= 0;
 
 
 	/**
@@ -70,7 +70,7 @@ public:
 	 * \param isDegenerate: Whether degenerate samples are found from the input pointcloud or not
 	 * \param modelFound:	Whether a valid model is found from the sample or not
 	 */
-	virtual void computeRandomModel (int &iterations, Eigen::VectorXf &model_coefficients, bool &isDegenerate, bool &modelFound)= 0;
+	virtual void computeRandomModel (int &iterations, Eigen::VectorXd &model_coefficients, bool &isDegenerate, bool &modelFound)= 0;
 
 	/** \brief Recompute the model coefficients using the given inlier set and return them to the user. Pure virtual.
 	 * @note: these are the coefficients of the model after refinement (e.g., after a least-squares optimization)
@@ -78,15 +78,15 @@ public:
 	 * \param model_coefficients the initial guess for the model coefficients
 	 * \param optimized_coefficients the resultant recomputed coefficients after non-linear optimization
 	 */
-	virtual void optimizeModelCoefficients (const std::vector<int> &inliers, const Eigen::VectorXf &model_coefficients,
-			Eigen::VectorXf &optimized_coefficients)= 0;
+	virtual void optimizeModelCoefficients (const std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,
+			Eigen::VectorXd &optimized_coefficients)= 0;
 
 
 	/** \brief Compute all distances from the cloud data to a given model. Pure virtual.
 	 * \param model_coefficients the coefficients of a model that we need to compute distances to
 	 * \param distances the resultant estimated distances
 	 */
-	virtual void getDistancesToModel (const Eigen::VectorXf &model_coefficients, std::vector<double> &distances)= 0;
+	virtual void getDistancesToModel (const Eigen::VectorXd &model_coefficients, std::vector<double> &distances)= 0;
 
 
 	/** \brief Select all the points which respect the given model coefficients as inliers. Pure virtual.
@@ -94,7 +94,7 @@ public:
 	 * \param threshold a maximum admissible distance threshold for determining the inliers from the outliers
 	 * \param inliers the resultant model inliers
 	 */
-	virtual void selectWithinDistance (const Eigen::VectorXf &model_coefficients, double threshold,
+	virtual void selectWithinDistance (const Eigen::VectorXd &model_coefficients, double threshold,
 			std::vector<int> &inliers)= 0;
 
 	/** \brief Select all the points which respect the given model coefficients as inliers. Pure virtual.
@@ -103,7 +103,7 @@ public:
 	 * \param distances of inliers from the model
 	 */
 	virtual void getInlierDistance (std::vector<int> &inliers,
-			const Eigen::VectorXf &model_coefficients,  std::vector<double> &distances)= 0;
+			const Eigen::VectorXd &model_coefficients,  std::vector<double> &distances)= 0;
 
 
 	/** \brief Create a new point cloud with inliers projected onto the model. Pure virtual.
@@ -113,7 +113,7 @@ public:
 	 * \param copy_data_fields set to true (default) if we want the \a projected_points cloud to be an exact copy
 	 *        of the input dataset minus the point projections on the plane model
 	 */
-	virtual void projectPoints (const std::vector<int> &inliers, const Eigen::VectorXf &model_coefficients,
+	virtual void projectPoints (const std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,
 			PointCloud3D* projectedPointCloud) = 0;
 
 	/** \brief Verify whether a subset of indices verifies a given set of model coefficients. Pure virtual.
@@ -122,7 +122,7 @@ public:
 	 * \param threshold a maximum admissible distance threshold for determining the inliers from the outliers
 	 */
 	virtual bool doSamplesVerifyModel (const std::set<int> &indices,
-			const Eigen::VectorXf &model_coefficients, double threshold) = 0;
+			const Eigen::VectorXd &model_coefficients, double threshold) = 0;
 
 	/** \brief Provide a pointer to the input dataset
 	 * \param cloud the const boost shared pointer to a PointCloud message
@@ -165,11 +165,11 @@ public:
 
 
 	/** \brief Compute the smallest angle between two vectors in the [ 0, PI ) interval in 3D.
-	    * \param v1 the first 3D vector (represented as a \a Eigen::Vector4f)
-	    * \param v2 the second 3D vector (represented as a \a Eigen::Vector4f)
+	    * \param v1 the first 3D vector (represented as a \a Eigen::Vector4d)
+	    * \param v2 the second 3D vector (represented as a \a Eigen::Vector4d)
 	    */
 	  inline double
-	    getAngle3D (const Eigen::Vector4f &v1, const Eigen::Vector4f &v2)
+	    getAngle3D (const Eigen::Vector4d &v1, const Eigen::Vector4d &v2)
 	  {
 	    // Compute the actual angle
 	    double rad = v1.dot (v2) / sqrt (v1.squaredNorm () * v2.squaredNorm ());

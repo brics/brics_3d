@@ -9,13 +9,13 @@
 
 namespace BRICS_3D {
 
-void ObjectModelOrientedPlane::selectWithinDistance(const Eigen::VectorXf &model_coefficients, double threshold,
+void ObjectModelOrientedPlane::selectWithinDistance(const Eigen::VectorXd &model_coefficients, double threshold,
 			std::vector<int> &inliers){
     // Needs a valid set of model coefficients
     //ToDo ROS_ASSERT (model_coefficients.size () == 4);
 
      // Obtain the plane normal
-     Eigen::Vector4f coeff = model_coefficients;
+     Eigen::Vector4d coeff = model_coefficients;
      coeff[3] = 0;
 
      // Check against template, if given
@@ -35,13 +35,13 @@ void ObjectModelOrientedPlane::selectWithinDistance(const Eigen::VectorXf &model
      this->selectWithinDistance (model_coefficients, threshold, inliers);
 }
 
-void ObjectModelOrientedPlane::getDistancesToModel (const Eigen::VectorXf &model_coefficients,
+void ObjectModelOrientedPlane::getDistancesToModel (const Eigen::VectorXd &model_coefficients,
 		std::vector<double> &distances){
     // Needs a valid set of model coefficients
     //ToDo ROS_ASSERT (model_coefficients.size () == 4);
 
     // Obtain the plane normal
-    Eigen::Vector4f coeff = model_coefficients;
+    Eigen::Vector4d coeff = model_coefficients;
     coeff[3] = 0;
 
     // Check against template, if given

@@ -9,7 +9,7 @@
 
 namespace BRICS_3D {
 
-void ObjectModelNormalPlane::computeRandomModel (int &iterations, Eigen::VectorXf &model_coefficients, bool &isDegenerate,
+void ObjectModelNormalPlane::computeRandomModel (int &iterations, Eigen::VectorXd &model_coefficients, bool &isDegenerate,
 		bool &modelFound){
 
 	std::vector<int> samples;
@@ -57,15 +57,15 @@ void ObjectModelNormalPlane::getSamples(int &iterations, std::vector<int> &sampl
 	} while (samples[1] == samples[0]);
 	iterations--;
 	// Get the values at the two points
-	Eigen::Vector4f p0, p1, p2;
+	Eigen::Vector4d p0, p1, p2;
 	// SSE friendly data check
-	p1 = Eigen::Vector4f (this->points->data()[samples[1]].getX(), this->points->data()[samples[1]].getY(), this->points->data()[samples[1]].getZ(), 0);
-	p0 = Eigen::Vector4f (this->points->data()[samples[0]].getX(), this->points->data()[samples[0]].getY(), this->points->data()[samples[0]].getZ(), 0);
+	p1 = Eigen::Vector4d (this->points->data()[samples[1]].getX(), this->points->data()[samples[1]].getY(), this->points->data()[samples[1]].getZ(), 0);
+	p0 = Eigen::Vector4d (this->points->data()[samples[0]].getX(), this->points->data()[samples[0]].getY(), this->points->data()[samples[0]].getZ(), 0);
 
 	// Compute the segment values (in 3d) between p1 and p0
 	p1 -= p0;
 
-	Eigen::Vector4f dy1dy2;
+	Eigen::Vector4d dy1dy2;
 	int iter = 0;
 	do
 	{
@@ -79,7 +79,7 @@ void ObjectModelNormalPlane::getSamples(int &iterations, std::vector<int> &sampl
 		iterations--;
 
 		// SSE friendly data check
-		p2 = Eigen::Vector4f (this->points->data()[samples[2]].getX(), this->points->data()[samples[2]].getY(), this->points->data()[samples[2]].getZ(), 0);
+		p2 = Eigen::Vector4d (this->points->data()[samples[2]].getX(), this->points->data()[samples[2]].getY(), this->points->data()[samples[2]].getZ(), 0);
 
 		// Compute the segment values (in 3d) between p2 and p0
 		p2 -= p0;
@@ -99,15 +99,15 @@ void ObjectModelNormalPlane::getSamples(int &iterations, std::vector<int> &sampl
 
 }
 
-bool ObjectModelNormalPlane::computeModelCoefficients (const std::vector<int> &samples, Eigen::VectorXf &model_coefficients){
+bool ObjectModelNormalPlane::computeModelCoefficients (const std::vector<int> &samples, Eigen::VectorXd &model_coefficients){
 	// Need 3 samples
 	//ToDo ROS_ASSERT (samples.size () == 3);
 
-	Eigen::Vector4f p0, p1, p2;
+	Eigen::Vector4d p0, p1, p2;
 	// SSE friendly data check
-	p0 = Eigen::Vector4f (this->points->data()[samples[0]].getX(), this->points->data()[samples[0]].getY(), this->points->data()[samples[0]].getZ(), 0);
-	p1 = Eigen::Vector4f (this->points->data()[samples[1]].getX(), this->points->data()[samples[1]].getY(), this->points->data()[samples[1]].getZ(), 0);
-	p2 = Eigen::Vector4f (this->points->data()[samples[2]].getX(), this->points->data()[samples[2]].getY(), this->points->data()[samples[2]].getZ(), 0);
+	p0 = Eigen::Vector4d (this->points->data()[samples[0]].getX(), this->points->data()[samples[0]].getY(), this->points->data()[samples[0]].getZ(), 0);
+	p1 = Eigen::Vector4d (this->points->data()[samples[1]].getX(), this->points->data()[samples[1]].getY(), this->points->data()[samples[1]].getZ(), 0);
+	p2 = Eigen::Vector4d (this->points->data()[samples[2]].getX(), this->points->data()[samples[2]].getY(), this->points->data()[samples[2]].getZ(), 0);
 
 	// Compute the segment values (in 3d) between p1 and p0
 	p1 -= p0;
@@ -115,7 +115,7 @@ bool ObjectModelNormalPlane::computeModelCoefficients (const std::vector<int> &s
 	p2 -= p0;
 
 	// Avoid some crashes by checking for collinearity here
-	Eigen::Vector4f dy1dy2 = p1.cwise () / p2;
+	Eigen::Vector4d dy1dy2 = p1.cwise () / p2;
 	if ( (dy1dy2[0] == dy1dy2[1]) && (dy1dy2[2] == dy1dy2[1]) )          // Check for collinearity
 		return (false);
 
@@ -137,8 +137,8 @@ bool ObjectModelNormalPlane::computeModelCoefficients (const std::vector<int> &s
 	return (true);
 }
 
-void ObjectModelNormalPlane::optimizeModelCoefficients (const std::vector<int> &inliers, const Eigen::VectorXf &model_coefficients,
-		Eigen::VectorXf &optimized_coefficients){
+void ObjectModelNormalPlane::optimizeModelCoefficients (const std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,
+		Eigen::VectorXd &optimized_coefficients){
 	// Needs a valid set of model coefficients
 	//ToDo Check for this ROS_ASSERT (model_coefficients.size () == 4);
 
@@ -157,8 +157,8 @@ void ObjectModelNormalPlane::optimizeModelCoefficients (const std::vector<int> &
 		return;
 	}
 
-	Eigen::Vector4f plane_parameters;
-	float curvature;
+	Eigen::Vector4d plane_parameters;
+	double curvature;
 
 	// Use Least-Squares to fit the plane through all the given sample points and find out its coefficients
 
@@ -174,7 +174,7 @@ void ObjectModelNormalPlane::optimizeModelCoefficients (const std::vector<int> &
  */
 
 void
-ObjectModelNormalPlane::getInlierDistance (std::vector<int> &inliers, const Eigen::VectorXf &model_coefficients,  std::vector<double> &distances) {
+ObjectModelNormalPlane::getInlierDistance (std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,  std::vector<double> &distances) {
 	// Needs a valid model coefficients
 	//ToDo ROS_ASSERT (model_coefficients.size () == 4);
 
@@ -198,7 +198,7 @@ ObjectModelNormalPlane::getInlierDistance (std::vector<int> &inliers, const Eige
  * \param copy_data_fields set to true if we need to copy the other data fields
  */
 void
-ObjectModelNormalPlane:: projectPoints (const std::vector<int> &inliers, const Eigen::VectorXf &model_coefficients,
+ObjectModelNormalPlane:: projectPoints (const std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,
 		PointCloud3D* projectedPointCloud)
 {
 	// Needs a valid set of model coefficients
@@ -208,13 +208,13 @@ ObjectModelNormalPlane:: projectPoints (const std::vector<int> &inliers, const E
 	projectedPoints = projectedPointCloud->getPointCloud();
 
 
-	Eigen::Vector4f mc = Eigen::Vector4f (model_coefficients[0], model_coefficients[1], model_coefficients[2], 0);
+	Eigen::Vector4d mc = Eigen::Vector4d (model_coefficients[0], model_coefficients[1], model_coefficients[2], 0);
 
 	// Iterate through the 3d points and calculate the distances from them to the plane
 	for (size_t i = 0; i < inliers.size (); ++i)
 	{
 		// Calculate the distance from the point to the plane
-		float distance_to_plane = model_coefficients[0] * this->points->data()[inliers[i]].getX() +
+		double distance_to_plane = model_coefficients[0] * this->points->data()[inliers[i]].getX() +
 				model_coefficients[1] * this->points->data()[inliers[i]].getY() +
 				model_coefficients[2] * this->points->data()[inliers[i]].getZ() +
 				model_coefficients[3];
@@ -233,7 +233,7 @@ ObjectModelNormalPlane:: projectPoints (const std::vector<int> &inliers, const E
  * \param threshold a maximum admissible distance threshold for determining the inliers from the outliers
  */
 bool
-ObjectModelNormalPlane::doSamplesVerifyModel (const std::set<int> &indices, const Eigen::VectorXf &model_coefficients, double threshold)
+ObjectModelNormalPlane::doSamplesVerifyModel (const std::set<int> &indices, const Eigen::VectorXd &model_coefficients, double threshold)
 {
 	// Needs a valid set of model coefficients
 	//Todo ROS_ASSERT (model_coefficients.size () == 4);
@@ -250,17 +250,17 @@ ObjectModelNormalPlane::doSamplesVerifyModel (const std::set<int> &indices, cons
 
 
 void
-  ObjectModelNormalPlane::selectWithinDistance (const Eigen::VectorXf &model_coefficients, double threshold, std::vector<int> &inliers){
+  ObjectModelNormalPlane::selectWithinDistance (const Eigen::VectorXd &model_coefficients, double threshold, std::vector<int> &inliers){
 
     // Needs a valid set of model coefficients
     //ToDo ROS_ASSERT (model_coefficients.size () == 4);
-    if (!this->normals && this->normals->size()!=this->inputPointCloud->getSize())
+    if (!this->normals && this->normals->getSize()!=this->inputPointCloud->getSize())
     {
       cout<<"[ObjectModelNormalPlane::getDistancesToModel] No input dataset containing normals was given!";
       return;
     }
 
-    Eigen::Vector4f coeff = model_coefficients;
+    Eigen::Vector4d coeff = model_coefficients;
     coeff[3] = 0;
 
     // Check against template, if given
@@ -290,11 +290,12 @@ void
     {
       // Calculate the distance from the point to the plane normal as the dot product
       // D = (P-A).N/|N|
-      Eigen::Vector4f p = Eigen::Vector4f (this->points->data()[i].getX(),
+      Eigen::Vector4d p = Eigen::Vector4d (this->points->data()[i].getX(),
     		  this->points->data()[i].getY(), this->points->data()[i].getZ(), 0);
 
-      Eigen::Vector4f n = Eigen::Vector4f (this->normals->data()[i][0],
-    		  this->normals->data()[i][1], this->normals->data()[i][2], 0);
+      Eigen::Vector4d n = Eigen::Vector4d (this->normals->getNormals()->data()[i].getX(),
+    		  this->normals->getNormals()->data()[i].getY(),
+    		  this->normals->getNormals()->data()[i].getZ(), 0);
 
       double d_euclid = fabs (coeff.dot (p) + model_coefficients[3]);
 
@@ -315,13 +316,13 @@ void
 }
 
 void
-  ObjectModelNormalPlane::getDistancesToModel (const Eigen::VectorXf &model_coefficients,
+  ObjectModelNormalPlane::getDistancesToModel (const Eigen::VectorXd &model_coefficients,
 		  std::vector<double> &distances){
 
     // Needs a valid set of model coefficients
     //ToDo ROS_ASSERT (model_coefficients.size () == 4);
 
-    if (!this->normals && this->normals->size()!=this->inputPointCloud->getSize())
+    if (!this->normals && this->normals->getSize()!=this->inputPointCloud->getSize())
     {
       cout<<"[ObjectModelNormalPlane::getDistancesToModel] No input dataset containing normals was given!";
       return;
@@ -329,7 +330,7 @@ void
 
     distances.resize (this->inputPointCloud->getSize());
 
-    Eigen::Vector4f coeff = model_coefficients;
+    Eigen::Vector4d coeff = model_coefficients;
     coeff[3] = 0;
 
     // Check against template, if given
@@ -357,11 +358,11 @@ void
     {
       // Calculate the distance from the point to the plane normal as the dot product
       // D = (P-A).N/|N|
-      Eigen::Vector4f p = Eigen::Vector4f (this->points->data()[i].getX(),
+      Eigen::Vector4d p = Eigen::Vector4d (this->points->data()[i].getX(),
     		  this->points->data()[i].getY(), this->points->data()[i].getZ(), 0);
 
-      Eigen::Vector4f n = Eigen::Vector4f (this->normals->data()[i][0],
-    		  this->normals->data()[i][1], this->normals->data()[i][2], 0);
+      Eigen::Vector4d n = Eigen::Vector4d (this->normals->getNormals()->data()[i].getX(),
+    		  this->normals->getNormals()->data()[i].getY(), this->normals->getNormals()->data()[i].getZ(), 0);
       double d_euclid = fabs (coeff.dot (p) + model_coefficients[3]);
 
       // Calculate the angular distance between the point normal and the plane normal

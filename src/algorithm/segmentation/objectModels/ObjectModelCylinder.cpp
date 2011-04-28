@@ -9,7 +9,7 @@
 
 namespace BRICS_3D {
 
-void ObjectModelCylinder::computeRandomModel (int &iterations, Eigen::VectorXf &model_coefficients, bool &isDegenerate,
+void ObjectModelCylinder::computeRandomModel (int &iterations, Eigen::VectorXd &model_coefficients, bool &isDegenerate,
 		bool &modelFound){
 
 std::vector<int> samples;
@@ -62,29 +62,31 @@ ObjectModelCylinder::getSamples (int &iterations, std::vector<int> &samples)
 }
 
 bool ObjectModelCylinder::computeModelCoefficients (const std::vector<int> &samples,
-		Eigen::VectorXf &model_coefficients){
+		Eigen::VectorXd &model_coefficients){
 	// Need 2 samples
 	//ToDo ROS_ASSERT (samples.size () == 2);
 
-	if (!this->normals && this->normals->size()!=this->inputPointCloud->getSize())
+	if (!this->normals && this->normals->getSize()!=this->inputPointCloud->getSize())
 	{
 		cout<<"[ObjectModelCylinder::computeModelCoefficients] No input dataset containing normals was given!";
 		return (false);
 	}
 
-	Eigen::Vector4f p1 = Eigen::Vector4f (this->points->data()[samples[0]].getX(),
+	Eigen::Vector4d p1 = Eigen::Vector4d (this->points->data()[samples[0]].getX(),
 			this->points->data()[samples[0]].getY(), this->points->data()[samples[0]].getZ(), 0);
 
-	Eigen::Vector4f p2 = Eigen::Vector4f (this->points->data()[samples[1]].getX(),
+	Eigen::Vector4d p2 = Eigen::Vector4d (this->points->data()[samples[1]].getX(),
 			this->points->data()[samples[1]].getY(), this->points->data()[samples[1]].getZ(), 0);
 
-	Eigen::Vector4f n1 = Eigen::Vector4f (this->normals->data()[samples[0]][0],
-			this->normals->data()[samples[0]][1], this->normals->data()[samples[0]][2], 0);
+	Eigen::Vector4d n1 = Eigen::Vector4d (this->normals->getNormals()->data()[samples[0]].getX(),
+			this->normals->getNormals()->data()[samples[0]].getY(),
+			this->normals->getNormals()->data()[samples[0]].getZ(), 0);
 
-	Eigen::Vector4f n2 = Eigen::Vector4f (this->normals->data()[samples[1]][0],
-			this->normals->data()[samples[1]][1], this->normals->data()[samples[1]][2], 0);
+	Eigen::Vector4d n2 = Eigen::Vector4d (this->normals->getNormals()->data()[samples[1]].getX(),
+			this->normals->getNormals()->data()[samples[1]].getY(),
+			this->normals->getNormals()->data()[samples[1]].getZ(), 0);
 
-	Eigen::Vector4f w = n1 + p1 - p2;
+	Eigen::Vector4d w = n1 + p1 - p2;
 
 	double a = n1.dot (n1);
 	double b = n1.dot (n2);
@@ -106,8 +108,8 @@ bool ObjectModelCylinder::computeModelCoefficients (const std::vector<int> &samp
 	}
 
 	// point_on_axis, axis_direction
-	Eigen::Vector4f line_pt  = p1 + n1 + sc * n1;
-	Eigen::Vector4f line_dir = p2 + tc * n2 - line_pt;
+	Eigen::Vector4d line_pt  = p1 + n1 + sc * n1;
+	Eigen::Vector4d line_dir = p2 + tc * n2 - line_pt;
 	line_dir.normalize ();
 
 	model_coefficients.resize (7);
@@ -124,8 +126,8 @@ bool ObjectModelCylinder::computeModelCoefficients (const std::vector<int> &samp
 
 
 
-void ObjectModelCylinder::optimizeModelCoefficients (const std::vector<int> &inliers, const Eigen::VectorXf &model_coefficients,
-		Eigen::VectorXf &optimized_coefficients){
+void ObjectModelCylinder::optimizeModelCoefficients (const std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,
+		Eigen::VectorXd &optimized_coefficients){
 
 	//ToDo Requires cminpack. currently not supported
 	cout<< "INFO: Currently model coe-fficient optimization is not supported for ObjectModelCylinder"<<endl;
@@ -179,15 +181,15 @@ void ObjectModelCylinder::optimizeModelCoefficients (const std::vector<int> &inl
 }
 
 
-void ObjectModelCylinder::getDistancesToModel (const Eigen::VectorXf &model_coefficients, std::vector<double> &distances){
+void ObjectModelCylinder::getDistancesToModel (const Eigen::VectorXd &model_coefficients, std::vector<double> &distances){
 
 	// Needs a valid model coefficients
 	//ToDo ROS_ASSERT (model_coefficients.size () == 7);
 
 	distances.resize (this->inputPointCloud->getSize());
 
-	Eigen::Vector4f line_pt  (model_coefficients[0], model_coefficients[1], model_coefficients[2], 0);
-	Eigen::Vector4f line_dir (model_coefficients[3], model_coefficients[4], model_coefficients[5], 0);
+	Eigen::Vector4d line_pt  (model_coefficients[0], model_coefficients[1], model_coefficients[2], 0);
+	Eigen::Vector4d line_dir (model_coefficients[3], model_coefficients[4], model_coefficients[5], 0);
 
 	double ptdotdir = line_pt.dot (line_dir);
 
@@ -198,19 +200,19 @@ void ObjectModelCylinder::getDistancesToModel (const Eigen::VectorXf &model_coef
 		// Aproximate the distance from the point to the cylinder as the difference between
 		// dist(point,cylinder_axis) and cylinder radius
 		// @note need to revise this.
-		Eigen::Vector4f pt = Eigen::Vector4f (this->points->data()[i].getX(),
+		Eigen::Vector4d pt = Eigen::Vector4d (this->points->data()[i].getX(),
 				this->points->data()[i].getY(), this->points->data()[i].getZ(), 0);
 
-		Eigen::Vector4f n = Eigen::Vector4f (this->normals->data()[i][0],
-				this->normals->data()[i][1],
-				this->normals->data()[i][2], 0);
+		Eigen::Vector4d n = Eigen::Vector4d (this->normals->getNormals()->data()[i].getX(),
+				this->normals->getNormals()->data()[i].getY(),
+				this->normals->getNormals()->data()[i].getZ(), 0);
 
 		double d_euclid = fabs (pointToLineDistance (pt, model_coefficients) - model_coefficients[6]);
 
 		// Calculate the point's projection on the cylinder axis
 		double k = (pt.dot (line_dir) - ptdotdir) * dirdotdir;
-		Eigen::Vector4f pt_proj = line_pt + k * line_dir;
-		Eigen::Vector4f dir = pt - pt_proj;
+		Eigen::Vector4d pt_proj = line_pt + k * line_dir;
+		Eigen::Vector4d dir = pt - pt_proj;
 		dir.normalize ();
 
 		// Calculate the angular distance between the point normal and the (dir=pt_proj->pt) vector
@@ -223,7 +225,7 @@ void ObjectModelCylinder::getDistancesToModel (const Eigen::VectorXf &model_coef
 }
 
 
-void ObjectModelCylinder::selectWithinDistance (const Eigen::VectorXf &model_coefficients, double threshold,
+void ObjectModelCylinder::selectWithinDistance (const Eigen::VectorXd &model_coefficients, double threshold,
 		std::vector<int> &inliers){
 	// Needs a valid model coefficients
 	//ToDo ROS_ASSERT (model_coefficients.size () == 7);
@@ -231,8 +233,8 @@ void ObjectModelCylinder::selectWithinDistance (const Eigen::VectorXf &model_coe
 	int nr_p = 0;
 	inliers.resize (this->inputPointCloud->getSize());
 
-	Eigen::Vector4f line_pt  (model_coefficients[0], model_coefficients[1], model_coefficients[2], 0);
-	Eigen::Vector4f line_dir (model_coefficients[3], model_coefficients[4], model_coefficients[5], 0);
+	Eigen::Vector4d line_pt  (model_coefficients[0], model_coefficients[1], model_coefficients[2], 0);
+	Eigen::Vector4d line_dir (model_coefficients[3], model_coefficients[4], model_coefficients[5], 0);
 	double ptdotdir = line_pt.dot (line_dir);
 	double dirdotdir = 1.0 / line_dir.dot (line_dir);
 	// Iterate through the 3d points and calculate the distances from them to the sphere
@@ -240,19 +242,20 @@ void ObjectModelCylinder::selectWithinDistance (const Eigen::VectorXf &model_coe
 	{
 		// Aproximate the distance from the point to the cylinder as the difference between
 		// dist(point,cylinder_axis) and cylinder radius
-		Eigen::Vector4f pt = Eigen::Vector4f (this->points->data()[i].getX(),
+		Eigen::Vector4d pt = Eigen::Vector4d (this->points->data()[i].getX(),
 				this->points->data()[i].getY(),
 				this->points->data()[i].getZ(), 0);
 
-		Eigen::Vector4f n = Eigen::Vector4f (this->normals->data()[i][0],
-				this->normals->data()[i][1], this->normals->data()[i][2], 0);
+		Eigen::Vector4d n = Eigen::Vector4d (this->normals->getNormals()->data()[i].getX(),
+				this->normals->getNormals()->data()[i].getY(),
+				this->normals->getNormals()->data()[i].getZ(), 0);
 
 		double d_euclid = fabs (pointToLineDistance (pt, model_coefficients) - model_coefficients[6]);
 
 		// Calculate the point's projection on the cylinder axis
 		double k = (pt.dot (line_dir) - ptdotdir) * dirdotdir;
-		Eigen::Vector4f pt_proj = line_pt + k * line_dir;
-		Eigen::Vector4f dir = pt - pt_proj;
+		Eigen::Vector4d pt_proj = line_pt + k * line_dir;
+		Eigen::Vector4d dir = pt - pt_proj;
 		dir.normalize ();
 
 		// Calculate the angular distance between the point normal and the (dir=pt_proj->pt) vector
@@ -269,13 +272,13 @@ void ObjectModelCylinder::selectWithinDistance (const Eigen::VectorXf &model_coe
 	inliers.resize (nr_p);
 }
 
-void ObjectModelCylinder::getInlierDistance (std::vector<int> &inliers, const Eigen::VectorXf &model_coefficients,
+void ObjectModelCylinder::getInlierDistance (std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,
 		std::vector<double> &distances){
 
 	distances.resize (inliers.size());
 
-	Eigen::Vector4f line_pt  (model_coefficients[0], model_coefficients[1], model_coefficients[2], 0);
-	Eigen::Vector4f line_dir (model_coefficients[3], model_coefficients[4], model_coefficients[5], 0);
+	Eigen::Vector4d line_pt  (model_coefficients[0], model_coefficients[1], model_coefficients[2], 0);
+	Eigen::Vector4d line_dir (model_coefficients[3], model_coefficients[4], model_coefficients[5], 0);
 
 	double ptdotdir = line_pt.dot (line_dir);
 
@@ -286,19 +289,19 @@ void ObjectModelCylinder::getInlierDistance (std::vector<int> &inliers, const Ei
 		// Aproximate the distance from the point to the cylinder as the difference between
 		// dist(point,cylinder_axis) and cylinder radius
 		// @note need to revise this.
-		Eigen::Vector4f pt = Eigen::Vector4f (this->points->data()[inliers[i]].getX(),
+		Eigen::Vector4d pt = Eigen::Vector4d (this->points->data()[inliers[i]].getX(),
 				this->points->data()[inliers[i]].getY(), this->points->data()[inliers[i]].getZ(), 0);
 
-		Eigen::Vector4f n = Eigen::Vector4f (this->normals->data()[inliers[i]][0],
-				this->normals->data()[inliers[i]][1],
-				this->normals->data()[inliers[i]][2], 0);
+		Eigen::Vector4d n = Eigen::Vector4d (this->normals->getNormals()->data()[inliers[i]].getX(),
+				this->normals->getNormals()->data()[inliers[i]].getY(),
+				this->normals->getNormals()->data()[inliers[i]].getZ(), 0);
 
 		double d_euclid = fabs (pointToLineDistance (pt, model_coefficients) - model_coefficients[6]);
 
 		// Calculate the point's projection on the cylinder axis
 		double k = (pt.dot (line_dir) - ptdotdir) * dirdotdir;
-		Eigen::Vector4f pt_proj = line_pt + k * line_dir;
-		Eigen::Vector4f dir = pt - pt_proj;
+		Eigen::Vector4d pt_proj = line_pt + k * line_dir;
+		Eigen::Vector4d dir = pt - pt_proj;
 		dir.normalize ();
 
 		// Calculate the angular distance between the point normal and the (dir=pt_proj->pt) vector
@@ -311,15 +314,15 @@ void ObjectModelCylinder::getInlierDistance (std::vector<int> &inliers, const Ei
 }
 
 
-void ObjectModelCylinder::projectPoints (const std::vector<int> &inliers, const Eigen::VectorXf &model_coefficients,
+void ObjectModelCylinder::projectPoints (const std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,
 		PointCloud3D* projectedPointCloud){
 
 	// Needs a valid set of model coefficients
 	//ToDo ROS_ASSERT (model_coefficients.size () == 7);
 
-    Eigen::Vector4f line_pt = Eigen::Vector4f (model_coefficients[0], model_coefficients[1],
+    Eigen::Vector4d line_pt = Eigen::Vector4d (model_coefficients[0], model_coefficients[1],
     		model_coefficients[2], 0);
-    Eigen::Vector4f line_dir = Eigen::Vector4f (model_coefficients[3], model_coefficients[4],
+    Eigen::Vector4d line_dir = Eigen::Vector4d (model_coefficients[3], model_coefficients[4],
     		model_coefficients[5], 0);
     double ptdotdir = line_pt.dot (line_dir);
     double dirdotdir = 1.0 / line_dir.dot (line_dir);
@@ -328,13 +331,13 @@ void ObjectModelCylinder::projectPoints (const std::vector<int> &inliers, const 
 	// Iterate through the 3d points and calculate the distances from them to the cylinder
 	for (size_t i = 0; i < inliers.size (); ++i)
 	{
-		Eigen::Vector4f p = Eigen::Vector4f (this->points->data()[inliers[i]].getX(),
+		Eigen::Vector4d p = Eigen::Vector4d (this->points->data()[inliers[i]].getX(),
 				this->points->data()[inliers[i]].getY(), this->points->data()[inliers[i]].getZ(), 0);
 
 		double k = (p.dot (line_dir) - ptdotdir) * dirdotdir;
-		Eigen::Vector4f pp = line_pt + k * line_dir;
+		Eigen::Vector4d pp = line_pt + k * line_dir;
 
-		Eigen::Vector4f dir = p - pp;
+		Eigen::Vector4d dir = p - pp;
 		dir.normalize ();
 
 		// Calculate the projection of the point onto the cylinder
@@ -349,18 +352,18 @@ void ObjectModelCylinder::projectPoints (const std::vector<int> &inliers, const 
 }
 
 
-bool ObjectModelCylinder::doSamplesVerifyModel (const std::set<int> &indices, const Eigen::VectorXf &model_coefficients,
+bool ObjectModelCylinder::doSamplesVerifyModel (const std::set<int> &indices, const Eigen::VectorXd &model_coefficients,
 		double threshold){
     // Needs a valid model coefficients
     //ToDo ROS_ASSERT (model_coefficients.size () == 7);
 
-    Eigen::Vector4f pt;
+    Eigen::Vector4d pt;
     for (std::set<int>::iterator it = indices.begin (); it != indices.end (); ++it)
     {
       // Aproximate the distance from the point to the cylinder as the difference between
       // dist(point,cylinder_axis) and cylinder radius
       // @note need to revise this.
-      pt = Eigen::Vector4f (this->points->data()[*it].getX(), this->points->data()[*it].getY(),
+      pt = Eigen::Vector4d (this->points->data()[*it].getX(), this->points->data()[*it].getY(),
     		  this->points->data()[*it].getZ(), 0);
       if (fabs (pointToLineDistance (pt, model_coefficients) - model_coefficients[6]) > threshold)
         return (false);
@@ -371,30 +374,30 @@ bool ObjectModelCylinder::doSamplesVerifyModel (const std::set<int> &indices, co
 
 
 double
-ObjectModelCylinder::pointToLineDistance (const Eigen::Vector4f &pt, const Eigen::VectorXf &model_coefficients)
+ObjectModelCylinder::pointToLineDistance (const Eigen::Vector4d &pt, const Eigen::VectorXd &model_coefficients)
 {
-	Eigen::Vector4f line_pt  (model_coefficients[0], model_coefficients[1], model_coefficients[2], 0);
-	Eigen::Vector4f line_dir (model_coefficients[3], model_coefficients[4], model_coefficients[5], 0);
+	Eigen::Vector4d line_pt  (model_coefficients[0], model_coefficients[1], model_coefficients[2], 0);
+	Eigen::Vector4d line_dir (model_coefficients[3], model_coefficients[4], model_coefficients[5], 0);
 	// Calculate the distance from the point to the line
 	// D = ||(P2-P1) x (P1-P0)|| / ||P2-P1|| = norm (cross (p2-p1, p2-p0)) / norm(p2-p1)
-	Eigen::Vector4f r, p_t;
+	Eigen::Vector4d r, p_t;
 	r = line_pt + line_dir;
 	p_t = r - pt;
 
-	Eigen::Vector3f c = p_t.start<3> ().cross (line_dir.start<3> ());
+	Eigen::Vector3d c = p_t.start<3> ().cross (line_dir.start<3> ());
 	return (sqrt (c.dot (c) / line_dir.dot (line_dir)));
 }
 
 double
-ObjectModelCylinder::pointToLineDistance (const Eigen::Vector4f &pt, const Eigen::Vector4f &line_pt, const Eigen::Vector4f &line_dir)
+ObjectModelCylinder::pointToLineDistance (const Eigen::Vector4d &pt, const Eigen::Vector4d &line_pt, const Eigen::Vector4d &line_dir)
 {
 	// Calculate the distance from the point to the line
 	// D = ||(P2-P1) x (P1-P0)|| / ||P2-P1|| = norm (cross (p2-p1, p2-p0)) / norm(p2-p1)
-	Eigen::Vector4f r, p_t;
+	Eigen::Vector4d r, p_t;
 	r = line_pt + line_dir;
 	p_t = r - pt;
 
-	Eigen::Vector3f c = p_t.start<3> ().cross (line_dir.start<3> ());
+	Eigen::Vector3d c = p_t.start<3> ().cross (line_dir.start<3> ());
 	return (sqrt (c.dot (c) / line_dir.dot (line_dir)));
 }
 

@@ -9,7 +9,7 @@
 
 namespace BRICS_3D {
 
-void ObjectModelLine::computeRandomModel (int &iterations, Eigen::VectorXf &model_coefficients, bool &isDegenerate,
+void ObjectModelLine::computeRandomModel (int &iterations, Eigen::VectorXd &model_coefficients, bool &isDegenerate,
 		bool &modelFound){
 
 std::vector<int> samples;
@@ -65,7 +65,7 @@ void ObjectModelLine::getSamples (int &iterations, std::vector<int> &samples){
 }
 
 bool ObjectModelLine::computeModelCoefficients (const std::vector<int> &samples,
-		Eigen::VectorXf &model_coefficients){
+		Eigen::VectorXd &model_coefficients){
 	// Need 2 samples
 	//ToDo ROS_ASSERT (samples.size () == 2);
 
@@ -83,8 +83,8 @@ bool ObjectModelLine::computeModelCoefficients (const std::vector<int> &samples,
 }
 
 void ObjectModelLine::optimizeModelCoefficients (const std::vector<int> &inliers,
-		const Eigen::VectorXf &model_coefficients,
-		Eigen::VectorXf &optimized_coefficients){
+		const Eigen::VectorXd &model_coefficients,
+		Eigen::VectorXd &optimized_coefficients){
 	// Needs a valid set of model coefficients
 	//ToDo ROS_ASSERT (model_coefficients.size () == 6);
 
@@ -101,9 +101,9 @@ void ObjectModelLine::optimizeModelCoefficients (const std::vector<int> &inliers
 	optimized_coefficients.resize (6);
 
 	// Compute the 3x3 covariance matrix
-	Eigen::Vector4f centroid;
+	Eigen::Vector4d centroid;
 	compute3DCentroid (this->inputPointCloud, inliers, centroid);
-	Eigen::Matrix3f covariance_matrix;
+	Eigen::Matrix3d covariance_matrix;
 	computeCovarianceMatrix (inputPointCloud, inliers, centroid, covariance_matrix);
 	optimized_coefficients[0] = centroid[0];
 	optimized_coefficients[1] = centroid[1];
@@ -111,15 +111,15 @@ void ObjectModelLine::optimizeModelCoefficients (const std::vector<int> &inliers
 
 	// Extract the eigenvalues and eigenvectors
 	//cloud_geometry::eigen_cov (covariance_matrix, eigen_values, eigen_vectors);
-	Eigen::SelfAdjointEigenSolver<Eigen::Matrix3f> ei_symm (covariance_matrix);
-	EIGEN_ALIGN_128 Eigen::Vector3f eigen_values  = ei_symm.eigenvalues ();
-	EIGEN_ALIGN_128 Eigen::Matrix3f eigen_vectors = ei_symm.eigenvectors ();
+	Eigen::SelfAdjointEigenSolver<Eigen::Matrix3d> ei_symm (covariance_matrix);
+	EIGEN_ALIGN_128 Eigen::Vector3d eigen_values  = ei_symm.eigenvalues ();
+	EIGEN_ALIGN_128 Eigen::Matrix3d eigen_vectors = ei_symm.eigenvectors ();
 
 	optimized_coefficients.end<3> () = eigen_vectors.col (2).normalized ();
 }
 
 
-void ObjectModelLine::getDistancesToModel (const Eigen::VectorXf &model_coefficients,
+void ObjectModelLine::getDistancesToModel (const Eigen::VectorXd &model_coefficients,
 		std::vector<double> &distances){
 	// Needs a valid set of model coefficients
 	//ToDo ROS_ASSERT (model_coefficients.size () == 6);
@@ -127,26 +127,26 @@ void ObjectModelLine::getDistancesToModel (const Eigen::VectorXf &model_coeffici
 	distances.resize (this->inputPointCloud->getSize());
 
 	// Obtain the line point and direction
-	Eigen::Vector4f line_pt  (model_coefficients[0], model_coefficients[1], model_coefficients[2], 0);
-	Eigen::Vector4f line_dir (model_coefficients[3], model_coefficients[4], model_coefficients[5], 0);
-	Eigen::Vector4f line_p2 = line_pt + line_dir;
+	Eigen::Vector4d line_pt  (model_coefficients[0], model_coefficients[1], model_coefficients[2], 0);
+	Eigen::Vector4d line_dir (model_coefficients[3], model_coefficients[4], model_coefficients[5], 0);
+	Eigen::Vector4d line_p2 = line_pt + line_dir;
 
 	// Iterate through the 3d points and calculate the distances from them to the line
 	for (size_t i = 0; i < this->inputPointCloud->getSize(); ++i)
 	{
 		// Calculate the distance from the point to the line
 		// D = ||(P2-P1) x (P1-P0)|| / ||P2-P1|| = norm (cross (p2-p1, p2-p0)) / norm(p2-p1)
-		Eigen::Vector4f pt (this->points->data()[i].getX(), this->points->data()[i].getY(),
+		Eigen::Vector4d pt (this->points->data()[i].getX(), this->points->data()[i].getY(),
 				this->points->data()[i].getZ(), 0);
-		Eigen::Vector4f pp = line_p2 - pt;
+		Eigen::Vector4d pp = line_p2 - pt;
 
-		Eigen::Vector3f c = pp.start<3> ().cross (line_dir.start<3> ());
+		Eigen::Vector3d c = pp.start<3> ().cross (line_dir.start<3> ());
 		//distances[i] = sqrt (c.dot (c)) / line_dir.dot (line_dir);
 		distances[i] = c.dot (c) / line_dir.dot (line_dir);
 	}
 }
 
-void ObjectModelLine::selectWithinDistance (const Eigen::VectorXf &model_coefficients, double threshold,
+void ObjectModelLine::selectWithinDistance (const Eigen::VectorXd &model_coefficients, double threshold,
 		std::vector<int> &inliers){
 	// Needs a valid set of model coefficients
 	//ToDo ROS_ASSERT (model_coefficients.size () == 6);
@@ -157,20 +157,20 @@ void ObjectModelLine::selectWithinDistance (const Eigen::VectorXf &model_coeffic
 	inliers.resize (this->inputPointCloud->getSize());
 
 	// Obtain the line point and direction
-	Eigen::Vector4f line_pt  (model_coefficients[0], model_coefficients[1], model_coefficients[2], 0);
-	Eigen::Vector4f line_dir (model_coefficients[3], model_coefficients[4], model_coefficients[5], 0);
-	Eigen::Vector4f line_p2 = line_pt + line_dir;
+	Eigen::Vector4d line_pt  (model_coefficients[0], model_coefficients[1], model_coefficients[2], 0);
+	Eigen::Vector4d line_dir (model_coefficients[3], model_coefficients[4], model_coefficients[5], 0);
+	Eigen::Vector4d line_p2 = line_pt + line_dir;
 
 	// Iterate through the 3d points and calculate the distances from them to the line
 	for (size_t i = 0; i < this->inputPointCloud->getSize(); ++i)
 	{
 		// Calculate the distance from the point to the line
 		// D = ||(P2-P1) x (P1-P0)|| / ||P2-P1|| = norm (cross (p2-p1, p2-p0)) / norm(p2-p1)
-		Eigen::Vector4f pt (this->points->data()[i].getX(),
+		Eigen::Vector4d pt (this->points->data()[i].getX(),
 				this->points->data()[i].getY(), this->points->data()[i].getZ(), 0);
-		Eigen::Vector4f pp = line_p2 - pt;
+		Eigen::Vector4d pp = line_p2 - pt;
 
-		Eigen::Vector3f c = pp.start<3> ().cross (line_dir.start<3> ());
+		Eigen::Vector3d c = pp.start<3> ().cross (line_dir.start<3> ());
 		//distances[i] = sqrt (c.dot (c)) / line_dir.dot (line_dir);
 		double sqr_distance = c.dot (c) / line_dir.dot (line_dir);
 
@@ -185,7 +185,7 @@ void ObjectModelLine::selectWithinDistance (const Eigen::VectorXf &model_coeffic
 }
 
 
-void ObjectModelLine::getInlierDistance (std::vector<int> &inliers, const Eigen::VectorXf &model_coefficients,
+void ObjectModelLine::getInlierDistance (std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,
 		std::vector<double> &distances){
 	// Needs a valid set of model coefficients
 	//ToDo ROS_ASSERT (model_coefficients.size () == 6);
@@ -193,45 +193,45 @@ void ObjectModelLine::getInlierDistance (std::vector<int> &inliers, const Eigen:
 	distances.resize (this->inputPointCloud->getSize());
 
 	// Obtain the line point and direction
-	Eigen::Vector4f line_pt  (model_coefficients[0], model_coefficients[1], model_coefficients[2], 0);
-	Eigen::Vector4f line_dir (model_coefficients[3], model_coefficients[4], model_coefficients[5], 0);
-	Eigen::Vector4f line_p2 = line_pt + line_dir;
+	Eigen::Vector4d line_pt  (model_coefficients[0], model_coefficients[1], model_coefficients[2], 0);
+	Eigen::Vector4d line_dir (model_coefficients[3], model_coefficients[4], model_coefficients[5], 0);
+	Eigen::Vector4d line_p2 = line_pt + line_dir;
 
 	// Iterate through the 3d points and calculate the distances from them to the line
 	for (size_t i = 0; i < this->inputPointCloud->getSize(); ++i)
 	{
 		// Calculate the distance from the point to the line
 		// D = ||(P2-P1) x (P1-P0)|| / ||P2-P1|| = norm (cross (p2-p1, p2-p0)) / norm(p2-p1)
-		Eigen::Vector4f pt (this->points->data()[inliers[i]].getX(), this->points->data()[inliers[i]].getY(),
+		Eigen::Vector4d pt (this->points->data()[inliers[i]].getX(), this->points->data()[inliers[i]].getY(),
 				this->points->data()[inliers[i]].getZ(), 0);
-		Eigen::Vector4f pp = line_p2 - pt;
+		Eigen::Vector4d pp = line_p2 - pt;
 
-		Eigen::Vector3f c = pp.start<3> ().cross (line_dir.start<3> ());
+		Eigen::Vector3d c = pp.start<3> ().cross (line_dir.start<3> ());
 		//distances[i] = sqrt (c.dot (c)) / line_dir.dot (line_dir);
 		distances[i] = c.dot (c) / line_dir.dot (line_dir);
 	}
 }
 
 
-void ObjectModelLine::projectPoints (const std::vector<int> &inliers, const Eigen::VectorXf &model_coefficients,
+void ObjectModelLine::projectPoints (const std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,
 		PointCloud3D* projectedPointCloud){
 
 	// Needs a valid model coefficients
 	//ToDo ROS_ASSERT (model_coefficients.size () == 6);
 
 	// Obtain the line point and direction
-	Eigen::Vector4f line_pt  (model_coefficients[0], model_coefficients[1], model_coefficients[2], 0);
-	Eigen::Vector4f line_dir (model_coefficients[3], model_coefficients[4], model_coefficients[5], 0);
+	Eigen::Vector4d line_pt  (model_coefficients[0], model_coefficients[1], model_coefficients[2], 0);
+	Eigen::Vector4d line_dir (model_coefficients[3], model_coefficients[4], model_coefficients[5], 0);
 
 	// Iterate through the 3d points and calculate the distances from them to the line
 	for (size_t i = 0; i < inliers.size (); ++i)
 	{
-		Eigen::Vector4f pt (this->points->data()[inliers[i]].getX(), this->points->data()[inliers[i]].getY(),
+		Eigen::Vector4d pt (this->points->data()[inliers[i]].getX(), this->points->data()[inliers[i]].getY(),
 				this->points->data()[inliers[i]].getZ(), 0);
 		// double k = (DOT_PROD_3D (points[i], p21) - dotA_B) / dotB_B;
 		double k = (pt.dot (line_dir) - line_pt.dot (line_dir)) / line_dir.dot (line_dir);
 
-		Eigen::Vector4f pp = line_pt + k * line_dir;
+		Eigen::Vector4d pp = line_pt + k * line_dir;
 		// Calculate the projection of the point on the line (pointProj = A + k * B)
 		std::vector<Point3D> *projectedPoints = projectedPointCloud->getPointCloud();
 		projectedPoints->data()[i].setX(pp[0]);
@@ -242,15 +242,15 @@ void ObjectModelLine::projectPoints (const std::vector<int> &inliers, const Eige
 }
 
 
-bool ObjectModelLine::doSamplesVerifyModel (const std::set<int> &indices, const Eigen::VectorXf &model_coefficients,
+bool ObjectModelLine::doSamplesVerifyModel (const std::set<int> &indices, const Eigen::VectorXd &model_coefficients,
 		double threshold){
     // Needs a valid set of model coefficients
      //ToDo ROS_ASSERT (model_coefficients.size () == 6);
 
      // Obtain the line point and direction
-     Eigen::Vector4f line_pt  (model_coefficients[0], model_coefficients[1], model_coefficients[2], 0);
-     Eigen::Vector4f line_dir (model_coefficients[3], model_coefficients[4], model_coefficients[5], 0);
-     Eigen::Vector4f line_p2 = line_pt + line_dir;
+     Eigen::Vector4d line_pt  (model_coefficients[0], model_coefficients[1], model_coefficients[2], 0);
+     Eigen::Vector4d line_dir (model_coefficients[3], model_coefficients[4], model_coefficients[5], 0);
+     Eigen::Vector4d line_p2 = line_pt + line_dir;
 
      double sqr_threshold = threshold * threshold;
      // Iterate through the 3d points and calculate the distances from them to the line
@@ -258,11 +258,11 @@ bool ObjectModelLine::doSamplesVerifyModel (const std::set<int> &indices, const 
      {
        // Calculate the distance from the point to the line
        // D = ||(P2-P1) x (P1-P0)|| / ||P2-P1|| = norm (cross (p2-p1, p2-p0)) / norm(p2-p1)
-       Eigen::Vector4f pt (this->points->data()[*it].getX(), this->points->data()[*it].getY(),
+       Eigen::Vector4d pt (this->points->data()[*it].getX(), this->points->data()[*it].getY(),
     		   this->points->data()[*it].getZ(), 0);
-       Eigen::Vector4f pp = line_p2 - pt;
+       Eigen::Vector4d pp = line_p2 - pt;
 
-       Eigen::Vector3f c = pp.start<3> ().cross (line_dir.start<3> ());
+       Eigen::Vector3d c = pp.start<3> ().cross (line_dir.start<3> ());
        double sqr_distance = c.dot (c) / line_dir.dot (line_dir);
 
        if (sqr_distance > sqr_threshold)

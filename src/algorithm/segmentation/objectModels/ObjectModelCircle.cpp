@@ -11,7 +11,7 @@
 namespace BRICS_3D {
 
 
-void ObjectModelCircle::computeRandomModel (int &iterations, Eigen::VectorXf &model_coefficients, bool &isDegenerate,
+void ObjectModelCircle::computeRandomModel (int &iterations, Eigen::VectorXd &model_coefficients, bool &isDegenerate,
 		bool &modelFound){
 
 	std::vector<int> samples;
@@ -103,7 +103,7 @@ ObjectModelCircle::getSamples (int &iterations, std::vector<int> &samples)
 }
 
 bool
-ObjectModelCircle::computeModelCoefficients (const std::vector<int> &samples, Eigen::VectorXf &model_coefficients)
+ObjectModelCircle::computeModelCoefficients (const std::vector<int> &samples, Eigen::VectorXd &model_coefficients)
 {
 	// Need 3 samples
 	//ToDo ROS_ASSERT (samples.size () == 3);
@@ -138,7 +138,7 @@ ObjectModelCircle::computeModelCoefficients (const std::vector<int> &samples, Ei
  * \param distances the resultant estimated distances
  */
 void
-ObjectModelCircle:: getDistancesToModel (const Eigen::VectorXf &model_coefficients, std::vector<double> &distances)
+ObjectModelCircle:: getDistancesToModel (const Eigen::VectorXd &model_coefficients, std::vector<double> &distances)
 {
 	// Needs a valid model coefficients
 	//ToDo ROS_ASSERT (model_coefficients.size () == 3);
@@ -160,7 +160,7 @@ ObjectModelCircle:: getDistancesToModel (const Eigen::VectorXf &model_coefficien
 
 
 void
-ObjectModelCircle::getInlierDistance (std::vector<int> &inliers, const Eigen::VectorXf &model_coefficients,
+ObjectModelCircle::getInlierDistance (std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,
 		std::vector<double> &distances) {
 
 	// Needs a valid set of model coefficients
@@ -183,7 +183,7 @@ ObjectModelCircle::getInlierDistance (std::vector<int> &inliers, const Eigen::Ve
 }
 
 void
-ObjectModelCircle::selectWithinDistance (const Eigen::VectorXf &model_coefficients, double threshold, std::vector<int> &inliers)
+ObjectModelCircle::selectWithinDistance (const Eigen::VectorXd &model_coefficients, double threshold, std::vector<int> &inliers)
 {
 	// Needs a valid model coefficients
 	//Todo ROS_ASSERT (model_coefficients.size () == 3);
@@ -214,8 +214,8 @@ ObjectModelCircle::selectWithinDistance (const Eigen::VectorXf &model_coefficien
 }
 
 void
-ObjectModelCircle::optimizeModelCoefficients (const std::vector<int> &inliers, const Eigen::VectorXf &model_coefficients,
-		Eigen::VectorXf &optimized_coefficients)
+ObjectModelCircle::optimizeModelCoefficients (const std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,
+		Eigen::VectorXd &optimized_coefficients)
 {
 
 	//ToDo Requires cminpack. currently not supported
@@ -279,7 +279,7 @@ ObjectModelCircle::optimizeModelCoefficients (const std::vector<int> &inliers, c
 }
 
 void
-ObjectModelCircle::projectPoints (const std::vector<int> &inliers, const Eigen::VectorXf &model_coefficients,
+ObjectModelCircle::projectPoints (const std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,
 		PointCloud3D *projectedPointCloud)
 {
 	// Needs a valid set of model coefficients
@@ -298,7 +298,7 @@ ObjectModelCircle::projectPoints (const std::vector<int> &inliers, const Eigen::
 }
 
 bool
-ObjectModelCircle:: doSamplesVerifyModel (const std::set<int> &indices, const Eigen::VectorXf &model_coefficients, double threshold)
+ObjectModelCircle:: doSamplesVerifyModel (const std::set<int> &indices, const Eigen::VectorXd &model_coefficients, double threshold)
 {
 	// Needs a valid model coefficients
 	//ToDo ROS_ASSERT (model_coefficients.size () == 3);

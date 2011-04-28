@@ -37,29 +37,9 @@
 
 #ifndef PCL_FEATURE_H_
 #define PCL_FEATURE_H_
-/*
-// PCL includes
-#include "pcl/pcl_nodelet.h"
-
-#include "pcl/kdtree/tree_types.h"
-#include "pcl/kdtree/kdtree.h"
-#include "pcl/kdtree/kdtree_ann.h"
-#include "pcl/kdtree/kdtree_flann.h"
-#include "pcl/kdtree/organized_data.h"
-
-#include "pcl/io/io.h"
-
-// Extra libraries
-#include <tbb/blocked_range.h>
-#include <tbb/parallel_for.h>
-
-// Dynamic reconfigure
-#include <dynamic_reconfigure/server.h>
-#include "pcl/FeatureConfig.h"
-*/
 
 #include "core/PointCloud3D.h"
-#include "core/Point3D.h"
+#include "core/Normal3D.h"
 #include <Eigen/Dense>
 namespace BRICS_3D
 {
@@ -70,7 +50,7 @@ namespace BRICS_3D
     */
 inline void
     compute3DCentroid (PointCloud3D *cloud, const std::vector<int> &indices,
-                       Eigen::Vector4f &centroid)
+                       Eigen::Vector4d &centroid)
   {
 
 	std::vector<Point3D> *points = cloud->getPointCloud();
@@ -99,7 +79,7 @@ inline void
     * \param centroid the output centroid
     */
  inline void
-    compute3DCentroid (PointCloud3D* cloud, Eigen::Vector4f &centroid)
+    compute3DCentroid (PointCloud3D* cloud, Eigen::Vector4d &centroid)
   {
 	  std::vector<Point3D> *points = cloud->getPointCloud();
 	  // Initialize to 0
@@ -123,14 +103,14 @@ inline void
   }
 
    /** \brief Compute the 3x3 covariance matrix of a given set of points.
-    * The result is returned as a Eigen::Matrix3f.
+    * The result is returned as a Eigen::Matrix3d.
     * \param cloud the input point cloud
     * \param centroid the centroid of the set of points in the cloud
     * \param covariance_matrix the resultant 3x3 covariance matrix
     */
 inline void
     computeCovarianceMatrix (PointCloud3D* cloud,
-                             const Eigen::Vector4f &centroid, Eigen::Matrix3f &covariance_matrix)
+                             const Eigen::Vector4d &centroid, Eigen::Matrix3d &covariance_matrix)
   {
 	  std::vector<Point3D> *points = cloud->getPointCloud();
 	  // Initialize to 0
@@ -150,9 +130,9 @@ inline void
       p.setY(points->data()[i].getY() - centroid[1]);
       p.setZ(points->data()[i].getZ() - centroid[2]);
 
-      float demean_xy = p.getX() * p.getY();
-      float demean_xz = p.getX() * p.getZ();
-      float demean_yz = p.getY() * p.getZ();
+      double demean_xy = p.getX() * p.getY();
+      double demean_xz = p.getX() * p.getZ();
+      double demean_yz = p.getY() * p.getZ();
 
       covariance_matrix (0, 0) += p.getX() * p.getX();
       covariance_matrix (0, 1) += demean_xy;
@@ -168,7 +148,7 @@ inline void
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /** \brief Compute the 3x3 covariance matrix of a given set of points using their indices.
-    * The result is returned as a Eigen::Matrix3f.
+    * The result is returned as a Eigen::Matrix3d.
     * \param cloud the input point cloud
     * \param indices the point cloud indices that need to be used
     * \param centroid the centroid of the set of points in the cloud
@@ -176,7 +156,7 @@ inline void
     */
 inline void
     computeCovarianceMatrix (PointCloud3D* cloud, const std::vector<int> &indices,
-                             const Eigen::Vector4f &centroid, Eigen::Matrix3f &covariance_matrix)
+                             const Eigen::Vector4d &centroid, Eigen::Matrix3d &covariance_matrix)
   {
 	  std::vector<Point3D> *points = cloud->getPointCloud();
     // Initialize to 0
@@ -196,9 +176,9 @@ inline void
       p.setY(points->data()[indices[i]].getY() - centroid[1]);
       p.setZ(points->data()[indices[i]].getZ() - centroid[2]);
 
-      float demean_xy = p.getX() * p.getY();
-      float demean_xz = p.getX() * p.getZ();
-      float demean_yz = p.getY() * p.getZ();
+      double demean_xy = p.getX() * p.getY();
+      double demean_xz = p.getX() * p.getZ();
+      double demean_yz = p.getY() * p.getZ();
 
       covariance_matrix (0, 0) += p.getX() * p.getX();
       covariance_matrix (0, 1) += demean_xy;
@@ -223,8 +203,8 @@ inline void
   * \f]
   */
 inline void
-  solvePlaneParameters (const Eigen::Matrix3f &covariance_matrix, const Eigen::Vector4f &point,
-                        Eigen::Vector4f &plane_parameters, float &curvature)
+  solvePlaneParameters (const Eigen::Matrix3d &covariance_matrix, const Eigen::Vector4d &point,
+                        Eigen::Vector4d &plane_parameters, double &curvature)
 {
   // Avoid getting hung on Eigen's optimizers
   for (int i = 0; i < 3; ++i)
@@ -232,20 +212,20 @@ inline void
       if (!std::isfinite (covariance_matrix (i, j)))
       {
         //ROS_WARN ("[pcl::solvePlaneParameteres] Covariance matrix has NaN/Inf values!");
-        plane_parameters.setConstant (std::numeric_limits<float>::quiet_NaN ());
-        curvature = std::numeric_limits<float>::quiet_NaN ();
+        plane_parameters.setConstant (std::numeric_limits<double>::quiet_NaN ());
+        curvature = std::numeric_limits<double>::quiet_NaN ();
         return;
       }
 
   // Extract the eigenvalues and eigenvectors
 
-  Eigen::SelfAdjointEigenSolver<Eigen::Matrix3f> ei_symm (covariance_matrix);
-  EIGEN_ALIGN_128 Eigen::Vector3f eigen_values  = ei_symm.eigenvalues ();
-  EIGEN_ALIGN_128 Eigen::Matrix3f eigen_vectors = ei_symm.eigenvectors ();
+  Eigen::SelfAdjointEigenSolver<Eigen::Matrix3d> ei_symm (covariance_matrix);
+  EIGEN_ALIGN_128 Eigen::Vector3d eigen_values  = ei_symm.eigenvalues ();
+  EIGEN_ALIGN_128 Eigen::Matrix3d eigen_vectors = ei_symm.eigenvectors ();
 
   // Normalize the surface normal (eigenvector corresponding to the smallest eigenvalue)
   // Note: Remember to take care of the eigen_vectors ordering
-  float norm = 1.0 / eigen_vectors.col (0).norm ();
+  double norm = 1.0 / eigen_vectors.col (0).norm ();
 
   plane_parameters[0] = eigen_vectors (0, 0) * norm;
   plane_parameters[1] = eigen_vectors (1, 0) * norm;
@@ -257,7 +237,7 @@ inline void
                               plane_parameters[2] * point[2]);
 
   // Compute the curvature surface change
-  float eig_sum = eigen_values.sum ();
+  double eig_sum = eigen_values.sum ();
   if (eig_sum != 0)
     curvature = fabs ( eigen_values[0] / eig_sum );
   else
@@ -277,8 +257,8 @@ inline void
   * \f]
   */
 inline void
-  solvePlaneParameters (const Eigen::Matrix3f &covariance_matrix,
-                        float &nx, float &ny, float &nz, float &curvature)
+  solvePlaneParameters (const Eigen::Matrix3d &covariance_matrix,
+                        double &nx, double &ny, double &nz, double &curvature)
 {
   // Avoid getting hung on Eigen's optimizers
   for (int i = 0; i < 3; ++i)
@@ -286,29 +266,31 @@ inline void
       if (!std::isfinite (covariance_matrix (i, j)))
       {
         //ROS_WARN ("[pcl::solvePlaneParameteres] Covariance matrix has NaN/Inf values!");
-        nx = ny = nz = curvature = std::numeric_limits<float>::quiet_NaN ();
+        nx = ny = nz = curvature = std::numeric_limits<double>::quiet_NaN ();
         return;
       }
   // Extract the eigenvalues and eigenvectors
-  Eigen::SelfAdjointEigenSolver<Eigen::Matrix3f> ei_symm (covariance_matrix);
-  EIGEN_ALIGN_128 Eigen::Vector3f eigen_values  = ei_symm.eigenvalues ();
-  EIGEN_ALIGN_128 Eigen::Matrix3f eigen_vectors = ei_symm.eigenvectors ();
+  Eigen::SelfAdjointEigenSolver<Eigen::Matrix3d> ei_symm (covariance_matrix);
+  EIGEN_ALIGN_128 Eigen::Vector3d eigen_values  = ei_symm.eigenvalues ();
+  EIGEN_ALIGN_128 Eigen::Matrix3d eigen_vectors = ei_symm.eigenvectors ();
 
   // Normalize the surface normal (eigenvector corresponding to the smallest eigenvalue)
   // Note: Remember to take care of the eigen_vectors ordering
-  float norm = 1.0 / eigen_vectors.col (0).norm ();
+  double norm = 1.0 / eigen_vectors.col (0).norm ();
 
   nx = eigen_vectors (0, 0) * norm;
   ny = eigen_vectors (1, 0) * norm;
   nz = eigen_vectors (2, 0) * norm;
 
   // Compute the curvature surface change
-  float eig_sum = eigen_values.sum ();
+  double eig_sum = eigen_values.sum ();
   if (eig_sum != 0)
     curvature = fabs ( eigen_values[0] / eig_sum );
   else
     curvature = 0;
 }
+
+
 
 
 }

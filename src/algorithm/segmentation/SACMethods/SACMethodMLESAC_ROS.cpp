@@ -28,7 +28,7 @@ bool SACMethodMLESAC_ROS::computeModel(){
 	double k = 1.0;
 
 	std::vector<int> best_model;
-	Eigen::VectorXf model_coefficients;
+	Eigen::VectorXd model_coefficients;
 	std::vector<double> distances;
 
 	// Compute sigma - remember to set threshold_ correctly !
@@ -36,7 +36,7 @@ bool SACMethodMLESAC_ROS::computeModel(){
 	cout<<"[MLESAC::computeModel] Estimated sigma value: "<< sigma_<<endl;
 
 	// Compute the bounding box diagonal: V = sqrt (sum (max(pointCloud) - min(pointCloud)^2))
-	Eigen::Vector4f min_pt, max_pt;
+	Eigen::Vector4d min_pt, max_pt;
 	getMinMax (this->objectModel->getInputCloud (), min_pt, max_pt);
 	max_pt -= min_pt;
 	double v = sqrt (max_pt.dot (max_pt));
@@ -212,7 +212,7 @@ double SACMethodMLESAC_ROS::computeMedianAbsoluteDeviation (PointCloud3D *cloud,
 	return (sigma * result);
 }
 
-void SACMethodMLESAC_ROS::getMinMax (PointCloud3D *cloud, Eigen::Vector4f &min_p, Eigen::Vector4f &max_p){
+void SACMethodMLESAC_ROS::getMinMax (PointCloud3D *cloud, Eigen::Vector4d &min_p, Eigen::Vector4d &max_p){
 	/** \brief Determine the minimum and maximum 3D bounding box coordinates for a given set of points
 	 * \param cloud the point cloud message
 	 * \param indices the set of point indices to use

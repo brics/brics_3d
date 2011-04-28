@@ -33,7 +33,7 @@ bool SACMethodALMeDS::computeModel(){
 	double d_best_penalty = DBL_MAX;
 
 	std::vector<int> best_model;
-	Eigen::VectorXf model_coefficients;
+	Eigen::VectorXd model_coefficients;
 	std::vector<double> distances;
 
 	int n_inliers_count = 0;

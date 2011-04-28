@@ -10,6 +10,9 @@
 
 #include "core/PointCloud3D.h"
 #include "algorithm/segmentation/features/ROSnormal3D.h"
+#include "core/NormalSet3D.h"
+
+#include "algorithm/nearestNeighbor/INearestPoint3DNeighbor.h"
 
 namespace BRICS_3D {
 
@@ -19,17 +22,71 @@ private:
 
 	/** \brief Values describing the viewpoint ("pinhole" camera model assumed). For per point viewpoints, inherit
 	 * from NormalEstimation and provide your own computeFeature (). By default, the viewpoint is set to 0,0,0. */
-	float vpx, vpy, vpz;
+	double vpx, vpy, vpz;
 
-	/** \brief Placeholder for the 3x3 covariance matrix at each surface patch. */
-	EIGEN_ALIGN_128 Eigen::Matrix3f covarianceMatrix;
+	/** \brief Number of k-nearest neighbours to be used */
+	int k_neighbours;
 
-	/** \brief 16-bytes aligned placeholder for the XYZ centroid of a surface patch. */
-	Eigen::Vector4f xyzCentroid;
+	/** \brief Represents the point-cloud to be processed*/
+	PointCloud3D* inputPointCloud;
 
+	/** \brief Nearest neighbour searching method */
+	INearestPoint3DNeighbor *nnSearchMethod;
 public:
-	NormalEstimation();
-	virtual ~NormalEstimation();
+	NormalEstimation(){
+		this->vpx = 0;
+		this->vpy = 0;
+		this->vpz = 0;
+		this->k_neighbours = 10;
+
+	}
+
+	~NormalEstimation(){};
+
+
+	/** \brief Get the nearst neighborhood search method. */
+	inline INearestPoint3DNeighbor*
+	getNNSearchMethod ()
+	{
+		return (this->nnSearchMethod);
+	}
+
+
+	/** \brief Set the nearst neighborhood search method. */
+	inline void
+	setSearchMethod (INearestPoint3DNeighbor *nnSearchMethod)
+	{//ToDo check for input cloud is set or not
+		this->nnSearchMethod = nnSearchMethod;
+		this->nnSearchMethod->setData(this->inputPointCloud);
+	}
+
+
+	/** \brief Provide a pointer to the input dataset
+	 * \param cloud the const boost shared pointer to a PointCloud message
+	 */
+	inline void
+	setInputCloud (PointCloud3D* cloud)
+	{
+		this->inputPointCloud = cloud;
+	}
+
+	/** \brief Get a pointer to the input point cloud dataset. */
+	inline PointCloud3D* getInputCloud () { return (inputPointCloud); }
+
+
+	/** \brief Set the number of nearest neighbours to be used
+	 * \param k_neighbours: The number of neighbours to be used
+	 */
+	inline void setkneighbours(int kNeighbours){
+		this->k_neighbours = kNeighbours;
+	}
+
+
+	/** \brief Get the number of nearest neighbours to be used
+	 */
+	inline int getkneighbours(){
+		return this->k_neighbours;
+	}
 
 	/** \brief Compute the 3D (X-Y-Z) centroid of a set of points using their indices and return it as a 3D vector.
 	 * \param cloud the input point cloud
@@ -37,7 +94,7 @@ public:
 	 * \param centroid the output centroid
 	 */
 	inline void
-	compute4DCentroid (PointCloud3D *cloud,Eigen::Vector4f &centroid)
+	compute4DCentroid (PointCloud3D *cloud,Eigen::Vector4d &centroid)
 	{
 		// Initialize to 0
 		centroid.setZero ();
@@ -51,71 +108,11 @@ public:
 					|| isnan (cloud->getPointCloud()->data()[i].getZ()))
 				continue;
 
-			float x = cloud->getPointCloud()->data()[i].getX();
-			centroid += Eigen::Vector4f::MapAligned (&x);
+			double x = cloud->getPointCloud()->data()[i].getX();
+			centroid += Eigen::Vector4d::MapAligned (&x);
 			cp++;
 		}
 		centroid /= cp;
-	}
-
-	/** \brief Compute the Least-Squares plane fit for a given set of points, using their indices,
-	 * and return the estimated plane parameters together with the surface curvature.
-	 * \param cloud the input point cloud
-	 * \param indices the point cloud indices that need to be used
-	 * \param plane_parameters the plane parameters as: a, b, c, d (ax + by + cz + d = 0)
-	 * \param curvature the estimated surface curvature as a measure of
-	 * \f[
-	 * \lambda_0 / (\lambda_0 + \lambda_1 + \lambda_2)
-	 * \f]
-	 */
-	inline void
-	computePointNormal (PointCloud3D *cloud, Eigen::Vector4f &plane_parameters, float &curvature)
-	{
-		if (cloud->getSize() == 0)
-		{
-			plane_parameters.setConstant (std::numeric_limits<float>::quiet_NaN ());
-			curvature = std::numeric_limits<float>::quiet_NaN ();
-			return;
-		}
-		// Estimate the XYZ centroid
-		compute3DCentroid (cloud, xyzCentroid);
-
-		// Compute the 3x3 covariance matrix
-		computeCovarianceMatrix (cloud, xyzCentroid, covarianceMatrix);
-
-		// Get the plane normal and surface curvature
-		solvePlaneParameters (covarianceMatrix, xyzCentroid, plane_parameters, curvature);
-	}
-
-
-	/** \brief Compute the Least-Squares plane fit for a given set of points, and return the estimated plane
-	 * parameters together with the surface curvature.
-	 * \param cloud the input point cloud
-	 * \param nx the resultant X component of the plane normal
-	 * \param ny the resultant Y component of the plane normal
-	 * \param nz the resultant Z component of the plane normal
-	 * \param curvature the estimated surface curvature as a measure of
-	 * \f[
-	 * \lambda_0 / (\lambda_0 + \lambda_1 + \lambda_2)
-	 * \f]
-	 */
-	inline void
-	computePointNormal (PointCloud3D *cloud,
-			float &nx, float &ny, float &nz, float &curvature)
-	{
-		if (cloud->getSize() == 0)
-		{
-			nx = ny = nz = curvature = std::numeric_limits<float>::quiet_NaN ();
-			return;
-		}
-		// Estimate the XYZ centroid
-		compute3DCentroid (cloud, xyzCentroid);
-
-		// Compute the 3x3 covariance matrix
-		computeCovarianceMatrix (cloud, xyzCentroid, covarianceMatrix);
-
-		// Get the plane normal and surface curvature
-		solvePlaneParameters (covarianceMatrix, nx, ny, nz, curvature);
 	}
 
 
@@ -125,7 +122,7 @@ public:
 	 * \param vpz the Z coordinate of the viewpoint
 	 */
 	inline void
-	setViewPoint (float vpx, float vpy, float vpz)
+	setViewPoint (double vpx, double vpy, double vpz)
 	{
 		this->vpx = vpx;
 		this->vpy = vpy;
@@ -135,7 +132,7 @@ public:
 
 	/** \brief Get the viewpoint. */
 	inline void
-	getViewPoint (float &vpx, float &vpy, float &vpz)
+	getViewPoint (double &vpx, double &vpy, double &vpz)
 	{
 		vpx = this->vpx;
 		vpy = this->vpy;
@@ -143,38 +140,90 @@ public:
 	}
 
 
-private:
+
 	/** \brief Estimate normals for all points given in <setInputCloud (), setIndices ()> using the surface in
 	 * setSearchSurface () and the spatial locator in setSearchMethod ()
 	 * \note In situations where not enough neighbors are found, the normal and curvature values are set to -1.
 	 * \param output the resultant point cloud model dataset that contains surface normals and curvatures
 	 */
-/*	void
-	computeFeature (PointCloudOut &output)
+	void
+	computeFeature (NormalSet3D *normalSet)
 	{
 		// Allocate enough space to hold the results
 		// \note This resize is irrelevant for a radiusSearch ().
-		std::vector<int> nn_indices (this->k_);
-		std::vector<float> nn_dists (this->k_);
-
+		//using the default number of nearrest-neighbours used.
+		//ToDo enable configuration of 'k'
+		std::vector<int> nn_indices;
+//		nn_indices.resize(k_neighbours);
+		double curvature;
 		// Iterating over the entire index vector
-		for (size_t idx = 0; idx < this->indices_->size (); ++idx)
+		nnSearchMethod->setData(this->inputPointCloud);
+
+		std::vector<Point3D>* points;
+		points = inputPointCloud->getPointCloud();
+
+		for (size_t idx = 0; idx < this->inputPointCloud->getSize(); ++idx)
 		{
-			if (!searchForNeighbors ((*this->indices_)[idx], this->search_parameter_, nn_indices, nn_dists))
+
+			nnSearchMethod->findNearestNeighbors(&(*inputPointCloud->getPointCloud())[idx], &nn_indices, k_neighbours);
+
+			if (nn_indices.size()==0)
 			{
-				output.points[idx].normal[0] = output.points[idx].normal[1] = output.points[idx].normal[2] = output.points[idx].curvature = std::numeric_limits<float>::quiet_NaN ();
+				normalSet->getNormals()->data()[idx].setX(std::numeric_limits<double>::quiet_NaN ());
+				normalSet->getNormals()->data()[idx].setY(std::numeric_limits<double>::quiet_NaN ());
+				normalSet->getNormals()->data()[idx].setZ(std::numeric_limits<double>::quiet_NaN ());
+				curvature = 0;
 				continue;
 			}
 
-			computePointNormal (*this->surface_, nn_indices,
-					output.points[idx].normal[0], output.points[idx].normal[1], output.points[idx].normal[2], output.points[idx].curvature);
+			double nx,ny,nz;
+			computePointNormal (this->inputPointCloud, nn_indices,
+					nx,ny,nz,curvature);
 
-			flipNormalTowardsViewpoint (this->surface_->points[idx], vpx_, vpy_, vpz_,
-					output.points[idx].normal[0], output.points[idx].normal[1], output.points[idx].normal[2]);
+			Normal3D tempNormal;
+			tempNormal.setX(nx);
+			tempNormal.setY(ny);
+			tempNormal.setZ(nz);
+
+			normalSet->addNormal(tempNormal);
+			flipNormalTowardsViewpoint (this->inputPointCloud->getPointCloud()->data()[idx], vpx, vpy, vpz,
+					normalSet->getNormals()->data()[idx]);
 
 		}
 	}
-*/
+
+	  /** \brief Flip (in place) the estimated normal of a point towards a given viewpoint
+	    * \param point a given point
+	    * \param vp_x the X coordinate of the viewpoint
+	    * \param vp_y the X coordinate of the viewpoint
+	    * \param vp_z the X coordinate of the viewpoint
+	    * \param normal the plane normal to be flipped
+	    */
+	inline void
+	    flipNormalTowardsViewpoint (Point3D &point, double vp_x, double vp_y, double vp_z, Normal3D &normal)
+	  {
+	    // See if we need to flip any plane normals
+	    vp_x -= point.getX();
+	    vp_y -= point.getY();
+	    vp_z -= point.getZ();
+
+	    // Dot product between the (viewpoint - point) and the plane normal
+	    double cos_theta = (vp_x * normal.getX() + vp_y * normal.getY() + vp_z * normal.getZ());
+
+	    // Flip the plane normal
+	    if (cos_theta < 0)
+	    {
+	      normal.setX(-1*normal.getX());
+	      normal.setY(-1*normal.getY());
+	      normal.setZ(-1*normal.getZ());
+	      // Hessian form (D = nc . p_plane (centroid here) + p)
+	      normal.setZ(-1 * (
+	    		  normal.getX() * point.getX() +
+	    		  normal.getY() * point.getY() +
+	    		  normal.getZ() * point.getZ()));
+	    }
+	  }
+
 };
 
 }

@@ -113,7 +113,9 @@ void ANNkd_tree::annkSearch(
 	for (int i = 0; i < k; i++) {		// extract the k-th closest points
 		dd[i] = ANNkdPointMK->ith_smallest_key(i);
 		nn_idx[i] = ANNkdPointMK->ith_smallest_info(i);
+
 	}
+
 	delete ANNkdPointMK;				// deallocate closest point set
 }
 

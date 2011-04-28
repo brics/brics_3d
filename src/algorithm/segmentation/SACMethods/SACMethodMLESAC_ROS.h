@@ -37,7 +37,7 @@ protected:
 	 * \param max_p the resultant maximum bounding box coordinates
 	 */
 	void
-	getMinMax (PointCloud3D *cloud, Eigen::Vector4f &min_p, Eigen::Vector4f &max_p);
+	getMinMax (PointCloud3D *cloud, Eigen::Vector4d &min_p, Eigen::Vector4d &max_p);
 
 
 	/** \brief Compute the median absolute deviation:

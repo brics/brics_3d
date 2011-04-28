@@ -10,10 +10,10 @@
 namespace BRICS_3D {
 
 void
-  ObjectModelOrientedLine::selectWithinDistance (const Eigen::VectorXf &model_coefficients, double threshold, std::vector<int> &inliers)
+  ObjectModelOrientedLine::selectWithinDistance (const Eigen::VectorXd &model_coefficients, double threshold, std::vector<int> &inliers)
 {
   // Obtain the line direction
-  Eigen::Vector4f line_dir (model_coefficients[3], model_coefficients[4], model_coefficients[5], 0);
+  Eigen::Vector4d line_dir (model_coefficients[3], model_coefficients[4], model_coefficients[5], 0);
 
   // Check against template, if given
   if (epsAngle > 0.0)
@@ -32,10 +32,10 @@ void
 }
 
 void
-   ObjectModelOrientedLine::getDistancesToModel (const Eigen::VectorXf &model_coefficients, std::vector<double> &distances)
+   ObjectModelOrientedLine::getDistancesToModel (const Eigen::VectorXd &model_coefficients, std::vector<double> &distances)
  {
    // Obtain the line direction
-   Eigen::Vector4f line_dir (model_coefficients[3], model_coefficients[4], model_coefficients[5], 0);
+   Eigen::Vector4d line_dir (model_coefficients[3], model_coefficients[4], model_coefficients[5], 0);
 
    // Check against template, if given
    if (epsAngle > 0.0)

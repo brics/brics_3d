@@ -10,13 +10,20 @@
 #include "core/Point3D.h"
 #include <iostream>
 #include "algorithm/segmentation/features/NormalEstimation.h"
+#include "algorithm/nearestNeighbor/NearestNeighborANN.h"
 
 int main(){
 
 //This is not a working copy. Will be updated once normal extraction is done.
 
-/*	//Create a pointcloud object
+	//Create a pointcloud object
 	BRICS_3D::PointCloud3D cloud;
+
+	//Create the NormalSet for this cloud
+	BRICS_3D::NormalSet3D normalSet;
+
+	//Create the NormalEstimator object
+	BRICS_3D::NormalEstimation normalEstimator;
 
 	//read the points into the pointcloud
 	//Please modify the path if there is a file read error.
@@ -30,30 +37,39 @@ int main(){
 	}
 
 
+
+	//Extract the normals for this pointcloud
+
+	normalEstimator.setInputCloud(&cloud);
+	normalEstimator.setSearchMethod(new BRICS_3D::NearestNeighborANN());
+	normalEstimator.setkneighbours(10);
+	normalEstimator.computeFeature(&normalSet);
+
 	//Create the vector to hold the model coefficients
-	Eigen::VectorXf modelCoefficients;
+	Eigen::VectorXd modelCoefficients;
 
 	//Create the vector to hold the indexes of the model inliers
 	std::vector<int> inliers;
-
 	//Create the SACSegmentation Object
-	BRICS_3D::RegionBasedSACSegmentation sacSegmenter;
+	BRICS_3D::RegionBasedSACSegmentationUsingNormals sacSegmenterUsingNormals;
 
 	//Initialize the segmenter
-	sacSegmenter.setDistanceThreshold(0.01);
-	sacSegmenter.setInputPointCloud(&cloud);
-	sacSegmenter.setMaxIterations(1000);
-	sacSegmenter.setMethodType(sacSegmenter.SAC_RANSAC);
-	sacSegmenter.setModelType(sacSegmenter.OBJMODEL_PLANE);
-	sacSegmenter.setOptimizeCoefficients(true);
-	sacSegmenter.setProbability(0.99);
+	sacSegmenterUsingNormals.setDistanceThreshold(0.01);
+	sacSegmenterUsingNormals.setInputPointCloud(&cloud);
+	sacSegmenterUsingNormals.setMaxIterations(1000);
+	sacSegmenterUsingNormals.setMethodType(sacSegmenterUsingNormals.SAC_RANSAC);
+	sacSegmenterUsingNormals.setModelType(sacSegmenterUsingNormals.OBJMODEL_CYLINDER);
+	sacSegmenterUsingNormals.setOptimizeCoefficients(false);
+	sacSegmenterUsingNormals.setProbability(0.99);
+	sacSegmenterUsingNormals.setInputNormals(&normalSet);
+
 
 	//Perform the segmentation
-	sacSegmenter.segment(inliers,modelCoefficients);
+	sacSegmenterUsingNormals.segment(inliers,modelCoefficients);
 
 	if (inliers.size() == 0)
 	{
-		cout<<"Could not estimate a planar model for the given dataset."<<endl;
+		cout<<"Could not estimate a cylindrical model for the given dataset."<<endl;
 		return (-1);
 	}else {
 		cout<<"Found Inliers: " << inliers.size()<<endl;
@@ -62,6 +78,6 @@ int main(){
 	cout<<"The model-coefficients are: (" << modelCoefficients[0]<<", " << modelCoefficients[1]<<
 			", " << modelCoefficients[2]<<", " << modelCoefficients[3]<<")" <<endl;
 
-	return(1);*/
+	return(1);
 }
 

@@ -61,7 +61,7 @@ protected:
 	std::vector<int> inliers;
 
 	/** \brief The coefficients of our model computed directly from the model found. */
-	Eigen::VectorXf modelCoefficients;
+	Eigen::VectorXd modelCoefficients;
 
 	/** \brief Total number of internal loop iterations that we've done so far. */
 	int iterations;
@@ -172,7 +172,7 @@ public:
 	/** \brief Return the model coefficients of the best model found so far.
 	 * \param model_coefficients the resultant model coefficients
 	 */
-	inline void getModelCoefficients(Eigen::VectorXf &modelCoefficients) {
+	inline void getModelCoefficients(Eigen::VectorXd &modelCoefficients) {
 		modelCoefficients = this->modelCoefficients;
 	}
 
@@ -354,7 +354,7 @@ public:
 	 * \param model_coefficients the resultant model coefficients
 	 */
 	virtual void
-	segment (std::vector<int> &inliers, Eigen::VectorXf &model_coefficients)
+	segment (std::vector<int> &inliers, Eigen::VectorXd &model_coefficients)
 	{
 
 		// Initialize the Sample Consensus model and set its parameters
@@ -380,14 +380,14 @@ public:
 
 
 		// Get the model coefficients
-		Eigen::VectorXf coeff;
+		Eigen::VectorXd coeff;
 		sacMethod->getModelCoefficients (coeff);
 
 
 		// If the user needs optimized coefficients
 		if (optimizeCoefficients)
 		{
-			Eigen::VectorXf coeff_refined;
+			Eigen::VectorXd coeff_refined;
 
 			objectModel->optimizeModelCoefficients(inliers,coeff,coeff_refined);
 			this->modelCoefficients =coeff_refined;

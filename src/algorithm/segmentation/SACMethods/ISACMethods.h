@@ -32,7 +32,7 @@ protected:
 	std::vector<int> inliers;
 
 	/** \brief The coefficients of our model computed directly from the model found. */
-	Eigen::VectorXf modelCoefficients;
+	Eigen::VectorXd modelCoefficients;
 
 	/** \brief Total number of internal loop iterations that we've done so far. */
 	int iterations;
@@ -164,7 +164,7 @@ public:
 	 * \param model_coefficients the resultant model coefficients
 	 */
 	inline void
-	getModelCoefficients (Eigen::VectorXf &modelCoefficients)
+	getModelCoefficients (Eigen::VectorXd &modelCoefficients)
 	{
 		modelCoefficients = this->modelCoefficients;
 	}

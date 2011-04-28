@@ -32,7 +32,7 @@ bool SACMethodLMeDS_ROS::computeModel(){
 
 	std::vector<int> best_model;
 	std::vector<int> selection;
-	Eigen::VectorXf model_coefficients;
+	Eigen::VectorXd model_coefficients;
 	std::vector<double> distances;
 
 	int n_inliers_count = 0;

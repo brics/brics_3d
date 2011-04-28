@@ -186,8 +186,10 @@ void NearestNeighborANN::findNearestNeighbors(Point3D* query, std::vector<int>* 
 	for (int i = 0; i < this->k; i++) {
 		resultDistance = static_cast<BRICS_3D::Coordinate>(sqrt(distances[i]));	//unsquare distance
 		resultIndex = nnIndex[i];
+
 		if (resultDistance <= maxDistance || maxDistance < 0.0) { //if max distance is < 0 then the distance should have no influence
 			resultIndices->push_back(resultIndex);
+
 		}
 	}
 

@@ -10,7 +10,7 @@
 namespace BRICS_3D {
 
 
-void ObjectModelSphere::computeRandomModel (int &iterations, Eigen::VectorXf &model_coefficients,
+void ObjectModelSphere::computeRandomModel (int &iterations, Eigen::VectorXd &model_coefficients,
 		bool &isDegenerate, bool &modelFound){
 
 	std::vector<int> samples;
@@ -127,7 +127,7 @@ ObjectModelSphere:: getSamples (int &iterations, std::vector<int> &samples)
  * \param model_coefficients the resultant model coefficients
  */
 bool
-ObjectModelSphere::computeModelCoefficients (const std::vector<int> &samples, Eigen::VectorXf &model_coefficients)
+ObjectModelSphere::computeModelCoefficients (const std::vector<int> &samples, Eigen::VectorXd &model_coefficients)
 {
 	// Need 4 samples
 	//ToDO ROS_ASSERT (samples.size () == 4);
@@ -193,7 +193,7 @@ ObjectModelSphere::computeModelCoefficients (const std::vector<int> &samples, Ei
  * \param distances the resultant estimated distances
  */
 void
-ObjectModelSphere:: getDistancesToModel (const Eigen::VectorXf &model_coefficients, std::vector<double> &distances)
+ObjectModelSphere:: getDistancesToModel (const Eigen::VectorXd &model_coefficients, std::vector<double> &distances)
 {
 	// Needs a valid model coefficients
 	//ToDo ROS_ASSERT (model_coefficients.size () == 4);
@@ -217,7 +217,7 @@ ObjectModelSphere:: getDistancesToModel (const Eigen::VectorXf &model_coefficien
 }
 
 void
-ObjectModelSphere::getInlierDistance (std::vector<int> &inliers, const Eigen::VectorXf &model_coefficients,
+ObjectModelSphere::getInlierDistance (std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,
 		std::vector<double> &distances) {
 
 	// Needs a valid model coefficients
@@ -248,7 +248,7 @@ ObjectModelSphere::getInlierDistance (std::vector<int> &inliers, const Eigen::Ve
  * \param inliers the resultant model inliers
  */
 void
-ObjectModelSphere::selectWithinDistance (const Eigen::VectorXf &model_coefficients, double threshold, std::vector<int> &inliers)
+ObjectModelSphere::selectWithinDistance (const Eigen::VectorXd &model_coefficients, double threshold, std::vector<int> &inliers)
 {
 	// Needs a valid model coefficients
 	//ToDo ROS_ASSERT (model_coefficients.size () == 4);
@@ -287,8 +287,8 @@ ObjectModelSphere::selectWithinDistance (const Eigen::VectorXf &model_coefficien
  * \param optimized_coefficients the resultant recomputed coefficients after non-linear optimization
  */
 void
-ObjectModelSphere::optimizeModelCoefficients (const std::vector<int> &inliers, const Eigen::VectorXf &model_coefficients,
-		Eigen::VectorXf &optimized_coefficients)
+ObjectModelSphere::optimizeModelCoefficients (const std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,
+		Eigen::VectorXd &optimized_coefficients)
 {
 
 	//ToDo Requires cminpack. currently not supported
@@ -352,7 +352,7 @@ ObjectModelSphere::optimizeModelCoefficients (const std::vector<int> &inliers, c
   * \todo implement this.
   */
 void
- ObjectModelSphere::projectPoints (const std::vector<int> &inliers, const Eigen::VectorXf &model_coefficients,
+ ObjectModelSphere::projectPoints (const std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,
                  PointCloud3D *projected_points)
 {
   cout<<"[SampleConsensusModelSphere::projectPoints] Not implemented yet.";
@@ -365,7 +365,7 @@ void
   * \param threshold a maximum admissible distance threshold for determining the inliers from the outliers
   */
 bool
-  ObjectModelSphere::doSamplesVerifyModel (const std::set<int> &indices, const Eigen::VectorXf &model_coefficients, double threshold)
+  ObjectModelSphere::doSamplesVerifyModel (const std::set<int> &indices, const Eigen::VectorXd &model_coefficients, double threshold)
 {
   // Needs a valid model coefficients
   //ToDo ROS_ASSERT (model_coefficients.size () == 4);
