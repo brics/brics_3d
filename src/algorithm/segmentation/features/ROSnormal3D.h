@@ -35,7 +35,7 @@ template <typename PointT> inline void
   }
 
   // Placeholder for the 3x3 covariance matrix at each surface patch
-    EIGEN_ALIGN_128 Eigen::Matrix3d covariance_matrix;
+    EIGEN_ALIGN_MEMORY Eigen::Matrix3d covariance_matrix;
     // 16-bytes aligned placeholder for the XYZ centroid of a surface patch
     Eigen::Vector4d xyz_centroid;
 
@@ -72,7 +72,7 @@ inline void
   }
 
   // Placeholder for the 3x3 covariance matrix at each surface patch
-    EIGEN_ALIGN_128 Eigen::Matrix3d covariance_matrix;
+  EIGEN_ALIGN_MEMORY Eigen::Matrix3d covariance_matrix;
     // 16-bytes aligned placeholder for the XYZ centroid of a surface patch
     Eigen::Vector4d xyz_centroid;
 
@@ -110,7 +110,7 @@ inline void
   }
 
   // Placeholder for the 3x3 covariance matrix at each surface patch
-    EIGEN_ALIGN_128 Eigen::Matrix3d covariance_matrix;
+	EIGEN_ALIGN_MEMORY Eigen::Matrix3d covariance_matrix;
     // 16-bytes aligned placeholder for the XYZ centroid of a surface patch
     Eigen::Vector4d xyz_centroid;
 
@@ -148,7 +148,7 @@ inline void
   }
 
   // Placeholder for the 3x3 covariance matrix at each surface patch
-     EIGEN_ALIGN_128 Eigen::Matrix3d covariance_matrix;
+	EIGEN_ALIGN_MEMORY Eigen::Matrix3d covariance_matrix;
      // 16-bytes aligned placeholder for the XYZ centroid of a surface patch
      Eigen::Vector4d xyz_centroid;
 

@@ -42,13 +42,22 @@ ENDIF()
 #MESSAGE(STATUS "INFO: "${CGAL_DIR} , ${CGAL_INCLUDE_DIRS})
 #MESSAGE("CGAL lib: "${CGAL_LIBRARY})
 
-# search for Eigen2 (header-only) library
-FIND_PACKAGE(Eigen2)
-IF (EIGEN2_FOUND)
-  MESSAGE(STATUS "SUCCESSFUL: Eigen2 found")
-ELSE (EIGEN2_FOUND)
-  MESSAGE(SEND_ERROR "WARNING: Eigen2 not found")
-ENDIF (EIGEN2_FOUND)
+OPTION(USE_EIGEN3 "Enable Eigen version 3 " ON)
+IF (USE_EIGEN3)
+    # Eigen 3
+    find_package(Eigen REQUIRED)
+    ADD_DEFINITIONS(-DEIGEN3)
+ELSE (USE_EIGEN3)     
+    #search for Eigen2 (header-only) library
+    FIND_PACKAGE(Eigen2)
+    IF (EIGEN2_FOUND)
+        MESSAGE(STATUS "SUCCESSFUL: Eigen2 found")
+    ELSE (EIGEN2_FOUND)
+        MESSAGE(SEND_ERROR "WARNING: Eigen2 not found")
+    ENDIF (EIGEN2_FOUND)
+ENDIF (USE_EIGEN3)
+
+
 
 # set STANN path (as they only use <> in headers ...) 
 SET(STANN_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/external/stann/include)

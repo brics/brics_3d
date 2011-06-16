@@ -32,13 +32,24 @@ public:
       */
     inline void setAxis (const Eigen::Vector3d &ax)
     {
-      axis.start<3> () = ax;
+
+#ifdef EIGEN3
+		axis.head<3> () = ax;
+#else
+		axis.start<3> () = ax;
+#endif
       axis[3] = 0;
     }
 
 
     /** \brief Get the axis along which we need to search for a plane perpendicular to. */
-    inline Eigen::Vector3d getAxis ()  { return (axis.start<3> ()); }
+    inline Eigen::Vector3d getAxis ()  {
+#ifdef EIGEN3
+    	return (axis.head<3> ());
+#else
+		return (axis.start<3> ());
+#endif
+    }
 
     /** \brief Set the angle epsilon (delta) threshold.
       * \param ea the maximum allowed difference between the plane normal and the given axis.

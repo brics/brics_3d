@@ -87,7 +87,11 @@ void ObjectModelPlaneFromLineAndPoint::getSamples (int &iterations, std::vector<
 		// Compute the segment values (in 3d) between p2 and p0
 		p2 -= p0;
 
+#ifdef EIGEN3
+		dy1dy2 = p1.array () / p2.array();
+#else
 		dy1dy2 = p1.cwise () / p2;
+#endif
 		++iter;
 		if (iter > MAX_ITERATIONS_COLLINEAR )
 		{

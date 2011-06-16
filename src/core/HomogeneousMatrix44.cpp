@@ -46,7 +46,7 @@ HomogeneousMatrix44::HomogeneousMatrix44(double r0, double r1, double r2, double
 	matrixData[15] = 1.0;
 }
 
-HomogeneousMatrix44::HomogeneousMatrix44(Eigen::Transform3d *homogeneousTransformation) {
+HomogeneousMatrix44::HomogeneousMatrix44(Transform3d *homogeneousTransformation) {
 	double *tmpMatrix;
 
 	tmpMatrix = homogeneousTransformation->data(); //get data in column-row order
@@ -69,14 +69,23 @@ IHomogeneousMatrix44* HomogeneousMatrix44::operator*(const IHomogeneousMatrix44 
 	Eigen::Matrix4d result;
 
 	for (int i = 0; i < 16; ++i) { //layout for BRICS and Eigen2 4x4 matrices is the same ;-)
+#ifdef EIGEN3
+		tempMatrix1(i) = matrixData[i];
+		tempMatrix2(i) = multiplicand[i];
+#else
 		tempMatrix1[i] = matrixData[i];
 		tempMatrix2[i] = multiplicand[i];
+#endif
 	}
 
 	result = tempMatrix1 * tempMatrix2;
 
 	for (int i = 0; i < 16; ++i) { //might be also implemented with memcopy
+#ifdef EIGEN3
+		matrixData[i] = result(i);
+#else
 		matrixData[i] = result[i];
+#endif
 	}
 
 	return this;

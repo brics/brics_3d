@@ -11,9 +11,14 @@ INCLUDE_DIRECTORIES(
     ${CGAL_3RD_PARTY_INCLUDE_DIRS}
     ${Boost_INCLUDE_DIR}
     ${OPENSCENEGRAPH_INCLUDE_DIRS}
-    ${EIGEN2_INCLUDE_DIR}
     ${STANN_INCLUDE_DIRS}
 )
+
+IF (USE_EIGEN3)
+	INCLUDE_DIRECTORIES(${EIGEN_INCLUDE_DIRS})
+ELSE (USE_EIGEN3)
+	INCLUDE_DIRECTORIES(${EIGEN2_INCLUDE_DIR})
+ENDIF (USE_EIGEN3)
 
 LINK_DIRECTORIES(
    #${CMAKE_HOME_DIRECTORY}/external/IVT/lib/linux
@@ -23,6 +28,26 @@ LINK_DIRECTORIES(
    ${OpenCV_LINK_DIRECTORIES}
 )
 
+###################PCL########################
+  
+# CMinpack
+#find_package(CMinpack REQUIRED)
+#include_directories(${CMINPACK_INCLUDE_DIRS})  
+
+#PCL
+find_package(PCL 1.0 REQUIRED COMPONENTS)
+include_directories(${PCL_INCLUDE_DIRS})
+
+#OpenNI
+find_package(OpenNI)
+if(OPENNI_FOUND)
+    include_directories(${OPENNI_INCLUDE_DIRS})
+    message(STATUS "Did find OpenNI after all.")
+    #message(STATUS "OpenNI include ${OPENNI_INCLUDE_DIR}")
+    #message(STATUS "OpenNI libs ${OPENNI_LIBRARY}")
+endif(OPENNI_FOUND)
+
+##############################################
 
 # compile and link the executables 
 ADD_EXECUTABLE(depth_image_stream_test depth_image_stream_test)
@@ -122,7 +147,17 @@ IF (USE_OSG)
         ${OSG_LIBRARY_DEBUG}
     	${OSGGA_LIBRARY_DEBUG}
     	${OSGVIEWER_LIBRARY_DEBUG}
-    )
+    )	
+    	
+#    ADD_EXECUTABLE(kinect_test kinect_test) 
+#    TARGET_LINK_LIBRARIES(kinect_test 
+#        brics_3dpm_core 
+#        brics_3dpm_algorithm 
+#        brics_3dpm_util
+#        ${OSG_LIBRARY_DEBUG}
+#    	${OSGGA_LIBRARY_DEBUG}
+#    	${OSGVIEWER_LIBRARY_DEBUG}
+#    )
     
 ENDIF(USE_OSG)
 

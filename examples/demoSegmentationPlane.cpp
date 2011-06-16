@@ -16,7 +16,7 @@ int main(){
 
 	//read the points into the pointcloud
 	//Please modify the path if there is a file read error.
-	cloud.readFromTxtFile("./trunk/src/algorithm/segmentation/evaluation/data/demoCloud.txt");
+	cloud.readFromTxtFile("./src/algorithm/segmentation/evaluation/data/demoCloud.txt");
 
 	if (cloud.getSize()>0){
 		cout<< "INFO: Current PointCloud Size: " <<cloud.getSize()<<endl;

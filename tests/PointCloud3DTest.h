@@ -13,7 +13,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "core/PointCloud3D.h"
-#include <Eigen/Geometry>
+#include "core/HomogeneousMatrix44.h"
 
 using namespace std;
 using namespace BRICS_3D;

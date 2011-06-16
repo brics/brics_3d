@@ -78,7 +78,11 @@ bool ObjectModelLine::computeModelCoefficients (const std::vector<int> &samples,
 	model_coefficients[4] = this->points->data()[samples[1]].getY() - model_coefficients[1];
 	model_coefficients[5] = this->points->data()[samples[1]].getZ() - model_coefficients[2];
 
+#ifdef EIGEN3
+	model_coefficients.tail<3> ().normalize ();
+#else
 	model_coefficients.end<3> ().normalize ();
+#endif
 	return (true);
 }
 
@@ -112,10 +116,15 @@ void ObjectModelLine::optimizeModelCoefficients (const std::vector<int> &inliers
 	// Extract the eigenvalues and eigenvectors
 	//cloud_geometry::eigen_cov (covariance_matrix, eigen_values, eigen_vectors);
 	Eigen::SelfAdjointEigenSolver<Eigen::Matrix3d> ei_symm (covariance_matrix);
-	EIGEN_ALIGN_128 Eigen::Vector3d eigen_values  = ei_symm.eigenvalues ();
-	EIGEN_ALIGN_128 Eigen::Matrix3d eigen_vectors = ei_symm.eigenvectors ();
+	EIGEN_ALIGN_MEMORY Eigen::Vector3d eigen_values  = ei_symm.eigenvalues ();
+	EIGEN_ALIGN_MEMORY Eigen::Matrix3d eigen_vectors = ei_symm.eigenvectors ();
 
+#ifdef EIGEN3
+	optimized_coefficients.tail<3> () = eigen_vectors.col (2).normalized ();
+#else
 	optimized_coefficients.end<3> () = eigen_vectors.col (2).normalized ();
+#endif
+
 }
 
 
@@ -140,7 +149,11 @@ void ObjectModelLine::getDistancesToModel (const Eigen::VectorXd &model_coeffici
 				this->points->data()[i].getZ(), 0);
 		Eigen::Vector4d pp = line_p2 - pt;
 
+#ifdef EIGEN3
+		Eigen::Vector3d c = pp.head<3> ().cross (line_dir.head<3> ());
+#else
 		Eigen::Vector3d c = pp.start<3> ().cross (line_dir.start<3> ());
+#endif
 		//distances[i] = sqrt (c.dot (c)) / line_dir.dot (line_dir);
 		distances[i] = c.dot (c) / line_dir.dot (line_dir);
 	}
@@ -170,7 +183,11 @@ void ObjectModelLine::selectWithinDistance (const Eigen::VectorXd &model_coeffic
 				this->points->data()[i].getY(), this->points->data()[i].getZ(), 0);
 		Eigen::Vector4d pp = line_p2 - pt;
 
+#ifdef EIGEN3
+		Eigen::Vector3d c = pp.head<3> ().cross (line_dir.head<3> ());
+#else
 		Eigen::Vector3d c = pp.start<3> ().cross (line_dir.start<3> ());
+#endif
 		//distances[i] = sqrt (c.dot (c)) / line_dir.dot (line_dir);
 		double sqr_distance = c.dot (c) / line_dir.dot (line_dir);
 
@@ -206,7 +223,11 @@ void ObjectModelLine::getInlierDistance (std::vector<int> &inliers, const Eigen:
 				this->points->data()[inliers[i]].getZ(), 0);
 		Eigen::Vector4d pp = line_p2 - pt;
 
+#ifdef EIGEN3
+		Eigen::Vector3d c = pp.head<3> ().cross (line_dir.head<3> ());
+#else
 		Eigen::Vector3d c = pp.start<3> ().cross (line_dir.start<3> ());
+#endif
 		//distances[i] = sqrt (c.dot (c)) / line_dir.dot (line_dir);
 		distances[i] = c.dot (c) / line_dir.dot (line_dir);
 	}
@@ -262,7 +283,11 @@ bool ObjectModelLine::doSamplesVerifyModel (const std::set<int> &indices, const 
     		   this->points->data()[*it].getZ(), 0);
        Eigen::Vector4d pp = line_p2 - pt;
 
-       Eigen::Vector3d c = pp.start<3> ().cross (line_dir.start<3> ());
+#ifdef EIGEN3
+		Eigen::Vector3d c = pp.head<3> ().cross (line_dir.head<3> ());
+#else
+		Eigen::Vector3d c = pp.start<3> ().cross (line_dir.start<3> ());
+#endif
        double sqr_distance = c.dot (c) / line_dir.dot (line_dir);
 
        if (sqr_distance > sqr_threshold)

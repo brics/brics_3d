@@ -84,7 +84,11 @@ void ObjectModelNormalPlane::getSamples(int &iterations, std::vector<int> &sampl
 		// Compute the segment values (in 3d) between p2 and p0
 		p2 -= p0;
 
+#ifdef EIGEN3
+		dy1dy2 = p1.array () / p2.array();
+#else
 		dy1dy2 = p1.cwise () / p2;
+#endif
 		++iter;
 		if (iter > MAX_ITERATIONS_COLLINEAR )
 		{
@@ -115,7 +119,11 @@ bool ObjectModelNormalPlane::computeModelCoefficients (const std::vector<int> &s
 	p2 -= p0;
 
 	// Avoid some crashes by checking for collinearity here
+#ifdef EIGEN3
+	Eigen::Vector4d dy1dy2 = p1.array () / p2.array();
+#else
 	Eigen::Vector4d dy1dy2 = p1.cwise () / p2;
+#endif
 	if ( (dy1dy2[0] == dy1dy2[1]) && (dy1dy2[2] == dy1dy2[1]) )          // Check for collinearity
 		return (false);
 

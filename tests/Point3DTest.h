@@ -12,7 +12,7 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <Eigen/Geometry>
+#include "core/HomogeneousMatrix44.h"
 #include "core/Point3D.h"
 
 using namespace std;

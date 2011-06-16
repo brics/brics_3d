@@ -113,8 +113,14 @@ bool ObjectModelCylinder::computeModelCoefficients (const std::vector<int> &samp
 	line_dir.normalize ();
 
 	model_coefficients.resize (7);
+#ifdef EIGEN3
+	model_coefficients.head<3> ()    = line_pt.head<3> ();
+	model_coefficients.segment<3> (3) = line_dir.head<3> ();
+#else
 	model_coefficients.start<3> ()    = line_pt.start<3> ();
 	model_coefficients.segment<3> (3) = line_dir.start<3> ();
+#endif
+
 	// cylinder radius
 	model_coefficients[6] = pointToLineDistance (p1, line_pt, line_dir);
 
@@ -384,7 +390,11 @@ ObjectModelCylinder::pointToLineDistance (const Eigen::Vector4d &pt, const Eigen
 	r = line_pt + line_dir;
 	p_t = r - pt;
 
+#ifdef EIGEN3
+	Eigen::Vector3d c = p_t.head<3> ().cross (line_dir.head<3> ());
+#else
 	Eigen::Vector3d c = p_t.start<3> ().cross (line_dir.start<3> ());
+#endif
 	return (sqrt (c.dot (c) / line_dir.dot (line_dir)));
 }
 
@@ -397,7 +407,11 @@ ObjectModelCylinder::pointToLineDistance (const Eigen::Vector4d &pt, const Eigen
 	r = line_pt + line_dir;
 	p_t = r - pt;
 
+#ifdef EIGEN3
+	Eigen::Vector3d c = p_t.head<3> ().cross (line_dir.head<3> ());
+#else
 	Eigen::Vector3d c = p_t.start<3> ().cross (line_dir.start<3> ());
+#endif
 	return (sqrt (c.dot (c) / line_dir.dot (line_dir)));
 }
 

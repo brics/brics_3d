@@ -40,6 +40,7 @@
 
 #include "core/PointCloud3D.h"
 #include "core/Normal3D.h"
+#include "core/HomogeneousMatrix44.h"
 #include <Eigen/Dense>
 namespace BRICS_3D
 {
@@ -220,8 +221,8 @@ inline void
   // Extract the eigenvalues and eigenvectors
 
   Eigen::SelfAdjointEigenSolver<Eigen::Matrix3d> ei_symm (covariance_matrix);
-  EIGEN_ALIGN_128 Eigen::Vector3d eigen_values  = ei_symm.eigenvalues ();
-  EIGEN_ALIGN_128 Eigen::Matrix3d eigen_vectors = ei_symm.eigenvectors ();
+  EIGEN_ALIGN_MEMORY Eigen::Vector3d eigen_values  = ei_symm.eigenvalues ();
+  EIGEN_ALIGN_MEMORY Eigen::Matrix3d eigen_vectors = ei_symm.eigenvectors ();
 
   // Normalize the surface normal (eigenvector corresponding to the smallest eigenvalue)
   // Note: Remember to take care of the eigen_vectors ordering
@@ -271,8 +272,8 @@ inline void
       }
   // Extract the eigenvalues and eigenvectors
   Eigen::SelfAdjointEigenSolver<Eigen::Matrix3d> ei_symm (covariance_matrix);
-  EIGEN_ALIGN_128 Eigen::Vector3d eigen_values  = ei_symm.eigenvalues ();
-  EIGEN_ALIGN_128 Eigen::Matrix3d eigen_vectors = ei_symm.eigenvectors ();
+  EIGEN_ALIGN_MEMORY Eigen::Vector3d eigen_values  = ei_symm.eigenvalues ();
+  EIGEN_ALIGN_MEMORY Eigen::Matrix3d eigen_vectors = ei_symm.eigenvectors ();
 
   // Normalize the surface normal (eigenvector corresponding to the smallest eigenvalue)
   // Note: Remember to take care of the eigen_vectors ordering

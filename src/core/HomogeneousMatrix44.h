@@ -12,6 +12,18 @@
 #include "IHomogeneousMatrix44.h"
 #include <Eigen/Geometry>
 
+#ifdef EIGEN3
+	#define EIGEN_ALIGN_MEMORY EIGEN_ALIGN16
+#else
+	#define EIGEN_ALIGN_MEMORY EIGEN_ALIGN_128
+#endif
+
+#ifdef EIGEN3
+	typedef Eigen::Affine3d Transform3d;
+#else
+	typedef Eigen::Transform3d Transform3d;
+#endif
+
 namespace BRICS_3D {
 
 /**
@@ -54,7 +66,7 @@ public:
 	 * See also: http://eigen.tuxfamily.org/dox/TutorialGeometry.html
 	 *
 	 */
-	HomogeneousMatrix44(Eigen::Transform3d *homogeneousTransformation);
+	HomogeneousMatrix44(Transform3d *homogeneousTransformation);
 
 	/**
 	 * @brief Standard destructor

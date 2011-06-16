@@ -42,7 +42,11 @@ public:
     inline void
       setAxis (const Eigen::Vector3d &ax)
     {
-      axis.start<3> () = ax;
+#ifdef EIGEN3
+		axis.head<3> () = ax;
+#else
+		axis.start<3> () = ax;
+#endif
       axis[3] = 0;
     }
 
