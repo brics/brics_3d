@@ -15,18 +15,75 @@
 
 namespace BRICS_3D {
 
+/* OSG Helper classes  */
+
+class OSGOperationAdd : public osg::Operation {
+public:
+
+	OSGOperationAdd(OSGPointCloudVisualizer* obj, osg::ref_ptr<osg::Node> node, osg::Group* parent = 0) : osg::Operation() {
+		this->obj = obj;
+		this->node = node;
+		this->parent = parent;
+	}
+
+	void operator()(osg::Object*) {
+		if (parent)
+			parent->addChild(node);
+		else
+			obj->rootGeode->addChild(node);
+	}
+
+	OSGPointCloudVisualizer* obj; //volatile?
+	osg::ref_ptr<osg::Node> node;
+	osg::Group* parent;
+};
+
+class OSGOperationClear : public osg::Operation {
+public:
+
+	OSGOperationClear(OSGPointCloudVisualizer* obj, osg::Node* node) : osg::Operation() {
+		this->obj = obj;
+		this->node = node;
+	}
+
+	void operator()(osg::Object*) {
+		obj->rootGeode->removeChildren(0, obj->rootGeode->getNumChildren());
+	}
+
+	OSGPointCloudVisualizer* obj;
+	osg::Node* node;
+};
+
+class OSGOperationClearButLast : public osg::Operation {
+public:
+
+	OSGOperationClearButLast(OSGPointCloudVisualizer* obj) : osg::Operation() {
+		this->obj = obj;
+	}
+
+	void operator()(osg::Object*) {
+		std::cout << "Number of children before clearance = " << obj->rootGeode->getNumChildren() << std::endl;
+		if(obj->rootGeode->getNumChildren() <= 1) { //complete clear
+			//leave node as it is
+		} else { //leave the first node
+			obj->rootGeode->removeChildren(0, obj->rootGeode->getNumChildren()-1);
+		}
+	}
+
+	OSGPointCloudVisualizer* obj;
+};
+
 OSGPointCloudVisualizer::OSGPointCloudVisualizer() {
-	rootGeode = new osg::Group();
-	viewer.setSceneData(rootGeode);
-	viewer.setUpViewInWindow(10, 10, 500, 500);
-	//viewer.setThreadingModel(osgViewer::ViewerBase::SingleThreaded);
-	viewer.addEventHandler(new osgViewer::StatsHandler);
-	viewer.addEventHandler(new osgViewer::WindowSizeHandler);
-	viewer.addEventHandler(new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
+	init();
 }
 
 OSGPointCloudVisualizer::~OSGPointCloudVisualizer() {
 
+}
+
+void OSGPointCloudVisualizer::init() {
+	rootGeode = new osg::Group();
+    thread = new boost::thread(boost::bind(&OSGPointCloudVisualizer::threadFunction, this, this));
 }
 
 struct DrawCallback: public osg::Drawable::DrawCallback {
@@ -66,7 +123,7 @@ struct DrawCallback: public osg::Drawable::DrawCallback {
 };
 
 void OSGPointCloudVisualizer::addPointCloud(PointCloud3D* pointCloud, float red, float green, float blue, float alpha) {
-	rootGeode->addChild(createPointCloudNode(pointCloud, red, green, blue, alpha));
+	viewer.addUpdateOperation(new OSGOperationAdd(this, createPointCloudNode(pointCloud, red, green, blue, alpha)));
 }
 
 void OSGPointCloudVisualizer::addColoredPointCloud(ColoredPointCloud3D* pointCloud, float alpha) {
@@ -84,7 +141,9 @@ void OSGPointCloudVisualizer::visualizePointCloud(PointCloud3D *pointCloud, floa
 	rootGeode->getOrCreateStateSet()->setAttribute(point);
 
 	rootGeode->addChild(createPointCloudNode(pointCloud, red, green, blue, alpha));
-	viewer.run(); // run();
+	while(!viewer.done()) {
+		//nothing here
+	}
 }
 
 void OSGPointCloudVisualizer::visualizeColoredPointCloud(ColoredPointCloud3D *pointCloud, float alpha)
@@ -94,21 +153,36 @@ void OSGPointCloudVisualizer::visualizeColoredPointCloud(ColoredPointCloud3D *po
 	rootGeode->getOrCreateStateSet()->setAttribute(point);
 
 	rootGeode->addChild(createColoredPointCloudNode(pointCloud, alpha));
-	viewer.run(); // run();
+	while(!viewer.done()) {
+		//nothing here
+	}
 }
 
+void OSGPointCloudVisualizer::clear() {
+	viewer.addUpdateOperation(new OSGOperationClear(this, 0));
+}
 
-osg::Node* OSGPointCloudVisualizer::createPointCloudNode(PointCloud3D* pointCloud, float red, float green, float blue, float alpha) {
+void OSGPointCloudVisualizer::clearButLast() {
+	viewer.addUpdateOperation(new OSGOperationClearButLast(this));
+}
+
+bool OSGPointCloudVisualizer::done() {
+	return viewer.done();
+}
+osg::ref_ptr<osg::Node> OSGPointCloudVisualizer::createPointCloudNode(PointCloud3D* pointCloud, float red, float green, float blue, float alpha) {
 
 	unsigned int targetNumVertices = 10000; //maximal points per geode
 
-	osg::Geode* geode = new osg::Geode;
-	osg::Geometry* geometry = new osg::Geometry;
+//	osg::Geode* geode = new osg::Geode;
+//	osg::Geometry* geometry = new osg::Geometry;
+	osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+	osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
 
-	osg::Vec3Array* vertices = new osg::Vec3Array;
+//	osg::Vec3Array* vertices = new osg::Vec3Array;
+	osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
 	//osg::Vec3Array* normals = new osg::Vec3Array;
 	//osg::Vec4ubArray* colours = new osg::Vec4ubArray; //every point has color
-	osg::Vec4Array* colours = new osg::Vec4Array(1); //all point have same color
+	osg::ref_ptr<osg::Vec4Array> colours = new osg::Vec4Array(1); //all point have same color
 	(*colours)[0].set(red, green, blue, alpha); //set colours (r,g,b,a)
 
 	vertices->reserve(targetNumVertices);
@@ -169,7 +243,8 @@ osg::Node* OSGPointCloudVisualizer::createPointCloudNode(PointCloud3D* pointClou
 	geode->addDrawable(geometry);
 	geode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
 
-	osg::Group* group = new osg::Group;
+//	osg::Group* group = new osg::Group;
+	osg::ref_ptr<osg::Group> group = new osg::Group;
 	group->addChild(geode);
 
 	return group;
@@ -183,12 +258,12 @@ osg::Node* OSGPointCloudVisualizer::createColoredPointCloudNode(ColoredPointClou
 
 	unsigned int targetNumVertices = 10000; //maximal points per geode
 
-	osg::Geode* geode = new osg::Geode;
-	osg::Geometry* geometry = new osg::Geometry;
+	osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+	osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
 
-	osg::Vec3Array* vertices = new osg::Vec3Array;
+	osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
 	//osg::Vec3Array* normals = new osg::Vec3Array;
-	osg::Vec4ubArray* colours = new osg::Vec4ubArray; //every point has color
+	osg::ref_ptr<osg::Vec4ubArray> colours = new osg::Vec4ubArray; //every point has color
 //	osg::Vec4Array* colours = new osg::Vec4Array(1); //all point have same color
 //	(*colours)[0].set(red, green, blue, alpha); //set colours (r,g,b,a)
 
@@ -256,7 +331,7 @@ osg::Node* OSGPointCloudVisualizer::createColoredPointCloudNode(ColoredPointClou
 	geode->addDrawable(geometry);
 	geode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
 
-	osg::Group* group = new osg::Group;
+	osg::ref_ptr<osg::Group> group = new osg::Group;
 	group->addChild(geode);
 
 	return group;
@@ -375,6 +450,19 @@ osg::Node* OSGPointCloudVisualizer::createColoredPointCloudNode(PointCloud3D* co
 	group->addChild(geode);
 
 	return group;
+}
+
+void OSGPointCloudVisualizer::threadFunction(OSGPointCloudVisualizer* obj) {
+	boost::this_thread::sleep(boost::posix_time::milliseconds(100)); // Avoid race condition
+	viewer.setSceneData(rootGeode);
+	viewer.setUpViewInWindow(10, 10, 500, 500);
+	//	//viewer.setThreadingModel(osgViewer::ViewerBase::SingleThreaded);
+	viewer.addEventHandler(new osgViewer::StatsHandler);
+	viewer.addEventHandler(new osgViewer::WindowSizeHandler);
+	viewer.addEventHandler(new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
+
+	//The viewer.run() method starts the threads and the traversals.
+	viewer.run();
 }
 
 }

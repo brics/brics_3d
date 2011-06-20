@@ -24,8 +24,9 @@ ELSE (OpenCV_FOUND)
 ENDIF (OpenCV_FOUND)
 
 # search for Boost library (not yet necessary!)
+SET(Boost_USE_STATIC_LIBS ON)
 SET(Boost_ADDITIONAL_VERSIONS "1.39" "1.39.0" "1.40" "1.40.0" "1.41" "1.41.0"  "1.42" "1.42.0")
-FIND_PACKAGE(Boost)
+FIND_PACKAGE(Boost COMPONENTS thread)
 IF (NOT Boost_INCLUDE_DIR)
   MESSAGE(SEND_ERROR "WARNING: Boost not found")
 ELSE (NOT Boost_INCLUDE_DIR) 
@@ -88,6 +89,24 @@ ELSE (OPENSCENEGRAPH_FOUND)
 ENDIF (OPENSCENEGRAPH_FOUND)
 OPTION(USE_OSG "Enable Open Scene Graph" OFF)
 
+# search for PCL and related libraries
+OPTION(USE_PCL "Enable PCL Support" OFF)
+IF (USE_PCL)  
+    #PCL
+    FIND_PACKAGE(PCL 1.0 REQUIRED COMPONENTS)
+ #   include_directories(${PCL_INCLUDE_DIRS})
+
+    #OpenNI
+    FIND_PACKAGE(OpenNI)
+    IF(OPENNI_FOUND)
+#    include_directories(${OPENNI_INCLUDE_DIRS})
+    message(STATUS "OpenNI found.")
+    #message(STATUS "OpenNI include ${OPENNI_INCLUDE_DIR}")
+    #message(STATUS "OpenNI libs ${OPENNI_LIBRARY}")
+endif(OPENNI_FOUND)
+ENDIF(USE_PCL)
+
+
 # search for Xerces xml library
 FIND_PACKAGE(Xerces)
 IF (XERCES_INCLUDE_DIR)
@@ -97,6 +116,7 @@ IF (XERCES_INCLUDE_DIR)
 ELSE (XERCES_INCLUDE_DIR)
 	MESSAGE(STATUS "WARNING: Xerces not found")
 ENDIF (XERCES_INCLUDE_DIR)
+
 
 
 ## perform platform dependant configurations

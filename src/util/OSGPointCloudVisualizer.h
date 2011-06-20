@@ -16,6 +16,8 @@
 #include <osgUtil/Optimizer>
 #include <osgViewer/Viewer>
 
+#include "boost/thread.hpp"
+
 #include "core/PointCloud3D.h"
 #include "core/ColoredPointCloud3D.h"
 
@@ -93,6 +95,21 @@ public:
 	void visualizeColoredPointCloud(ColoredPointCloud3D *pointCloud, float alpha=1.0f);
 
 	/**
+	 * @brief Clears all displayed data.
+	 */
+	void clear();
+
+	/**
+	 * @brief Clears all displayed data except for the last inserted one.
+	 */
+	void clearButLast();
+
+    /**
+     * Return true if  viewer's work is done and should exit the frame loop.
+     */
+    bool done();
+
+	/**
 	 * @brief Creates a "geode" (geometric node) element for OSG out of a point cloud
 	 * @param[in] pointCloud Pointer to point cloud that will be transformed into an OSG geode
 	 * @param red Specifies the amount of red for the color of the point cloud. Range is 0.0f to 1.0f
@@ -100,7 +117,7 @@ public:
 	 * @param blue Specifies the amount of blue for the color of the point cloud. Range is 0.0f to 1.0f
 	 * @param alpha Specifies the amount of the alpha channel of the point cloud. Range is 0.0f to 1.0f
 	 */
-	osg::Node* createPointCloudNode(PointCloud3D* pointCloud, float red=1.0f, float green=1.0f, float blue=1.0f, float alpha=1.0f);
+	osg::ref_ptr<osg::Node> createPointCloudNode(PointCloud3D* pointCloud, float red=1.0f, float green=1.0f, float blue=1.0f, float alpha=1.0f);
 
 	/**
 	 * @brief Creates a "geode" (geometric node) element for OSG out of a colored point cloud
@@ -113,11 +130,24 @@ public:
 
 private:
 
+void init();
+
+void threadFunction(OSGPointCloudVisualizer* obj);
+
 /// OSG viewer object
 osgViewer::Viewer viewer;
 
 /// Root node for scenegraph
-osg::Group* rootGeode;
+//osg::Group* rootGeode;
+osg::ref_ptr<osg::Group> rootGeode;
+
+/// Thread handle for visualization thread
+boost::thread* thread;
+
+///Grant helper classes full access
+friend class OSGOperationAdd;
+friend class OSGOperationClear;
+friend class OSGOperationClearButLast;
 
 };
 

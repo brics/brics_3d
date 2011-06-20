@@ -28,27 +28,6 @@ LINK_DIRECTORIES(
    ${OpenCV_LINK_DIRECTORIES}
 )
 
-###################PCL########################
-  
-# CMinpack
-#find_package(CMinpack REQUIRED)
-#include_directories(${CMINPACK_INCLUDE_DIRS})  
-
-#PCL
-find_package(PCL 1.0 REQUIRED COMPONENTS)
-include_directories(${PCL_INCLUDE_DIRS})
-
-#OpenNI
-find_package(OpenNI)
-if(OPENNI_FOUND)
-    include_directories(${OPENNI_INCLUDE_DIRS})
-    message(STATUS "Did find OpenNI after all.")
-    #message(STATUS "OpenNI include ${OPENNI_INCLUDE_DIR}")
-    #message(STATUS "OpenNI libs ${OPENNI_LIBRARY}")
-endif(OPENNI_FOUND)
-
-##############################################
-
 # compile and link the executables 
 ADD_EXECUTABLE(depth_image_stream_test depth_image_stream_test)
 TARGET_LINK_LIBRARIES(depth_image_stream_test brics_3dpm_core brics_3dpm_algorithm brics_3dpm_util)
@@ -148,16 +127,20 @@ IF (USE_OSG)
     	${OSGGA_LIBRARY_DEBUG}
     	${OSGVIEWER_LIBRARY_DEBUG}
     )	
-    	
-#    ADD_EXECUTABLE(kinect_test kinect_test) 
-#    TARGET_LINK_LIBRARIES(kinect_test 
-#        brics_3dpm_core 
-#        brics_3dpm_algorithm 
-#        brics_3dpm_util
-#        ${OSG_LIBRARY_DEBUG}
-#    	${OSGGA_LIBRARY_DEBUG}
-#    	${OSGVIEWER_LIBRARY_DEBUG}
-#    )
+    
+    IF (USE_PCL)	
+        INCLUDE_DIRECTORIES(${PCL_INCLUDE_DIRS} ${OPENNI_INCLUDE_DIRS})    
+        ADD_EXECUTABLE(kinect_test kinect_test) 
+        TARGET_LINK_LIBRARIES(kinect_test 
+            brics_3dpm_core 
+            brics_3dpm_algorithm 
+            brics_3dpm_util
+            ${OSG_LIBRARY_DEBUG}
+        	${OSGGA_LIBRARY_DEBUG}
+        	${OSGVIEWER_LIBRARY_DEBUG}
+        	${PCL_IO_LIBRARY}
+        )
+    ENDIF(USE_PCL)    
     
 ENDIF(USE_OSG)
 
