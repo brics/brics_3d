@@ -10,7 +10,7 @@
 #include "core/PointCloud3D.h"
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
-#include <pcl/io/kinect_grabber.h>
+#include <pcl/io/openni_grabber.h>
 #include <util/Benchmark.h>
 //#include <pcl/io/openni_camera/openni_depth_image.h>
 

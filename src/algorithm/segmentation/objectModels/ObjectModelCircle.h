@@ -16,7 +16,7 @@ class ObjectModelCircle : public IObjectModel {
 
 private:
 	/** \brief Temporary boost mutex for \a tmp_inliers_ */
-	boost::mutex tmp_mutex_;
+//	boost::mutex tmp_mutex_;
 
 	/** \brief Temporary pointer to a list of given indices for optimizeModelCoefficients () */
 	const std::vector<int> *tmp_inliers_;

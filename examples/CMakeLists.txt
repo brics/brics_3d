@@ -140,6 +140,24 @@ IF (USE_OSG)
         	${OSGVIEWER_LIBRARY_DEBUG}
         	${PCL_IO_LIBRARY}
         )
+        
+        INCLUDE_DIRECTORIES(${PCL_INCLUDE_DIRS} ${OPENNI_INCLUDE_DIRS})    
+        ADD_EXECUTABLE(detection_test detection_test) 
+        TARGET_LINK_LIBRARIES(detection_test 
+            brics_3dpm_core 
+            brics_3dpm_algorithm 
+            brics_3dpm_util
+            ${OSG_LIBRARY_DEBUG}
+        	${OSGGA_LIBRARY_DEBUG}
+        	${OSGVIEWER_LIBRARY_DEBUG}
+        	${PCL_IO_LIBRARY}
+        	${PCL_KDTREE_LIBRARY}
+        	${PCL_SEGMENTATION_LIBRARY} 
+#        	${PCL_SAMPLE_CONSENSUS_LIBRARY} 
+       	    ${PCL_FILTERS_LIBRARY} 
+        	${PCL_IO_LIBRARY} 
+        	${PCL_FEATURES_LIBRARY} 
+        )
     ENDIF(USE_PCL)    
     
 ENDIF(USE_OSG)

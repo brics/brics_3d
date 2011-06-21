@@ -15,7 +15,7 @@
 #include "core/Point3D.h"
 #include "core/PointCloud3D.h"
 #include <float.h>
-#include <boost/thread/mutex.hpp>
+//#include <boost/thread/mutex.hpp>
 
 using namespace std;
 
