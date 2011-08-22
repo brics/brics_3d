@@ -1,26 +1,19 @@
 /*
- * RegionBasedSACSegmentationUsingNormals.h
+ * @File: RegionBasedSACSegmentationUsingNormals.h
  *
- *  Created on: Apr 24, 2011
- *      Author: reon
+ * @brief: Adapter class for initialization of sample consensus based segmentation method
+ * which requires point normals
+ * @Date: Apr 24, 2011
+ * @Author: reon
  */
 
 #ifndef REGIONBASEDSACSEGMENTATIONUSINGNORMALS_H_
 #define REGIONBASEDSACSEGMENTATIONUSINGNORMALS_H_
+
 #include <vector>
 #include <Eigen/Geometry>
-
-
-//**********************************************INFO***************************//
-//This is not a working copy. Will be updated once normal extraction is done.
-
-
 #include "core/NormalSet3D.h"
 #include "RegionBasedSACSegmentation.h"
-
-
-
-//Object Models Supported
 #include "algorithm/segmentation/objectModels/ObjectModelCylinder.h"
 #include "algorithm/segmentation/objectModels/ObjectModelNormalPlane.h"
 
@@ -31,19 +24,21 @@ class RegionBasedSACSegmentationUsingNormals : public RegionBasedSACSegmentation
 
 private:
 
-	/** \brief The minimum and maximum radius limits for the model. Applicable to all models that estimate a radius. */
-		double radiusMin, radiusMax;
+	/** @brief  Minimum and maximum radius allowable for the models*/
+	double radiusMin, radiusMax;
 
-	/** \brief The relative weight (between 0 and 1) to give to the angular distance (0 to pi/2) between point normals and the plane normal */
+	/** @brief The relative weight (between 0 and 1) to  corresponding to
+	 * angular distance between point normals and the plane normal. 0 corresponds to 0 rad and
+	 * 1 corresponds to pi/2 rad */
 	double normalDistanceWeight;
 
-	/** \brief A pointer to vector of normals */
+	/** @brief A pointer to the vector of normals */
 	NormalSet3D *normalSet;
 
-	/** \brief Axis along which we need to search for a model perpendicular to */
+	/** @brief Axis along which we need to search for a model perpendicular to */
 	Eigen::Vector3d axis;
 
-	/** \brief Set the angle epsilon (delta) threshold */
+	/** @brief The maximum angle between the model normal and the given axis */
 	double epsAngle;
 
 public:
@@ -60,86 +55,86 @@ public:
 	~RegionBasedSACSegmentationUsingNormals(){};
 
 
-    /** \brief Provide a pointer to the input dataset that contains the point normals of the XYZ dataset.
-      * \param normals the const boost shared pointer to a PointCloud message
-      */
-    inline void
-      setInputNormals (NormalSet3D *normalSet)
-    {
-      this->normalSet = normalSet;
-    }
+	/** @brief Set the pointer to the normal-set for the corresponding input point cloud
+	 *  @param normalSet Pointer to BRICS_3D::NormalSet3D
+	 */
+	inline void
+	setInputNormals (NormalSet3D *normalSet)
+	{
+		this->normalSet = normalSet;
+	}
 
 
-    /** \brief Get a pointer to the normals of the input XYZ point cloud dataset. */
-    inline NormalSet3D*
-      getInputNormals ()
-    {
-      return (this->normalSet);
-    }
+	/** @brief Get a pointer to BRICS_3D::NOrmalSet3D for input point cloud being segmented
+	 *  @return Pointer to BRICS_3D::NormalSet3D
+	 * */
+	inline NormalSet3D*
+	getInputNormals ()
+	{
+		return (this->normalSet);
+	}
 
 
-    /** \brief Set the relative weight (between 0 and 1) to give to the angular distance (0 to pi/2) between point
-      * normals and the plane normal.
-      * \param distance_weight the distance/angular weight
-      */
-    inline void
-      setNormalDistanceWeight (double distanceWeight)
-    {
-      this->normalDistanceWeight = distanceWeight;
-    }
+	/** @brief Set the relative weight variable indicating the angular distance
+	 * between point normals and the plane normal.
+	 *  @param distanceWeight the distance/angular weight between 0 and 1
+	 */
+	inline void
+	setNormalDistanceWeight (double distanceWeight)
+	{
+		this->normalDistanceWeight = distanceWeight;
+	}
 
 
-    /** \brief Get the relative weight (between 0 and 1) to give to the angular distance (0 to pi/2) between point
-      * normals and the plane normal. */
-    inline double
-      getNormalDistanceWeight ()
-    {
-      return (this->normalDistanceWeight);
-    }
+	/** @brief Get the relative weight variable indicating the angular distance
+	 * between point normals and the plane normal. */
+	inline double
+	getNormalDistanceWeight ()
+	{
+		return (this->normalDistanceWeight);
+	}
 
 
-    /** \brief Set the axis along which we need to search for a model perpendicular to.
-      * \param ax the axis along which we need to search for a model perpendicular to
-      */
-    inline void
-      setAxis (const Eigen::Vector3d &ax)
-    {
-      this->axis = ax;
-    }
+	/** @brief Set the axis along which we need to search for a model perpendicular to.
+	 *  @param axis the axis perpendicular to which the model parameters will be searched for
+	 */
+	inline void
+	setAxis (const Eigen::Vector3d &axis)
+	{
+		this->axis = axis;
+	}
 
 
-    /** \brief Get the axis along which we need to search for a model perpendicular to. */
-    inline Eigen::Vector3d
-      getAxis ()
-    {
-      return (this->axis);
-    }
+	/** @brief Get the axis along which we need to search for a model perpendicular to. */
+	inline Eigen::Vector3d
+	getAxis ()
+	{
+		return (this->axis);
+	}
 
 
-    /** \brief Set the angle epsilon (delta) threshold.
-      * \param ea the maximum allowed difference between the model normal and the given axis.
-      */
-    inline void
-      setEpsAngle (double ea)
-    {
-      this->epsAngle = ea;
-    }
+	/** @brief Set the angle epsilon (delta) threshold.
+	 *  @param epAngle the maximum allowed difference between the model normal and the given axis.
+	 */
+	inline void
+	setEpsAngle (double epAngle)
+	{
+		this->epsAngle = epAngle;
+	}
 
 
-    /** \brief Get the epsilon (delta) model angle threshold. */
-    inline double
-      getEpsAngle ()
-    {
-      return (this->epsAngle);
-    }
+	/** @brief Get the angle threshold between the given axis and the model-normal. */
+	inline double
+	getEpsAngle ()
+	{
+		return (this->epsAngle);
+	}
 
 
 
-	/** \brief Set the minimum and maximum allowable radius limits for the model (applicable to models that estimate
-	 * a radius)
-	 * \param min_radius the minimum radius model
-	 * \param max_radius the maximum radius model
-	 * \todo change this to set limits on the entire model
+	/** @brief Set the minimum and maximum radius allowable for models including a radius value
+	 *  @param minRadius the minimum radius model
+	 *  @param maxRadius the maximum radius model
 	 */
 	inline void
 	setRadiusLimits (const double &minRadius, const double &maxRadius)
@@ -150,90 +145,90 @@ public:
 
 
 
-    /** \brief Initialize the Sample Consensus model and set its parameters.
-      * \param model_type the type of SAC model that is to be used
-      */
-virtual    inline bool
-      initSACModel (const int model_type)
-    {
-      // Check if input is synced with the normals
-      if (this->inputPointCloud->getSize() != this->normalSet->getSize())
-      {
-        cout<<"[initSACModelUsing Normals] The number of points inthe input point cloud differs than the number of points in the normals!";
-        return (false);
-      }
-
-      // Build the model
-      switch (model_type)
-      {
-        case OBJMODEL_CYLINDER:
-        {
-          cout<<"[OBJModelCylinder : initSACModel] Using a model of type: OBJMODEL_CYLINDER"<<endl;
-
-          this->objectModelUsingNormals =  new ObjectModelCylinder();
-          this->objectModelUsingNormals->setInputCloud(this->inputPointCloud);
-          this->objectModelUsingNormals->setInputNormals(this->normalSet);
-
-          // Set the input normals
-          double min_radius, max_radius;
-          this->objectModelUsingNormals->getRadiusLimits(min_radius,max_radius);
-          if (this->radiusMin != min_radius && this->radiusMax!= max_radius)
-          {
-            cout<<"[OBJModelCylinder : initSACModel] Setting radius limits to "<< this->radiusMin<< ", "<<this->radiusMax<<endl;
-            this->objectModelUsingNormals->setRadiusLimits (this->radiusMin, this->radiusMax);
-          }
-          if (this->normalDistanceWeight != this->objectModelUsingNormals->getNormalDistanceWeight ())
-          {
-            cout<< "[OBJModelCylinder : initSACModel] Setting normal distance weight to "<< this->normalDistanceWeight <<endl;
-            this->objectModelUsingNormals->setNormalDistanceWeight (this->normalDistanceWeight);
-          }
-          break;
-        }
-        case OBJMODEL_NORMAL_PLANE:
-        {
-          cout<<"[OBJModelNormalPlane : initSACModel] Using a model of type: OBJMODEL_NORMAL_PLANE"<<endl;
-          this->objectModelUsingNormals = new ObjectModelNormalPlane();
-
-          // Set the input normals
-          this->objectModelUsingNormals->setInputNormals(this->normalSet);
-
-          if (normalDistanceWeight != this->objectModelUsingNormals->getNormalDistanceWeight ())
-          {
-            cout<< "[OBJModelNormalPlane : initSACModel] Setting normal distance weight to "<< this->normalDistanceWeight;
-            this->objectModelUsingNormals->setNormalDistanceWeight(this->normalDistanceWeight);
-          }
-
-          if (this->objectModelUsingNormals->getAxis() != this->axis)
-          {
-            cout<<"[OBJModelNormalPlane : initSACModel] Setting the axis to"<< axis[0] << ", "
-            		<< axis[1] << ", " <<axis[2] <<endl;
-            this->objectModelUsingNormals->setAxis(axis);
-          }
-          if (this->objectModelUsingNormals->getEpsAngle () != this->epsAngle)
-          {
-            cout << "[OBJModelPlane : initSACModel] Setting the epsilon angle to "<< this->epsAngle;
-            this->objectModelUsingNormals->setEpsAngle (this->epsAngle);
-          }
-          break;
-        }
-        default:
-        {
-          cout<<"[OBJModelPlane : initSACModel] No valid model given!";
-          return (false);
-        }
-      }
-      return (true);
-    }
-
-
-
-
-	/** \brief Initialize the Sample Consensus method and set its parameters.
-	 * \param method_type the type of SAC method to be used
+	/** @brief Initialize the Sample Consensus model and set its parameters.
+	 *  @param model_type the type of SAC model that is to be used
 	 */
-	virtual inline void initSACMethod(const int method_type) {
-		// Build the sample consensus method
-		switch (method_type) {
+	virtual    inline bool
+	initSACModel (const int model_type)
+	{
+		//Check if input is synced with the normals
+		if (this->inputPointCloud->getSize() != this->normalSet->getSize())
+		{
+			cout<<"[initSACModelUsing Normals] The number of points inthe input point cloud differs than the number of points in the normals!";
+			return (false);
+		}
+
+		// Build the model
+		switch (model_type)
+		{
+		case OBJMODEL_CYLINDER:
+		{
+			cout<<"[OBJModelCylinder : initSACModel] Using a model of type: OBJMODEL_CYLINDER"<<endl;
+
+			this->objectModelUsingNormals =  new ObjectModelCylinder();
+			this->objectModelUsingNormals->setInputCloud(this->inputPointCloud);
+			this->objectModelUsingNormals->setInputNormals(this->normalSet);
+
+			// Set the input normals
+			double min_radius, max_radius;
+			this->objectModelUsingNormals->getRadiusLimits(min_radius,max_radius);
+			if (this->radiusMin != min_radius && this->radiusMax!= max_radius)
+			{
+				cout<<"[OBJModelCylinder : initSACModel] Setting radius limits to "<< this->radiusMin<< ", "<<this->radiusMax<<endl;
+				this->objectModelUsingNormals->setRadiusLimits (this->radiusMin, this->radiusMax);
+			}
+			if (this->normalDistanceWeight != this->objectModelUsingNormals->getNormalDistanceWeight ())
+			{
+				cout<< "[OBJModelCylinder : initSACModel] Setting normal distance weight to "<< this->normalDistanceWeight <<endl;
+				this->objectModelUsingNormals->setNormalDistanceWeight (this->normalDistanceWeight);
+			}
+			break;
+		}
+		case OBJMODEL_NORMAL_PLANE:
+		{
+			cout<<"[OBJModelNormalPlane : initSACModel] Using a model of type: OBJMODEL_NORMAL_PLANE"<<endl;
+			this->objectModelUsingNormals = new ObjectModelNormalPlane();
+
+			// Set the input normals
+			this->objectModelUsingNormals->setInputNormals(this->normalSet);
+
+			if (normalDistanceWeight != this->objectModelUsingNormals->getNormalDistanceWeight ())
+			{
+				cout<< "[OBJModelNormalPlane : initSACModel] Setting normal distance weight to "<< this->normalDistanceWeight;
+				this->objectModelUsingNormals->setNormalDistanceWeight(this->normalDistanceWeight);
+			}
+
+			if (this->objectModelUsingNormals->getAxis() != this->axis)
+			{
+				cout<<"[OBJModelNormalPlane : initSACModel] Setting the axis to"<< axis[0] << ", "
+						<< axis[1] << ", " <<axis[2] <<endl;
+				this->objectModelUsingNormals->setAxis(axis);
+			}
+			if (this->objectModelUsingNormals->getEpsAngle () != this->epsAngle)
+			{
+				cout << "[OBJModelPlane : initSACModel] Setting the epsilon angle to "<< this->epsAngle;
+				this->objectModelUsingNormals->setEpsAngle (this->epsAngle);
+			}
+			break;
+		}
+		default:
+		{
+			cout<<"[OBJModelPlane : initSACModel] No valid model given!";
+			return (false);
+		}
+		}
+		return (true);
+	}
+
+
+
+
+	/** @brief Initialize the segmentation method and set the required parameters.
+	 *  @param methodType the type of Sample Consensus method to be used
+	 */
+	virtual inline void initSACMethod(const int methodType) {
+
+		switch (methodType) {
 		case SAC_ALMeDS: {
 			cout<<"[initSAC] Using a method of type: SAC_ALMeDS with a model threshold of "<<threshold<<endl;
 			sacMethod = new SACMethodALMeDS();
@@ -276,6 +271,7 @@ virtual    inline bool
 			break;
 		}
 		}
+
 		// Set the Sample Consensus parameters if they are given/changed
 		if (sacMethod->getProbability() != probability) {
 			cout<<"[initSAC] Setting the desired probability to "<< this->probability<<endl;
@@ -290,9 +286,9 @@ virtual    inline bool
 	}
 
 
-	/** \brief Base method for segmentation of a model in a PointCloud given by <setInputCloud (), setIndices ()>
-	 * \param inliers the resultant point indices that support the model found (inliers)
-	 * \param model_coefficients the resultant model coefficients
+	/** @brief Base method for finding of a model in the input point cloud
+	 *  @param inliers the point indices lying inside the estimated model
+	 *  @param model_coefficients the resultant model coefficients
 	 */
 	virtual void
 	segment (std::vector<int> &inliers, Eigen::VectorXd &model_coefficients)

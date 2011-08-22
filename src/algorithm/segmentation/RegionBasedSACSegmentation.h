@@ -1,8 +1,8 @@
 /*
- * RegionBasedSACSegmentation.h
- *
- *  Created on: Apr 17, 2011
- *      Author: reon
+ * @file: RegionBasedSACSegmentation.h
+ * @brief: Adapter class for initialization of sample consensus based segmentation method
+ * @date: Apr 17, 2011
+ * @author: reon
  */
 
 #ifndef REGIONBASEDSACSEGMENTATION_H_
@@ -36,51 +36,53 @@ namespace BRICS_3D{
 class RegionBasedSACSegmentation {
 
 protected:
-	/** \brief The underlying data model used (i.e. what is it that we attempt to search for). */
+	/** @brief The object model to be searched for in its parametric form. */
 	IObjectModel *objectModel;
 
-	/** \brief The underlying normal based data model used (i.e. what is it that we attempt to search for). */
+	/** @brief The point normal based object model to be searched for in its parametric form. */
 	IObjectModelUsingNormals *objectModelUsingNormals;
 
-	/** \brief The underlying SAC method used. */
+	/** @brief The sample consensus method to be used for model parameter estimation. */
 	ISACMethods *sacMethod;
 
-	/** \brief Distance to model threshold. */
+	/** @brief Threshold distance to model. Default value -1  */
 	double threshold;
 
-	/** \brief Maximum number of iterations before giving up. */
+	/** @brief Maximum number of iterations for model estimation. Default value 10000 */
 	int maxIterations;
 
-	/** \brief Desired probability of choosing at least one sample free from outliers. */
+	/** @brief Probability of choosing at least one sample free from outliers. Default value 0.99*/
 	double probability;
 
-	/** \brief The model found after the last computeModel () as point cloud indices. */
+	/** @brief The model computed in the last iteration */
 	std::vector<int> model;
 
-	/** \brief The indices of the points that were chosen as inliers after the last computeModel () call. */
+	/** @brief  The point indices corresponding to the model computed in the last iteration*/
 	std::vector<int> inliers;
 
-	/** \brief The coefficients of our model computed directly from the model found. */
+	/** @brief The estimated model coefficients */
 	Eigen::VectorXd modelCoefficients;
 
-	/** \brief Total number of internal loop iterations that we've done so far. */
+	/** @brief No of iterations for model estimation already completed */
 	int iterations;
 
-	/** \brief The object model used*/
+	/** @brief Indicates the object model estimated*/
 	int modelType;
 
-	/** \brief SAC Method used*/
+	/** @brief Indicates the sample consensus method used for estimating
+	 * the model
+	 * */
 	int SACMethodType;
 
-	/** \brief Indicates if model coefficient refinement is enabled*/
+	/** @brief Indicates if model coefficient refinement is enabled*/
 	bool optimizeCoefficients;
 
-	/** \brief Represents the point-cloud to be processed*/
+	/** @brief The input point-cloud to be processed*/
 	PointCloud3D* inputPointCloud;
 
 public:
 
-	/**Defining the object model types ids supported */
+	/**Defining the object model types supported */
 
 	const static int OBJMODEL_PLANE = 0;
 	const static int OBJMODEL_LINE = 1;
@@ -109,116 +111,113 @@ public:
 		this->probability = 0.99;
 	}
 	/**
-	 * \brief Set the pointcloud to be processed
-	 * \param Pointcloud to be processed
+	 * @brief Set the input pointcloud to be processed
+	 * @param Pointcloud input pointcloudto be processed
 	 */
 	inline void setInputPointCloud(PointCloud3D *input) {
 		this->inputPointCloud = input;
 
 	}
 
-	/** \brief Set the distance to model threshold.
-	 * \param threshold distance to model threshold
+	/** @brief Set the distance to model threshold.
+	 * @param threshold distance to model threshold
 	 */
 	inline void setDistanceThreshold(double threshold) {
 		this->threshold = threshold;
 	}
 
-	/** \brief Get the distance to model threshold, as set by the user. */
+	/** @brief Get the distance to model threshold, as set by the user. */
 	inline double getDistanceThreshold() {
 		return (this->threshold);
 	}
 
-	/** \brief Set the maximum number of iterations.
-	 * \param max_iterations maximum number of iterations
+	/** @brief Set the Maximum number of iterations for model estimation
+	 *  @param max_iterations maximum number of iterations for model estimation
 	 */
 	inline void setMaxIterations(int maxIterations) {
 		this->maxIterations = maxIterations;
 	}
 
-	/** \brief Get the maximum number of iterations, as set by the user. */
+	/** @brief Get the maximum number of iterations, as set by the user. */
 	inline int getMaxIterations() {
 		return (maxIterations);
 	}
 
-	/** \brief Set the desired probability of choosing at least one sample free from outliers.
-	 * \param probability the desired probability of choosing at least one sample free from outliers
-	 *\\ToDo
+	/** @brief Set the desired probability of choosing at least one sample free from outliers.
+	 * @param probability the desired probability of choosing at least one sample free from outliers
 	 *\note internally, the probability is set to 99% (0.99) by default.
 	 */
 	inline void setProbability(double probability) {
 		this->probability = probability;
 	}
 
-	/** \brief Obtain the probability of choosing at least one sample free from outliers, as set by the user. */
+	/** @brief Obtain the probability of choosing at least one sample free from outliers, as set by the user. */
 	inline double getProbability() {
 		return (probability);
 	}
 
-	/** \brief Return the best model found so far.
-	 * \param model the resultant model
+	/** @brief Return the best model found so far.
+	 * @param model the resultant model
 	 */
 	inline void getModel(std::vector<int> &model) {
 		model = this->model;
 	}
 
-	/** \brief Return the best set of inliers found so far for this model.
-	 * \param inliers the resultant set of inliers
+	/** @brief Return the best set of inliers found so far for this model.
+	 * @param inliers the resultant set of inliers
 	 */
 	inline void getInliers(std::vector<int> &inliers) {
 		inliers = this->inliers;
 	}
 
-	/** \brief Return the model coefficients of the best model found so far.
-	 * \param model_coefficients the resultant model coefficients
+	/** @brief Return the model coefficients of the best model found so far.
+	 * @param model_coefficients the resultant model coefficients
 	 */
 	inline void getModelCoefficients(Eigen::VectorXd &modelCoefficients) {
 		modelCoefficients = this->modelCoefficients;
 	}
 
-	/** \brief The type of model to use (user given parameter).
-	 * \param model the model type (check \a model_types.h)
+	/** @brief The type of model to use (user given parameter).
+	 * @param model the model type (check \a model_types.h)
 	 */
 	inline void setModelType(int modelType) {
 		this->modelType = modelType;
 	}
 
-	/** \brief Get the type of SAC model used. */
+	/** @brief Get the type of SAC model used. */
 	inline int getModelType() {
 		return (this->modelType);
 	}
 
-	/** \brief The type of sample consensus method to use (user given parameter).
-	 * \param method the method type (check \a method_types.h)
+	/** @brief The type of sample consensus method to use (user given parameter).
+	 * @param method the method type (check \a method_types.h)
 	 */
 	inline void setMethodType(int methodType) {
 		this->SACMethodType = methodType;
 	}
 
-	/** \brief Get the type of sample consensus method used. */
+	/** @brief Get the type of sample consensus method used. */
 	inline int getMethodType() {
 		return (this->SACMethodType);
 	}
 
-	/** \brief Set to true if a coefficient refinement is required.
-	 * \param optimize true for enabling model coefficient refinement, false otherwise
-	 */
 	inline void setOptimizeCoefficients(bool optimize) {
 		this->optimizeCoefficients = optimize;
 	}
 
-	/** \brief Get the coefficient refinement internal flag. */
+
 	inline bool getOptimizeCoefficients() {
 		return (this->optimizeCoefficients);
 	}
 
-	/** \brief Initialize the Sample Consensus model and set its parameters.
-	 * \param model_type the type of SAC model that is to be used
+
+	/** @brief Initialize the Sample Consensus model and set its parameters.
+	 *  @param model_type the type of SAC model that is to be used
 	 */
-	virtual inline bool initSACModel(const int model_type) {
+	virtual inline bool initSACModel(const int modelType) {
 
 		// Build the model
-		switch (model_type) {
+		switch (modelType) {
 		case OBJMODEL_PLANE: {
 			cout << "[initSACModel] Using a model of type: OBJECT_MODEL_PLANE"<<endl;
 			objectModel = new ObjectModelPlane();
@@ -287,11 +286,11 @@ public:
 		return (true);
 	}
 
-	/** \brief Initialize the Sample Consensus method and set its parameters.
-	 * \param method_type the type of SAC method to be used
+	/** @brief Initialize the Sample Consensus method and set its parameters.
+	 * @param method_type the type of SAC method to be used
 	 */
 	virtual inline void initSACMethod(const int method_type) {
-		// Build the sample consensus method
+
 		switch (method_type) {
 		case SAC_ALMeDS: {
 			cout<<"[initSAC] Using a method of type: SAC_ALMeDS with a model threshold of "<<threshold<<endl;
@@ -349,9 +348,9 @@ public:
 	}
 
 
-	/** \brief Base method for segmentation of a model in a PointCloud given by <setInputCloud (), setIndices ()>
-	 * \param inliers the resultant point indices that support the model found (inliers)
-	 * \param model_coefficients the resultant model coefficients
+	/** @brief Base method for finding of a model in the input point cloud
+	 *  @param inliers the point indices lying inside the estimated model
+	 *  @param model_coefficients the resultant model coefficients
 	 */
 	virtual void
 	segment (std::vector<int> &inliers, Eigen::VectorXd &model_coefficients)
