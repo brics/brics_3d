@@ -78,7 +78,7 @@ ConfigurationFileHandler::ConfigurationFileHandler(const std::string filename) {
 	}
 
 #else
-	LOG(WARNING) <<  Xerces is not enabled. No XML I/O support.";
+	LOG(WARNING) <<  "Xerces is not enabled. No XML I/O support.";
 	errorsOccured = true;
 #endif
 
