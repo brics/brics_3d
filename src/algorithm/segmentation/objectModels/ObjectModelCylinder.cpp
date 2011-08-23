@@ -1,8 +1,9 @@
 /*
- * ObjectModelCylinder.cpp
+ * @file: ObjectModelCylinder.h
  *
- *  Created on: Apr 23, 2011
- *      Author: reon
+ * @date:Created on: Apr 23, 2011
+ * @author:Author: reon
+ * @note The implementation is reusing the object model implementation in ROS:PCL
  */
 
 #include "ObjectModelCylinder.h"
@@ -38,8 +39,6 @@ if (!computeModelCoefficients (selection, model_coefficients)){
 void
 ObjectModelCylinder::getSamples (int &iterations, std::vector<int> &samples)
 {
-	// We're assuming that indices_ have already been set in the constructor
-	//ToDo ROS_ASSERT (this->indices_->size () != 0);
 
 	samples.resize (2);
 	double trand = this->inputPointCloud->getSize() / (RAND_MAX + 1.0);
@@ -63,8 +62,8 @@ ObjectModelCylinder::getSamples (int &iterations, std::vector<int> &samples)
 
 bool ObjectModelCylinder::computeModelCoefficients (const std::vector<int> &samples,
 		Eigen::VectorXd &model_coefficients){
-	// Need 2 samples
-	//ToDo ROS_ASSERT (samples.size () == 2);
+
+	//ToDo Check for (samples.size () == 2);
 
 	if (!this->normals && this->normals->getSize()!=this->inputPointCloud->getSize())
 	{
@@ -132,65 +131,10 @@ bool ObjectModelCylinder::computeModelCoefficients (const std::vector<int> &samp
 
 
 
-void ObjectModelCylinder::optimizeModelCoefficients (const std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,
-		Eigen::VectorXd &optimized_coefficients){
-
-	//ToDo Requires cminpack. currently not supported
-	cout<< "INFO: Currently model coe-fficient optimization is not supported for ObjectModelCylinder"<<endl;
-	optimized_coefficients = model_coefficients;
-	return;
-
-	/*boost::mutex::scoped_lock lock (tmp_mutex_);
-
-     int n_unknowns = 7;      // 4 unknowns
-     // Needs a set of valid model coefficients
-     ROS_ASSERT (model_coefficients.size () == n_unknowns);
-
-     if (inliers.size () == 0)
-     {
-       ROS_ERROR ("[pcl::%s::optimizeModelCoefficients] Cannot re-fit 0 inliers!", getName ().c_str ());
-       optimized_coefficients = model_coefficients;
-       return;
-     }
-
-     tmp_inliers_ = &inliers;
-     int m = inliers.size ();
-
-     double *fvec = new double[m];
-
-     int iwa[n_unknowns];
-
-     int lwa = m * n_unknowns + 5 * n_unknowns + m;
-     double *wa = new double[lwa];
-
-     // Set the initial solution
-     double x[n_unknowns];
-     for (int d = 0; d < n_unknowns; ++d)
-       x[d] = model_coefficients[d];   // initial guess
-
-     // Set tol to the square root of the machine. Unless high solutions are required, these are the recommended settings.
-     double tol = sqrt (dpmpar (1));
-
-     // Optimize using forward-difference approximation LM
-     int info = lmdif1 (&pcl::SampleConsensusModelCylinder<PointT, PointNT>::functionToOptimize, this, m, n_unknowns, x, fvec, tol, iwa, wa, lwa);
-
-     // Compute the L2 norm of the residuals
-     ROS_DEBUG ("[pcl::%s::optimizeModelCoefficients] LM solver finished with exit code %i, having a residual norm of %g. \nInitial solution: %g %g %g %g %g %g %g \nFinal solution: %g %g %g %g %g %g %g",
-                getName ().c_str (), info, enorm (m, fvec), model_coefficients[0], model_coefficients[1], model_coefficients[2], model_coefficients[3],
-                model_coefficients[4], model_coefficients[5], model_coefficients[6], x[0], x[1], x[2], x[3], x[4], x[5], x[6]);
-
-     optimized_coefficients.resize (n_unknowns);
-     for (int d = 0; d < n_unknowns; ++d)
-       optimized_coefficients[d] = x[d];
-
-     free (wa); free (fvec);*/
-}
-
 
 void ObjectModelCylinder::getDistancesToModel (const Eigen::VectorXd &model_coefficients, std::vector<double> &distances){
 
-	// Needs a valid model coefficients
-	//ToDo ROS_ASSERT (model_coefficients.size () == 7);
+	//ToDo Check for (model_coefficients.size () == 7);
 
 	distances.resize (this->inputPointCloud->getSize());
 
@@ -205,7 +149,7 @@ void ObjectModelCylinder::getDistancesToModel (const Eigen::VectorXd &model_coef
 	{
 		// Aproximate the distance from the point to the cylinder as the difference between
 		// dist(point,cylinder_axis) and cylinder radius
-		// @note need to revise this.
+		// Todo to be revised
 		Eigen::Vector4d pt = Eigen::Vector4d (this->points->data()[i].getX(),
 				this->points->data()[i].getY(), this->points->data()[i].getZ(), 0);
 
@@ -233,8 +177,7 @@ void ObjectModelCylinder::getDistancesToModel (const Eigen::VectorXd &model_coef
 
 void ObjectModelCylinder::selectWithinDistance (const Eigen::VectorXd &model_coefficients, double threshold,
 		std::vector<int> &inliers){
-	// Needs a valid model coefficients
-	//ToDo ROS_ASSERT (model_coefficients.size () == 7);
+	//ToDo Check for (model_coefficients.size () == 7);
 
 	int nr_p = 0;
 	inliers.resize (this->inputPointCloud->getSize());
@@ -278,6 +221,7 @@ void ObjectModelCylinder::selectWithinDistance (const Eigen::VectorXd &model_coe
 	inliers.resize (nr_p);
 }
 
+
 void ObjectModelCylinder::getInlierDistance (std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,
 		std::vector<double> &distances){
 
@@ -320,48 +264,11 @@ void ObjectModelCylinder::getInlierDistance (std::vector<int> &inliers, const Ei
 }
 
 
-void ObjectModelCylinder::projectPoints (const std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,
-		PointCloud3D* projectedPointCloud){
-
-	// Needs a valid set of model coefficients
-	//ToDo ROS_ASSERT (model_coefficients.size () == 7);
-
-    Eigen::Vector4d line_pt = Eigen::Vector4d (model_coefficients[0], model_coefficients[1],
-    		model_coefficients[2], 0);
-    Eigen::Vector4d line_dir = Eigen::Vector4d (model_coefficients[3], model_coefficients[4],
-    		model_coefficients[5], 0);
-    double ptdotdir = line_pt.dot (line_dir);
-    double dirdotdir = 1.0 / line_dir.dot (line_dir);
-
-
-	// Iterate through the 3d points and calculate the distances from them to the cylinder
-	for (size_t i = 0; i < inliers.size (); ++i)
-	{
-		Eigen::Vector4d p = Eigen::Vector4d (this->points->data()[inliers[i]].getX(),
-				this->points->data()[inliers[i]].getY(), this->points->data()[inliers[i]].getZ(), 0);
-
-		double k = (p.dot (line_dir) - ptdotdir) * dirdotdir;
-		Eigen::Vector4d pp = line_pt + k * line_dir;
-
-		Eigen::Vector4d dir = p - pp;
-		dir.normalize ();
-
-		// Calculate the projection of the point onto the cylinder
-		pp += dir * model_coefficients[6];
-		// Calculate the projection of the point on the cylinder
-		std::vector<Point3D> *projectedPoints = projectedPointCloud->getPointCloud();
-		projectedPoints->data()[inliers[i]].setX(pp[0]);
-		projectedPoints->data()[inliers[i]].setY(pp[1]);
-		projectedPoints->data()[inliers[i]].setZ(pp[2]);
-	}
-
-}
-
 
 bool ObjectModelCylinder::doSamplesVerifyModel (const std::set<int> &indices, const Eigen::VectorXd &model_coefficients,
 		double threshold){
-    // Needs a valid model coefficients
-    //ToDo ROS_ASSERT (model_coefficients.size () == 7);
+
+    //ToDo Check for (model_coefficients.size () == 7);
 
     Eigen::Vector4d pt;
     for (std::set<int>::iterator it = indices.begin (); it != indices.end (); ++it)

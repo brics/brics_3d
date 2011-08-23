@@ -1,16 +1,18 @@
 /*
- * ObjectModelSphere.cpp
+ * @file:ObjectModelSphere.cpp
  *
- *  Created on: Apr 22, 2011
- *      Author: reon
+ * @date:Created on: Apr 22, 2011
+ * @author:Author: reon
+ * @note The implementation is reusing the object model implementation in ROS:PCl
  */
+
 
 #include "ObjectModelSphere.h"
 
 namespace BRICS_3D {
 
 
-void ObjectModelSphere::computeRandomModel (int &iterations, Eigen::VectorXd &model_coefficients,
+void ObjectModelSphere::computeRandomModel (int &iterations, Eigen::VectorXd &modelCoefficients,
 		bool &isDegenerate, bool &modelFound){
 
 	std::vector<int> samples;
@@ -27,7 +29,7 @@ void ObjectModelSphere::computeRandomModel (int &iterations, Eigen::VectorXd &mo
 
 	}
 
-	if (!computeModelCoefficients (selection, model_coefficients)){
+	if (!computeModelCoefficients (selection, modelCoefficients)){
 		modelFound = false;
 		return;
 	} else {
@@ -37,28 +39,18 @@ void ObjectModelSphere::computeRandomModel (int &iterations, Eigen::VectorXd &mo
 
 }
 
-/** \brief Get 4 random points (3 non-collinear) as data samples and return them as point indices.
- * \param iterations the internal number of iterations used by SAC methods
- * \param samples the resultant model samples
- * \note assumes unique points!
- * \note Two different points could be enough in theory, to infere some sort of a center and a radius,
- *       but in practice, we might end up with a lot of points which are just 'close' to one another.
- *       Therefore we have two options:
- *       a) use normal information (good but I wouldn't rely on it in extremely noisy point clouds, no matter what)
- *       b) get two more points and uniquely identify a sphere in space (3 unique points define a circle)
+/**
+ *  @note gets 4 unique points with at least three of them non- collinear (3 unique points define a circle)
  */
 void
 ObjectModelSphere:: getSamples (int &iterations, std::vector<int> &samples)
 {
-	// We're assuming that indices_ have already been set in the constructor
-	//ToDo ROS_ASSERT (this->indices_->size () != 0);
-
 	samples.resize (4);
 	double trand = this->inputPointCloud->getSize() / (RAND_MAX + 1.0);
 
-	// Get a random number between 1 and max_indices
+
 	int idx = (int)(rand () * trand);
-	// Get the index
+	// Get the random index
 	samples[0] = idx;
 
 	// Get a second point which is different than the first
@@ -113,8 +105,7 @@ ObjectModelSphere:: getSamples (int &iterations, std::vector<int> &samples)
 	while ( (dy1dy2[0] == dy1dy2[1]) && (dy1dy2[2] == dy1dy2[1]) );
 	iterations--;
 
-	// Need to improve this: we need 4 points, 3 non-collinear always, and the 4th should not be in the same plane as the other 3
-	// otherwise we can encounter degenerate cases
+	// ToDo At least one point should not be in the same plane than the other 3
 	do
 	{
 		samples[3] = (int)(rand () * trand);
@@ -125,16 +116,11 @@ ObjectModelSphere:: getSamples (int &iterations, std::vector<int> &samples)
 }
 
 
-/** \brief Check whether the given index samples can form a valid sphere model, compute the model coefficients
- * from these samples and store them internally in model_coefficients. The sphere coefficients are: x, y, z, R.
- * \param samples the point indices found as possible good candidates for creating a valid model
- * \param model_coefficients the resultant model coefficients
- */
+
 bool
 ObjectModelSphere::computeModelCoefficients (const std::vector<int> &samples, Eigen::VectorXd &model_coefficients)
 {
-	// Need 4 samples
-	//ToDO ROS_ASSERT (samples.size () == 4);
+	// ToDo check for at-least 4 samples
 
 	Eigen::Matrix4f temp;
 	for (int i = 0; i < 4; i++)
@@ -192,15 +178,11 @@ ObjectModelSphere::computeModelCoefficients (const std::vector<int> &samples, Ei
 }
 
 
-/** \brief Compute all distances from the cloud data to a given sphere model.
- * \param model_coefficients the coefficients of a sphere model that we need to compute distances to
- * \param distances the resultant estimated distances
- */
+
 void
 ObjectModelSphere:: getDistancesToModel (const Eigen::VectorXd &model_coefficients, std::vector<double> &distances)
 {
-	// Needs a valid model coefficients
-	//ToDo ROS_ASSERT (model_coefficients.size () == 4);
+	//ToDo Check if we have 4 model coefficients
 
 	distances.resize (this->inputPointCloud->getSize());
 
@@ -220,12 +202,12 @@ ObjectModelSphere:: getDistancesToModel (const Eigen::VectorXd &model_coefficien
 		) - model_coefficients[3]);
 }
 
+
 void
 ObjectModelSphere::getInlierDistance (std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,
 		std::vector<double> &distances) {
 
-	// Needs a valid model coefficients
-	//ToDo ROS_ASSERT (model_coefficients.size () == 4);
+	//ToDo Check if we have 4 model coefficients
 
 	distances.resize (inliers.size());
 
@@ -246,17 +228,12 @@ ObjectModelSphere::getInlierDistance (std::vector<int> &inliers, const Eigen::Ve
 }
 
 
-/** \brief Select all the points which respect the given model coefficients as inliers.
- * \param model_coefficients the coefficients of a sphere model that we need to compute distances to
- * \param threshold a maximum admissible distance threshold for determining the inliers from the outliers
- * \param inliers the resultant model inliers
- */
+
 void
 ObjectModelSphere::selectWithinDistance (const Eigen::VectorXd &model_coefficients, double threshold, std::vector<int> &inliers)
 {
-	// Needs a valid model coefficients
-	//ToDo ROS_ASSERT (model_coefficients.size () == 4);
 
+	//ToDo Check if we have 4 model coefficients
 	int nr_p = 0;
 	inliers.resize (this->inputPointCloud->getSize());
 
@@ -284,110 +261,29 @@ ObjectModelSphere::selectWithinDistance (const Eigen::VectorXd &model_coefficien
 	inliers.resize (nr_p);
 }
 
-/** \brief Recompute the sphere coefficients using the given inlier set and return them to the user.
- * @note: these are the coefficients of the sphere model after refinement (eg. after SVD)
- * \param inliers the data inliers found as supporting the model
- * \param model_coefficients the initial guess for the optimization
- * \param optimized_coefficients the resultant recomputed coefficients after non-linear optimization
- */
-void
-ObjectModelSphere::optimizeModelCoefficients (const std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,
-		Eigen::VectorXd &optimized_coefficients)
-{
-
-	//ToDo Requires cminpack. currently not supported
-		cout<< "INFO: Currently model coe-fficient optimization is not supported for ObjectModelCircle"<<endl;
-		optimized_coefficients = model_coefficients;
-		return;
 
 
-	/*boost::mutex::scoped_lock lock (tmp_mutex_);
 
-	int n_unknowns = 4;      // 4 unknowns
-	// Needs a set of valid model coefficients
-	ROS_ASSERT (model_coefficients.size () == n_unknowns);
 
-	if (inliers.size () == 0)
-	{
-		ROS_ERROR ("[pcl::SampleConsensusModelSphere::optimizeModelCoefficients] Inliers vector empty! Returning the same coefficients.");
-		optimized_coefficients = model_coefficients;
-		return;
-	}
-
-	// Need at least 4 samples
-	ROS_ASSERT (inliers.size () > 4);
-
-	tmp_inliers_ = &inliers;
-
-	int m = inliers.size ();
-
-	double *fvec = new double[m];
-
-	int iwa[n_unknowns];
-
-	int lwa = m * n_unknowns + 5 * n_unknowns + m;
-	double *wa = new double[lwa];
-
-	// Set the initial solution
-	double x[n_unknowns];
-	for (int d = 0; d < n_unknowns; ++d)
-		x[d] = model_coefficients[d];   // initial guess
-
-	// Set tol to the square root of the machine. Unless high solutions are required, these are the recommended settings.
-	double tol = sqrt (dpmpar (1));
-
-	// Optimize using forward-difference approximation LM
-	int info = lmdif1 (&pcl::SampleConsensusModelSphere<PointT>::functionToOptimize, this, m, n_unknowns, x, fvec, tol, iwa, wa, lwa);
-
-	// Compute the L2 norm of the residuals
-	ROS_DEBUG ("[pcl::SampleConsensusModelSphere::optimizeModelCoefficients] LM solver finished with exit code %i, having a residual norm of %g. \nInitial solution: %g %g %g %g \nFinal solution: %g %g %g %g",
-			info, enorm (m, fvec), model_coefficients[0], model_coefficients[1], model_coefficients[2], model_coefficients[3], x[0], x[1], x[2], x[3]);
-
-	optimized_coefficients = Eigen::Vector4f (x[0], x[1], x[2], x[3]);
-
-	free (wa); free (fvec);*/
-}
-
-/** \brief Create a new point cloud with inliers projected onto the sphere model.
-  * \param inliers the data inliers that we want to project on the sphere model
-  * \param model_coefficients the coefficients of a sphere model
-  * \param projected_points the resultant projected points
-  * \param copy_data_fields set to true if we need to copy the other data fields
-  * \todo implement this.
-  */
-void
- ObjectModelSphere::projectPoints (const std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,
-                 PointCloud3D *projected_points)
-{
-  cout<<"[SampleConsensusModelSphere::projectPoints] Not implemented yet.";
-  projected_points = this->inputPointCloud;
-}
-
-/** \brief Verify whether a subset of indices verifies the given sphere model coefficients.
-  * \param indices the data indices that need to be tested against the sphere model
-  * \param model_coefficients the sphere model coefficients
-  * \param threshold a maximum admissible distance threshold for determining the inliers from the outliers
-  */
 bool
-  ObjectModelSphere::doSamplesVerifyModel (const std::set<int> &indices, const Eigen::VectorXd &model_coefficients, double threshold)
+ObjectModelSphere::doSamplesVerifyModel (const std::set<int> &indices, const Eigen::VectorXd &model_coefficients, double threshold)
 {
-  // Needs a valid model coefficients
-  //ToDo ROS_ASSERT (model_coefficients.size () == 4);
+	//ToDo Check if we have 4 model coefficients
 
-  for (std::set<int>::iterator it = indices.begin (); it != indices.end (); ++it)
-    // Calculate the distance from the point to the sphere as the difference between
-    //dist(point,sphere_origin) and sphere_radius
-    if (fabs (sqrt (
-                    ( this->points->data()[*it].getX() - model_coefficients[0] ) *
-                    ( this->points->data()[*it].getX() - model_coefficients[0] ) +
-                    ( this->points->data()[*it].getY() - model_coefficients[1] ) *
-                    ( this->points->data()[*it].getY() - model_coefficients[1] ) +
-                    ( this->points->data()[*it].getZ() - model_coefficients[2] ) *
-                    ( this->points->data()[*it].getZ() - model_coefficients[2] )
-                   ) - model_coefficients[3]) > threshold)
-      return (false);
+	for (std::set<int>::iterator it = indices.begin (); it != indices.end (); ++it)
+		// Calculate the distance from the point to the sphere as the difference between
+		//dist(point,sphere_origin) and sphere_radius
+		if (fabs (sqrt (
+				( this->points->data()[*it].getX() - model_coefficients[0] ) *
+				( this->points->data()[*it].getX() - model_coefficients[0] ) +
+				( this->points->data()[*it].getY() - model_coefficients[1] ) *
+				( this->points->data()[*it].getY() - model_coefficients[1] ) +
+				( this->points->data()[*it].getZ() - model_coefficients[2] ) *
+				( this->points->data()[*it].getZ() - model_coefficients[2] )
+		) - model_coefficients[3]) > threshold)
+			return (false);
 
-  return (true);
+	return (true);
 }
 
 

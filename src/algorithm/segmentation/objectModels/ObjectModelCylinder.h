@@ -1,8 +1,9 @@
 /*
- * ObjectModelCylinder.h
+ * @file: ObjectModelCylinder.h
  *
- *  Created on: Apr 23, 2011
- *      Author: reon
+ * @date:Created on: Apr 23, 2011
+ * @author:Author: reon
+ * @note The implementation is reusing the object model implementation in ROS:PCl
  */
 
 #ifndef OBJECTMODELCYLINDER_H_
@@ -36,27 +37,27 @@ public:
 	inline int getNumberOfSamplesRequired(){return 3;};
 
 protected:
-	/** \brief Get the distance from a point to a line (represented by a point and a direction)
-	 * \param pt a point
-	 * \param model_coefficients the line coefficients (a point on the line, line direction)
+	/** @brief Get the distance from a point to a line (represented by a point and a direction)
+	 *  @param pt a point
+	 *  @param model_coefficients the line coefficients (a point on the line, line direction)
 	 */
 	double
 	pointToLineDistance (const Eigen::Vector4d &pt, const Eigen::VectorXd &model_coefficients);
 
-	/** \brief Get the distance from a point to a line (represented by a point and a direction)
-	 * \param pt a point
-	 * \param line_pt a point on the line (make sure that line_pt[3] = 0 as there are no internal checks!)
-	 * \param line_dir the line direction
+	/** @brief Get the distance from a point to a line (represented by a point and a direction)
+	 * @param pt a point
+	 * @param line_pt a point on the line (make sure that line_pt[3] = 0 as there are no internal checks!)
+	 * @param line_dir the line direction
 	 */
 	double
 	pointToLineDistance (const Eigen::Vector4d &pt, const Eigen::Vector4d &line_pt,
 			const Eigen::Vector4d &line_dir);
 
-	/** \brief Project a point onto a line given by a point and a direction vector
-	 * \param pt the input point to project
-	 * \param line_pt the point on the line (make sure that line_pt[3] = 0 as there are no internal checks!)
-	 * \param line_dir the direction of the line (make sure that line_dir[3] = 0 as there are no internal checks!)
-	 * \param pt_proj the resultant projected point
+	/** @brief Project a point onto a line given by a point and a direction vector
+	 * @param pt the input point to project
+	 * @param line_pt the point on the line (make sure that line_pt[3] = 0 as there are no internal checks!)
+	 * @param line_dir the direction of the line (make sure that line_dir[3] = 0 as there are no internal checks!)
+	 * @param pt_proj the resultant projected point
 	 */
 	inline void
 	projectPointToLine (const Eigen::Vector4d &pt, const Eigen::Vector4d &line_pt, const Eigen::Vector4d &line_dir,
@@ -67,11 +68,11 @@ protected:
 		pt_proj = line_pt + k * line_dir;
 	}
 
-	/** \brief Project a point onto a cylinder given by its model coefficients (point_on_axis, axis_direction,
+	/** @brief Project a point onto a cylinder given by its model coefficients (point_on_axis, axis_direction,
 	 * cylinder_radius_R)
-	 * \param pt the input point to project
-	 * \param model_coefficients the coefficients of the cylinder (point_on_axis, axis_direction, cylinder_radius_R)
-	 * \param pt_proj the resultant projected point
+	 * @param pt the input point to project
+	 * @param model_coefficients the coefficients of the cylinder (point_on_axis, axis_direction, cylinder_radius_R)
+	 * @param pt_proj the resultant projected point
 	 */
 	inline void
 	projectPointToCylinder(const Eigen::Vector4d &pt, const Eigen::VectorXd &model_coefficients,

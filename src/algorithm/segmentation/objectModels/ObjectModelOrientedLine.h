@@ -1,8 +1,9 @@
 /*
- * ObjectModelOrientedLine.h
+ * @file:ObjectModelOrientedLine .h
  *
- *  Created on: Apr 23, 2011
- *      Author: reon
+ * @date:Created on: Apr 23, 2011
+ * @author:Author: reon
+ * @note The implementation is reusing the object model implementation in ROS:PCl
  */
 
 #ifndef OBJECTMODELORIENTEDLINE_H_
@@ -15,11 +16,11 @@ namespace BRICS_3D {
 class ObjectModelOrientedLine : public ObjectModelLine{
 private:
 
-	/** \brief The axis along which we need to search for a plane perpendicular to. */
-     Eigen::Vector4d axis;
+	/** @brief The axis along which we need to search for a plane perpendicular to. */
+    Eigen::Vector4d axis;
 
-     /** \brief The maximum allowed difference between the plane normal and the given axis. */
-     double epsAngle;
+	/** @brief The maximum angle between the model normal and the given axis */
+	double epsAngle;
 
 public:
 	ObjectModelOrientedLine(){};

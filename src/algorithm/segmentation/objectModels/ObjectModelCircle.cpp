@@ -1,8 +1,9 @@
 /*
- * ObjectModelCircle.cpp
+ * @file: ObjectModelCircle.cpp
  *
- *  Created on: Apr 22, 2011
- *      Author: reon
+ * @date:Created on: Apr 22, 2011
+ * @author:Author: reon
+ * @note The implementation is reusing the object model implementation in ROS:PCl
  */
 
 #include "ObjectModelCircle.h"
@@ -42,8 +43,6 @@ void ObjectModelCircle::computeRandomModel (int &iterations, Eigen::VectorXd &mo
 void
 ObjectModelCircle::getSamples (int &iterations, std::vector<int> &samples)
 {
-	// We're assuming that indices_ have already been set in the constructor
-	//ToDo ROS_ASSERT (this->indices_->size () != 0);
 
 	samples.resize (3);
 	double trand = this->inputPointCloud->getSize() / (RAND_MAX + 1.0);
@@ -97,7 +96,9 @@ ObjectModelCircle::getSamples (int &iterations, std::vector<int> &samples)
 		++iter;
 		if (iter > MAX_ITERATIONS_COLLINEAR )
 		{
-			cout<<"[SampleConsensusModelCircle::getSamples] WARNING: Could not select 3 non collinear points in"<< MAX_ITERATIONS_COLLINEAR <<" iterations!";
+			cout<<"[SampleConsensusModelCircle::getSamples] WARNING: Could not select "
+					"3 non collinear points in"<<
+					MAX_ITERATIONS_COLLINEAR <<" iterations!";
 			break;
 		}
 		iterations++;
@@ -109,8 +110,7 @@ ObjectModelCircle::getSamples (int &iterations, std::vector<int> &samples)
 bool
 ObjectModelCircle::computeModelCoefficients (const std::vector<int> &samples, Eigen::VectorXd &model_coefficients)
 {
-	// Need 3 samples
-	//ToDo ROS_ASSERT (samples.size () == 3);
+	//ToDo Check for (samples.size () == 3);
 
 	model_coefficients.resize (3);
 
@@ -137,15 +137,14 @@ ObjectModelCircle::computeModelCoefficients (const std::vector<int> &samples, Ei
 	return (true);
 }
 
-/** \brief Compute all distances from the cloud data to a given 2D circle model.
- * \param model_coefficients the coefficients of a 2D circle model that we need to compute distances to
- * \param distances the resultant estimated distances
+/** @brief Compute all distances from the cloud data to a given 2D circle model.
+ * @param model_coefficients the coefficients of a 2D circle model that we need to compute distances to
+ * @param distances the resultant estimated distances
  */
 void
 ObjectModelCircle:: getDistancesToModel (const Eigen::VectorXd &model_coefficients, std::vector<double> &distances)
 {
-	// Needs a valid model coefficients
-	//ToDo ROS_ASSERT (model_coefficients.size () == 3);
+	//ToDo Check for (model_coefficients.size () == 3);
 
 	distances.resize (this->inputPointCloud->getSize());
 
@@ -167,8 +166,7 @@ void
 ObjectModelCircle::getInlierDistance (std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,
 		std::vector<double> &distances) {
 
-	// Needs a valid set of model coefficients
-	//Todo ROS_ASSERT (model_coefficients.size () == 3);
+	//Todo Check for (model_coefficients.size () == 3);
 
 	distances.resize (inliers.size());
 
@@ -189,8 +187,8 @@ ObjectModelCircle::getInlierDistance (std::vector<int> &inliers, const Eigen::Ve
 void
 ObjectModelCircle::selectWithinDistance (const Eigen::VectorXd &model_coefficients, double threshold, std::vector<int> &inliers)
 {
-	// Needs a valid model coefficients
-	//Todo ROS_ASSERT (model_coefficients.size () == 3);
+
+	//Todo Check for (model_coefficients.size () == 3);
 
 	int nr_p = 0;
 	inliers.resize (this->inputPointCloud->getSize());
@@ -217,95 +215,10 @@ ObjectModelCircle::selectWithinDistance (const Eigen::VectorXd &model_coefficien
 	inliers.resize (nr_p);
 }
 
-void
-ObjectModelCircle::optimizeModelCoefficients (const std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,
-		Eigen::VectorXd &optimized_coefficients)
-{
-
-	//ToDo Requires cminpack. currently not supported
-	cout<< "INFO: Currently model coe-fficient optimization is not supported for ObjectModelCircle"<<endl;
-	optimized_coefficients = model_coefficients;
-	return;
-
-
-	/*  boost::mutex::scoped_lock lock (tmp_mutex_);
-
-  int n_unknowns = 3;      // 3 unknowns
-  // Needs a set of valid model coefficients
- //ToDo ROS_ASSERT (model_coefficients.size () == n_unknowns);
-
-  if (inliers.size () == 0)
-  {
-    cout<<"[SampleConsensusModelCircle::optimizeModelCoefficients] Inliers vector empty! Returning the same coefficients.";
-    optimized_coefficients = model_coefficients;
-    return;
-  }
-
-  // Need at least 3 samples
-  //ToDo ROS_ASSERT (inliers.size () > 3);
-  if (inliers.size () < 3)
-    {
-      cout<<"[SampleConsensusModelCircle::optimizeModelCoefficients] Inliers vector empty! Returning the same coefficients.";
-      optimized_coefficients = model_coefficients;
-      return;
-    }
-
-  tmp_inliers_ = &inliers;
-
-  int m = inliers.size ();
-
-  double *fvec = new double[m];
-
-  int iwa[n_unknowns];
-
-  int lwa = m * n_unknowns + 5 * n_unknowns + m;
-  double *wa = new double[lwa];
-
-  // Set the initial solution
-  double x[n_unknowns];
-  for (int d = 0; d < n_unknowns; ++d)
-    x[d] = model_coefficients[d];   // initial guess
-
-  // Set tol to the square root of the machine. Unless high solutions are required, these are the recommended settings.
-  double tol = sqrt (dpmpar (1));
-
-  // Optimize using forward-difference approximation LM
-  int info = lmdif1 (&pcl::SampleConsensusModelCircle2D<PointT>::functionToOptimize, this, m, n_unknowns, x, fvec, tol, iwa, wa, lwa);
-
-  // Compute the L2 norm of the residuals
-  //ROS_DEBUG ("[pcl::SampleConsensusModelCircle2D::optimizeModelCoefficients] LM solver finished with exit code %i, having a residual norm of %g. \nInitial solution: %g %g %g \nFinal solution: %g %g %g",
-    //         info, enorm (m, fvec), model_coefficients[0], model_coefficients[1], model_coefficients[2], x[0], x[1], x[2]);
-
-  optimized_coefficients = Eigen::Vector3f (x[0], x[1], x[2]);
-
-  free (wa); free (fvec);
-	 */
-}
-
-void
-ObjectModelCircle::projectPoints (const std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,
-		PointCloud3D *projectedPointCloud)
-{
-	// Needs a valid set of model coefficients
-	//Todo ROS_ASSERT (model_coefficients.size () == 3);
-	std::vector<Point3D> *projectedPoints = projectedPointCloud->getPointCloud();
-	// Iterate through the 3d points and calculate the distances from them to the circle
-	for (size_t i = 0; i < inliers.size (); ++i)
-	{
-		float dx = this->points->data()[inliers[i]].getX() - model_coefficients[0];
-		float dy = this->points->data()[inliers[i]].getY() - model_coefficients[1];
-		float a = sqrt ( (model_coefficients[2] * model_coefficients[2]) / (dx * dx + dy * dy) );
-
-		projectedPoints->data()[i].setX(a * dx + model_coefficients[0]);
-		projectedPoints->data()[i].setY(a * dy + model_coefficients[1]);
-	}
-}
-
 bool
 ObjectModelCircle:: doSamplesVerifyModel (const std::set<int> &indices, const Eigen::VectorXd &model_coefficients, double threshold)
 {
-	// Needs a valid model coefficients
-	//ToDo ROS_ASSERT (model_coefficients.size () == 3);
+	//ToDo Check for (model_coefficients.size () == 3);
 
 	for (std::set<int>::iterator it = indices.begin (); it != indices.end (); ++it)
 		// Calculate the distance from the point to the sphere as the difference between

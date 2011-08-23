@@ -386,13 +386,13 @@ public:
 		// If the user needs optimized coefficients
 		if (optimizeCoefficients)
 		{
-			Eigen::VectorXd coeff_refined;
+			/*Eigen::VectorXd coeff_refined;
 
 			objectModel->optimizeModelCoefficients(inliers,coeff,coeff_refined);
 			this->modelCoefficients =coeff_refined;
 			// Refine inliers
 			objectModel->selectWithinDistance(coeff_refined,threshold,inliers);
-
+			*/
 		}
 		else
 		{

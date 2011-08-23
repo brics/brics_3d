@@ -1,8 +1,9 @@
 /*
- * ObjectModelLine.h
+ * @file: ObjectModelLine.h
  *
- *  Created on: Apr 23, 2011
- *      Author: reon
+ * @date:Created on: Apr 23, 2011
+ * @author:Author: reon
+ * @note The implementation is reusing the object model implementation in ROS:PCl
  */
 
 #ifndef OBJECTMODELLINE_H_

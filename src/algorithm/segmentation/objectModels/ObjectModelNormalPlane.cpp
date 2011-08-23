@@ -1,8 +1,9 @@
 /*
- * ObjectModelNormalPlane.cpp
+ * @file: ObjectModelNormalPlane.h
  *
- *  Created on: Apr 23, 2011
- *      Author: reon
+ * @date:Created on: Apr 23, 2011
+ * @author:Author: reon
+ * @note The implementation is reusing the object model implementation in ROS:PCl
  */
 
 #include "ObjectModelNormalPlane.h"
@@ -37,8 +38,7 @@ void ObjectModelNormalPlane::computeRandomModel (int &iterations, Eigen::VectorX
 
 void ObjectModelNormalPlane::getSamples(int &iterations, std::vector<int> &samples){
 	points = inputPointCloud->getPointCloud();
-	// We're assuming that indices_ have already been set in the constructor
-	//ToDo ROS_ASSERT (this->indices_->size () != 0);
+
 
 	samples.resize (3);
 	double trand = inputPointCloud->getSize() / (RAND_MAX + 1.0);
@@ -92,8 +92,9 @@ void ObjectModelNormalPlane::getSamples(int &iterations, std::vector<int> &sampl
 		++iter;
 		if (iter > MAX_ITERATIONS_COLLINEAR )
 		{
-			//ROS_WARN ("[pcl::SampleConsensusModelPlane::getSamples] WARNING: Could not select 3 non collinear points in %d iterations!", MAX_ITERATIONS_COLLINEAR);
-			cout<< "cannot find collinear points"<<endl;
+			cout<<"[SampleConsensusModelNormalPlane::getSamples] WARNING: Could not select "
+					"3 collinear points in"
+					<<  MAX_ITERATIONS_COLLINEAR <<"iterations!";
 			break;
 		}
 		iterations++;
@@ -103,9 +104,10 @@ void ObjectModelNormalPlane::getSamples(int &iterations, std::vector<int> &sampl
 
 }
 
+
 bool ObjectModelNormalPlane::computeModelCoefficients (const std::vector<int> &samples, Eigen::VectorXd &model_coefficients){
-	// Need 3 samples
-	//ToDo ROS_ASSERT (samples.size () == 3);
+
+	//ToDo Check for (samples.size () == 3);
 
 	Eigen::Vector4d p0, p1, p2;
 	// SSE friendly data check
@@ -139,47 +141,11 @@ bool ObjectModelNormalPlane::computeModelCoefficients (const std::vector<int> &s
 	model_coefficients.normalize ();
 
 	// ... + d = 0
-	//Todo original: model_coefficients[3] = -1 * (model_coefficients.template start<4>().dot (p0));
 	model_coefficients[3] = -1 * (model_coefficients.dot (p0));
 
 	return (true);
 }
 
-void ObjectModelNormalPlane::optimizeModelCoefficients (const std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,
-		Eigen::VectorXd &optimized_coefficients){
-	// Needs a valid set of model coefficients
-	//ToDo Check for this ROS_ASSERT (model_coefficients.size () == 4);
-
-	if (inliers.size () == 0)
-	{
-		//ToDo ROS_ERROR ("[pcl::SampleConsensusModelPlane::optimizeModelCoefficients] Inliers vector empty! Returning the same coefficients.");
-		optimized_coefficients = model_coefficients;
-		return;
-	}
-
-	// Need at least 3 points to estimate a plane
-	if (inliers.size () < 4)
-	{
-		//ToDo ROS_ERROR ("[pcl::SampleConsensusModelPlane::optimizeModelCoefficients] Not enough inliers found to support a model! Returning the same coefficients.");
-		optimized_coefficients = model_coefficients;
-		return;
-	}
-
-	Eigen::Vector4d plane_parameters;
-	double curvature;
-
-	// Use Least-Squares to fit the plane through all the given sample points and find out its coefficients
-
-	computePointNormal (inputPointCloud, inliers, plane_parameters, curvature);
-	optimized_coefficients = plane_parameters;
-}
-
-
-/** \brief Compute all distances from the inliers of the plane model to a given plane model.
- * \param estimated inliers to the model
- * \param model_coefficients the coefficients of a plane model that we need to compute distances to
- * \param distances the resultant estimated distances
- */
 
 void
 ObjectModelNormalPlane::getInlierDistance (std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,  std::vector<double> &distances) {
@@ -199,52 +165,12 @@ ObjectModelNormalPlane::getInlierDistance (std::vector<int> &inliers, const Eige
 	}
 }
 
-/** \brief Create a new point cloud with inliers projected onto the plane model.
- * \param inliers the data inliers that we want to project on the plane model
- * \param model_coefficients the *normalized* coefficients of a plane model
- * \param projected_points the resultant projected points
- * \param copy_data_fields set to true if we need to copy the other data fields
- */
-void
-ObjectModelNormalPlane:: projectPoints (const std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,
-		PointCloud3D* projectedPointCloud)
-{
-	// Needs a valid set of model coefficients
-	//Todo ROS_ASSERT (model_coefficients.size () == 4);
 
-	std::vector<Point3D> *projectedPoints;
-	projectedPoints = projectedPointCloud->getPointCloud();
-
-
-	Eigen::Vector4d mc = Eigen::Vector4d (model_coefficients[0], model_coefficients[1], model_coefficients[2], 0);
-
-	// Iterate through the 3d points and calculate the distances from them to the plane
-	for (size_t i = 0; i < inliers.size (); ++i)
-	{
-		// Calculate the distance from the point to the plane
-		double distance_to_plane = model_coefficients[0] * this->points->data()[inliers[i]].getX() +
-				model_coefficients[1] * this->points->data()[inliers[i]].getY() +
-				model_coefficients[2] * this->points->data()[inliers[i]].getZ() +
-				model_coefficients[3];
-		// Calculate the projection of the point on the plane
-		Point3D point;
-		projectedPoints->data()[inliers[i]].setX(this->points->data()[inliers[i]].getX() - distance_to_plane * model_coefficients[0]);
-		projectedPoints->data()[inliers[i]].setY( this->points->data()[inliers[i]].getY() - distance_to_plane * model_coefficients[1]);
-		projectedPoints->data()[inliers[i]].setZ( this->points->data()[inliers[i]].getZ() - distance_to_plane * model_coefficients[2]);
-
-	}
-}
-
-/** \brief Verify whether a subset of indices verifies the given plane model coefficients.
- * \param indices the data indices that need to be tested against the plane model
- * \param model_coefficients the plane model coefficients
- * \param threshold a maximum admissible distance threshold for determining the inliers from the outliers
- */
 bool
-ObjectModelNormalPlane::doSamplesVerifyModel (const std::set<int> &indices, const Eigen::VectorXd &model_coefficients, double threshold)
+ObjectModelNormalPlane::doSamplesVerifyModel (const std::set<int> &indices,
+		const Eigen::VectorXd &model_coefficients, double threshold)
 {
-	// Needs a valid set of model coefficients
-	//Todo ROS_ASSERT (model_coefficients.size () == 4);
+	//Todo Check for (model_coefficients.size () == 4);
 
 	for (std::set<int>::iterator it = indices.begin (); it != indices.end (); ++it)
 		if (fabs (model_coefficients[0] * this->points->data()[*it].getX() +
@@ -260,8 +186,7 @@ ObjectModelNormalPlane::doSamplesVerifyModel (const std::set<int> &indices, cons
 void
   ObjectModelNormalPlane::selectWithinDistance (const Eigen::VectorXd &model_coefficients, double threshold, std::vector<int> &inliers){
 
-    // Needs a valid set of model coefficients
-    //ToDo ROS_ASSERT (model_coefficients.size () == 4);
+    //ToDo Check for (model_coefficients.size () == 4);
     if (!this->normals && this->normals->getSize()!=this->inputPointCloud->getSize())
     {
       cout<<"[ObjectModelNormalPlane::getDistancesToModel] No input dataset containing normals was given!";
@@ -327,8 +252,7 @@ void
   ObjectModelNormalPlane::getDistancesToModel (const Eigen::VectorXd &model_coefficients,
 		  std::vector<double> &distances){
 
-    // Needs a valid set of model coefficients
-    //ToDo ROS_ASSERT (model_coefficients.size () == 4);
+    //ToDo Check for (model_coefficients.size () == 4);
 
     if (!this->normals && this->normals->getSize()!=this->inputPointCloud->getSize())
     {

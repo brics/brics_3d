@@ -1,8 +1,9 @@
 /*
- * ObjectModelNormalPlane.h
+ * @file: ObjectModelNormalPlane.h
  *
- *  Created on: Apr 23, 2011
- *      Author: reon
+ * @date:Created on: Apr 23, 2011
+ * @author:Author: reon
+ * @note The implementation is reusing the object model implementation in ROS:PCl
  */
 
 #ifndef OBJECTMODELNORMALPLANE_H_
@@ -19,16 +20,16 @@ class ObjectModelNormalPlane : public IObjectModelUsingNormals{
 
 private:
 
-	/** \brief The axis along which we need to search for a plane perpendicular to. */
+	/** @brief The axis along which we need to search for a plane perpendicular to. */
     Eigen::Vector4d axis;
 
-    /** \brief The distance from the template plane to the origin. */
+    /** @brief The distance from the template plane to the origin. */
     double distanceFromOrigin;
 
-    /** \brief The maximum allowed difference between the plane normal and the given axis. */
+    /** @brief The maximum allowed difference between the plane normal and the given axis. */
     double epsAngle;
 
-    /** \brief The maximum allowed deviation from the template distance from the origin. */
+    /** @brief The maximum allowed deviation from the template distance from the origin. */
     double epsDistance;
 
 
@@ -36,8 +37,8 @@ public:
 	ObjectModelNormalPlane(){};
 	virtual ~ObjectModelNormalPlane(){};
 
-    /** \brief Set the axis along which we need to search for a plane perpendicular to.
-      * \param ax the axis along which we need to search for a plane perpendicular to
+    /** @brief Set the axis along which we need to search for a plane perpendicular to.
+      * @param ax the axis along which we need to search for a plane perpendicular to
       */
     inline void
       setAxis (const Eigen::Vector3d &ax)
@@ -51,8 +52,8 @@ public:
     }
 
 
-	/** \brief Set the angle epsilon (delta) threshold.
-      * \param ea the maximum allowed difference between the plane normal and the given axis.
+	/** @brief Set the angle epsilon (delta) threshold.
+      * @param ea the maximum allowed difference between the plane normal and the given axis.
       */
     inline void
       setEpsAngle (double ea)
@@ -60,8 +61,8 @@ public:
       this->epsAngle = ea;
     }
 
-    /** \brief Set the distance we expect the plane to be from the origin
-      * \param d distance from the template plane to the origin
+    /** @brief Set the distance we expect the plane to be from the origin
+      * @param d distance from the template plane to the origin
       */
     inline void
       setDistanceFromOrigin (double d)
@@ -70,7 +71,7 @@ public:
     }
 
 
-    /** \brief Get the distance of the plane from the origin. */
+    /** @brief Get the distance of the plane from the origin. */
     inline double
       getDistanceFromOrigin ()
     {
@@ -78,8 +79,8 @@ public:
     }
 
 
-    /** \brief Set the distance epsilon (delta) threshold.
-      * \param delta the maximum allowed deviation from the template distance from the origin
+    /** @brief Set the distance epsilon (delta) threshold.
+      * @param delta the maximum allowed deviation from the template distance from the origin
       */
     inline void
       setEpsDist (double delta)
@@ -87,7 +88,7 @@ public:
       this->epsDistance = delta;
     }
 
-    /** \brief Get the distance epsilon (delta) threshold. */
+    /** @brief Get the distance epsilon (delta) threshold. */
     inline double
       getEpsDist ()
     {

@@ -1,9 +1,11 @@
 /*
- * ObjectModelOrientedPlane.cpp
+ * @file:ObjectModelOrientedPlane.cpp
  *
- *  Created on: Apr 22, 2011
- *      Author: reon
+ * @date:Created on: Apr 22, 2011
+ * @author:Author: reon
+ * @note The implementation is reusing the object model implementation in ROS:PCl
  */
+
 
 #include "ObjectModelOrientedPlane.h"
 
@@ -11,8 +13,6 @@ namespace BRICS_3D {
 
 void ObjectModelOrientedPlane::selectWithinDistance(const Eigen::VectorXd &model_coefficients, double threshold,
 			std::vector<int> &inliers){
-    // Needs a valid set of model coefficients
-    //ToDo ROS_ASSERT (model_coefficients.size () == 4);
 
      // Obtain the plane normal
      Eigen::Vector4d coeff = model_coefficients;
@@ -35,10 +35,10 @@ void ObjectModelOrientedPlane::selectWithinDistance(const Eigen::VectorXd &model
      this->selectWithinDistance (model_coefficients, threshold, inliers);
 }
 
+
 void ObjectModelOrientedPlane::getDistancesToModel (const Eigen::VectorXd &model_coefficients,
 		std::vector<double> &distances){
-    // Needs a valid set of model coefficients
-    //ToDo ROS_ASSERT (model_coefficients.size () == 4);
+    //ToDo check for (model_coefficients.size () == 4);
 
     // Obtain the plane normal
     Eigen::Vector4d coeff = model_coefficients;

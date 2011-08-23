@@ -1,8 +1,9 @@
 /*
- * ObjectModelPlaneFromLineAndPoint.h
+ * @file: ObjectModelPlaneFromLineAndPoint.h
  *
- *  Created on: Apr 25, 2011
- *      Author: reon
+ * @date:Created on: Apr 25, 2011
+ * @author:Author: reon
+ * @note The implementation is reusing the object model implementation in MRPT
  */
 
 #ifndef OBJECTMODELPLANEFROMLINEANDPOINT_H_
@@ -28,7 +29,7 @@ public:
 		std::vector<double> director;
 	};
 
-	/** \brief Checks if a line contains a point or not*/
+	/** @brief Checks if a line contains a point or not*/
 
 	inline bool contains(const line &line,Point3D &point){
 		double dx=point.getX()-line.pbase.getX();
@@ -45,16 +46,16 @@ public:
 				(abs(dy*line.director[2]-dz*line.director[1])<geometryEpsilon);
 	}
 
-	/** \brief Computes the cross product of two 3D vectors, returning a vector normal to both.
+	/** @brief Computes the cross product of two 3D vectors, returning a vector normal to both.
 	 *  It uses the simple implementation:
 
-	    \f[  v_out = \left(
+	    @f[  v_out = \left(
 				\begin{array}{c c c}
 				\hat{i} ~ \hat{j} ~ \hat{k} \\
 				x0 ~ y0 ~ z0 \\
 				x1 ~ y1 ~ z1 \\
 				\end{array} \right)
-		\f]
+		@f]
 	 */
 
 	inline void crossProduct3D(

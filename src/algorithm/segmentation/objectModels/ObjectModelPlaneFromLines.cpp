@@ -1,8 +1,9 @@
 /*
- * ObjectModelPlaneFromLines.cpp
+ * @file:ObjectModelPlaneFromLines.cpp
  *
- *  Created on: Apr 25, 2011
- *      Author: reon
+ * @date:Created on: Apr 25, 2011
+ * @author:Author: reon
+ * @note The implementation is reusing the object model implementation in ROS:PCl
  */
 
 #include "ObjectModelPlaneFromLines.h"
@@ -39,13 +40,11 @@ void ObjectModelPlaneFromLines::computeRandomModel (int &iterations, Eigen::Vect
 void ObjectModelPlaneFromLines::getSamples (int &iterations, std::vector<int> &samples){
 
 	points = inputPointCloud->getPointCloud();
-	// We're assuming that indices_ have already been set in the constructor
-	//ToDo ROS_ASSERT (this->indices_->size () != 0);
-
+	//ToDo check that the pointcloud size > 0
 	samples.resize (4);
 	double trand = inputPointCloud->getSize() / (RAND_MAX + 1.0);
 
-	// Get a random number between 1 and max_indices
+
 	int idx = (int)(rand () * trand);
 	// Get the index
 	samples[0] = idx;

@@ -1,8 +1,9 @@
 /*
- * ObjectModelOrientedPlane.h
+ * @file:ObjectModelOrientedPlane.h
  *
- *  Created on: Apr 22, 2011
- *      Author: reon
+ * @date:Created on: Apr 22, 2011
+ * @author:Author: reon
+ * @note The implementation is reusing the object model implementation in ROS:PCl
  */
 
 #ifndef OBJECTMODELORIENTEDPLANE_H_
@@ -16,19 +17,19 @@ class ObjectModelOrientedPlane : public ObjectModelPlane {
 
 private:
 
-	/** \brief The axis along which we need to search for a plane perpendicular to. */
+	/** @brief The axis along which we need to search for a plane perpendicular to. */
     Eigen::Vector4d axis;
 
-    /** \brief The maximum allowed difference between the plane normal and the given axis. */
-    double epsAngle;
+	/** @brief The maximum angle between the model normal and the given axis */
+	double epsAngle;
 
 public:
 	ObjectModelOrientedPlane(){};
 	virtual ~ObjectModelOrientedPlane(){};
 
 
-    /** \brief Set the axis along which we need to search for a plane perpendicular to.
-      * \param ax the axis along which we need to search for a plane perpendicular to
+    /** @brief Set the axis along which we need to search for a plane perpendicular to.
+      * @param ax the axis along which we need to search for a plane perpendicular to
       */
     inline void setAxis (const Eigen::Vector3d &ax)
     {
@@ -42,7 +43,7 @@ public:
     }
 
 
-    /** \brief Get the axis along which we need to search for a plane perpendicular to. */
+    /** @brief Get the axis along which we need to search for a plane perpendicular to. */
     inline Eigen::Vector3d getAxis ()  {
 #ifdef EIGEN3
     	return (axis.head<3> ());
@@ -51,13 +52,13 @@ public:
 #endif
     }
 
-    /** \brief Set the angle epsilon (delta) threshold.
-      * \param ea the maximum allowed difference between the plane normal and the given axis.
+    /** @brief Set the angle epsilon (delta) threshold.
+      * @param ea the maximum allowed difference between the plane normal and the given axis.
       */
     inline void setEpsAngle (double ea) { epsAngle = ea; }
 
 
-    /** \brief Get the angle epsilon (delta) threshold. */
+    /** @brief Get the angle epsilon (delta) threshold. */
     inline double getEpsAngle () { return (epsAngle); }
 
     void selectWithinDistance (const Eigen::VectorXd &model_coefficients, double threshold,

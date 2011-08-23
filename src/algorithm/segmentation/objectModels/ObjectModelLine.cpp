@@ -1,8 +1,9 @@
 /*
- * ObjectModelLine.cpp
+ * @file: ObjectModelLine.h
  *
- *  Created on: Apr 23, 2011
- *      Author: reon
+ * @date:Created on: Apr 23, 2011
+ * @author:Author: reon
+ * @note The implementation is reusing the object model implementation in ROS:PCl
  */
 
 #include "ObjectModelLine.h"
@@ -36,8 +37,7 @@ if (!computeModelCoefficients (selection, model_coefficients)){
 }
 
 void ObjectModelLine::getSamples (int &iterations, std::vector<int> &samples){
-	// We're assuming that indices_ have already been set in the constructor
-	//ToDo ROS_ASSERT (this->indices_->size () != 0);
+
 
 	samples.resize (2);
 	double trand = this->inputPointCloud->getSize() / (RAND_MAX + 1.0);
@@ -66,8 +66,8 @@ void ObjectModelLine::getSamples (int &iterations, std::vector<int> &samples){
 
 bool ObjectModelLine::computeModelCoefficients (const std::vector<int> &samples,
 		Eigen::VectorXd &model_coefficients){
-	// Need 2 samples
-	//ToDo ROS_ASSERT (samples.size () == 2);
+
+	//ToDo check for (samples.size () == 2);
 
 	model_coefficients.resize (6);
 	model_coefficients[0] = this->points->data()[samples[0]].getX();
@@ -89,8 +89,7 @@ bool ObjectModelLine::computeModelCoefficients (const std::vector<int> &samples,
 void ObjectModelLine::optimizeModelCoefficients (const std::vector<int> &inliers,
 		const Eigen::VectorXd &model_coefficients,
 		Eigen::VectorXd &optimized_coefficients){
-	// Needs a valid set of model coefficients
-	//ToDo ROS_ASSERT (model_coefficients.size () == 6);
+	//ToDo check for (model_coefficients.size () == 6);
 
 	if (inliers.size () == 0)
 	{
@@ -99,8 +98,7 @@ void ObjectModelLine::optimizeModelCoefficients (const std::vector<int> &inliers
 		return;
 	}
 
-	// Need at least 2 points to estimate a line
-	//ToDo ROS_ASSERT (inliers.size () > 2);
+	//ToDo check for (inliers.size () > 2);
 
 	optimized_coefficients.resize (6);
 
@@ -130,8 +128,7 @@ void ObjectModelLine::optimizeModelCoefficients (const std::vector<int> &inliers
 
 void ObjectModelLine::getDistancesToModel (const Eigen::VectorXd &model_coefficients,
 		std::vector<double> &distances){
-	// Needs a valid set of model coefficients
-	//ToDo ROS_ASSERT (model_coefficients.size () == 6);
+	//ToDo check for (model_coefficients.size () == 6);
 
 	distances.resize (this->inputPointCloud->getSize());
 
@@ -161,8 +158,7 @@ void ObjectModelLine::getDistancesToModel (const Eigen::VectorXd &model_coeffici
 
 void ObjectModelLine::selectWithinDistance (const Eigen::VectorXd &model_coefficients, double threshold,
 		std::vector<int> &inliers){
-	// Needs a valid set of model coefficients
-	//ToDo ROS_ASSERT (model_coefficients.size () == 6);
+	//ToDo check for (model_coefficients.size () == 6);
 
 	double sqr_threshold = threshold * threshold;
 
@@ -204,8 +200,8 @@ void ObjectModelLine::selectWithinDistance (const Eigen::VectorXd &model_coeffic
 
 void ObjectModelLine::getInlierDistance (std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,
 		std::vector<double> &distances){
-	// Needs a valid set of model coefficients
-	//ToDo ROS_ASSERT (model_coefficients.size () == 6);
+
+	//ToDo Check for (model_coefficients.size () == 6);
 
 	distances.resize (this->inputPointCloud->getSize());
 
@@ -237,8 +233,8 @@ void ObjectModelLine::getInlierDistance (std::vector<int> &inliers, const Eigen:
 void ObjectModelLine::projectPoints (const std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,
 		PointCloud3D* projectedPointCloud){
 
-	// Needs a valid model coefficients
-	//ToDo ROS_ASSERT (model_coefficients.size () == 6);
+
+	//ToDo Check for (model_coefficients.size () == 6);
 
 	// Obtain the line point and direction
 	Eigen::Vector4d line_pt  (model_coefficients[0], model_coefficients[1], model_coefficients[2], 0);
@@ -265,8 +261,8 @@ void ObjectModelLine::projectPoints (const std::vector<int> &inliers, const Eige
 
 bool ObjectModelLine::doSamplesVerifyModel (const std::set<int> &indices, const Eigen::VectorXd &model_coefficients,
 		double threshold){
-    // Needs a valid set of model coefficients
-     //ToDo ROS_ASSERT (model_coefficients.size () == 6);
+
+	//ToDo Check for (model_coefficients.size () == 6);
 
      // Obtain the line point and direction
      Eigen::Vector4d line_pt  (model_coefficients[0], model_coefficients[1], model_coefficients[2], 0);

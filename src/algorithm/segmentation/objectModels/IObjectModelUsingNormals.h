@@ -1,8 +1,8 @@
 /*
- * IObjectModelUsingNormals.h
+ * @file:IObjectModelUsingNormals.h
  *
- *  Created on: Apr 23, 2011
- *      Author: reon
+ * @date: Apr 23, 2011
+ * @author: reon
  */
 
 #ifndef IOBJECTMODELUSINGNORMALS_H_
@@ -20,16 +20,18 @@ class IObjectModelUsingNormals : public IObjectModel{
 
 protected:
 
-	/** \brief The relative weight (between 0 and 1) to give to the angular distance (0 to pi/2) between point normals and the plane normal. */
+	/** @brief The relative weight (between 0 and 1) to  corresponding to
+	 * angular distance between point normals and the plane normal. 0 corresponds to 0 rad and
+	 * 1 corresponds to pi/2 rad */
 	double normalDistanceWeight;
 
-	/** \brief A pointer to vector of normals. */
+	/** @brief A pointer to vector of normals. */
 	NormalSet3D *normals;
 
-	/** \brief Axis along which we need to search for a model perpendicular to */
+	/** @brief Axis along which we need to search for a model perpendicular to */
 	Eigen::Vector3d axis;
 
-	/** \brief Set the angle epsilon (delta) threshold */
+	/** @brief The maximum angle between the model normal and the given axis */
 	double epsAngle;
 
 public:
@@ -37,74 +39,79 @@ public:
 	virtual ~IObjectModelUsingNormals(){};
 
 
-	/** \brief Set the angle epsilon (delta) threshold.
-	 * \param ea the maximum allowed difference between the model normal and the given axis.
+	/** @brief Set the angle epsilon (delta) threshold.
+	 *  @param epAngle the maximum allowed difference between the model normal and the given axis.
 	 */
 	inline void
-	setEpsAngle (double ea)
+	setEpsAngle (double epAngle)
 	{
-		this->epsAngle = ea;
+		this->epsAngle = epAngle;
 	}
 
 
-	/** \brief Get the epsilon (delta) model angle threshold. */
+	/** @brief Get the angle threshold between the given axis and the model-normal. */
 	inline double
 	getEpsAngle ()
 	{
 		return (this->epsAngle);
 	}
 
-	/** \brief Set the axis along which we need to search for a model perpendicular to.
-	 * \param ax the axis along which we need to search for a model perpendicular to
+
+	/** @brief Set the pointer to the normal-set for the corresponding input point cloud
+	 *  @param normalSet Pointer to BRICS_3D::NormalSet3D
 	 */
 	inline void
-	setAxis (const Eigen::Vector3d &ax)
+	setInputNormals (NormalSet3D *normalSet)
 	{
-		this->axis = ax;
+		this->normals = normalSet;
 	}
 
 
-	/** \brief Get the axis along which we need to search for a model perpendicular to. */
-	inline Eigen::Vector3d
-	getAxis ()
-	{
-		return (this->axis);
-	}
-
-	/** \brief Set the normal angular distance weight.
-	 * \param w the relative weight (between 0 and 1) to give to the angular distance (0 to pi/2) between point
-	 * normals and the plane normal.  (The Euclidean distance will have weight 1-w.)
-	 */
-	inline void
-	setNormalDistanceWeight (double w)
-	{
-		normalDistanceWeight = w;
-	}
-
-
-	/** \brief Get the normal angular distance weight. */
-	inline double
-	getNormalDistanceWeight ()
-	{
-		return (normalDistanceWeight);
-	}
-
-
-	/** \brief Provide a pointer to the input dataset that contains the point normals of the XYZ dataset.
-	 * \param normals the const boost shared pointer to a PointCloud message
-	 */
-	inline void
-	setInputNormals (NormalSet3D *normals)
-	{
-		this->normals = normals;
-	}
-
-
-	/** \brief Get a pointer to the normals of the input XYZ point cloud dataset. */
+	/** @brief Get a pointer to BRICS_3D::NOrmalSet3D for input point cloud being segmented
+	 *  @return Pointer to BRICS_3D::NormalSet3D
+	 * */
 	inline NormalSet3D*
 	getInputNormals ()
 	{
 		return (this->normals);
+	}
+
+
+	/** @brief Set the relative weight variable indicating the angular distance
+	 * between point normals and the plane normal.
+	 *  @param distanceWeight the distance/angular weight between 0 and 1
+	 */
+	inline void
+	setNormalDistanceWeight (double distanceWeight)
+	{
+		this->normalDistanceWeight = distanceWeight;
+	}
+
+
+	/** @brief Get the relative weight variable indicating the angular distance
+	 * between point normals and the plane normal. */
+	inline double
+	getNormalDistanceWeight ()
+	{
+		return (this->normalDistanceWeight);
+	}
+
+
+	/** @brief Set the axis along which we need to search for a model perpendicular to.
+	 *  @param axis the axis perpendicular to which the model parameters will be searched for
+	 */
+	inline void
+	setAxis (const Eigen::Vector3d &axis)
+	{
+		this->axis = axis;
+	}
+
+
+	/** @brief Get the axis along which we need to search for a model perpendicular to. */
+	inline Eigen::Vector3d
+	getAxis ()
+	{
+		return (this->axis);
 	}
 
 

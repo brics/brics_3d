@@ -1,8 +1,9 @@
 /*
- * ObjectModelPlaneFromLineAndPoint.cpp
+ * @file:"ObjectModelPlaneFromLineAndPoint.cpp
  *
- *  Created on: Apr 25, 2011
- *      Author: reon
+ * @date:Created on: Apr 25, 2011
+ * @author:Author: reon
+ * @note The implementation is reusing the object model implementation in ROS:PCl
  */
 
 #include "ObjectModelPlaneFromLineAndPoint.h"
@@ -40,8 +41,6 @@ void ObjectModelPlaneFromLineAndPoint::computeRandomModel (int &iterations, Eige
 void ObjectModelPlaneFromLineAndPoint::getSamples (int &iterations, std::vector<int> &samples){
 
 	points = inputPointCloud->getPointCloud();
-	// We're assuming that indices_ have already been set in the constructor
-	//ToDo ROS_ASSERT (this->indices_->size () != 0);
 
 	samples.resize (4);
 	double trand = inputPointCloud->getSize() / (RAND_MAX + 1.0);
@@ -95,15 +94,15 @@ void ObjectModelPlaneFromLineAndPoint::getSamples (int &iterations, std::vector<
 		++iter;
 		if (iter > MAX_ITERATIONS_COLLINEAR )
 		{
-			cout<<"[SampleConsensusModelPlane::getSamples] WARNING: Could not select 3 non collinear points in"<<  MAX_ITERATIONS_COLLINEAR <<"iterations!";
+			cout<<"[SampleConsensusModelPlaneFromLineAndPoint::getSamples] WARNING: Could not select 3 non collinear points in"<<  MAX_ITERATIONS_COLLINEAR <<"iterations!";
 			break;
 		}
 		iterations++;
 	}
 	while ( (dy1dy2[0] == dy1dy2[1]) && (dy1dy2[2] == dy1dy2[1]) );
 	iterations--;
-
 }
+
 
 bool
 ObjectModelPlaneFromLineAndPoint::computeModelCoefficients (const std::vector<int> &sample,

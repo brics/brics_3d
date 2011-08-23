@@ -1,8 +1,9 @@
 /*
- * ObjectModelPlaneFromLines.h
+ * @file:ObjectModelPlaneFromLines.h
  *
- *  Created on: Apr 25, 2011
- *      Author: reon
+ * @date:Created on: Apr 25, 2011
+ * @author:Author: reon
+ * @note The implementation is reusing the object model implementation in MRPT
  */
 
 #ifndef OBJECTMODELPLANEFROMLINES_H_
@@ -12,7 +13,7 @@
 
 namespace BRICS_3D {
 /**
- * \brief Finds a plane model from two 3D line segments in the data.
+ * @brief Finds a plane model from two 3D line segments in the data.
  */
 class ObjectModelPlaneFromLines : public ObjectModelPlane {
 protected:
@@ -28,7 +29,7 @@ public:
 
 
 
-	/** \brief Checks if a line contains a point or not*/
+	/** @brief Checks if a line contains a point or not*/
 
 	inline bool contains(const line &line,Point3D &point){
 		double dx=point.getX()-line.pbase.getX();
@@ -45,7 +46,7 @@ public:
 				(abs(dy*line.director[2]-dz*line.director[1])<geometryEpsilon);
 	}
 
-	/** \brief Computes the cross product of two 3D vectors, returning a vector normal to both.
+	/** @brief Computes the cross product of two 3D vectors, returning a vector normal to both.
 	  *  It uses the simple implementation:
 
 	    \f[  v_out = \left(
@@ -70,10 +71,8 @@ public:
 
 	ObjectModelPlaneFromLines(){};
 	virtual ~ObjectModelPlaneFromLines(){};
-
 	void getSamples (int &iterations, std::vector<int> &samples);
 	bool computeModelCoefficients (const std::vector<int> &samples, Eigen::VectorXf &model_coefficients);
-
 	void computeRandomModel (int &iterations, Eigen::VectorXf &model_coefficients, bool &isDegenerate, bool &modelFound);
 	inline int getNumberOfSamplesRequired(){return 4;};
 
