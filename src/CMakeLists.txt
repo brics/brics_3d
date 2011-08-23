@@ -121,10 +121,10 @@ SET (ALGORITHM_LIBRARY_SOURCES
 	
 	./algorithm/segmentation/SACMethods/ISACMethods	
 	./algorithm/segmentation/SACMethods/SACMethodALMeDS
-	./algorithm/segmentation/SACMethods/SACMethodRANSAC_ROS
-	./algorithm/segmentation/SACMethods/SACMethodMSAC_ROS
-	./algorithm/segmentation/SACMethods/SACMethodLMeDS_ROS
-	./algorithm/segmentation/SACMethods/SACMethodMLESAC_ROS	
+	./algorithm/segmentation/SACMethods/SACMethodRANSAC
+	./algorithm/segmentation/SACMethods/SACMethodMSAC
+	./algorithm/segmentation/SACMethods/SACMethodLMeDS
+	./algorithm/segmentation/SACMethods/SACMethodMLESAC
 
 ./algorithm/segmentation/RegionBasedSACSegmentation.h
 ./algorithm/segmentation/RegionBasedSACSegmentationUsingNormals.h

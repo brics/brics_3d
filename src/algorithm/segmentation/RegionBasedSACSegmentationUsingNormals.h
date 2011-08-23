@@ -239,32 +239,32 @@ public:
 		}
 		case SAC_RANSAC:
 		{
-			cout<< "[initSAC] Using a method of type: SAC_RANSAC_ROS with a model threshold of "<<threshold<<endl;
-			sacMethod = new SACMethodRANSAC_ROS();
+			cout<< "[initSAC] Using a method of type: SAC_RANSAC with a model threshold of "<<threshold<<endl;
+			sacMethod = new SACMethodRANSAC();
 			sacMethod->setObjectModel(objectModelUsingNormals);
 			sacMethod->setDistanceThreshold(threshold);
 			sacMethod->setPointCloud(inputPointCloud);
 			break;
 		}
 		case SAC_LMEDS: {
-			cout<<"[initSAC] Using a method of type: SAC_LMeDS_ROS with a model threshold of "<<threshold<<endl;
-			sacMethod = new SACMethodLMeDS_ROS();
+			cout<<"[initSAC] Using a method of type: SAC_LMeDS with a model threshold of "<<threshold<<endl;
+			sacMethod = new SACMethodLMeDS();
 			sacMethod->setObjectModel(objectModelUsingNormals);
 			sacMethod->setDistanceThreshold(threshold);
 			sacMethod->setPointCloud(inputPointCloud);
 			break;
 		}
 		case SAC_MSAC: {
-			cout<<"[initSAC] Using a method of type: SAC_MSAC_ROS with a model threshold of "<<threshold<<endl;
-			sacMethod = new SACMethodMSAC_ROS();
+			cout<<"[initSAC] Using a method of type: SAC_MSAC with a model threshold of "<<threshold<<endl;
+			sacMethod = new SACMethodMSAC();
 			sacMethod->setObjectModel(objectModelUsingNormals);
 			sacMethod->setDistanceThreshold(threshold);
 			sacMethod->setPointCloud(inputPointCloud);
 			break;
 		}
 		case SAC_MLESAC: {
-			cout<<"[initSAC] Using a method of type: SAC_MLESAC_ROS with a model threshold of "<<threshold<<endl;
-			sacMethod = new SACMethodMLESAC_ROS();
+			cout<<"[initSAC] Using a method of type: SAC_MLESAC with a model threshold of "<<threshold<<endl;
+			sacMethod = new SACMethodMLESAC();
 			sacMethod->setObjectModel(objectModelUsingNormals);
 			sacMethod->setDistanceThreshold(threshold);
 			sacMethod->setPointCloud(inputPointCloud);

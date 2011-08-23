@@ -1,8 +1,8 @@
 /*
- * SACMethodALMeDS.h
+ * @file: SACMethodALMeDS.h
  *
- *  Created on: Apr 21, 2011
- *      Author: reon
+ * @date: Apr 21, 2011
+ * @author: reon
  */
 
 #ifndef SACMETHODALMEDS_H_
@@ -12,7 +12,7 @@
 
 
 namespace BRICS_3D {
-
+//ToDo add reference to the method
 class SACMethodALMeDS : public ISACMethods {
 
 public:

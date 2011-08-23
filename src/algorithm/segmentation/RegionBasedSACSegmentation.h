@@ -27,10 +27,10 @@
 
 //SAC Methods Supported
 #include "algorithm/segmentation/SACMethods/SACMethodALMeDS.h"
-#include "algorithm/segmentation/SACMethods/SACMethodRANSAC_ROS.h"
-#include "algorithm/segmentation/SACMethods/SACMethodMSAC_ROS.h"
-#include "algorithm/segmentation/SACMethods/SACMethodLMeDS_ROS.h"
-#include "algorithm/segmentation/SACMethods/SACMethodMLESAC_ROS.h"
+#include "algorithm/segmentation/SACMethods/SACMethodRANSAC.h"
+#include "algorithm/segmentation/SACMethods/SACMethodMSAC.h"
+#include "algorithm/segmentation/SACMethods/SACMethodLMeDS.h"
+#include "algorithm/segmentation/SACMethods/SACMethodMLESAC.h"
 
 namespace BRICS_3D{
 class RegionBasedSACSegmentation {
@@ -303,7 +303,7 @@ public:
 		case SAC_RANSAC:
 		{
 			cout<< "[initSAC] Using a method of type: SAC_RANSAC_ROS with a model threshold of "<<threshold<<endl;
-			sacMethod = new SACMethodRANSAC_ROS();
+			sacMethod = new SACMethodRANSAC();
 			sacMethod->setObjectModel(objectModel);
 			sacMethod->setDistanceThreshold(threshold);
 			sacMethod->setPointCloud(inputPointCloud);
@@ -311,7 +311,7 @@ public:
 		}
 		case SAC_LMEDS: {
 			cout<<"[initSAC] Using a method of type: SAC_LMeDS_ROS with a model threshold of "<<threshold<<endl;
-			sacMethod = new SACMethodLMeDS_ROS();
+			sacMethod = new SACMethodLMeDS();
 			sacMethod->setObjectModel(objectModel);
 			sacMethod->setDistanceThreshold(threshold);
 			sacMethod->setPointCloud(inputPointCloud);
@@ -319,7 +319,7 @@ public:
 		}
 		case SAC_MSAC: {
 			cout<<"[initSAC] Using a method of type: SAC_MSAC_ROS with a model threshold of "<<threshold<<endl;
-			sacMethod = new SACMethodMSAC_ROS();
+			sacMethod = new SACMethodMSAC();
 			sacMethod->setObjectModel(objectModel);
 			sacMethod->setDistanceThreshold(threshold);
 			sacMethod->setPointCloud(inputPointCloud);
@@ -327,7 +327,7 @@ public:
 		}
 		case SAC_MLESAC: {
 			cout<<"[initSAC] Using a method of type: SAC_MLESAC_ROS with a model threshold of "<<threshold<<endl;
-			sacMethod = new SACMethodMLESAC_ROS();
+			sacMethod = new SACMethodMLESAC();
 			sacMethod->setObjectModel(objectModel);
 			sacMethod->setDistanceThreshold(threshold);
 			sacMethod->setPointCloud(inputPointCloud);

@@ -1,22 +1,18 @@
 /*
- * SACMethodALMeDS.cpp
+ * @file: SACMethodALMeDS.cpp
  *
- *  Created on: Apr 21, 2011
- *      Author: reon
+ * @date: Apr 21, 2011
+ * @author: reon
  */
+
 
 #include "SACMethodALMeDS.h"
 #include <algorithm>
 namespace BRICS_3D {
 
-SACMethodALMeDS::SACMethodALMeDS() {
-	// TODO Auto-generated constructor stub
+SACMethodALMeDS::SACMethodALMeDS() {}
 
-}
-
-SACMethodALMeDS::~SACMethodALMeDS() {
-	// TODO Auto-generated destructor stub
-}
+SACMethodALMeDS::~SACMethodALMeDS() {}
 
 bool SACMethodALMeDS::computeModel(){
 
@@ -30,13 +26,13 @@ bool SACMethodALMeDS::computeModel(){
 	}
 
 	this->iterations = 0;
-	double d_best_penalty = DBL_MAX;
+	double bestPenaltyFound = DBL_MAX;
 
-	std::vector<int> best_model;
-	Eigen::VectorXd model_coefficients;
+	std::vector<int> bestModelInliers;
+	Eigen::VectorXd estimatedModelCoefficients;
 	std::vector<double> distances;
 
-	int n_inliers_count = 0;
+	int noInliersCurrentModel = 0;
 
 	// Iterate
 	while (this->iterations < this->maxIterations)
@@ -46,7 +42,7 @@ bool SACMethodALMeDS::computeModel(){
 	       bool isDegenerate = false;
 	       bool modelFound = false;
 
-	       this->objectModel->computeRandomModel(this->iterations,model_coefficients,isDegenerate,modelFound);
+	       this->objectModel->computeRandomModel(this->iterations,estimatedModelCoefficients,isDegenerate,modelFound);
 
 	       if (!isDegenerate) break;
 
@@ -56,32 +52,30 @@ bool SACMethodALMeDS::computeModel(){
 	       }
 
 
-		double d_cur_penalty = 0;
+		double crrentModelPenalty = 0;
 		std::vector<int> inliers;
 
 		//Find the points inside threshold distance to the model
-		this->objectModel->selectWithinDistance (model_coefficients, this->threshold, inliers);
+		this->objectModel->selectWithinDistance (estimatedModelCoefficients, this->threshold, inliers);
 
 		distances.resize (inliers.size ());
 		// Iterate through the inliers and calculate the distances from them to the model
-		this->objectModel->getInlierDistance (inliers, model_coefficients, distances);
+		this->objectModel->getInlierDistance (inliers, estimatedModelCoefficients, distances);
 		std::sort (distances.begin (), distances.end ());
-		// d_cur_penalty = median (distances)
 		int mid = inliers.size () / 2;
 
-		// Do we have a "middle" point or should we "estimate" one ?
 		if (inliers.size () % 2 == 0)
-			d_cur_penalty = (sqrt (distances[mid-1]) + sqrt (distances[mid])) / 2;
+			// d_cur_penalty = median (distances)
+			crrentModelPenalty = (sqrt (distances[mid-1]) + sqrt (distances[mid])) / 2;
 		else
-			d_cur_penalty = sqrt (distances[mid]);
+			crrentModelPenalty = sqrt (distances[mid]);
 
-		// Better match ?
-		if (d_cur_penalty < d_best_penalty)
+		if (crrentModelPenalty < bestPenaltyFound)
 		{
-			d_best_penalty = d_cur_penalty;
+			bestPenaltyFound = crrentModelPenalty;
 
 			// Save the current model/coefficients selection as being the best so far
-			this->modelCoefficients = model_coefficients;
+			this->modelCoefficients = estimatedModelCoefficients;
 		}
 
 		this->iterations++;
@@ -89,24 +83,18 @@ bool SACMethodALMeDS::computeModel(){
 	}
 
 
-	// Classify the data points into inliers and outliers
-	// Sigma = 1.4826 * (1 + 5 / (n-d)) * sqrt (M)
-	// @note: See "Robust Regression Methods for Computer Vision: A Review"
-	//double sigma = 1.4826 * (1 + 5 / (sac_model_->getIndices ()->size () - best_model.size ())) * sqrt (d_best_penalty);
-	//double threshold = 2.5 * sigma;
-
 	// Iterate through the 3d points and calculate the distances from them to the model again
 	this->objectModel->getDistancesToModel (this->modelCoefficients, distances);
 
 	this->inliers.resize (distances.size ());
 	// Get the inliers for the best model found
-	n_inliers_count = 0;
+	noInliersCurrentModel = 0;
 	for (size_t i = 0; i < distances.size (); ++i)
 		if (distances[i] <= this->threshold)
-			this->inliers[n_inliers_count++] = i;
+			this->inliers[noInliersCurrentModel++] = i;
 
 	// Resize the inliers vector
-	this->inliers.resize (n_inliers_count);
+	this->inliers.resize (noInliersCurrentModel);
 
 	if (this->inliers.size () == 0)
 			{
