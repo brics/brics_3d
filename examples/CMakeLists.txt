@@ -128,7 +128,7 @@ IF (USE_OSG)
     	${OSGVIEWER_LIBRARY_DEBUG}
     )	
     
-    IF (USE_PCL)	
+    IF (USE_PCL AND USE_EIGEN3)	
         INCLUDE_DIRECTORIES(${PCL_INCLUDE_DIRS} ${OPENNI_INCLUDE_DIRS})    
         ADD_EXECUTABLE(kinect_test kinect_test) 
         TARGET_LINK_LIBRARIES(kinect_test 
@@ -158,7 +158,7 @@ IF (USE_OSG)
         	${PCL_IO_LIBRARY} 
         	${PCL_FEATURES_LIBRARY} 
         )
-    ENDIF(USE_PCL)    
+    ENDIF(USE_PCL AND USE_EIGEN3)    
     
 ENDIF(USE_OSG)
 

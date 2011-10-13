@@ -21,7 +21,8 @@
 #ifdef EIGEN3
 	typedef Eigen::Affine3d Transform3d;
 #else
-	typedef Eigen::Transform3d Transform3d;
+	//typedef Eigen::Transform3d Transform3d;
+	using Eigen::Transform3d;
 #endif
 
 namespace BRICS_3D {
