@@ -1,8 +1,7 @@
 /*
- * NormalEstimation.h
- *
- *  Created on: Apr 24, 2011
- *      Author: reon
+ * @brief: NormalEstimation.h
+ * @date: Apr 24, 2011
+ * @author: reon
  */
 
 #ifndef NORMALESTIMATION_H_

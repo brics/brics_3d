@@ -14,7 +14,7 @@ using std::runtime_error;
 
 namespace BRICS_3D {
 
-
+//FixMe Vector resizing needs a standard constructor
 //ColoredPoint3D::ColoredPoint3D() {
 //	x = 0.0;
 //	y = 0.0;
@@ -23,7 +23,7 @@ namespace BRICS_3D {
 //	green = 0;
 //	blue = 0;
 //}
-//
+
 //ColoredPoint3D::ColoredPoint3D(ColoredPoint3D* point) {
 //	x = point->x;
 //	y = point->y;

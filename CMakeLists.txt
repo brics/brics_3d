@@ -150,7 +150,7 @@ ADD_SUBDIRECTORY(./src) #compile everything in src to create the libraries
 ADD_SUBDIRECTORY(./examples) #compile everything in examples to create the example binaries
 
 IF(CppUnit_FOUND)
-    ADD_SUBDIRECTORY(./tests) #compile everything in tests to create the unit test binaries
+ #   ADD_SUBDIRECTORY(./tests) #compile everything in tests to create the unit test binaries
 ENDIF(CppUnit_FOUND)
     
 

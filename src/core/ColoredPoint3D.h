@@ -21,27 +21,27 @@ namespace BRICS_3D {
 class ColoredPoint3D : public Point3DDecorator {
 public:
 
-//	/*
-//	 * @brief Standard constructor
-//	 */
-//	ColoredPoint3D();
-//
-//	/*
-//	 * @brief Constructor with full initialization
-//	 * @param x X coordinate in Cartesian system
-//	 * @param y Y coordinate in Cartesian system
-//	 * @param z Z coordinate in Cartesian system (height)
-//	 * @param red Red color channel
-//	 * @param green Green color channel
-//	 * @param blue Blue color channel
-//	 */
-//	ColoredPoint3D(double x, double y, double z , unsigned char red, unsigned char green, unsigned char blue);
-//
-//	/*
-//	 * @brief Copy constructor
-//	 * @param[in] point Pointer to point that will be copied
-//	 */
-//	ColoredPoint3D(ColoredPoint3D* point);
+	/*
+	 * @brief Standard constructor
+	 */
+	ColoredPoint3D();
+
+	//	/*
+	//	 * @brief Constructor with full initialization
+	//	 * @param x X coordinate in Cartesian system
+	//	 * @param y Y coordinate in Cartesian system
+	//	 * @param z Z coordinate in Cartesian system (height)
+	//	 * @param red Red color channel
+	//	 * @param green Green color channel
+	//	 * @param blue Blue color channel
+	//	 */
+	//	ColoredPoint3D(double x, double y, double z , unsigned char red, unsigned char green, unsigned char blue);
+	//
+	//	/*
+	//	 * @brief Copy constructor
+	//	 * @param[in] point Pointer to point that will be copied
+	//	 */
+	//	ColoredPoint3D(ColoredPoint3D* point);
 
 	/**
 	 * @brief Constructor that requires a Point3D pointer
@@ -90,6 +90,57 @@ public:
 	 * @return Output stream
 	 */
 	friend ostream& operator<<(ostream &outStream, const ColoredPoint3D &point);
+
+	/**
+	 * @brief Sets the red-value for the point
+	 * @param red	the new red-value
+	 */
+	inline void setR(unsigned char red){
+		this->red = red;
+	}
+
+	/**
+	 * @brief Sets the green-value for the point
+	 * @param green	the new green-value
+	 */
+	inline void setG(unsigned char green){
+		this->green = green;
+	}
+
+	/**
+	 * @brief Sets the blue-value for the point
+	 * @param blue	the new blue-value
+	 */
+	inline void setB(unsigned char blue){
+		this->blue = blue;
+	}
+
+
+
+	/**
+	 * @brief Returns the red-value for the point
+	 * @return	the red-value
+	 */
+	inline unsigned char getR(){
+		return this->red;
+	}
+
+	/**
+	 * @brief Returns the green-value for the point
+	 * @return	the green-value
+	 */
+	inline unsigned char getG(){
+		return this->green;
+	}
+
+	/**
+	 * @brief Returns the blue-value for the point
+	 * @return	the blue-value
+	 */
+	inline unsigned char getB(){
+		return this->blue;
+	}
+
 
 	/// Red color channel for the point
 	unsigned char red;
