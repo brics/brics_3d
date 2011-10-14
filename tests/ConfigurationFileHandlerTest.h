@@ -11,8 +11,10 @@
 
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include <cstring>
 
 #include "util/ConfigurationFileHandler.h"
+
 
 using namespace std;
 using namespace BRICS_3D;

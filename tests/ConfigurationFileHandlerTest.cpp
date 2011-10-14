@@ -40,7 +40,7 @@ void ConfigurationFileHandlerTest::testConstructor() {
 		xmlHandler = 0;
 	}
 }
-
+#ifdef BRICS_XERCES_ENABLE //This test can only be performed if xerces is enabled
 void ConfigurationFileHandlerTest::testParsing() {
 	xmlHandler = new ConfigurationFileHandler(filename);
 	CPPUNIT_ASSERT(xmlHandler->getErrorsOccured() == false);
@@ -71,7 +71,9 @@ void ConfigurationFileHandlerTest::testParsing() {
 //	cout << "assigner = " << rigidEstimator << endl;
 
 }
+#endif
 
+#ifdef BRICS_XERCES_ENABLE //This test can only be performed if xerces is enabled
 void ConfigurationFileHandlerTest::testFalseParameters() {
 	int intDummy;
 	double doubleDummy;
@@ -132,7 +134,7 @@ void ConfigurationFileHandlerTest::testFalseParameters() {
 	CPPUNIT_ASSERT(xmlHandler->getSubAlgorithm("wrongAlgorithm", "wrongSubAlgorithm", &stringDummy) == false);
 
 }
-
+#endif
 
 } // namespace unitTests
 
