@@ -329,6 +329,42 @@ void ColoredPointCloud3DTest::testTransformation() {
 
 }
 
+void ColoredPointCloud3DTest::testMassiveData() {
+	int maxCount = 307200; //VGA resolution for realistic test
+	int maxCaptures = 2;
+
+	ColoredPointCloud3D* sensorData;
+	for (int captures = 0; captures < maxCaptures; ++captures) {
+		sensorData = new ColoredPointCloud3D();
+
+		(*sensorData->getPointCloud()).resize(maxCount);
+		for (int i = 0; i < static_cast<int>(sensorData->getPointCloud()->size()); i++) {
+			//			outputPointCloud->addPoint(BRICS_3D::Point3D (inputPointCloud->points[i].x, inputPointCloud->points[i].y, inputPointCloud->points[i].z));
+			(*sensorData->getPointCloud())[i].setX(1);
+			(*sensorData->getPointCloud())[i].setY(2);
+			(*sensorData->getPointCloud())[i].setZ(3);
+			(*sensorData->getPointCloud())[i].setR(128);
+			(*sensorData->getPointCloud())[i].setG(255);
+			(*sensorData->getPointCloud())[i].setB(128);
+		}
+		CPPUNIT_ASSERT_EQUAL(maxCount, static_cast<int>(sensorData->getPointCloud()->size()));
+		delete	sensorData;
+	}
+
+	ColoredPointCloud3D* sensorData2;
+	for (int captures = 0; captures < maxCaptures; ++captures) {
+		sensorData2 = new ColoredPointCloud3D();
+
+		for (int i = 0; i < maxCount; i++) {
+//			sensorData2->addPoint(ColoredPoint3D(new Point3D(1,2,3), 128, 255, 128)); //this will create a memory leak
+			Point3D tmpPoint(1,2,3);
+			sensorData2->addPoint(ColoredPoint3D(&tmpPoint, 128, 255, 128)); //this will not create a memory leak
+		}
+		CPPUNIT_ASSERT_EQUAL(maxCount, static_cast<int>(sensorData2->getPointCloud()->size()));
+		delete	sensorData2;
+	}
+}
+
 }
 
 

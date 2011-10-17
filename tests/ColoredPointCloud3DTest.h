@@ -29,6 +29,7 @@ class ColoredPointCloud3DTest : public CPPUNIT_NS::TestFixture {
 	//CPPUNIT_TEST( testLimits ); //is time consuming
 	CPPUNIT_TEST( testStreaming );
 	CPPUNIT_TEST( testTransformation );
+	CPPUNIT_TEST( testMassiveData );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -40,6 +41,7 @@ public:
 	  void testLimits();
 	  void testStreaming();
 	  void testTransformation();
+	  void testMassiveData();
 
 	  EIGEN_MAKE_ALIGNED_OPERATOR_NEW //Required by Eigen2
 
