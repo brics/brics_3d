@@ -10,14 +10,33 @@
 
 namespace BRICS_3D {
 
+Point3DDecorator::Point3DDecorator() {
+	this->point = new Point3D(); //create default point (0,0,0)
+}
+
 Point3DDecorator::Point3DDecorator(Point3D* point) :
-			Point3D (point) { //TODO: check if this causes  inconsistency of coordinates
-	this->decorate(point);
+			Point3D (point) {
+//	this->decorate(point);
+	this->point = new Point3D(point);
+}
+
+Point3DDecorator::Point3DDecorator(Point3DDecorator* point) {
+	this->point = new Point3D(point);
+//	this->decorate(new Point3D(point));
+}
+
+Point3DDecorator::Point3DDecorator(const Point3DDecorator &point) {
+	this->point = new Point3D(point);
+}
+
+Point3DDecorator& Point3DDecorator::operator=(Point3DDecorator &point) {
+	*(this->point) = point;
 }
 
 Point3DDecorator::~Point3DDecorator() {
 	if (point != 0) {
-//		delete point; //TODO: causes seg fault?
+		delete point;
+		point = 0;
 	}
 }
 

@@ -14,33 +14,13 @@ using std::runtime_error;
 
 namespace BRICS_3D {
 
-//FixMe Vector resizing needs a standard constructor
-//ColoredPoint3D::ColoredPoint3D() {
-//	x = 0.0;
-//	y = 0.0;
-//	z = 0.0;
-//	red = 0;
-//	green = 0;
-//	blue = 0;
-//}
 
-//ColoredPoint3D::ColoredPoint3D(ColoredPoint3D* point) {
-//	x = point->x;
-//	y = point->y;
-//	z = point->z;
-//	red = point->red;
-//	green = point->green;
-//	blue = point->blue;
-//}
-//
-//ColoredPoint3D::ColoredPoint3D(double x, double y, double z, unsigned char red, unsigned char green, unsigned char blue) {
-//	this->x = x;
-//	this->y = y;
-//	this->z = z;
-//	this->red = red;
-//	this->green = green;
-//	this->blue = blue;
-//}
+ColoredPoint3D::ColoredPoint3D() :
+					Point3DDecorator() {
+	red = 0;
+	green = 0;
+	blue = 0;
+}
 
 ColoredPoint3D::ColoredPoint3D(Point3D* point) :
 			Point3DDecorator (point) {
@@ -50,10 +30,25 @@ ColoredPoint3D::ColoredPoint3D(Point3D* point) :
 }
 
 ColoredPoint3D::ColoredPoint3D(ColoredPoint3D* point) :
-		Point3DDecorator (point) { //TODO?!?
+		Point3DDecorator (point) {
 	red = point->red;
 	green = point->green;
 	blue = point->blue;
+}
+
+ColoredPoint3D::ColoredPoint3D(const ColoredPoint3D &point) :
+		Point3DDecorator (point) {
+	red = point.red;
+	green = point.green;
+	blue = point.blue;
+}
+
+
+ColoredPoint3D& ColoredPoint3D::operator=(const ColoredPoint3D &point) {
+	Point3DDecorator::operator=(point);
+	red = point.red;
+	green = point.green;
+	blue = point.blue;
 }
 
 ColoredPoint3D::ColoredPoint3D(Point3D* point, unsigned char red, unsigned char green, unsigned char blue) :

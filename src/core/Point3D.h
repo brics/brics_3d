@@ -61,6 +61,12 @@ public:
 	Point3D(Point3D* point);
 
 	/**
+	 * @brief Copy constructor
+	 * @param[in] point Reference to point that will be copied
+	 */
+	Point3D(const Point3D &point);
+
+	/**
 	 * @brief Standard destructor
 	 */
 	virtual ~Point3D();

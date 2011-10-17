@@ -34,6 +34,13 @@ Point3D::Point3D(Point3D *point) {
 	this->z = point->getZ();
 }
 
+Point3D::Point3D(const Point3D &point) {
+	this->x = point.getX();
+	this->y = point.getY();
+	this->z = point.getZ();
+}
+
+
 Point3D::Point3D(Coordinate x, Coordinate y, Coordinate z) {
 	this->x = x;
 	this->y = y;

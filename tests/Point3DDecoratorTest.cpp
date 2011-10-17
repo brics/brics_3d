@@ -29,8 +29,10 @@ void Point3DDecoratorTest::setUp() {
 void Point3DDecoratorTest::tearDown() {
 	delete decoratedPointMinus123;
 	delete point000;
-	delete point111;
-	delete pointMinus123;
+	if (point111) { // we have to be careful as we plan to pass over ownership in the decorator test
+		delete point111;
+		point111 = 0;
+	}
 	delete pointMax;
 	delete pointMin;
 }
@@ -47,7 +49,7 @@ void Point3DDecoratorTest::testColorDecoration() {
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(point000->getZ(), decoratedPoint->getZ(), maxTolerance);
 
 	/* re-decorate point */
-	decoratedPoint->decorate(point111);
+	decoratedPoint->decorate(point111); //with this one you pass by the owner ship to the point
 
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(point111->getX(), decoratedPoint->getX(), maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(point111->getY(), decoratedPoint->getY(), maxTolerance);
@@ -61,12 +63,16 @@ void Point3DDecoratorTest::testColorDecoration() {
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(point111->getZ(), basePoint->getZ(), maxTolerance);
 
 	delete decoratedPoint;
+	point111 = 0;
 
 }
 
 void Point3DDecoratorTest::testRecursiveDecoration() {
-	ColoredPoint3D* decoratedPointInner = new ColoredPoint3D(point111,1,2,3);
-	ColoredPoint3D* decoratedPointOuter = new ColoredPoint3D(decoratedPointInner,4,5,6);
+	ColoredPoint3D* decoratedPointInner = new ColoredPoint3D(point111,1,2,3); //decorator constructor
+	decoratedPointInner->decorate(point111); //this means real decoration without creation of a copy; actually overrides value from constructor
+	ColoredPoint3D* decoratedPointOuter = new ColoredPoint3D(decoratedPointInner,4,5,6); //decorator constructor
+	decoratedPointOuter->decorate(decoratedPointInner);
+	ColoredPoint3D* decoratedPointOuterCopy = new ColoredPoint3D(decoratedPointOuter); // _copy_ constructor
 
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(point111->getX(), decoratedPointInner->getX(), maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(point111->getY(), decoratedPointInner->getY(), maxTolerance);
@@ -206,8 +212,159 @@ void Point3DDecoratorTest::testRecursiveDecoration() {
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(testZ, basePointOuter->getZ(), maxTolerance);
 
 	delete decoratedPointOuter;
-	delete decoratedPointInner;
 
+	delete decoratedPointOuterCopy;
+//	delete decoratedPointInner;
+	point111 = 0; //already deleted earlier
+}
+
+void Point3DDecoratorTest::testRecursiveDecorationCopies() {
+	ColoredPoint3D* decoratedPointInner = new ColoredPoint3D(point111,1,2,3); //decorator constructor
+	ColoredPoint3D* decoratedPointOuter = new ColoredPoint3D(decoratedPointInner,4,5,6); //decorator constructor
+	ColoredPoint3D* decoratedPointOuterCopy = new ColoredPoint3D(decoratedPointOuter); // _copy_ constructor
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(point111->getX(), decoratedPointInner->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(point111->getY(), decoratedPointInner->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(point111->getZ(), decoratedPointInner->getZ(), maxTolerance);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(point111->getX(), decoratedPointOuter->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(point111->getY(), decoratedPointOuter->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(point111->getZ(), decoratedPointOuter->getZ(), maxTolerance);
+
+	/* cast to Point3D */
+	Point3D* basePointInner = dynamic_cast<Point3D*>(decoratedPointInner);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(point111->getX(), basePointInner->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(point111->getY(), basePointInner->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(point111->getZ(), basePointInner->getZ(), maxTolerance);
+
+	Point3D* basePointOuter = dynamic_cast<Point3D*>(decoratedPointOuter);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(point111->getX(), basePointOuter->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(point111->getY(), basePointOuter->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(point111->getZ(), basePointOuter->getZ(), maxTolerance);
+
+	/*
+	 * check if chances are really transparent...
+	 */
+	Coordinate testX;
+	Coordinate testY;
+	Coordinate testZ;
+
+	/* change data from outer skin/layer/decorator/wrapper */
+	testX = 10.0;
+	testY = 11.0;
+	testZ = 12.0;
+
+	decoratedPointOuter->setX(testX);
+	decoratedPointOuter->setY(testY);
+	decoratedPointOuter->setZ(testZ);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1 ,point111->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1, point111->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1, point111->getZ(), maxTolerance);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1 , basePointInner->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1, basePointInner->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1, basePointInner->getZ(), maxTolerance);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(testX , basePointOuter->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(testY, basePointOuter->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(testZ, basePointOuter->getZ(), maxTolerance);
+
+	/* change data from inner skin/layer/decorator/wrapper */
+	Coordinate test2X = 20.0;
+	Coordinate test2Y = 21.0;
+	Coordinate test2Z = 22.0;
+
+	decoratedPointInner->setX(test2X);
+	decoratedPointInner->setY(test2Y);
+	decoratedPointInner->setZ(test2Z);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1 ,point111->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1, point111->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1, point111->getZ(), maxTolerance);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(test2X , basePointInner->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(test2Y, basePointInner->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(test2Z, basePointInner->getZ(), maxTolerance);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(testX , basePointOuter->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(testY, basePointOuter->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(testZ, basePointOuter->getZ(), maxTolerance);
+
+	/* change data from core/base */
+	Coordinate test3X = 30.0;
+	Coordinate test3Y = 31.0;
+	Coordinate test3Z = 32.0;
+
+	point111->setX(test3X);
+	point111->setY(test3Y);
+	point111->setZ(test3Z);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(test3X, point111->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(test3Y, point111->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(test3Z, point111->getZ(), maxTolerance);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(test2X, basePointInner->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(test2Y, basePointInner->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(test2Z, basePointInner->getZ(), maxTolerance);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(testX, basePointOuter->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(testY, basePointOuter->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(testZ, basePointOuter->getZ(), maxTolerance);
+
+	/*
+	 * change data from outer skin/layer/decorator/wrapper,
+	 * but manipulate re-casted Point3D
+	 */
+	Coordinate test4X = 40.0;
+	Coordinate test4Y = 41.0;
+	Coordinate test4Z = 42.0;
+
+	basePointOuter->setX(test4X);
+	basePointOuter->setY(test4Y);
+	basePointOuter->setZ(test4Z);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(test3X, point111->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(test3Y, point111->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(test3Z, point111->getZ(), maxTolerance);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(test2X, basePointInner->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(test2Y, basePointInner->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(test2Z, basePointInner->getZ(), maxTolerance);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(test4X, basePointOuter->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(test4Y, basePointOuter->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(test4Z, basePointOuter->getZ(), maxTolerance);
+
+	/*
+	 * change data from inner skin/layer/decorator/wrapper,
+	 * but manipulate re-casted Point3D
+	 */
+	Coordinate test5X = 50.0;
+	Coordinate test5Y = 51.0;
+	Coordinate test5Z = 52.0;
+
+	basePointInner->setX(test5X);
+	basePointInner->setY(test5Y);
+	basePointInner->setZ(test5Z);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(test3X, point111->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(test3Y, point111->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(test3Z, point111->getZ(), maxTolerance);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(test5X, basePointInner->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(test5Y, basePointInner->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(test5Z, basePointInner->getZ(), maxTolerance);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(test4X, basePointOuter->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(test4Y, basePointOuter->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(test4Z, basePointOuter->getZ(), maxTolerance);
+
+	delete decoratedPointOuter;
+
+	delete decoratedPointOuterCopy;
+	delete decoratedPointInner;
+//	point111 = 0; //already deleted earlier
 }
 
 void Point3DDecoratorTest::testAddition() {
@@ -368,6 +525,7 @@ void Point3DDecoratorTest::testTransfomration() {
 
 	HomogeneousMatrix44* homogeneousTransformation = new HomogeneousMatrix44(&transformation);
 	ColoredPoint3D* decoraredPoint111 = new ColoredPoint3D(point111, 2, 3, 4);
+	decoraredPoint111->decorate(point111);
 	decoraredPoint111->homogeneousTransformation(homogeneousTransformation);
 //	cout << *point111 << endl; // actual
 
@@ -419,8 +577,14 @@ void Point3DDecoratorTest::testTransfomration() {
 }
 
 void Point3DDecoratorTest::testStreaming() {
-	ColoredPoint3D* decoratedPointInner = new ColoredPoint3D(pointMinus123,1,2,3);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, decoratedPointMinus123->getX(), maxTolerance); //preconditions
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-2.0, decoratedPointMinus123->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-3.0, decoratedPointMinus123->getZ(), maxTolerance);
+
+	ColoredPoint3D* decoratedPointInner = new ColoredPoint3D(new Point3D(pointMinus123),1,2,3); //pointMinus123 is already owned by decoratedPointMinus123
 	ColoredPoint3D* decoratedPointOuter = new ColoredPoint3D(decoratedPointInner,4,5,6);
+	decoratedPointOuter->decorate(decoratedPointInner);
 
 	/*
 	 * check if chances are really transparent...
@@ -441,9 +605,9 @@ void Point3DDecoratorTest::testStreaming() {
 	Point3D* basePointInner = dynamic_cast<Point3D*>(decoratedPointInner);
 	Point3D* basePointOuter = dynamic_cast<Point3D*>(decoratedPointOuter);
 
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(testX , pointMinus123->getX(), maxTolerance); //preconditions
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(testY, pointMinus123->getY(), maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(testZ, pointMinus123->getZ(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, decoratedPointMinus123->getX(), maxTolerance); //preconditions (it shold not change as the constructor makes copies)
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-2.0, decoratedPointMinus123->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-3.0, decoratedPointMinus123->getZ(), maxTolerance);
 
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(testX , decoratedPointOuter->getX(), maxTolerance); //preconditions
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(testY, decoratedPointOuter->getY(), maxTolerance);
@@ -486,7 +650,7 @@ void Point3DDecoratorTest::testStreaming() {
 
 	comparatorString.clear();
 	comparatorString = testStringStream0.str();
-	CPPUNIT_ASSERT(comparatorString.compare("10 11 12") == 0);
+	CPPUNIT_ASSERT(comparatorString.compare("-1 -2 -3") == 0);
 
 	comparatorString.clear();
 	comparatorString = testStringStream1.str();
@@ -525,8 +689,7 @@ void Point3DDecoratorTest::testStreaming() {
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(testZ, baseStreamedDecoratedPoint0->getZ(), maxTolerance);
 
 	delete basePointOuter;
-	delete basePointInner;
-
+//	delete basePointInner; //not necessary any more as basePointOuter will delete the inner pointer automatically
 }
 
 void Point3DDecoratorTest::testRawAccess() {

@@ -19,6 +19,8 @@
 #include "core/Point3D.h"
 #include "core/HomogeneousMatrix44.h"
 
+#include <boost/shared_ptr.hpp>
+
 using namespace std;
 using namespace Eigen;
 using namespace BRICS_3D;
@@ -30,6 +32,7 @@ class Point3DDecoratorTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST_SUITE( Point3DDecoratorTest );
 	CPPUNIT_TEST( testColorDecoration );
 	CPPUNIT_TEST( testRecursiveDecoration );
+	CPPUNIT_TEST( testRecursiveDecorationCopies );
 	CPPUNIT_TEST( testAddition );
 	CPPUNIT_TEST( testSubtraction );
 	CPPUNIT_TEST( testMultiplication );
@@ -44,6 +47,7 @@ public:
 
 	void testColorDecoration();
 	void testRecursiveDecoration();
+	void testRecursiveDecorationCopies();
 	void testAddition();
 	void testSubtraction();
 	void testMultiplication();
@@ -58,7 +62,7 @@ private:
 
 	/// Test points
 	Point3D* point000;
-	Point3D* point111;
+	Point3D* point111; // we plan to use it as a shared reference
 	Point3D* pointMinus123;
 	Point3D* pointMax;
 	Point3D* pointMin;

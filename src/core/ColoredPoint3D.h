@@ -21,31 +21,14 @@ namespace BRICS_3D {
 class ColoredPoint3D : public Point3DDecorator {
 public:
 
-	/*
+	/**
 	 * @brief Standard constructor
 	 */
 	ColoredPoint3D();
 
-	//	/*
-	//	 * @brief Constructor with full initialization
-	//	 * @param x X coordinate in Cartesian system
-	//	 * @param y Y coordinate in Cartesian system
-	//	 * @param z Z coordinate in Cartesian system (height)
-	//	 * @param red Red color channel
-	//	 * @param green Green color channel
-	//	 * @param blue Blue color channel
-	//	 */
-	//	ColoredPoint3D(double x, double y, double z , unsigned char red, unsigned char green, unsigned char blue);
-	//
-	//	/*
-	//	 * @brief Copy constructor
-	//	 * @param[in] point Pointer to point that will be copied
-	//	 */
-	//	ColoredPoint3D(ColoredPoint3D* point);
-
 	/**
-	 * @brief Constructor that requires a Point3D pointer
-	 * @param[in] point The Point3D that will be decorated with color functionality.
+	 * @brief Copy constructor that requires a Point3D pointer.
+	 * @param[in] point The Point3D that will be copied and decorated with color functionality.
 	 */
 	ColoredPoint3D(Point3D* point);
 
@@ -63,6 +46,15 @@ public:
 	 * @param[in] point Pointer to point that will be copied
 	 */
 	ColoredPoint3D(ColoredPoint3D* point);
+
+	/**
+	 * @brief Copy constructor
+	 * @param[in] point Reference to point that will be copied
+	 */
+	ColoredPoint3D(const ColoredPoint3D &point);
+
+
+	ColoredPoint3D& operator=(const ColoredPoint3D &point);
 
 	/**
 	 * @brief Standard destructor

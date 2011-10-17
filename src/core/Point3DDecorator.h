@@ -23,13 +23,35 @@ class Point3DDecorator : public Point3D {
 public:
 
 	/**
+	 * @brief Standard constructor.
+	 */
+	Point3DDecorator();
+
+	/**
 	 * @brief Constructor that requires a Point3D pointer
-	 * @param[in] point The Point3D that will be wrapped/enhanced/decorated by this decorator.
+	 * @param[in] point The Point3D that will be copied and wrapped/enhanced/decorated by this decorator.
 	 *
 	 * Note that there is no standard constructor, to prevent a situation with an Point3DDecorator instance,
 	 * but no internal Point3D specified.
 	 */
 	Point3DDecorator(Point3D* point);
+
+	/**
+	 * @brief Copy constructor
+	 * @param point Pointer to a decorated point that will be copied and decorated
+	 */
+	Point3DDecorator(Point3DDecorator* point);
+
+	/**
+	 * @brief Copy constructor
+	 * @param point Reference to a decorated point that will be copied and decorated
+	 */
+	Point3DDecorator(const Point3DDecorator &point);
+
+	/**
+	 * @brief Assignement operator.
+	 */
+	Point3DDecorator& operator=(Point3DDecorator &point);
 
 	/**
 	 * @brief Standard destructor
@@ -66,6 +88,9 @@ public:
 
 	/**
 	 * @brief decorates a point
+	 *
+	 * Decorating means that the decorator takes over ownership/responsibility for that (inner) point.
+	 * NOTE: there is no copy created, in contrast to the copy constructors.
 	 */
     void decorate(Point3D* point);
 

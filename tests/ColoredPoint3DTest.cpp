@@ -48,6 +48,15 @@ void ColoredPoint3DTest::tearDown() {
 
 void ColoredPoint3DTest::testConstructor() {
 
+	/* Test default constructor */
+	ColoredPoint3D defaultColoredPoint;
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, defaultColoredPoint.getX(), maxTolerance); //same as before but with CppUnit macro
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, defaultColoredPoint.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, defaultColoredPoint.getZ(), maxTolerance);
+	CPPUNIT_ASSERT(defaultColoredPoint.getR() == 0);
+	CPPUNIT_ASSERT(defaultColoredPoint.getG() == 0);
+	CPPUNIT_ASSERT(defaultColoredPoint.getB() == 0);
+
 	/*
 	 * Test if all instances are created correctly.
 	 */
@@ -116,7 +125,6 @@ void ColoredPoint3DTest::testConstructor() {
 	CPPUNIT_ASSERT(newPoint2->green == 1);
 	CPPUNIT_ASSERT(newPoint2->blue == 1);
 	delete newPoint2;
-
 	ColoredPoint3D newPoint3(point111);
 
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint3.getX(), maxTolerance);
