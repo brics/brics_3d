@@ -48,6 +48,8 @@ public:
 		BRICS_3D::Point3D point(1,1,1);
 
 		convertPCLToBRICS3D(cloud, viewerCloud);
+		std::string name = "kinPts.txt";
+		viewerCloud->storeToTxtFile(name);
 		viewer.addPointCloud(viewerCloud);
 		viewer.clearButLast();
 		delete viewerCloud;

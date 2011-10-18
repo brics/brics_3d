@@ -19,6 +19,9 @@
 #include <pcl/segmentation/sac_segmentation.h>
 #include <pcl/segmentation/extract_clusters.h>
 
+#include <pcl/io/openni_grabber.h>
+//#include <pcl/visualization/cloud_viewer.h>
+
 using namespace std;
 using namespace pcl;
 
@@ -32,11 +35,12 @@ public:
 
 	ObjectRecognizer(){
 		maxObjectPoints = 200;
-		minObjectPoints = 10;
+		minObjectPoints = 50;
+		count = 0;
 	};
 	~ObjectRecognizer(){};
 
-	void setInputCloud (PointCloud<PointXYZ>::Ptr cloud) {
+	void setInputCloud (PointCloud<PointXYZ>::ConstPtr cloud) {
 		inputCloud = cloud;
 	}
 	bool compute(std::vector<Eigen::Matrix4d>& transformationMatrices){
@@ -51,6 +55,8 @@ public:
 		vg.setLeafSize (0.01, 0.01, 0.01);
 		vg.filter (*cloud_filtered);
 		cerr << "PointCloud after filtering has: " << cloud_filtered->points.size ()  << " data points." << endl; //*
+		PCDWriter writer;
+		writer.write<PointXYZ> ("downsampled_cloud.pcd", *cloud_filtered, false);
 
 		// Create the segmentation object for the planar model and set all the parameters
 		SACSegmentation<PointXYZ> seg;
@@ -58,7 +64,7 @@ public:
 		ModelCoefficients::Ptr coefficients (new ModelCoefficients);
 		PointCloud<PointXYZ>::Ptr cloud_plane (new PointCloud<PointXYZ> ());
 		PointCloud<PointXYZ>::Ptr cloud_cylinder (new PointCloud<PointXYZ> ());
-		PCDWriter writer;
+
 		seg.setOptimizeCoefficients (true);
 		seg.setModelType (SACMODEL_PLANE);
 		seg.setMethodType (SAC_RANSAC);
@@ -179,36 +185,72 @@ public:
 		return true;
 	}
 
+	void callback (const pcl::PointCloud<pcl::PointXYZ>::ConstPtr &cloud)
+	{
+		if (count >= 1) {
+			exit(0);
+		}
+		std::cout << "Next cycle." << std::endl;
+		setInputCloud(cloud);
+		std::vector<Eigen::Matrix4d> resultFrames;
+		compute(resultFrames);
+		count ++;
+	}
+
+
+
+
+	void run () {
+	    interface = new pcl::OpenNIGrabber();
+	    boost::function<void (const pcl::PointCloud<pcl::PointXYZ>::ConstPtr&)> f = boost::bind (&ObjectRecognizer::callback, this, _1);
+	    interface->registerCallback (f);
+	    interface->start ();
+	}
 
 	// Hints for the object
 	double maxObjectPoints;
 	double minObjectPoints;
+
+	pcl::Grabber* interface;
+	int count;
+
+//    pcl::visualization::CloudViewer viewer;
+
 private:
 	//const PointCloudConstPtr inputCloud;
-	PointCloud<PointXYZ>::Ptr inputCloud;
+	PointCloud<PointXYZ>::ConstPtr inputCloud;
 };
 
 int
 main (int argc, char** argv)
 {
-	bool useDataSet = true;
-    PointCloud<PointXYZ>::Ptr cloud (new PointCloud<PointXYZ>);
+	bool useDataSet = false;
+
 	if (useDataSet) {
-	// Read in the cloud data
-    PCDReader reader;
+		PointCloud<PointXYZ>::Ptr cloud (new PointCloud<PointXYZ>);
+		// Read in the cloud data
+		PCDReader reader;
 
-//    reader.read ("/home/sblume/workspace/pcl_test/table_scene_lms400.pcd", *cloud);
-    reader.read ("./data/at_work2/kinect_pointcloud0.pcd", *cloud);
-    cerr << "PointCloud before filtering has: " << cloud->points.size () << " data points." << endl; //*
+		//    reader.read ("/home/sblume/workspace/pcl_test/table_scene_lms400.pcd", *cloud);
+		reader.read ("./data/at_work2/kinect_pointcloud0.pcd", *cloud);
+		cerr << "PointCloud before filtering has: " << cloud->points.size () << " data points." << endl; //*
+		ObjectRecognizer objRec;
+		std::vector<Eigen::Matrix4d> resultFrames;
+		objRec.setInputCloud(cloud);
+		objRec.compute(resultFrames);
 	} else {
+		ObjectRecognizer objRec;
+		objRec.run();
 
+//	    while (!kinectTest.viewer.done())
+	    while (true)
+	    {
+	      sleep (1);
+	    }
 	}
 
 
-    ObjectRecognizer objRec;
-    std::vector<Eigen::Matrix4d> resultFrames;
-    objRec.setInputCloud(cloud);
-    objRec.compute(resultFrames);
+
 
 
     return (0);
