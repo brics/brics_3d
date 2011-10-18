@@ -67,21 +67,30 @@ SET (CORE_LIBRARY_SOURCES
 	./core/TriangleMeshExplicit
 	./core/TriangleMeshImplicit
     ./core/Logger
+    ./core/ColorSpaceConvertor
 )
 
 SET (ALGORITHM_LIBRARY_SOURCES
 	./algorithm/depthPerception/DepthImageToPointCloudTransformation
+	
+	./algorithm/featureExtraction/Centroid3D
+	./algorithm/featureExtraction/INormalEstimation
+	
 	./algorithm/filtering/IOctreeReductionFilter
 	./algorithm/filtering/IOctreePartition	
     ./algorithm/filtering/IOctreeSetup
 	./algorithm/filtering/Octree
-    ./algorithm/filtering/INormalEstimation
+    ./algorithm/filtering/IColorBasedROIExtractor  
+    ./algorithm/filtering/ColorBasedROIExtractorHSV.cpp
+    ./algorithm/filtering/ColorBasedROIExtractorHSV.h    
+
     ./algorithm/nearestNeighbor/INearestNeighbor
     ./algorithm/nearestNeighbor/INearestNeighborSetup
     ./algorithm/nearestNeighbor/INearestPoint3DNeighbor
     ./algorithm/nearestNeighbor/NearestNeighborANN
     ./algorithm/nearestNeighbor/NearestNeighborFLANN
     ./algorithm/nearestNeighbor/NearestNeighborSTANN
+    
 	./algorithm/registration/IPointCorrespondence
 	./algorithm/registration/PointCorrespondenceKDTree
 	./algorithm/registration/PointCorrespondenceGenericNN
@@ -95,39 +104,35 @@ SET (ALGORITHM_LIBRARY_SOURCES
 	./algorithm/registration/IIterativeClosestPointDetailed
 	./algorithm/registration/IterativeClosestPoint
 	./algorithm/registration/IterativeClosestPointFactory
+	
 	./algorithm/meshGeneration/IDelaunayTriangulation
 		
-./algorithm/segmentation/evaluation/Comparator
-./algorithm/segmentation/evaluation/Evaluator
-./algorithm/segmentation/evaluation/FileReader
-./algorithm/segmentation/evaluation/FileWriter
-./algorithm/segmentation/evaluation/MetricCalculator
-./algorithm/segmentation/evaluation/gnuplot_i
-
-
-./algorithm/segmentation/objectModels/IObjectModel
-./algorithm/segmentation/objectModels/IObjectModelUsingNormals
-./algorithm/segmentation/objectModels/ObjectModelPlane
-./algorithm/segmentation/objectModels/ObjectModelPlaneFromLines
-./algorithm/segmentation/objectModels/ObjectModelPlaneFromLineAndPoint
-./algorithm/segmentation/objectModels/ObjectModelOrientedPlane
-./algorithm/segmentation/objectModels/ObjectModelNormalPlane
-./algorithm/segmentation/objectModels/ObjectModelCircle
-./algorithm/segmentation/objectModels/ObjectModelSphere
-./algorithm/segmentation/objectModels/ObjectModelLine
-./algorithm/segmentation/objectModels/ObjectModelOrientedLine
-./algorithm/segmentation/objectModels/ObjectModelCylinder
-	
+    ./algorithm/segmentation/evaluation/Comparator
+    ./algorithm/segmentation/evaluation/Evaluator
+    ./algorithm/segmentation/evaluation/FileReader
+    ./algorithm/segmentation/evaluation/FileWriter
+    ./algorithm/segmentation/evaluation/MetricCalculator
+    ./algorithm/segmentation/evaluation/gnuplot_i
+    ./algorithm/segmentation/objectModels/IObjectModel
+    ./algorithm/segmentation/objectModels/IObjectModelUsingNormals
+    ./algorithm/segmentation/objectModels/ObjectModelPlane
+    ./algorithm/segmentation/objectModels/ObjectModelPlaneFromLines
+    ./algorithm/segmentation/objectModels/ObjectModelPlaneFromLineAndPoint
+    ./algorithm/segmentation/objectModels/ObjectModelOrientedPlane
+    ./algorithm/segmentation/objectModels/ObjectModelNormalPlane
+    ./algorithm/segmentation/objectModels/ObjectModelCircle
+    ./algorithm/segmentation/objectModels/ObjectModelSphere
+    ./algorithm/segmentation/objectModels/ObjectModelLine
+    ./algorithm/segmentation/objectModels/ObjectModelOrientedLine
+    ./algorithm/segmentation/objectModels/ObjectModelCylinder	
 	./algorithm/segmentation/SACMethods/ISACMethods	
 	./algorithm/segmentation/SACMethods/SACMethodALMeDS
 	./algorithm/segmentation/SACMethods/SACMethodRANSAC
 	./algorithm/segmentation/SACMethods/SACMethodMSAC
 	./algorithm/segmentation/SACMethods/SACMethodLMeDS
 	./algorithm/segmentation/SACMethods/SACMethodMLESAC
-
-./algorithm/segmentation/RegionBasedSACSegmentation.h
-./algorithm/segmentation/RegionBasedSACSegmentationUsingNormals.h
-
+    ./algorithm/segmentation/RegionBasedSACSegmentation.h
+    ./algorithm/segmentation/RegionBasedSACSegmentationUsingNormals.h       
 )
 
 SET (UTIL_LIBRARY_SOURCES
@@ -146,6 +151,11 @@ IF (USE_OSG)
     list(APPEND BRICS_3D_LIBRARIES_INCLUDE_DIRS ${OSG_INCLUDE_DIR})
 ENDIF(USE_OSG)
 
+IF (USE_PCL AND USE_EIGEN3)
+    list(APPEND UTIL_LIBRARY_SOURCES ./util/PCLTypecaster)
+    list(APPEND ALGORITHM_LIBRARY_SOURCES ./algorithm/segmentation/EuclideanClustering) 
+    list(APPEND BRICS_3D_LIBRARIES_INCLUDE_DIRS ${PCL_INCLUDE_DIRS})
+ENDIF(USE_PCL AND USE_EIGEN3)    
 
 # add library directories (-L)
 LINK_DIRECTORIES(
