@@ -94,7 +94,6 @@ SET (ALGORITHM_LIBRARY_SOURCES
 	./algorithm/registration/IIterativeClosestPoint
 	./algorithm/registration/IIterativeClosestPointDetailed
 	./algorithm/registration/IterativeClosestPoint
-	./algorithm/registration/IterativeClosestPoint6DSLAM
 	./algorithm/registration/IterativeClosestPointFactory
 	./algorithm/meshGeneration/IDelaunayTriangulation
 		

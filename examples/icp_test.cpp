@@ -19,7 +19,6 @@
 #include "core/PointCloud3D.h"
 #include "core/HomogeneousMatrix44.h"
 #include "algorithm/nearestNeighbor/NearestNeighborFLANN.h"
-#include "algorithm/registration/IterativeClosestPoint6DSLAM.h"
 #include "algorithm/registration/PointCorrespondenceKDTree.h"
 #include "algorithm/registration/PointCorrespondenceGenericNN.h"
 #include "algorithm/registration/RigidTransformationEstimationSVD.h"
@@ -106,7 +105,6 @@ int main(int argc, char **argv) {
 	IPointCorrespondence* assigner; //only needed for generic icp
 
 	IterativeClosestPoint* concreteIcp;
-	IterativeClosestPoint6DSLAM* concreteIcp6DSLAM;
 
 	/* set up assigner */
 	INearestPoint3DNeighbor* nearestNeigbourFinder = new NearestNeighborFLANN();
@@ -146,13 +144,6 @@ int main(int argc, char **argv) {
 			icpConfigurator = dynamic_cast<IIterativeClosestPointSetup*>(concreteIcp);
 
 			cout << "INFO: Using generic icp." << endl;
-			break;
-		case 1:
-//			icp = new IterativeClosestPoint6DSLAM();
-			concreteIcp6DSLAM = new IterativeClosestPoint6DSLAM();
-			icp = dynamic_cast<IIterativeClosestPoint*>(concreteIcp6DSLAM);
-			icpConfigurator = dynamic_cast<IIterativeClosestPointSetup*>(concreteIcp6DSLAM);
-			cout << "INFO: Using 6Dslam icp." << endl;
 			break;
 		default:
 			cout << "ERROR: No algorithm given." << endl;

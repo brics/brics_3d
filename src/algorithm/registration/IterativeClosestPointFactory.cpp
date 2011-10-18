@@ -8,7 +8,6 @@
 
 #include "IterativeClosestPointFactory.h"
 #include "util/ConfigurationFileHandler.h"
-#include "algorithm/registration/IterativeClosestPoint6DSLAM.h"
 #include "algorithm/registration/IterativeClosestPoint.h"
 #include "algorithm/registration/PointCorrespondenceKDTree.h"
 #include "algorithm/registration/RigidTransformationEstimationSVD.h"
@@ -63,13 +62,8 @@ IIterativeClosestPointPtr IterativeClosestPointFactory::createIterativeClosestPo
 
 	string icpImplementation;
 	configReader.getAttribute("IterativeClosestPoint", "implementation", &icpImplementation);
-	if (icpImplementation.compare("IterativeClosestPoint6DSLAM") == 0) {
-		icp = IIterativeClosestPointPtr(new IterativeClosestPoint6DSLAM());
-		boost::shared_ptr<IterativeClosestPoint6DSLAM> icpTmpHandle = boost::dynamic_pointer_cast<IterativeClosestPoint6DSLAM>(icp); //downcast
-		icpConfigurator = boost::dynamic_pointer_cast<IIterativeClosestPointSetup>(icp); //upcast to setup interface
-		summary << "# Implementation: IterativeClosestPoint6DSLAM" << endl;
 
-	} else if (icpImplementation.compare("IterativeClosestPoint") == 0) {
+	if (icpImplementation.compare("IterativeClosestPoint") == 0) {
 		IPointCorrespondence* assigner;
 		IRigidTransformationEstimation* estimator;
 		string subalgorithm;

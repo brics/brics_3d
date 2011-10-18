@@ -17,7 +17,6 @@
 #include "algorithm/nearestNeighbor/NearestNeighborANN.h"
 #include "algorithm/nearestNeighbor/NearestNeighborFLANN.h"
 #include "algorithm/nearestNeighbor/NearestNeighborSTANN.h"
-#include "algorithm/registration/IterativeClosestPoint6DSLAM.h"
 #include "algorithm/registration/PointCorrespondenceKDTree.h"
 #include "algorithm/registration/PointCorrespondenceGenericNN.h"
 #include "algorithm/registration/RigidTransformationEstimationSVD.h"
