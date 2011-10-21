@@ -7,6 +7,7 @@
  */
 
 #include "SceneGraphNodesTest.h"
+#include <stdexcept>
 
 namespace unitTests {
 
@@ -34,11 +35,11 @@ void SceneGraphNodesTest::testNode() {
 	testNode1.setId(testId);
 	CPPUNIT_ASSERT_EQUAL(testId, testNode1.getId());
 
-	CPPUNIT_ASSERT_EQUAL(0u, testNode1.getAttributes().size()); // Attributes should be empty...
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(testNode1.getAttributes().size())); // Attributes should be empty...
 	vector<Attribute> testAttributes;
 	testAttributes.push_back(Attribute("myName","testNode1"));
 	testNode1.setAttributes(testAttributes);
-	CPPUNIT_ASSERT_EQUAL(1u, testNode1.getAttributes().size()); // Now there should be one
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(testNode1.getAttributes().size())); // Now there should be one
 
 //	testNode2->setParents()
 
@@ -71,6 +72,9 @@ void SceneGraphNodesTest::testGroup() {
 
 	CPPUNIT_ASSERT_EQUAL(rootId, child1->getParent(0)->getId());
 	CPPUNIT_ASSERT_EQUAL(testId, root.getChild(0)->getId());
+
+//	CPPUNIT_ASSERT_THROW(child1->getParent(1000)->getId(), out_of_range);
+//	CPPUNIT_ASSERT_THROW(root.getChild(1000)->getId(), out_of_range);
 
 }
 
