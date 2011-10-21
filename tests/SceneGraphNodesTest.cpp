@@ -106,6 +106,80 @@ void SceneGraphNodesTest::testGroup() {
 
 }
 
+void SceneGraphNodesTest::testOwnership() {
+	/* Graph structure: (remember: nodes can only serve as are leaves)
+	 *             root
+	 *              |
+	 *        ------+-----
+	 *        |          |
+	 *      group1     group2
+	 *        |          |
+	 *        +----  ----+
+	 *            |  |
+	 *            group3
+	 */
+
+	/*
+	 * here we use an inner scope to completely pass by the ownership
+	 * to the scenegrapgh. "Normal" shared pointers would "hold" the reference for the
+	 * duration of the test...
+	 */
+	Group::GroupPtr root(new Group());
+	boost::weak_ptr<Group> testWeakPtr();
+
+	unsigned const int rootId = 0;
+	unsigned const int group1Id = 1;
+	unsigned const int group2Id = 2;
+	unsigned const int group3Id = 3;
+
+	{
+		Group::GroupPtr group1(new Group());
+		group1->setId(group1Id);
+		Group::GroupPtr group2(new Group());
+		group2->setId(group2Id);
+		Group::GroupPtr group3(new Group());
+		group3->setId(group3Id);
+
+		root->addChild(group1);
+		root->addChild(group2);
+		group1->addChild(group3);
+		group2->addChild(group3);
+
+		Group::GroupPtr test(new Group());
+//		testWeakPtr = test;
+//		CPPUNIT_ASSERT(testWeakPtr.lock() != 0);
+
+	} // let the local shared pointer go out of scope...
+//	CPPUNIT_ASSERT(testWeakPtr.lock() == 0);
+
+	CPPUNIT_ASSERT_EQUAL(2u, root->getNumberOfChildren());
+	CPPUNIT_ASSERT_EQUAL(2u, boost::dynamic_pointer_cast<Group>(root->getChild(0))->getChild(0)->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(group1Id, root->getChild(0)->getId());
+	CPPUNIT_ASSERT_EQUAL(group2Id, root->getChild(1)->getId());
+	CPPUNIT_ASSERT_EQUAL(group3Id, boost::dynamic_pointer_cast<Group>(root->getChild(0))->getChild(0)->getId());
+	CPPUNIT_ASSERT_EQUAL(group3Id, boost::dynamic_pointer_cast<Group>(root->getChild(1))->getChild(0)->getId());
+
+	root->removeChildren(0);
+
+	/* now it should be:
+	 *             root
+	 *              |
+	 *              +-----
+	 *                   |
+	 *                 group2
+	 *                   |
+	 *               ----+
+	 *               |
+	 *            group3
+	 */
+
+	CPPUNIT_ASSERT_EQUAL(1u, root->getNumberOfChildren());
+	CPPUNIT_ASSERT_EQUAL(1u, boost::dynamic_pointer_cast<Group>(root->getChild(0))->getChild(0)->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(group2Id, root->getChild(0)->getId());
+	CPPUNIT_ASSERT_EQUAL(group3Id, boost::dynamic_pointer_cast<Group>(root->getChild(0))->getChild(0)->getId());
+
+}
+
 void SceneGraphNodesTest::testSimpleGraph() {
 	/* Graph structure: (remember: nodes can only serve as are leaves)
 	 *             root
@@ -119,13 +193,13 @@ void SceneGraphNodesTest::testSimpleGraph() {
 	 *   node3    node4  node5   group6
 	 */
 
-	unsigned int rootId = 0;
-	unsigned int group1Id = 1;
-	unsigned int group2Id = 2;
-	unsigned int node3Id = 3;
-	unsigned int node4Id = 4;
-	unsigned int node5Id = 5;
-	unsigned int group6Id = 6;
+	unsigned const int rootId = 0;
+	unsigned const int group1Id = 1;
+	unsigned const int group2Id = 2;
+	unsigned const int node3Id = 3;
+	unsigned const int node4Id = 4;
+	unsigned const int node5Id = 5;
+	unsigned const int group6Id = 6;
 
 	Group::GroupPtr root(new Group());
 	root->setId(rootId);
@@ -206,8 +280,25 @@ void SceneGraphNodesTest::testSimpleGraph() {
 	CPPUNIT_ASSERT_EQUAL(0u, group6->getNumberOfChildren());
 
 	/*
-	 * check if we can get some nice paths
+	 * check if we can get some leave-to-root paths
 	 */
+	CPPUNIT_ASSERT_EQUAL(rootId, node3->getParent(0)->getParent(0)->getId());
+	CPPUNIT_ASSERT_EQUAL(rootId, node4->getParent(0)->getParent(0)->getId());
+	CPPUNIT_ASSERT_EQUAL(rootId, node4->getParent(1)->getParent(0)->getId());
+	CPPUNIT_ASSERT_EQUAL(rootId, node5->getParent(0)->getParent(0)->getId());
+	CPPUNIT_ASSERT_EQUAL(rootId, group6->getParent(0)->getParent(0)->getId());
+
+	/*
+	 * check if we can get some root-to-leave paths
+	 */
+	CPPUNIT_ASSERT_EQUAL(node3Id, boost::dynamic_pointer_cast<Group>(root->getChild(0))->getChild(0)->getId());
+	CPPUNIT_ASSERT_EQUAL(node4Id, boost::dynamic_pointer_cast<Group>(root->getChild(0))->getChild(1)->getId());
+
+	CPPUNIT_ASSERT_EQUAL(node4Id, boost::dynamic_pointer_cast<Group>(root->getChild(1))->getChild(0)->getId());
+	CPPUNIT_ASSERT_EQUAL(node5Id, boost::dynamic_pointer_cast<Group>(root->getChild(1))->getChild(1)->getId());
+	CPPUNIT_ASSERT_EQUAL(group6Id, boost::dynamic_pointer_cast<Group>(root->getChild(1))->getChild(2)->getId());
+	CPPUNIT_ASSERT_EQUAL(0u, boost::dynamic_pointer_cast<Group>(boost::dynamic_pointer_cast<Group>(root->getChild(1))->getChild(2))->getNumberOfChildren());
+
 
 }
 
