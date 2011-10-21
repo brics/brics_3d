@@ -50,20 +50,25 @@ void SceneGraphNodesTest::testNode() {
 void SceneGraphNodesTest::testGroup() {
 	Group root;
 	Node::NodePtr child1(new Node());
+	Node::NodePtr child2(new Node());
 
-	unsigned int rootId = 1;
-	unsigned int testId = 42;
+	unsigned const int rootId = 1;
+	unsigned const int child1testId = 42;
+	unsigned const int child2testId = 123;
 
 	root.setId(rootId);
-	child1->setId(testId);
+	child1->setId(child1testId);
+	child2->setId(child2testId);
+
 
 	CPPUNIT_ASSERT_EQUAL(rootId, root.getId()); // preconditions
-	CPPUNIT_ASSERT_EQUAL(testId, child1->getId());
+	CPPUNIT_ASSERT_EQUAL(child1testId, child1->getId());
+	CPPUNIT_ASSERT_EQUAL(child2testId, child2->getId());
 	CPPUNIT_ASSERT_EQUAL(0u, root.getNumberOfChildren());
 	CPPUNIT_ASSERT_EQUAL(0u, root.getNumberOfParents());
 	CPPUNIT_ASSERT_EQUAL(0u, child1->getNumberOfParents());
 
-	/* create parent child relationship */
+	/* create parent-child relationship */
 	root.addChild(child1);
 
 	CPPUNIT_ASSERT_EQUAL(1u, root.getNumberOfChildren());
@@ -71,13 +76,140 @@ void SceneGraphNodesTest::testGroup() {
 	CPPUNIT_ASSERT_EQUAL(1u, child1->getNumberOfParents());
 
 	CPPUNIT_ASSERT_EQUAL(rootId, child1->getParent(0)->getId());
-	CPPUNIT_ASSERT_EQUAL(testId, root.getChild(0)->getId());
+	CPPUNIT_ASSERT_EQUAL(child1testId, root.getChild(0)->getId());
+
+	/* create another parent-child relationship */
+	root.insertChild(child2, 0u); //insert on first place
+
+	CPPUNIT_ASSERT_EQUAL(2u, root.getNumberOfChildren());
+	CPPUNIT_ASSERT_EQUAL(0u, root.getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(1u, child1->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(1u, child2->getNumberOfParents());
+
+	CPPUNIT_ASSERT_EQUAL(rootId, child1->getParent(0)->getId());
+	CPPUNIT_ASSERT_EQUAL(rootId, child2->getParent(0)->getId());
+	CPPUNIT_ASSERT_EQUAL(child1testId, root.getChild(1)->getId());
+	CPPUNIT_ASSERT_EQUAL(child2testId, root.getChild(0)->getId());
+
+	/* delete the children */
+	root.removeChild(child1);
+	CPPUNIT_ASSERT_EQUAL(0u, child1->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(1u, root.getNumberOfChildren());
+	CPPUNIT_ASSERT_EQUAL(child2testId, root.getChild(0)->getId());
+
+	root.removeChild(child2);
+	CPPUNIT_ASSERT_EQUAL(0u, child2->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(0u, root.getNumberOfChildren());
 
 //	CPPUNIT_ASSERT_THROW(child1->getParent(1000)->getId(), out_of_range);
 //	CPPUNIT_ASSERT_THROW(root.getChild(1000)->getId(), out_of_range);
 
 }
 
+void SceneGraphNodesTest::testSimpleGraph() {
+	/* Graph structure: (remember: nodes can only serve as are leaves)
+	 *             root
+	 *              |
+	 *        ------+-------
+	 *        |             |
+	 *      group1        group2
+	 *        |             |
+	 *    ----+----  -------+-------
+	 *    |       |  |      |      |
+	 *   node3    node4  node5   group6
+	 */
+
+	unsigned int rootId = 0;
+	unsigned int group1Id = 1;
+	unsigned int group2Id = 2;
+	unsigned int node3Id = 3;
+	unsigned int node4Id = 4;
+	unsigned int node5Id = 5;
+	unsigned int group6Id = 6;
+
+	Group::GroupPtr root(new Group());
+	root->setId(rootId);
+	Group::GroupPtr group1(new Group());
+	group1->setId(group1Id);
+	Group::GroupPtr group2(new Group());
+	group2->setId(group2Id);
+
+	Node::NodePtr node3(new Node());
+	node3->setId(node3Id);
+	Node::NodePtr node4(new Node());
+	node4->setId(node4Id);
+	Node::NodePtr node5(new Node());
+	node5->setId(node5Id);
+
+	Group::GroupPtr group6(new Group());
+	group6->setId(group6Id);
+
+	CPPUNIT_ASSERT_EQUAL(rootId, root->getId()); // preconditions:
+	CPPUNIT_ASSERT_EQUAL(group1Id, group1->getId());
+	CPPUNIT_ASSERT_EQUAL(group2Id, group2->getId());
+	CPPUNIT_ASSERT_EQUAL(node3Id, node3->getId());
+	CPPUNIT_ASSERT_EQUAL(node4Id, node4->getId());
+	CPPUNIT_ASSERT_EQUAL(node5Id, node5->getId());
+	CPPUNIT_ASSERT_EQUAL(group6Id, group6->getId());
+
+	/* set up graph */
+	root->addChild(group1);
+	root->addChild(group2);
+
+	group1->addChild(node3);
+	group1->addChild(node4);
+
+	group2->addChild(node4); //here we brake the "tree" structure to create a real "graph"
+	group2->addChild(node5);
+	group2->addChild(group6); //just to test heterogeneous nodes.
+
+	/*
+	 * now check if every node(group) has its correct place in the graph
+	 */
+	/* root */
+	CPPUNIT_ASSERT_EQUAL(0u, root->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(2u, root->getNumberOfChildren());
+	CPPUNIT_ASSERT_EQUAL(group1Id, root->getChild(0)->getId());
+	CPPUNIT_ASSERT_EQUAL(group2Id, root->getChild(1)->getId());
+
+	/* group1 */
+	CPPUNIT_ASSERT_EQUAL(1u, group1->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(rootId, group1->getParent(0)->getId());
+	CPPUNIT_ASSERT_EQUAL(2u, group1->getNumberOfChildren());
+	CPPUNIT_ASSERT_EQUAL(node3Id, group1->getChild(0)->getId());
+	CPPUNIT_ASSERT_EQUAL(node4Id, group1->getChild(1)->getId());
+
+	/* group2 */
+	CPPUNIT_ASSERT_EQUAL(1u, group2->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(rootId, group2->getParent(0)->getId());
+	CPPUNIT_ASSERT_EQUAL(3u, group2->getNumberOfChildren());
+	CPPUNIT_ASSERT_EQUAL(node4Id, group2->getChild(0)->getId());
+	CPPUNIT_ASSERT_EQUAL(node5Id, group2->getChild(1)->getId());
+	CPPUNIT_ASSERT_EQUAL(group6Id, group2->getChild(2)->getId());
+
+	/* node3 */
+	CPPUNIT_ASSERT_EQUAL(1u, node3->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(group1Id, node3->getParent(0)->getId());
+
+	/* node4 */
+	CPPUNIT_ASSERT_EQUAL(2u, node4->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(group1Id, node4->getParent(0)->getId());
+	CPPUNIT_ASSERT_EQUAL(group2Id, node4->getParent(1)->getId());
+
+	/* node5 */
+	CPPUNIT_ASSERT_EQUAL(1u, node5->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(group2Id, node5->getParent(0)->getId());
+
+	/* group6 */
+	CPPUNIT_ASSERT_EQUAL(1u, group6->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(group2Id, group6->getParent(0)->getId());
+	CPPUNIT_ASSERT_EQUAL(0u, group6->getNumberOfChildren());
+
+	/*
+	 * check if we can get some nice paths
+	 */
+
+}
 
 }  // namespace unitTests
 

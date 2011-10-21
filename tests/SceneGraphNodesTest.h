@@ -30,6 +30,7 @@ class SceneGraphNodesTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST_SUITE( SceneGraphNodesTest );
 	CPPUNIT_TEST( testNode );
 	CPPUNIT_TEST( testGroup );
+	CPPUNIT_TEST( testSimpleGraph );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -38,6 +39,9 @@ public:
 
 	void testNode();
 	void testGroup();
+	//testOwnership // weak pointers...
+	void testSimpleGraph();
+
 };
 
 }

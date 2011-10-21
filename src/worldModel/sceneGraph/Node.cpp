@@ -39,6 +39,7 @@
 
 #include "Node.h"
 #include "Attribute.h"
+#include <stdexcept>
 
 namespace BRICS_3D {
 
@@ -94,6 +95,8 @@ vector<Node*> Node::getParents() {
 
 Node* Node::getParent(unsigned int index)  {
 	if (index >= getNumberOfParents()) {
+//		throw std::out_of_range("Cannot get parent for this Node."); //FIXME
+		assert(false);
 		return 0;
 	}
 	return parents[index];

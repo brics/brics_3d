@@ -38,6 +38,7 @@
 ******************************************************************************/
 
 #include "Group.h"
+#include "core/Logger.h"
 #include <assert.h>
 
 namespace BRICS_3D {
@@ -53,10 +54,10 @@ Group::~Group() {
 }
 
 void Group::addChild(NodePtr child) {
-	insertChild(children.size(), child);
+	insertChild(child, children.size());
 }
 
-void Group::insertChild(unsigned int index, NodePtr child) {
+void Group::insertChild(NodePtr child, unsigned int index) {
 	assert(child != 0);
 	assert(child.get() != 0);
 
@@ -69,6 +70,39 @@ void Group::insertChild(unsigned int index, NodePtr child) {
 
 	/* update child-parent relation */
 	child->addParent(this); // TODO does this create to many reference counts? => use <boost/enable_shared_from_this.hpp> ?
+}
+
+void Group::removeChild(NodePtr child) {
+    unsigned int index = getChildIndex(child);
+    if (index<children.size()) {
+    	removeChildren(index);
+    }
+}
+
+void Group::removeChildren(unsigned int startIndex, unsigned int numberOfChildrenToRemove) {
+    unsigned int endOfRemoveRange = startIndex + numberOfChildrenToRemove;
+    if (endOfRemoveRange > getNumberOfChildren()) // crop the range
+    {
+    	LOG(WARNING) << "Cropping the range of children to be removed.";
+        endOfRemoveRange = getNumberOfChildren();
+    }
+
+    for(unsigned i= startIndex; i < endOfRemoveRange; ++i)
+    {
+        getChild(i)->removeParent(this);
+    }
+
+    children.erase(children.begin() + startIndex, children.begin() + endOfRemoveRange);
+}
+
+unsigned int Group::getChildIndex(NodePtr node){
+    for (unsigned int childIndex = 0; childIndex < getNumberOfChildren(); ++childIndex)
+    {
+        if (children[childIndex] == node) {
+        	return childIndex;
+        }
+    }
+    return getNumberOfChildren(); // not found.
 }
 
 Group::NodePtr Group::getChild(unsigned int index) {

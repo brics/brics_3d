@@ -61,26 +61,11 @@ public:
     Group();
 
     virtual ~Group();
-
     virtual void addChild(NodePtr child);
-    virtual void insertChild(unsigned int index, NodePtr child);
-
-
-
-//    bool removeChild(NodePtr child)
-//     {
-//         unsigned int pos = getChildIndex(child);
-//         if (pos<_children.size()) return removeChildren(pos,1);
-//         else return false;
-//     }
-//
-//     inline bool removeChild( unsigned int pos, unsigned int numChildrenToRemove=1 )
-//     {
-//         if (pos<_children.size()) return removeChildren(pos,numChildrenToRemove);
-//         else return false;
-//     }
-//
-//     virtual bool removeChildren(unsigned int pos,unsigned int numChildrenToRemove);
+    virtual void insertChild(NodePtr child, unsigned int index);
+    void removeChild(NodePtr child);
+    unsigned int getChildIndex(NodePtr node);
+    virtual void removeChildren(unsigned int startIndex, unsigned int numberOfChildrenToRemove = 1);
 
     unsigned int getNumberOfChildren() const;
 
