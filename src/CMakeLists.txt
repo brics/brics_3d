@@ -39,6 +39,9 @@ SET(UTIL_LIBRARY_LIBS
     ${Boost_LIBRARIES}
 )
 
+SET(WORLD_MODEL_LIBRARY_LIBS
+
+)
 
 # define optionl libraries
 IF(XERCES_INCLUDE_DIR)
@@ -143,6 +146,26 @@ SET (UTIL_LIBRARY_SOURCES
 	./util/Benchmark
 )	
 
+SET (WORLD_MODEL_LIBRARY_SOURCES
+    ./worldModel/SceneObject
+    ./worldModel/WorldModel
+    
+    ./worldModel/sceneGraph/
+    ./worldModel/sceneGraph/Attribute
+    ./worldModel/sceneGraph/Box
+    ./worldModel/sceneGraph/Cylinder
+    ./worldModel/sceneGraph/GeometricNode
+    ./worldModel/sceneGraph/Group
+    ./worldModel/sceneGraph/Mesh
+    ./worldModel/sceneGraph/Node
+    ./worldModel/sceneGraph/PointCloud
+    ./worldModel/sceneGraph/SceneManager
+    ./worldModel/sceneGraph/Shape
+    ./worldModel/sceneGraph/SimpleIdGenerator
+    ./worldModel/sceneGraph/TimeStamp
+    ./worldModel/sceneGraph/Transform
+)
+
 #optional sources
 IF (USE_OSG)
     list(APPEND UTIL_LIBRARY_SOURCES ./util/OSGPointCloudVisualizer)
@@ -178,3 +201,5 @@ TARGET_LINK_LIBRARIES(brics_3dpm_algorithm brics_3dpm_core ${ALGORITHM_LIBRARY_L
 ADD_LIBRARY(brics_3dpm_util ${UTIL_LIBRARY_SOURCES})
 TARGET_LINK_LIBRARIES(brics_3dpm_util brics_3dpm_core ${UTIL_LIBRARY_LIBS})
 
+ADD_LIBRARY(brics_3dpm_world_model ${WORLD_MODEL_LIBRARY_SOURCES})
+TARGET_LINK_LIBRARIES(brics_3dpm_world_model brics_3dpm_core ${WORLD_MODEL_LIBRARY_LIBS})

@@ -105,7 +105,7 @@ void ColorBasedROIExtractorHSV::extractColorBasedROI(BRICS_3D::ColoredPointCloud
 
 //	printf("Used H-S Limits for extraction: H:[%f %f] S:[%f %f]\n", minH, maxH, minS, maxS);
 
-	for (unsigned int i = 0; i < cloudSize; i++) {
+	for (unsigned int i = 0; i < static_cast<unsigned int>(cloudSize); i++) {
 
 		passed = false;
 		//Getting the HSV values for the RGB points
@@ -169,7 +169,7 @@ void ColorBasedROIExtractorHSV::extractColorBasedROI(BRICS_3D::ColoredPointCloud
 
 //	printf("Used H-S Limits for extraction: H:[%f %f] S:[%f %f]\n", minH, maxH, minS, maxS);
 
-	for (unsigned int i = 0; i < cloudSize; i++) {
+	for (unsigned int i = 0; i < static_cast<unsigned int>(cloudSize); i++) {
 
 		passed = false;
 		//Getting the HSV values for the RGB points
