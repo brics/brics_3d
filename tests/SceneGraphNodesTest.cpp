@@ -121,7 +121,7 @@ void SceneGraphNodesTest::testOwnership() {
 
 	/*
 	 * here we use an inner scope to completely pass by the ownership
-	 * to the scenegrapgh. "Normal" shared pointers would "hold" the reference for the
+	 * to the scenegraph. "Normal" shared pointers would "hold" the reference for the
 	 * duration of the test...
 	 */
 	Group::GroupPtr root(new Group());

@@ -51,6 +51,14 @@ Group::Group() {
 
 Group::~Group() {
 
+	/*
+	 * clean up all "parent pointers" of all the children on deletion of this group,
+	 * otherwise they will point to nirvana....
+	 */
+    for(unsigned i = 0; i < getNumberOfChildren(); ++i)
+    {
+        getChild(i)->removeParent(this);
+    }
 }
 
 void Group::addChild(NodePtr child) {
