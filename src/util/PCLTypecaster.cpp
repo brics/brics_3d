@@ -17,7 +17,6 @@ PCLTypecaster::~PCLTypecaster() {}
 
 void PCLTypecaster::convertToPCLDataType(pcl::PointCloud<pcl::PointXYZ>::Ptr pclCloudPtr,
 		BRICS_3D::PointCloud3D* pointCloud3DPtr ){
-//printf("[PCLTypeCaster]iNPUT cloud Size: %d \n", pointCloud3DPtr->getSize());
 	pclCloudPtr->width = pointCloud3DPtr->getSize();
 	pclCloudPtr->height = 1;
 	pclCloudPtr->points.resize( pclCloudPtr->width * pclCloudPtr->height );
@@ -27,7 +26,6 @@ void PCLTypecaster::convertToPCLDataType(pcl::PointCloud<pcl::PointXYZ>::Ptr pcl
 		pclCloudPtr->points[i].y = pointCloud3DPtr->getPointCloud()->data()[i].getY();
 		pclCloudPtr->points[i].z = pointCloud3DPtr->getPointCloud()->data()[i].getZ();
 	}
-//printf("[PCLTypeCaster]cONVERTED cloud Size: %d \n", pclCloudPtr->size());
 }
 
 
@@ -36,24 +34,33 @@ void PCLTypecaster::convertToPCLDataType(pcl::PointCloud<pcl::PointXYZ>::Ptr pcl
 
 void PCLTypecaster::convertToBRICS3DDataType(pcl::PointCloud<pcl::PointXYZRGB>::Ptr pclCloudPtr,
 		BRICS_3D::PointCloud3D* pointCloud3DPtr ){
-//	//printf("[PCLTypeCaster]Input cloud Size: %d \n", pclCloudPtr->size());
+
+
+	pointCloud3DPtr->getPointCloud()->resize(pclCloudPtr->size());
+
 	for (unsigned int i =0 ; i < pclCloudPtr->size()  ; i++){
-			pointCloud3DPtr->addPoint(ColoredPoint3D(new Point3D(pclCloudPtr->points[i].x,
-							pclCloudPtr->points[i].y, pclCloudPtr->points[i].z)));
+
+		pointCloud3DPtr->getPointCloud()->data()[i].setX(pclCloudPtr->points[i].x);
+		pointCloud3DPtr->getPointCloud()->data()[i].setY(pclCloudPtr->points[i].y);
+		pointCloud3DPtr->getPointCloud()->data()[i].setZ(pclCloudPtr->points[i].z);
+
+//		pointCloud3DPtr->addPoint(new Point3D(pclCloudPtr->points[i].x,
+//							pclCloudPtr->points[i].y, pclCloudPtr->points[i].z));
 		}
-//	//printf("[PCLTypeCaster]Converted cloud Size: %d \n", pointCloud3DPtr->getSize());
 }
 
 
 
 void PCLTypecaster::convertToBRICS3DDataType(pcl::PointCloud<pcl::PointXYZ>::Ptr pclCloudPtr,
 		BRICS_3D::PointCloud3D* pointCloud3DPtr ){
-
-//	pointCloud3DPtr->getPointCloud()->resize(pclCloudPtr->size());
+	pointCloud3DPtr->getPointCloud()->resize(pclCloudPtr->size());
 
 	for (unsigned int i =0 ; i < pclCloudPtr->size()  ; i++){
-		pointCloud3DPtr->addPoint(ColoredPoint3D(new Point3D(pclCloudPtr->points[i].x,
-						pclCloudPtr->points[i].y, pclCloudPtr->points[i].z)));
+		pointCloud3DPtr->getPointCloud()->data()[i].setX(pclCloudPtr->points[i].x);
+		pointCloud3DPtr->getPointCloud()->data()[i].setY(pclCloudPtr->points[i].y);
+		pointCloud3DPtr->getPointCloud()->data()[i].setZ(pclCloudPtr->points[i].z);
+//		pointCloud3DPtr->addPoint(new Point3D(pclCloudPtr->points[i].x,
+//							pclCloudPtr->points[i].y, pclCloudPtr->points[i].z));
 		}
 }
 
@@ -90,8 +97,6 @@ void PCLTypecaster::convertToPCLDataType(pcl::PointCloud<pcl::PointXYZ>::Ptr pcl
 	pclCloudPtr->height = 1;
 	pclCloudPtr->points.resize( pclCloudPtr->width * pclCloudPtr->height );
 
-	float rgbVal24bit=0;
-
 	for (unsigned int i =0 ; i<pointCloud3DPtr->getSize() ; i++){
 		pclCloudPtr->points[i].x = pointCloud3DPtr->getPointCloud()->data()[i].getX();
 		pclCloudPtr->points[i].y = pointCloud3DPtr->getPointCloud()->data()[i].getY();
@@ -107,18 +112,31 @@ void PCLTypecaster::convertToBRICS3DDataType(pcl::PointCloud<pcl::PointXYZRGB>::
 	BRICS_3D::ColorSpaceConvertor colorSpaceConvertor;
 	uint32_t rgbVal;
 	unsigned char red, green, blue;
-	////printf("\n\n\tCHECKPOINT!!!\n");
+//	printf("Input Cloud Size: %d", pclCloudPtr->size());
+
+	//FIXME Results into a memory leak
+//	pointCloud3DPtr->getPointCloud()->resize(pclCloudPtr->size());
+
 	for (unsigned int i =0 ; i < pclCloudPtr->size()  ; i++){
 		rgbVal= *reinterpret_cast<int*>(&pclCloudPtr->points[i].rgb);
 		colorSpaceConvertor.rgb24bitToRGB(rgbVal, &r, &g, &b);
 		red= *reinterpret_cast<unsigned char*>(&r);
 		green= *reinterpret_cast<unsigned char*>(&g);
 		blue= *reinterpret_cast<unsigned char*>(&b);
- 		pointCloud3DPtr->addPoint(new ColoredPoint3D(new Point3D(pclCloudPtr->points[i].x,
-				pclCloudPtr->points[i].y, pclCloudPtr->points[i].z), red, green, blue));
+		Point3D* tmpPoint =  new Point3D(pclCloudPtr->points[i].x, pclCloudPtr->points[i].y, pclCloudPtr->points[i].z);
+		ColoredPoint3D* tmpColoredPoint = new ColoredPoint3D(tmpPoint, red, green, blue);
+ 		pointCloud3DPtr->addPoint(tmpColoredPoint);
+ 		delete tmpPoint;
+ 		delete tmpColoredPoint;
+//		pointCloud3DPtr->getPointCloud()->data()[i].setX(pclCloudPtr->points[i].x);
+//		pointCloud3DPtr->getPointCloud()->data()[i].setY(pclCloudPtr->points[i].y);
+//		pointCloud3DPtr->getPointCloud()->data()[i].setZ(pclCloudPtr->points[i].z);
+//		pointCloud3DPtr->getPointCloud()->data()[i].setR(red);
+//		pointCloud3DPtr->getPointCloud()->data()[i].setG(blue);
+//		pointCloud3DPtr->getPointCloud()->data()[i].setB(green);
 	}
+//	printf("Output Cloud Size: %d", pointCloud3DPtr->getSize());
 
 }
-
 
 }
