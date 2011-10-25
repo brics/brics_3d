@@ -37,40 +37,35 @@
 *
 ******************************************************************************/
 
-#ifndef TRANSFORM_H
-#define TRANSFORM_H
-
-#include "core/IHomogeneousMatrix44.h"
-#include "Group.h"
-#include "TimeStamp.h"
-#include <vector>
-using std::vector;
+#ifndef INODEVISITOR_H_
+#define INODEVISITOR_H_
 
 namespace BRICS_3D {
 
 namespace RSG {
 
+class Node;
+class Group;
+class Transform;
+
 /**
- * @brief A node that expresses a geometric transformation between its parents and children.
+ * @brief Abstract interface for visitors of the scene graph
  */
-class Transform : public Group {
-  private:
-    TimeStamp timeStamp;
+class INodeVisitor {
+public:
+	INodeVisitor(){};
+	virtual ~INodeVisitor(){};
 
-    vector<BRICS_3D::IHomogeneousMatrix44*> history;
-
-
-  public:
-    Transform();
-
-    virtual ~Transform();
+	virtual void visit(Node* node){};
+	virtual void visit(Group* node){};
+	virtual void visit(Transform* node){};
 
 };
 
-} // namespace BRICS_3D::RSG
+}
 
-} // namespace BRICS_3D
-#endif
+}
+
+#endif /* INODEVISITOR_H_ */
 
 /* EOF */
-

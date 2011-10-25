@@ -71,6 +71,8 @@ public:
 
     NodePtr getChild(unsigned int index);
 
+    virtual void accept(INodeVisitor* visitor);
+
   private:
     vector<NodePtr> children;
 

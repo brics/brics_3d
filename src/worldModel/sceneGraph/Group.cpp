@@ -121,6 +121,14 @@ unsigned int Group::getNumberOfChildren() const {
 	return static_cast<unsigned int>(children.size());
 }
 
+void Group::accept(INodeVisitor* visitor){
+	visitor->visit(this);
+    for(unsigned i = 0; i < getNumberOfChildren(); ++i) // recursively got down the grapgh structure
+    {
+        getChild(i)->accept(visitor);
+    }
+}
+
 } // namespace BRICS_3D::RSG
 
 } // namespace BRICS_3D

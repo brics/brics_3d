@@ -43,6 +43,7 @@
 #include <vector>
 #include <boost/shared_ptr.hpp>
 #include "Attribute.h"
+#include "INodeVisitor.h"
 
 using std::vector;
 
@@ -80,6 +81,9 @@ public:
 	Node* getParent(unsigned int index);
 
     unsigned int getNumberOfParents() const;
+
+    virtual void accept(INodeVisitor* visitor);
+
 
 private:
 

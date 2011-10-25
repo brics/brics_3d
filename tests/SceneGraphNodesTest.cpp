@@ -106,6 +106,27 @@ void SceneGraphNodesTest::testGroup() {
 
 }
 
+void SceneGraphNodesTest::testTransform() {
+
+	Group::GroupPtr root(new Group);
+	Node::NodePtr transform1 (new RSG::Transform);
+
+	unsigned const int rootId = 1;
+	unsigned const int transform1Id = 2;
+
+	root->setId(rootId);
+	transform1->setId(transform1Id);
+
+	CPPUNIT_ASSERT_EQUAL(rootId, root->getId()); // preconditions
+	CPPUNIT_ASSERT_EQUAL(transform1Id, transform1->getId());
+
+	/* set transform */
+
+	/* getTransform */
+
+	CPPUNIT_FAIL("TODO: Implement this!");
+}
+
 void SceneGraphNodesTest::testOwnership() {
 	/* Graph structure: (remember: nodes can only serve as are leaves)
 	 *             root
@@ -300,6 +321,65 @@ void SceneGraphNodesTest::testSimpleGraph() {
 	CPPUNIT_ASSERT_EQUAL(0u, boost::dynamic_pointer_cast<Group>(boost::dynamic_pointer_cast<Group>(root->getChild(1))->getChild(2))->getNumberOfChildren());
 
 
+}
+
+void SceneGraphNodesTest::testSimpleVisitor() {
+	/* Graph structure: (remember: nodes can only serve as are leaves)
+	 *                 root
+	 *                   |
+	 *        -----------+----------
+	 *        |          |         |
+	 *      group1     group2    node3
+	 *        |          |
+	 *        +----  ----+
+	 *            |  |
+	 *            node4
+	 */
+	unsigned const int rootId = 0;
+	unsigned const int group1Id = 1;
+	unsigned const int group2Id = 2;
+	unsigned const int node3Id = 3;
+	unsigned const int node4Id = 4;
+
+	Group::GroupPtr root(new Group());
+	root->setId(rootId);
+	Group::GroupPtr group1(new Group());
+	group1->setId(group1Id);
+	Group::GroupPtr group2(new Group());
+	group2->setId(group2Id);
+
+	Node::NodePtr node3(new Node());
+	node3->setId(node3Id);
+	Node::NodePtr node4(new Node());
+	node4->setId(node4Id);
+
+	CPPUNIT_ASSERT_EQUAL(rootId, root->getId()); // preconditions:
+	CPPUNIT_ASSERT_EQUAL(group1Id, group1->getId());
+	CPPUNIT_ASSERT_EQUAL(group2Id, group2->getId());
+	CPPUNIT_ASSERT_EQUAL(node3Id, node3->getId());
+	CPPUNIT_ASSERT_EQUAL(node4Id, node4->getId());
+
+	/* setup scenegraph */
+	root->addChild(group1);
+	root->addChild(group2);
+	root->addChild(node3);
+	group1->addChild(node4);
+	group2->addChild(node4);
+
+	IdCollector* idCollector = new IdCollector();
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(idCollector->collectedIDs.size()));
+
+	root->accept(idCollector); // traverse the graph with the visitor
+
+	CPPUNIT_ASSERT_EQUAL(6u, static_cast<unsigned int>(idCollector->collectedIDs.size()));
+	CPPUNIT_ASSERT_EQUAL(rootId, idCollector->collectedIDs[0]); //Remember: we have depth-first-search
+	CPPUNIT_ASSERT_EQUAL(group1Id, idCollector->collectedIDs[1]);
+	CPPUNIT_ASSERT_EQUAL(node4Id, idCollector->collectedIDs[2]);
+	CPPUNIT_ASSERT_EQUAL(group2Id, idCollector->collectedIDs[3]);
+	CPPUNIT_ASSERT_EQUAL(node4Id, idCollector->collectedIDs[4]);
+	CPPUNIT_ASSERT_EQUAL(node3Id, idCollector->collectedIDs[5]);
+
+	delete idCollector;
 }
 
 }  // namespace unitTests

@@ -108,6 +108,9 @@ unsigned int Node::getNumberOfParents() const {
 	return static_cast<unsigned int>(parents.size());
 }
 
+void Node::accept(INodeVisitor* visitor) {
+	visitor->visit(this);
+}
 
 } // namespace BRICS_3D::RSG
 
