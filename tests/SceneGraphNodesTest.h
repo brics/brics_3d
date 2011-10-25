@@ -17,6 +17,7 @@
 #include "worldModel/sceneGraph/Group.h"
 #include "worldModel/sceneGraph/Transform.h"
 #include "worldModel/sceneGraph/INodeVisitor.h"
+#include "worldModel/sceneGraph/PathCollector.h"
 
 namespace unitTests {
 
@@ -53,6 +54,7 @@ class SceneGraphNodesTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testSimpleGraph );
 	CPPUNIT_TEST( testOwnership );
 	CPPUNIT_TEST( testSimpleVisitor );
+	CPPUNIT_TEST( testPathCollectorVisitor );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -65,6 +67,7 @@ public:
 	void testOwnership();
 	void testSimpleGraph();
 	void testSimpleVisitor();
+	void testPathCollectorVisitor();
 
 };
 

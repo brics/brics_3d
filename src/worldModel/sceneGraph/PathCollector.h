@@ -37,78 +37,52 @@
 *
 ******************************************************************************/
 
-#ifndef NODE_H
-#define NODE_H
+#ifndef PATHCOLLECTOR_H_
+#define PATHCOLLECTOR_H_
 
-#include <vector>
-#include <boost/shared_ptr.hpp>
-#include "Attribute.h"
+#include "Node.h"
+#include "Group.h"
 #include "INodeVisitor.h"
 
-using std::vector;
-
+/**
+ * @brief Node visitor that collects paths.
+ *
+ * Computes the collected paths from a certain node (where the accept is called) to the root node.
+ * The node from where the traversal is initiated will excluded from the paths.
+ *
+ */
 namespace BRICS_3D {
 
 namespace RSG {
 
-class Group;
-
-
-/**
- *  @brief A node in the robot scenegraph.
- */
-class Node {
-
+class PathCollector : public INodeVisitor {
 public:
+	PathCollector();
+	virtual ~PathCollector();
 
-	typedef boost::shared_ptr<Node> NodePtr;
-	typedef boost::shared_ptr<Node const> NodeConstPtr;
+	virtual void visit(Node* node);
+	virtual void visit(Group* node);
+//	void visit(Transform* node);
 
-//	typedef vector< Node::NodePtr > NodePath;
-	typedef vector< Node* > NodePath;
-	typedef vector< NodePath > NodePathList;
+	virtual void reset();
 
-	Node();
-
-	virtual ~Node();
-
-	vector<Attribute> getAttributes() const;
-	unsigned int getId() const;
-
-	void setAttributes(vector<Attribute> attributes);
-	void setId(unsigned int id);
+	Node::NodePathList getNodePaths() const
+    {
+        return nodePaths;
+    }
 
 
-	vector<Node*> getParents(); //TODO dangerous as it reveals the pointers?!?
+protected:
 
-	Node* getParent(unsigned int index);
-
-    unsigned int getNumberOfParents() const;
-
-    virtual void accept(INodeVisitor* visitor);
-
-
-private:
-
-	void addParent(Node* node);
-	void removeParent(Node* node);
-	friend class BRICS_3D::RSG::Group; //only this one will be allowed to add parent-child relations
-
-	/// Unique ID that will help to identify a certain node.
-	unsigned int id;
-
-	/// List of attributes for each node. Can be used to attach (semantic) tags.
-	vector<Attribute> attributes;
-
-	/// List of pointers to the parent Nodes.
-	vector<Node*> parents; //these are rather weak references to prevent cyclic strong pointers
+	Node::NodePath currentPath;
+	Node::NodePathList nodePaths;
 
 };
 
-} // namespace BRICS_3D::RSG
+}
 
-} // namespace BRICS_3D
-#endif
+}
+
+#endif /* PATHCOLLECTOR_H_ */
 
 /* EOF */
-

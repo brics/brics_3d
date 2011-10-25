@@ -164,6 +164,7 @@ SET (WORLD_MODEL_LIBRARY_SOURCES
     ./worldModel/sceneGraph/SimpleIdGenerator
     ./worldModel/sceneGraph/TimeStamp
     ./worldModel/sceneGraph/Transform
+    ./worldModel/sceneGraph/PathCollector
 )
 
 #optional sources

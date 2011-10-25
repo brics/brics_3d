@@ -424,6 +424,86 @@ void SceneGraphNodesTest::testSimpleVisitor() {
 	delete idCollector;
 }
 
+void SceneGraphNodesTest::testPathCollectorVisitor() {
+	/* Graph structure: (remember: nodes can only serve as are leaves)
+	 *                 root
+	 *                   |
+	 *        -----------+----------
+	 *        |          |         |
+	 *      group1     group2    node3
+	 *        |          |
+	 *        +----  ----+
+	 *            |  |
+	 *            node4
+	 */
+	unsigned const int rootId = 0;
+	unsigned const int group1Id = 1;
+	unsigned const int group2Id = 2;
+	unsigned const int node3Id = 3;
+	unsigned const int node4Id = 4;
+
+	Group::GroupPtr root(new Group());
+	root->setId(rootId);
+	Group::GroupPtr group1(new Group());
+	group1->setId(group1Id);
+	Group::GroupPtr group2(new Group());
+	group2->setId(group2Id);
+
+	Node::NodePtr node3(new Node());
+	node3->setId(node3Id);
+	Node::NodePtr node4(new Node());
+	node4->setId(node4Id);
+
+	CPPUNIT_ASSERT_EQUAL(rootId, root->getId()); // preconditions:
+	CPPUNIT_ASSERT_EQUAL(group1Id, group1->getId());
+	CPPUNIT_ASSERT_EQUAL(group2Id, group2->getId());
+	CPPUNIT_ASSERT_EQUAL(node3Id, node3->getId());
+	CPPUNIT_ASSERT_EQUAL(node4Id, node4->getId());
+
+	/* setup scenegraph */
+	root->addChild(group1);
+	root->addChild(group2);
+	root->addChild(node3);
+	group1->addChild(node4);
+	group2->addChild(node4);
+
+	PathCollector* pathCollector = new PathCollector();
+
+	/* root */
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(pathCollector->getNodePaths().size()));
+
+	root->accept(pathCollector);
+
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(pathCollector->getNodePaths().size()));
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(pathCollector->getNodePaths()[0].size()));
+
+	/* group2 */
+	pathCollector->reset();
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(pathCollector->getNodePaths().size()));
+
+	group2->accept(pathCollector);
+
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(pathCollector->getNodePaths().size()));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(pathCollector->getNodePaths()[0].size()));
+	CPPUNIT_ASSERT_EQUAL(rootId, (*pathCollector->getNodePaths()[0][0]).getId());
+
+	/* node4 */
+	pathCollector->reset();
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(pathCollector->getNodePaths().size()));
+
+	node4->accept(pathCollector);
+
+	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(pathCollector->getNodePaths().size()));
+	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(pathCollector->getNodePaths()[0].size()));
+	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(pathCollector->getNodePaths()[1].size()));
+
+	CPPUNIT_ASSERT_EQUAL(rootId, (*pathCollector->getNodePaths()[0][0]).getId()); // 1. path
+	CPPUNIT_ASSERT_EQUAL(group1Id, (*pathCollector->getNodePaths()[0][1]).getId());
+
+	CPPUNIT_ASSERT_EQUAL(rootId, (*pathCollector->getNodePaths()[1][0]).getId()); // 2. path
+	CPPUNIT_ASSERT_EQUAL(group2Id, (*pathCollector->getNodePaths()[1][1]).getId());
+}
+
 }  // namespace unitTests
 
 /* EOF */

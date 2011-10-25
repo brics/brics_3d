@@ -37,78 +37,44 @@
 *
 ******************************************************************************/
 
-#ifndef NODE_H
-#define NODE_H
-
-#include <vector>
-#include <boost/shared_ptr.hpp>
-#include "Attribute.h"
-#include "INodeVisitor.h"
-
-using std::vector;
+#include "PathCollector.h"
 
 namespace BRICS_3D {
 
 namespace RSG {
 
-class Group;
+PathCollector::PathCollector() : INodeVisitor(upwards) {
+	reset();
+}
+
+PathCollector::~PathCollector() {
+
+}
+
+void PathCollector::reset() {
+	currentPath.clear();
+	nodePaths.clear();
+}
+
+void PathCollector::visit(Node* node){
+	assert (node != 0);
+	currentPath.insert(currentPath.begin(), node);
+	if (node->getNumberOfParents() == 0) { //root reached so collect data in new path
+		if (static_cast<unsigned int>(nodePaths.size()) == 0u) { //remove the "caller's" pointer
+				currentPath.pop_back();
+		}
+		nodePaths.push_back(currentPath);
+		currentPath.clear();
+	}
+}
+
+void PathCollector::visit(Group* node){
+	this->visit(dynamic_cast<Node*>(node)); //just feed forward
+}
 
 
-/**
- *  @brief A node in the robot scenegraph.
- */
-class Node {
+}
 
-public:
-
-	typedef boost::shared_ptr<Node> NodePtr;
-	typedef boost::shared_ptr<Node const> NodeConstPtr;
-
-//	typedef vector< Node::NodePtr > NodePath;
-	typedef vector< Node* > NodePath;
-	typedef vector< NodePath > NodePathList;
-
-	Node();
-
-	virtual ~Node();
-
-	vector<Attribute> getAttributes() const;
-	unsigned int getId() const;
-
-	void setAttributes(vector<Attribute> attributes);
-	void setId(unsigned int id);
-
-
-	vector<Node*> getParents(); //TODO dangerous as it reveals the pointers?!?
-
-	Node* getParent(unsigned int index);
-
-    unsigned int getNumberOfParents() const;
-
-    virtual void accept(INodeVisitor* visitor);
-
-
-private:
-
-	void addParent(Node* node);
-	void removeParent(Node* node);
-	friend class BRICS_3D::RSG::Group; //only this one will be allowed to add parent-child relations
-
-	/// Unique ID that will help to identify a certain node.
-	unsigned int id;
-
-	/// List of attributes for each node. Can be used to attach (semantic) tags.
-	vector<Attribute> attributes;
-
-	/// List of pointers to the parent Nodes.
-	vector<Node*> parents; //these are rather weak references to prevent cyclic strong pointers
-
-};
-
-} // namespace BRICS_3D::RSG
-
-} // namespace BRICS_3D
-#endif
+}
 
 /* EOF */
-
