@@ -123,10 +123,17 @@ unsigned int Group::getNumberOfChildren() const {
 
 void Group::accept(INodeVisitor* visitor){
 	visitor->visit(this);
-    for(unsigned i = 0; i < getNumberOfChildren(); ++i) // recursively got down the grapgh structure
-    {
-        getChild(i)->accept(visitor);
-    }
+	if (visitor->getDirection() == INodeVisitor::upwards) { //TODO move to "traverseUpwards" method?
+	    for(unsigned i = 0; i < getNumberOfParents(); ++i) // recursively go up the graph structure
+	    {
+	        getParent(i)->accept(visitor);
+	    }
+	} else if (visitor->getDirection() == INodeVisitor::downwards) { //TODO move to "traverseDownwards" method?
+		for(unsigned i = 0; i < getNumberOfChildren(); ++i) // recursively go down the graph structure
+		{
+			getChild(i)->accept(visitor);
+		}
+	}
 }
 
 } // namespace BRICS_3D::RSG

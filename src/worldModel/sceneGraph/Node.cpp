@@ -110,6 +110,12 @@ unsigned int Node::getNumberOfParents() const {
 
 void Node::accept(INodeVisitor* visitor) {
 	visitor->visit(this);
+	if (visitor->getDirection() == INodeVisitor::upwards) {
+	    for(unsigned i = 0; i < getNumberOfParents(); ++i) // recursively go up the graph structure
+	    {
+	        getParent(i)->accept(visitor);
+	    }
+	}
 }
 
 } // namespace BRICS_3D::RSG

@@ -367,9 +367,13 @@ void SceneGraphNodesTest::testSimpleVisitor() {
 	group2->addChild(node4);
 
 	IdCollector* idCollector = new IdCollector();
-	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(idCollector->collectedIDs.size()));
 
-	root->accept(idCollector); // traverse the graph with the visitor
+	/* traverse from root */
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(idCollector->collectedIDs.size()));
+	CPPUNIT_ASSERT(idCollector->getDirection() == INodeVisitor::downwards);
+
+	/* traverse from root */
+	root->accept(idCollector); // traverse the graph downwards from root with the visitor
 
 	CPPUNIT_ASSERT_EQUAL(6u, static_cast<unsigned int>(idCollector->collectedIDs.size()));
 	CPPUNIT_ASSERT_EQUAL(rootId, idCollector->collectedIDs[0]); //Remember: we have depth-first-search
@@ -378,6 +382,44 @@ void SceneGraphNodesTest::testSimpleVisitor() {
 	CPPUNIT_ASSERT_EQUAL(group2Id, idCollector->collectedIDs[3]);
 	CPPUNIT_ASSERT_EQUAL(node4Id, idCollector->collectedIDs[4]);
 	CPPUNIT_ASSERT_EQUAL(node3Id, idCollector->collectedIDs[5]);
+
+	/* traverse from group2 */
+	idCollector->collectedIDs.clear();
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(idCollector->collectedIDs.size()));
+	CPPUNIT_ASSERT(idCollector->getDirection() == INodeVisitor::downwards);
+
+	group2->accept(idCollector);
+
+	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(idCollector->collectedIDs.size()));
+	CPPUNIT_ASSERT_EQUAL(group2Id, idCollector->collectedIDs[3]);
+	CPPUNIT_ASSERT_EQUAL(node4Id, idCollector->collectedIDs[4]);
+
+	/* traverse from upwards from group2 */
+	idCollector->collectedIDs.clear();
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(idCollector->collectedIDs.size()));
+	idCollector->setDirection(INodeVisitor::upwards);
+	CPPUNIT_ASSERT(idCollector->getDirection() == INodeVisitor::upwards);
+
+	group2->accept(idCollector);
+
+	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(idCollector->collectedIDs.size()));
+	CPPUNIT_ASSERT_EQUAL(group2Id, idCollector->collectedIDs[0]);
+	CPPUNIT_ASSERT_EQUAL(rootId, idCollector->collectedIDs[1]);
+
+	/* traverse from upwards from node4 */
+	idCollector->collectedIDs.clear();
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(idCollector->collectedIDs.size()));
+	idCollector->setDirection(INodeVisitor::upwards);
+	CPPUNIT_ASSERT(idCollector->getDirection() == INodeVisitor::upwards);
+
+	node4->accept(idCollector);
+
+	CPPUNIT_ASSERT_EQUAL(5u, static_cast<unsigned int>(idCollector->collectedIDs.size()));
+	CPPUNIT_ASSERT_EQUAL(node4Id, idCollector->collectedIDs[0]);
+	CPPUNIT_ASSERT_EQUAL(group1Id, idCollector->collectedIDs[1]);
+	CPPUNIT_ASSERT_EQUAL(rootId, idCollector->collectedIDs[2]);
+	CPPUNIT_ASSERT_EQUAL(group2Id, idCollector->collectedIDs[3]);
+	CPPUNIT_ASSERT_EQUAL(rootId, idCollector->collectedIDs[4]);
 
 	delete idCollector;
 }

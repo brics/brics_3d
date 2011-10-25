@@ -53,12 +53,31 @@ class Transform;
  */
 class INodeVisitor {
 public:
-	INodeVisitor(){};
+
+	enum TraverseDirection {
+		downwards,
+		upwards
+	};
+
+	INodeVisitor(TraverseDirection direction = downwards){this->direction = direction;};
 	virtual ~INodeVisitor(){};
 
 	virtual void visit(Node* node){};
 	virtual void visit(Group* node){};
 	virtual void visit(Transform* node){};
+
+    TraverseDirection getDirection() const
+    {
+        return direction;
+    }
+
+    void setDirection(TraverseDirection direction)
+    {
+        this->direction = direction;
+    }
+
+protected:
+	TraverseDirection direction;
 
 };
 

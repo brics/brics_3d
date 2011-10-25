@@ -27,6 +27,9 @@ using namespace BRICS_3D::RSG;
 using std::cout;
 using std::endl;
 
+/*
+ * Example how to implement custom visitors.
+ */
 class IdCollector : public INodeVisitor {
 public:
 	void visit(Node* node){
