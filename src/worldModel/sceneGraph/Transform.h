@@ -51,6 +51,8 @@ namespace BRICS_3D {
 
 namespace RSG {
 
+extern IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransformAlongPath(Node::NodePath nodePath);
+
 /**
  * @brief A node that expresses a geometric transformation between its parents and children.
  */
@@ -74,10 +76,18 @@ class Transform : public Group {
 
     /**
      * @brief Retrieve a transform that is closest to the specified timesStamp.
-     * @param[out] transform Output pointer to a transform.
      * @param timeStamp No effect yet!
+     * @return Shared pointer to the transform.
      */
-    void getTransform(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform, TimeStamp timeStamp);
+    IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getTransform(TimeStamp timeStamp);
+
+    /**
+     * @brief Retrieve the latest/newest transform.
+     * @return Shared pointer to the transform.
+     */
+    IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getLatestTransform();
+
+    void accept(INodeVisitor* visitor);
 
   private:
 

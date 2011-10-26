@@ -69,9 +69,12 @@ void PathCollector::visit(Node* node){
 }
 
 void PathCollector::visit(Group* node){
-	this->visit(dynamic_cast<Node*>(node)); //just feed forward
+	this->visit(dynamic_cast<Node*>(node)); //just feed forward to be handled as node
 }
 
+void PathCollector::visit(Transform* node){
+	this->visit(dynamic_cast<Node*>(node)); //just feed forward to be handled as node
+}
 
 }
 

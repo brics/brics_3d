@@ -38,10 +38,32 @@
 ******************************************************************************/
 
 #include "Transform.h"
+#include "core/HomogeneousMatrix44.h"
 
 namespace BRICS_3D {
 
 namespace RSG {
+
+IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransformAlongPath(Node::NodePath nodePath){
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr result(new HomogeneousMatrix44()); //identity matrix
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr tmpTransform;
+	for (unsigned int i = 0; i < static_cast<unsigned int>(nodePath.size()); ++i) {
+		Transform* tmpTransform = dynamic_cast<Transform*>(nodePath[i]);
+		if (tmpTransform) {
+//			result = result * tmpTransform->getLatestTransform();
+			*result = *((*result) * (*tmpTransform->getLatestTransform()));
+		}
+	}
+	return result;
+//	IHomogeneousMatrix44* matrix1 = new HomogeneousMatrix44(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 1.0, 2.0, 3.0);
+//	IHomogeneousMatrix44* matrix2 = new HomogeneousMatrix44();
+//	IHomogeneousMatrix44* result = new HomogeneousMatrix44();
+//
+//	cout << *result;
+//	*result = *((*matrix2) * (*matrix1));
+
+
+}
 
 Transform::Transform() {
 	history.resize(1);
@@ -57,8 +79,27 @@ void Transform::insertTransform(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr ne
 	history[0].second = timeStamp;
 }
 
-void Transform::getTransform(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform, TimeStamp timeStamp) {
-	transform = history[0].first;
+IHomogeneousMatrix44::IHomogeneousMatrix44Ptr  Transform::getTransform(TimeStamp timeStamp) {
+	return history[0].first;
+}
+
+IHomogeneousMatrix44::IHomogeneousMatrix44Ptr Transform::getLatestTransform(){
+	return history[0].first;
+}
+
+void Transform::accept(INodeVisitor* visitor){
+	visitor->visit(this);
+	if (visitor->getDirection() == INodeVisitor::upwards) { //TODO move to "traverseUpwards" method?
+	    for(unsigned i = 0; i < getNumberOfParents(); ++i) // recursively go up the graph structure
+	    {
+	        getParent(i)->accept(visitor);
+	    }
+	} else if (visitor->getDirection() == INodeVisitor::downwards) { //TODO move to "traverseDownwards" method?
+		for(unsigned i = 0; i < getNumberOfChildren(); ++i) // recursively go down the graph structure
+		{
+			getChild(i)->accept(visitor);
+		}
+	}
 }
 
 } // namespace BRICS_3D::RSG

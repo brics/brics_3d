@@ -36,9 +36,14 @@ public:
 	void visit(Node* node){
 		cout << "Node ID  = " << node->getId() << endl;
 		collectedIDs.push_back(node->getId());
+
 	};
 	void visit(Group* node){
 		cout << "Group ID = " << node->getId() << endl;
+		collectedIDs.push_back(node->getId());
+	};
+	void visit(RSG::Transform* node){
+		cout << "Transform ID = " << node->getId() << endl;
 		collectedIDs.push_back(node->getId());
 	};
 
@@ -55,6 +60,7 @@ class SceneGraphNodesTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testOwnership );
 	CPPUNIT_TEST( testSimpleVisitor );
 	CPPUNIT_TEST( testPathCollectorVisitor );
+	CPPUNIT_TEST( testTransformVisitor );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -68,6 +74,7 @@ public:
 	void testSimpleGraph();
 	void testSimpleVisitor();
 	void testPathCollectorVisitor();
+	void testTransformVisitor();
 
 private:
 	  /// Maximum deviation for equality check of double variables
