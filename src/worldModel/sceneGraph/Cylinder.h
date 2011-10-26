@@ -41,16 +41,51 @@
 #define CYLINDER_H
 
 #include "Shape.h"
+#include "core/Point3D.h"
 
 namespace BRICS_3D {
 
 namespace RSG {
 
+/**
+ * @brief Simple model of a 3D cylinder.
+ *
+ * The origin is considered in the center of each size value. The rotation axis is the Z axis.
+ */
 class Cylinder : public Shape {
-  public:
-    Cylinder();
+public:
 
-    virtual ~Cylinder();
+	typedef boost::shared_ptr<Cylinder> CylinderPtr;
+	typedef boost::shared_ptr<Cylinder const> CylinderConstPtr;
+
+	Cylinder();
+	Cylinder(Coordinate radius, Coordinate height);
+
+	virtual ~Cylinder();
+
+    Coordinate getHeight() const
+    {
+        return height;
+    }
+
+    Coordinate getRadius() const
+    {
+        return radius;
+    }
+
+    void setHeight(Coordinate height)
+    {
+        this->height = height;
+    }
+
+    void setRadius(Coordinate radius)
+    {
+        this->radius = radius;
+    }
+
+private:
+	Coordinate radius;
+	Coordinate height;
 
 };
 

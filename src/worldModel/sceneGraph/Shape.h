@@ -40,6 +40,8 @@
 #ifndef SHAPE_H
 #define SHAPE_H
 
+#include <boost/shared_ptr.hpp>
+
 namespace BRICS_3D { namespace RSG { class GeometricNode; }  } 
 
 namespace BRICS_3D {
@@ -48,13 +50,18 @@ namespace RSG {
 
 /**
  * @brief A generic shape that can by carried by a GeometricNode.
+ *
+ * For basic shapes like boxes etc. the origin is assumed to be in the center of the shape.
  */
 class Shape {
 
-  public:
-    Shape();
+public:
+	typedef boost::shared_ptr<Shape> ShapePtr;
+	typedef boost::shared_ptr<Shape const> ShapeConstPtr;
 
-    virtual ~Shape();
+	Shape();
+
+	virtual ~Shape();
 
 };
 

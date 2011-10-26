@@ -50,25 +50,46 @@ namespace BRICS_3D {
 namespace RSG {
 
 /**
- *  @brief A leaf node in the robot scenegraph that carries any kind of 3D data.
+ * @brief A leaf node in the robot scenegraph that carries any kind of 3D data.
  * 
  * The geometric node is a rather general container for <b>any</b> kind of 3D data. 
  * Possible data ranges from rather primitive shapes like boxes and cylinders to point clouds and meshes. 
  * 3D features like spin images etc. would be placed in to a geometric node too.
  */
-class GeometricNode : public Node, public Attribute {
-  public:
-    TimeStamp timeStamp;
-
-
-  private:
-    Shape shape;
-
+class GeometricNode : public Node {
 
   public:
+
+	typedef boost::shared_ptr<GeometricNode> GeometricNodePtr;
+	typedef boost::shared_ptr<GeometricNode const> GeometricNodeConstPtr;
+
     GeometricNode();
 
     virtual ~GeometricNode();
+
+    Shape::ShapePtr getShape() const
+    {
+        return shape;
+    }
+
+    TimeStamp getTimeStamp() const
+    {
+        return timeStamp;
+    }
+
+    void setShape(Shape::ShapePtr shape)
+    {
+        this->shape = shape;
+    }
+
+    void setTimeStamp(TimeStamp timeStamp)
+    {
+        this->timeStamp = timeStamp;
+    }
+
+private:
+    TimeStamp timeStamp;
+    Shape::ShapePtr shape;
 
 };
 

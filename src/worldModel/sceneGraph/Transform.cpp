@@ -41,6 +41,7 @@
 
 /* for transform tools: */
 #include "core/HomogeneousMatrix44.h"
+#include "core/Logger.h"
 #include "PathCollector.h"
 
 namespace BRICS_3D {
@@ -67,6 +68,9 @@ IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransform(Node::NodePtr n
 	node->accept(pathCollector);
 	if (static_cast<unsigned int>(pathCollector->getNodePaths().size()) > 0) { // != root
 		*result = *((*result) * (*(getGlobalTransformAlongPath(pathCollector->getNodePaths()[0]))));
+		if (static_cast<unsigned int>(pathCollector->getNodePaths().size()) > 1) {
+			LOG(WARNING) << "Multiple transform paths to this node detected. Taking fist path and ignoring the rest.";
+		}
 	}
 
 	/* check if node is a transform on its own ... */

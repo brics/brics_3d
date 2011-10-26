@@ -44,13 +44,17 @@ namespace BRICS_3D {
 namespace RSG {
 
 Box::Box() {
-  // Bouml preserved body begin 0002D803
-  // Bouml preserved body end 0002D803
+
+}
+
+Box::Box(Coordinate sizeX, Coordinate sizeY, Coordinate sizeZ) {
+	this->sizeX = sizeX;
+	this->sizeY = sizeY;
+	this->sizeZ = sizeZ;
 }
 
 Box::~Box() {
-  // Bouml preserved body begin 0002D883
-  // Bouml preserved body end 0002D883
+
 }
 
 

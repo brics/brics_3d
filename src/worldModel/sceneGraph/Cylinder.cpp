@@ -44,15 +44,17 @@ namespace BRICS_3D {
 namespace RSG {
 
 Cylinder::Cylinder() {
-  // Bouml preserved body begin 0002D903
-  // Bouml preserved body end 0002D903
+
 }
 
 Cylinder::~Cylinder() {
-  // Bouml preserved body begin 0002D983
-  // Bouml preserved body end 0002D983
+
 }
 
+Cylinder::Cylinder(Coordinate radius, Coordinate height) {
+	this->radius = radius;
+	this->height = height;
+}
 
 } // namespace BRICS_3D::RSG
 

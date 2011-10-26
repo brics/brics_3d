@@ -214,6 +214,61 @@ void SceneGraphNodesTest::testTransform() {
 
 }
 
+void SceneGraphNodesTest::testGeometricNode() {
+	/* Graph structure: (remember: nodes can only serve as are leaves)
+	 *       root
+	 *        |
+	 *      geode1
+	 */
+	unsigned const int rootId = 0;
+	unsigned const int geode1Id = 1;
+
+
+	Group::GroupPtr root(new Group());
+	root->setId(rootId);
+	GeometricNode::GeometricNodePtr geode1(new GeometricNode());
+	geode1->setId(geode1Id);
+
+	Box::BoxPtr box1(new Box(2,3,4));
+	geode1->setShape(box1);
+
+	CPPUNIT_ASSERT_EQUAL(rootId, root->getId()); // preconditions:
+	CPPUNIT_ASSERT_EQUAL(geode1Id, geode1->getId());
+
+	/* setup scenegraph */
+	root->addChild(geode1);
+
+	CPPUNIT_ASSERT_EQUAL(1u, root->getNumberOfChildren());
+	CPPUNIT_ASSERT_EQUAL(1u, geode1->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(rootId, geode1->getParent(0)->getId());
+	CPPUNIT_ASSERT_EQUAL(geode1Id, root->getChild(0)->getId());
+
+	Box::BoxPtr tmpBox1;
+	CPPUNIT_ASSERT(tmpBox1 == 0);
+	tmpBox1 = boost::dynamic_pointer_cast<Box>(geode1->getShape());
+	CPPUNIT_ASSERT(tmpBox1 != 0);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(2, tmpBox1->getSizeX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3, tmpBox1->getSizeY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(4, tmpBox1->getSizeZ(), maxTolerance);
+
+	Cylinder::CylinderPtr cylinder1(new Cylinder(0.2,0.1));
+	geode1->setShape(cylinder1);
+
+	Cylinder::CylinderPtr tmpCylinder1;
+	tmpBox1.reset();
+	CPPUNIT_ASSERT(tmpCylinder1 == 0);
+	CPPUNIT_ASSERT(tmpBox1 == 0);
+	tmpBox1 = boost::dynamic_pointer_cast<Box>(geode1->getShape());
+	CPPUNIT_ASSERT(tmpBox1 == 0);
+	tmpCylinder1 = boost::dynamic_pointer_cast<Cylinder>(geode1->getShape());
+	CPPUNIT_ASSERT(tmpCylinder1 != 0);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.2, tmpCylinder1->getRadius(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.1, tmpCylinder1->getHeight(), maxTolerance);
+
+
+
+}
+
 void SceneGraphNodesTest::testOwnership() {
 	/* Graph structure: (remember: nodes can only serve as are leaves)
 	 *             root
@@ -990,6 +1045,13 @@ void SceneGraphNodesTest::testGlobalTransformCalculation() {
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(105.0, matrixPtr[13], maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(103.0, matrixPtr[14], maxTolerance);
 
+	tf3->removeChildren(0); //make a tree
+
+	resultTransform = getGlobalTransform(node5);
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(106.0, matrixPtr[12], maxTolerance); //check (just) translation
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(105.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(103.0, matrixPtr[14], maxTolerance);
 
 }
 

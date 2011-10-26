@@ -41,16 +41,62 @@
 #define BOX_H
 
 #include "Shape.h"
+#include "core/Point3D.h"
 
 namespace BRICS_3D {
 
 namespace RSG {
 
+/**
+ * @brief Simple model of a 3D box.
+ *
+ * The origin is considered in the center of each size value.
+ */
 class Box : public Shape {
-  public:
+public:
+
+	typedef boost::shared_ptr<Box> BoxPtr;
+	typedef boost::shared_ptr<Box const> BoxConstPtr;
+
     Box();
+    Box(Coordinate sizeX, Coordinate sizeY, Coordinate sizeZ);
 
     virtual ~Box();
+
+    Coordinate getSizeX() const
+    {
+        return sizeX;
+    }
+
+    Coordinate getSizeY() const
+    {
+        return sizeY;
+    }
+
+    Coordinate getSizeZ() const
+    {
+        return sizeZ;
+    }
+
+    void setSizeX(Coordinate sizeX)
+    {
+        this->sizeX = sizeX;
+    }
+
+    void setSizeY(Coordinate sizeY)
+    {
+        this->sizeY = sizeY;
+    }
+
+    void setSizeZ(Coordinate sizeZ)
+    {
+        this->sizeZ = sizeZ;
+    }
+
+private:
+    Coordinate sizeX;
+    Coordinate sizeY;
+    Coordinate sizeZ;
 
 };
 

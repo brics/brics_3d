@@ -16,6 +16,9 @@
 #include "worldModel/sceneGraph/Node.h"
 #include "worldModel/sceneGraph/Group.h"
 #include "worldModel/sceneGraph/Transform.h"
+#include "worldModel/sceneGraph/GeometricNode.h"
+#include "worldModel/sceneGraph/Box.h"
+#include "worldModel/sceneGraph/Cylinder.h"
 #include "worldModel/sceneGraph/INodeVisitor.h"
 #include "worldModel/sceneGraph/PathCollector.h"
 
@@ -34,16 +37,16 @@ using std::endl;
 class IdCollector : public INodeVisitor {
 public:
 	void visit(Node* node){
-		cout << "Node ID  = " << node->getId() << endl;
+//		cout << "Node ID  = " << node->getId() << endl;
 		collectedIDs.push_back(node->getId());
 
 	};
 	void visit(Group* node){
-		cout << "Group ID = " << node->getId() << endl;
+//		cout << "Group ID = " << node->getId() << endl;
 		collectedIDs.push_back(node->getId());
 	};
 	void visit(RSG::Transform* node){
-		cout << "Transform ID = " << node->getId() << endl;
+//		cout << "Transform ID = " << node->getId() << endl;
 		collectedIDs.push_back(node->getId());
 	};
 
@@ -56,6 +59,7 @@ class SceneGraphNodesTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testNode );
 	CPPUNIT_TEST( testGroup );
 	CPPUNIT_TEST( testTransform );
+	CPPUNIT_TEST( testGeometricNode );
 	CPPUNIT_TEST( testSimpleGraph );
 	CPPUNIT_TEST( testOwnership );
 	CPPUNIT_TEST( testSimpleVisitor );
@@ -71,6 +75,7 @@ public:
 	void testNode();
 	void testGroup();
 	void testTransform();
+	void testGeometricNode();
 	void testOwnership();
 	void testSimpleGraph();
 	void testSimpleVisitor();
