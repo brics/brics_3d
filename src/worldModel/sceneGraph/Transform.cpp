@@ -44,15 +44,22 @@ namespace BRICS_3D {
 namespace RSG {
 
 Transform::Transform() {
-  // Bouml preserved body begin 0002B583
-  // Bouml preserved body end 0002B583
+	history.resize(1);
 }
 
 Transform::~Transform() {
-  // Bouml preserved body begin 0002B603
-  // Bouml preserved body end 0002B603
+	history.clear();
 }
 
+void Transform::insertTransform(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr newTransform, TimeStamp timeStamp) {
+	assert(newTransform != 0);
+	history[0].first = newTransform;
+	history[0].second = timeStamp;
+}
+
+void Transform::getTransform(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform, TimeStamp timeStamp) {
+	transform = history[0].first;
+}
 
 } // namespace BRICS_3D::RSG
 

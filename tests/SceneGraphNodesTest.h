@@ -69,6 +69,12 @@ public:
 	void testSimpleVisitor();
 	void testPathCollectorVisitor();
 
+private:
+	  /// Maximum deviation for equality check of double variables
+	  static const double maxTolerance = 0.00001;
+
+	  /// Pointer to matrix data stores in the HomogeneousMatrix
+	  const double* matrixPtr;
 };
 
 }

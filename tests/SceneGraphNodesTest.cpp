@@ -109,7 +109,7 @@ void SceneGraphNodesTest::testGroup() {
 void SceneGraphNodesTest::testTransform() {
 
 	Group::GroupPtr root(new Group);
-	Node::NodePtr transform1 (new RSG::Transform);
+	RSG::Transform::TransformPtr transform1 (new RSG::Transform);
 
 	unsigned const int rootId = 1;
 	unsigned const int transform1Id = 2;
@@ -120,11 +120,98 @@ void SceneGraphNodesTest::testTransform() {
 	CPPUNIT_ASSERT_EQUAL(rootId, root->getId()); // preconditions
 	CPPUNIT_ASSERT_EQUAL(transform1Id, transform1->getId());
 
+	root->addChild(transform1);
+
+	CPPUNIT_ASSERT_EQUAL(1u, root->getNumberOfChildren());
+	CPPUNIT_ASSERT_EQUAL(0u, root->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(1u, transform1->getNumberOfParents());
+
+	CPPUNIT_ASSERT_EQUAL(rootId, transform1->getParent(0)->getId());
+	CPPUNIT_ASSERT_EQUAL(transform1Id, root->getChild(0)->getId());
+
 	/* set transform */
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform123(new HomogeneousMatrix44(1,0,0,  //Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             1,2,3)); //Translation coefficients
+	transform1->insertTransform(transform123, TimeStamp(1.0));
 
 	/* getTransform */
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr resultTransform;
+	CPPUNIT_ASSERT(resultTransform == 0);
+	transform1->getTransform(resultTransform, TimeStamp(1.0));
+	CPPUNIT_ASSERT(resultTransform != 0);
+	CPPUNIT_ASSERT(resultTransform = transform123);
 
-	CPPUNIT_FAIL("TODO: Implement this!");
+
+	matrixPtr = resultTransform->getRawData();
+
+	/* rotation in column-major order*/
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, matrixPtr[0], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[4], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[8], maxTolerance);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[1], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, matrixPtr[5], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[9], maxTolerance);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[2], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[6], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, matrixPtr[10], maxTolerance);
+
+	/* translation */
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, matrixPtr[12], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, matrixPtr[14], maxTolerance);
+
+	/* stuffing coefficients */
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[3], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[7], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[11], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, matrixPtr[15], maxTolerance);
+
+
+
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform654(new HomogeneousMatrix44(1,0,0,  //Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             6,5,4)); //Translation coefficients
+	transform1->insertTransform(transform654, TimeStamp(1.0));
+
+	/* getTransform */
+	resultTransform.reset();
+	CPPUNIT_ASSERT(resultTransform == 0);
+	transform1->getTransform(resultTransform, TimeStamp(1.0));
+	CPPUNIT_ASSERT(resultTransform != 0);
+	CPPUNIT_ASSERT(resultTransform = transform654);
+
+
+	matrixPtr = resultTransform->getRawData();
+
+	/* rotation in column-major order*/
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, matrixPtr[0], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[4], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[8], maxTolerance);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[1], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, matrixPtr[5], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[9], maxTolerance);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[2], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[6], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, matrixPtr[10], maxTolerance);
+
+	/* translation */
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(6.0, matrixPtr[12], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, matrixPtr[14], maxTolerance);
+
+	/* stuffing coefficients */
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[3], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[7], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[11], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, matrixPtr[15], maxTolerance);
+
 }
 
 void SceneGraphNodesTest::testOwnership() {
@@ -502,6 +589,8 @@ void SceneGraphNodesTest::testPathCollectorVisitor() {
 
 	CPPUNIT_ASSERT_EQUAL(rootId, (*pathCollector->getNodePaths()[1][0]).getId()); // 2. path
 	CPPUNIT_ASSERT_EQUAL(group2Id, (*pathCollector->getNodePaths()[1][1]).getId());
+
+	delete pathCollector;
 }
 
 }  // namespace unitTests

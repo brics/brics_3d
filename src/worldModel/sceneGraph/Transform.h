@@ -45,6 +45,7 @@
 #include "TimeStamp.h"
 #include <vector>
 using std::vector;
+using std::pair;
 
 namespace BRICS_3D {
 
@@ -54,16 +55,34 @@ namespace RSG {
  * @brief A node that expresses a geometric transformation between its parents and children.
  */
 class Transform : public Group {
-  private:
-    TimeStamp timeStamp;
-
-    vector<BRICS_3D::IHomogeneousMatrix44*> history;
-
 
   public:
+
+	typedef boost::shared_ptr<RSG::Transform> TransformPtr;
+	typedef boost::shared_ptr<RSG::Transform const> TransformConstPtr;
+
     Transform();
 
     virtual ~Transform();
+
+    /**
+     * @brief Add a new transform to the history.
+     * @param newTransform The transform to be added.
+     * @param timeStamp The times stamp that is associated with the transform. (So far this as no effect yet.)
+     */
+    void insertTransform(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr newTransform, TimeStamp timeStamp);
+
+    /**
+     * @brief Retrieve a transform that is closest to the specified timesStamp.
+     * @param[out] transform Output pointer to a transform.
+     * @param timeStamp No effect yet!
+     */
+    void getTransform(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform, TimeStamp timeStamp);
+
+  private:
+
+    ///History of transforms. Each transform has an associated time stamp.
+    vector< pair<IHomogeneousMatrix44::IHomogeneousMatrix44Ptr, TimeStamp> > history;
 
 };
 

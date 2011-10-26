@@ -46,6 +46,10 @@ namespace RSG {
 
 class TimeStamp {
   public:
+	TimeStamp(){};
+	TimeStamp(unsigned long timeStamp){this->timeStamp = timeStamp;};
+	virtual ~TimeStamp(){};
+
     unsigned long timeStamp;
 
 };

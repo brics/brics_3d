@@ -10,6 +10,7 @@
 #define IHOMOGENEOUSMATRIX44_H_
 
 #include <iostream>
+#include <boost/shared_ptr.hpp>
 using std::ostream;
 using std::istream;
 
@@ -25,6 +26,9 @@ namespace BRICS_3D {
  */
 class IHomogeneousMatrix44 {
 public:
+
+	typedef boost::shared_ptr<IHomogeneousMatrix44> IHomogeneousMatrix44Ptr;
+	typedef boost::shared_ptr<IHomogeneousMatrix44 const> IHomogeneousMatrix44ConstPtr;
 
 	/**
 	 * @brief Default constructor
