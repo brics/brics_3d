@@ -51,7 +51,22 @@ namespace BRICS_3D {
 
 namespace RSG {
 
+/**
+ * @brief Determine the accumulated transform along a path of nodes.
+ * @param nodePath A path of nodes from root descending.
+ * @return Shared pointer to the accumulated transform.
+ */
 extern IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransformAlongPath(Node::NodePath nodePath);
+
+/**
+ * @brief Calculate the accumulated global transform for a node.
+ *
+ * In case the node is a transform node it will be taken into account too.
+ * In case the node has multiple paths to root node, the first found path will be taken!
+ * @param node The node to where the transform from root will calculated.
+ * @return Shared pointer to the accumulated transform.
+ */
+extern IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransform(Node::NodePtr node);
 
 /**
  * @brief A node that expresses a geometric transformation between its parents and children.

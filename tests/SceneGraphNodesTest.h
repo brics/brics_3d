@@ -61,6 +61,7 @@ class SceneGraphNodesTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testSimpleVisitor );
 	CPPUNIT_TEST( testPathCollectorVisitor );
 	CPPUNIT_TEST( testTransformVisitor );
+	CPPUNIT_TEST( testGlobalTransformCalculation );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -75,6 +76,7 @@ public:
 	void testSimpleVisitor();
 	void testPathCollectorVisitor();
 	void testTransformVisitor();
+	void testGlobalTransformCalculation();
 
 private:
 	  /// Maximum deviation for equality check of double variables

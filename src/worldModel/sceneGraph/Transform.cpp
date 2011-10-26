@@ -38,7 +38,10 @@
 ******************************************************************************/
 
 #include "Transform.h"
+
+/* for transform tools: */
 #include "core/HomogeneousMatrix44.h"
+#include "PathCollector.h"
 
 namespace BRICS_3D {
 
@@ -46,23 +49,34 @@ namespace RSG {
 
 IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransformAlongPath(Node::NodePath nodePath){
 	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr result(new HomogeneousMatrix44()); //identity matrix
-	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr tmpTransform;
 	for (unsigned int i = 0; i < static_cast<unsigned int>(nodePath.size()); ++i) {
 		Transform* tmpTransform = dynamic_cast<Transform*>(nodePath[i]);
 		if (tmpTransform) {
-//			result = result * tmpTransform->getLatestTransform();
-			*result = *((*result) * (*tmpTransform->getLatestTransform()));
+			*result = *( (*result) * (*tmpTransform->getLatestTransform()) );
 		}
 	}
 	return result;
-//	IHomogeneousMatrix44* matrix1 = new HomogeneousMatrix44(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 1.0, 2.0, 3.0);
-//	IHomogeneousMatrix44* matrix2 = new HomogeneousMatrix44();
-//	IHomogeneousMatrix44* result = new HomogeneousMatrix44();
-//
-//	cout << *result;
-//	*result = *((*matrix2) * (*matrix1));
+}
 
+IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransform(Node::NodePtr node) {
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr result(new HomogeneousMatrix44()); //identity matrix
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr accumulatedTransform;
 
+	/* accumulate parent paths and take the _first_ found path  */
+	PathCollector* pathCollector = new PathCollector();
+	node->accept(pathCollector);
+	if (static_cast<unsigned int>(pathCollector->getNodePaths().size()) > 0) { // != root
+		*result = *((*result) * (*(getGlobalTransformAlongPath(pathCollector->getNodePaths()[0]))));
+	}
+
+	/* check if node is a transform on its own ... */
+	Transform::TransformPtr tmpTransform = boost::dynamic_pointer_cast<Transform>(node);
+	if (tmpTransform) {
+		*result = *( (*result) * (*tmpTransform->getLatestTransform()) );
+	}
+
+	delete pathCollector;
+	return result;
 }
 
 Transform::Transform() {

@@ -837,6 +837,162 @@ void SceneGraphNodesTest::testTransformVisitor() {
 	delete idCollector;
 }
 
+void SceneGraphNodesTest::testGlobalTransformCalculation() {
+	/* Graph structure: (remember: nodes can only serve as are leaves)
+	 *            root(tf)
+	 *              |
+	 *        ------+-----
+	 *        |          |
+	 *       tf1        tf2
+	 *        |          |
+	 *       tf3        group4
+	 *        |          |
+	 *        +----  ----+
+	 *            |  |
+	 *            node5
+	 */
+	unsigned const int rootId = 0;
+	unsigned const int tf1Id = 1;
+	unsigned const int tf2Id = 2;
+	unsigned const int tf3Id = 3;
+	unsigned const int group4Id = 4;
+	unsigned const int node5Id = 5;
+
+	RSG::Transform::TransformPtr root(new RSG::Transform());
+	root->setId(rootId);
+	RSG::Transform::TransformPtr tf1(new RSG::Transform());
+	tf1->setId(tf1Id);
+	RSG::Transform::TransformPtr tf2(new RSG::Transform());
+	tf2->setId(tf2Id);
+	RSG::Transform::TransformPtr tf3(new RSG::Transform());
+	tf3->setId(tf3Id);
+	Group::GroupPtr group4(new Group());
+	group4->setId(group4Id);
+	Node::NodePtr node5(new Node());
+	node5->setId(node5Id);
+
+	TimeStamp dummyTime(1.0);
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform001(new HomogeneousMatrix44(1,0,0,  	//Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             0,0,-1));
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform123(new HomogeneousMatrix44(1,0,0,  	//Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             1,2,3)); 						//Translation coefficients
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform654(new HomogeneousMatrix44(1,0,0,  	//Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             6,5,4)); 						//Translation coefficients
+
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform789(new HomogeneousMatrix44(1,0,0,  	//Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             7,8,9)); 						//Translation coefficients
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr resultTransform;
+
+	root->insertTransform(transform001, dummyTime);
+	tf1->insertTransform(transform123, dummyTime);
+	tf2->insertTransform(transform654, dummyTime);
+	tf3->insertTransform(transform789, dummyTime);
+
+	CPPUNIT_ASSERT_EQUAL(rootId, root->getId()); // preconditions:
+	CPPUNIT_ASSERT_EQUAL(tf1Id, tf1->getId());
+	CPPUNIT_ASSERT_EQUAL(tf2Id, tf2->getId());
+	CPPUNIT_ASSERT_EQUAL(tf3Id, tf3->getId());
+	CPPUNIT_ASSERT_EQUAL(group4Id, group4->getId());
+	CPPUNIT_ASSERT_EQUAL(node5Id, node5->getId());
+
+	/* setup scenegraph */
+	root->addChild(tf1);
+	root->addChild(tf2);
+	tf1->addChild(tf3);
+	tf3->addChild(node5);
+	tf2->addChild(group4);
+	group4->addChild(node5);
+
+
+	resultTransform = getGlobalTransform(root);
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[12], maxTolerance); //check (just) translation
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, matrixPtr[14], maxTolerance);
+
+	resultTransform = getGlobalTransform(tf1);
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, matrixPtr[12], maxTolerance); //check (just) translation
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, matrixPtr[14], maxTolerance);
+
+	resultTransform = getGlobalTransform(tf3);
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(8.0, matrixPtr[12], maxTolerance); //check (just) translation
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(10.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(11.0, matrixPtr[14], maxTolerance);
+
+	resultTransform = getGlobalTransform(node5);
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(8.0, matrixPtr[12], maxTolerance); //check (just) translation
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(10.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(11.0, matrixPtr[14], maxTolerance);
+
+	resultTransform = getGlobalTransform(tf2);
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(6.0, matrixPtr[12], maxTolerance); //check (just) translation
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, matrixPtr[14], maxTolerance);
+
+	resultTransform = getGlobalTransform(group4);
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(6.0, matrixPtr[12], maxTolerance); //check (just) translation
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, matrixPtr[14], maxTolerance);
+
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr someUpdate(new HomogeneousMatrix44(1,0,0,  	//Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             100,100,99));
+	root->insertTransform(someUpdate, dummyTime);
+
+	resultTransform = getGlobalTransform(root);
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(100.0, matrixPtr[12], maxTolerance); //check (just) translation
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(100.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(99, matrixPtr[14], maxTolerance);
+
+	resultTransform = getGlobalTransform(tf1);
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(101.0, matrixPtr[12], maxTolerance); //check (just) translation
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(102.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(102.0, matrixPtr[14], maxTolerance);
+
+	resultTransform = getGlobalTransform(tf3);
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(108.0, matrixPtr[12], maxTolerance); //check (just) translation
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(110.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(111.0, matrixPtr[14], maxTolerance);
+
+	resultTransform = getGlobalTransform(node5);
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(108.0, matrixPtr[12], maxTolerance); //check (just) translation
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(110.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(111.0, matrixPtr[14], maxTolerance);
+
+	resultTransform = getGlobalTransform(tf2);
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(106.0, matrixPtr[12], maxTolerance); //check (just) translation
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(105.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(103.0, matrixPtr[14], maxTolerance);
+
+	resultTransform = getGlobalTransform(group4);
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(106.0, matrixPtr[12], maxTolerance); //check (just) translation
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(105.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(103.0, matrixPtr[14], maxTolerance);
+
+
+}
+
 }  // namespace unitTests
 
 /* EOF */
