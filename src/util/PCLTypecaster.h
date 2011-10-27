@@ -13,6 +13,7 @@
 #include "core/ColoredPointCloud3D.h"
 #include "core/ColoredPoint3D.h"
 #include "core/ColorSpaceConvertor.h"
+#include <cmath>
 
 #include <stdio.h>
 namespace BRICS_3D {
@@ -38,7 +39,7 @@ public:
 	 * @param pclCloudPtr		point cloud data in PCL format
 	 * @param pointCloud3DPtr	point cloud datda in BRICS_3D format
 	 */
-	void convertToBRICS3DDataType(pcl::PointCloud<pcl::PointXYZ>::Ptr pclCloudPtr,
+	void convertToBRICS3DDataType(pcl::PointCloud<pcl::PointXYZ>::ConstPtr pclCloudPtr,
 			BRICS_3D::PointCloud3D* pointCloud3DPtr );
 
 
@@ -49,7 +50,7 @@ public:
 	 * @param pclCloudPtr		point cloud data in PCL format
 	 * @param pointCloud3DPtr	point cloud datda in BRICS_3D format
 	 */
-	void convertToBRICS3DDataType(pcl::PointCloud<pcl::PointXYZRGB>::Ptr pclCloudPtr,
+	void convertToBRICS3DDataType(pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr pclCloudPtr,
 			BRICS_3D::PointCloud3D* pointCloud3DPtr );
 
 
@@ -77,7 +78,7 @@ public:
 	 * @param pclCloudPtr		point cloud data in PCL format
 	 * @param pointCloud3DPtr	point cloud datda in BRICS_3D format
 	 */
-	void convertToBRICS3DDataType(pcl::PointCloud<pcl::PointXYZRGB>::Ptr pclCloudPtr,
+	void convertToBRICS3DDataType(pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr pclCloudPtr,
 			BRICS_3D::ColoredPointCloud3D* pointCloud3DPtr );
 
 };
