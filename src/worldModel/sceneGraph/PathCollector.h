@@ -43,6 +43,7 @@
 #include "Node.h"
 #include "Group.h"
 #include "Transform.h"
+#include "GeometricNode.h"
 #include "INodeVisitor.h"
 
 /**
@@ -64,6 +65,7 @@ public:
 	virtual void visit(Node* node);
 	virtual void visit(Group* node);
 	virtual void visit(Transform* node);
+	virtual void visit(GeometricNode* node);
 
 	virtual void reset();
 

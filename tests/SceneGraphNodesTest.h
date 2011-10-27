@@ -37,16 +37,19 @@ using std::endl;
 class IdCollector : public INodeVisitor {
 public:
 	void visit(Node* node){
-//		cout << "Node ID  = " << node->getId() << endl;
+		cout << "Node ID  = " << node->getId() << endl;
 		collectedIDs.push_back(node->getId());
-
 	};
 	void visit(Group* node){
-//		cout << "Group ID = " << node->getId() << endl;
+		cout << "Group ID = " << node->getId() << endl;
 		collectedIDs.push_back(node->getId());
 	};
 	void visit(RSG::Transform* node){
-//		cout << "Transform ID = " << node->getId() << endl;
+		cout << "Transform ID = " << node->getId() << endl;
+		collectedIDs.push_back(node->getId());
+	};
+	void visit(RSG::GeometricNode* node){
+		cout << "GeometricNode ID = " << node->getId() << endl;
 		collectedIDs.push_back(node->getId());
 	};
 

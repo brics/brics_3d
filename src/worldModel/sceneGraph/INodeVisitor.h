@@ -47,6 +47,7 @@ namespace RSG {
 class Node;
 class Group;
 class Transform;
+class GeometricNode;
 
 /**
  * @brief Abstract interface for visitors of the scene graph
@@ -65,6 +66,7 @@ public:
 	virtual void visit(Node* node){};
 	virtual void visit(Group* node){};
 	virtual void visit(Transform* node){};
+	virtual void visit(GeometricNode* node){};
 
     TraverseDirection getDirection() const
     {

@@ -216,7 +216,7 @@ void SceneGraphNodesTest::testTransform() {
 
 void SceneGraphNodesTest::testGeometricNode() {
 	/* Graph structure: (remember: nodes can only serve as are leaves)
-	 *       root
+	 *       root(tf)
 	 *        |
 	 *      geode1
 	 */
@@ -224,11 +224,17 @@ void SceneGraphNodesTest::testGeometricNode() {
 	unsigned const int geode1Id = 1;
 
 
-	Group::GroupPtr root(new Group());
+	RSG::Transform::TransformPtr root(new RSG::Transform());
 	root->setId(rootId);
 	GeometricNode::GeometricNodePtr geode1(new GeometricNode());
 	geode1->setId(geode1Id);
 
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform654(new HomogeneousMatrix44(1,0,0,  	//Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             6,5,4)); 						//Translation coefficients
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr resultTransform;
+	root->insertTransform(transform654, TimeStamp(1.0));
 	Box::BoxPtr box1(new Box(2,3,4));
 	geode1->setShape(box1);
 
@@ -266,6 +272,28 @@ void SceneGraphNodesTest::testGeometricNode() {
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.1, tmpCylinder1->getHeight(), maxTolerance);
 
 
+	/*
+	 * check traversals
+	 */
+	resultTransform = getGlobalTransform(geode1);
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(6.0, matrixPtr[12], maxTolerance); //check (just) translation
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, matrixPtr[14], maxTolerance);
+
+
+
+
+	/* traverse from root */
+	cout << "Traversing with GeometricNode:" << endl;
+	IdCollector* idCollector = new IdCollector();
+	root->accept(idCollector); // traverse the graph downwards from root with the visitor
+
+	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(idCollector->collectedIDs.size()));
+	CPPUNIT_ASSERT_EQUAL(rootId, idCollector->collectedIDs[0]); //Remember: we have depth-first-search
+	CPPUNIT_ASSERT_EQUAL(geode1Id, idCollector->collectedIDs[1]);
+
+	delete idCollector;
 
 }
 

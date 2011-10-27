@@ -87,6 +87,8 @@ class GeometricNode : public Node {
         this->timeStamp = timeStamp;
     }
 
+    virtual void accept(INodeVisitor* visitor);
+
 private:
     TimeStamp timeStamp;
     Shape::ShapePtr shape;

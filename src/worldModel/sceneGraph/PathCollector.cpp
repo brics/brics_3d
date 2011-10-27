@@ -76,6 +76,10 @@ void PathCollector::visit(Transform* node){
 	this->visit(dynamic_cast<Node*>(node)); //just feed forward to be handled as node
 }
 
+void PathCollector::visit(GeometricNode* node){
+	this->visit(dynamic_cast<Node*>(node)); //just feed forward to be handled as node
+}
+
 }
 
 }
