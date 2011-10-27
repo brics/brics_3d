@@ -91,7 +91,7 @@ void ColorBasedROIExtractorHSV::extractColorBasedROI(BRICS_3D::ColoredPointCloud
 
 	if(this->minS == 0 && this->minH == 0 && this->minV == 0 && this->maxH == 255 &&
 			this->maxS == 255 && this->maxV == 255) {
-		//ToDo print error that the limits were not initialized
+		printf("[WARNING] Using maximum limits for HSV based ROI Extraction!!!\n");
 	}
 
 	int cloudSize =	in_cloud->getSize();
@@ -133,16 +133,21 @@ void ColorBasedROIExtractorHSV::extractColorBasedROI(BRICS_3D::ColoredPointCloud
 
 //		printf("H-S Limits: [%f %f %f %f]\n", minH, maxH, minS, maxS);
 //		printf("Actual H-S Values: [%d %d %d %f %f]\n", tempR, tempG, tempB, tempH, tempS);
-
 		if(passed){
-			out_cloud->addPoint(new BRICS_3D::ColoredPoint3D(
-							new BRICS_3D::Point3D(	in_cloud->getPointCloud()->data()[i].getX(),
-													in_cloud->getPointCloud()->data()[i].getY(),
-													in_cloud->getPointCloud()->data()[i].getZ()),
-													in_cloud->getPointCloud()->data()[i].red,
-													in_cloud->getPointCloud()->data()[i].green,
-													in_cloud->getPointCloud()->data()[i].blue) );
+			BRICS_3D::Point3D *tempPoint3D =  new BRICS_3D::Point3D(in_cloud->getPointCloud()->data()[i].getX(),
+										in_cloud->getPointCloud()->data()[i].getY(),
+										in_cloud->getPointCloud()->data()[i].getZ());
+
+			BRICS_3D::ColoredPoint3D *tempColoredPoint3D = new BRICS_3D::ColoredPoint3D(tempPoint3D,
+					in_cloud->getPointCloud()->data()[i].red,
+					in_cloud->getPointCloud()->data()[i].green,
+					in_cloud->getPointCloud()->data()[i].blue);
+
+			out_cloud->addPoint(tempColoredPoint3D);
+			delete tempPoint3D;
+			delete tempColoredPoint3D;
 		}
+
 
 	}
 //	printf("Output cloud size:%d\n", out_cloud->getSize());
@@ -155,7 +160,7 @@ void ColorBasedROIExtractorHSV::extractColorBasedROI(BRICS_3D::ColoredPointCloud
 
 	if(this->minS == 0 && this->minH == 0 && this->minV == 0 && this->maxH == 255 &&
 			this->maxS == 255 && this->maxV == 255) {
-		//ToDo print error that the limits were not initialized
+		printf("[WARNING] Using maximum limits for HSV based ROI Extraction!!!\n");
 	}
 
 	int cloudSize =	in_cloud->getSize();
@@ -199,9 +204,13 @@ void ColorBasedROIExtractorHSV::extractColorBasedROI(BRICS_3D::ColoredPointCloud
 //		printf("Actual H-S Values: [%d %d %d %f %f]\n", tempR, tempG, tempB, tempH, tempS);
 
 		if(passed){
-			out_cloud->addPoint(new BRICS_3D::Point3D(	in_cloud->getPointCloud()->data()[i].getX(),
-													in_cloud->getPointCloud()->data()[i].getY(),
-													in_cloud->getPointCloud()->data()[i].getZ()));
+			BRICS_3D::Point3D *tempPoint3D =  new BRICS_3D::Point3D(in_cloud->getPointCloud()->data()[i].getX(),
+										in_cloud->getPointCloud()->data()[i].getY(),
+										in_cloud->getPointCloud()->data()[i].getZ());
+
+			out_cloud->addPoint(tempPoint3D);
+			delete tempPoint3D;
+
 		}
 
 	}
