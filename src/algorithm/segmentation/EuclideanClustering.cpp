@@ -15,7 +15,7 @@
 
 namespace BRICS_3D {
 
-EucledeanClustering::EucledeanClustering() {
+EuclideanClustering::EuclideanClustering() {
 	// TODO Auto-generated constructor stub
 
 	this-> minClusterSize =0;
@@ -23,11 +23,11 @@ EucledeanClustering::EucledeanClustering() {
 	this->clusterTolerance =0;
 }
 
-EucledeanClustering::~EucledeanClustering() {
+EuclideanClustering::~EuclideanClustering() {
 	// TODO Auto-generated destructor stub
 }
 
-void EucledeanClustering::extractClusters(BRICS_3D::PointCloud3D *inCloud,
+void EuclideanClustering::extractClusters(BRICS_3D::PointCloud3D *inCloud,
 		std::vector<BRICS_3D::PointCloud3D*> *extractedClusters){
 
 	BRICS_3D::PCLTypecaster pclTypecaster;
@@ -48,12 +48,12 @@ void EucledeanClustering::extractClusters(BRICS_3D::PointCloud3D *inCloud,
 	euclideanClusterExtractor.setInputCloud(inCloudPclPtr);
 	euclideanClusterExtractor.extract (cluster_indices);
 
-	//printf("Parameters used or extraction:\n \t Min Cluster Size = %d\n"
-			//"\tMax Cluster Size=%d\n"
-		//"\tCluster Tolerance=%f\n Number of objects found: %d\n", this->minClusterSize,
-			//this->maxClusterSize, this->clusterTolerance, cluster_indices.size());
-	//printf("[EuclideanClusterExtraction.cpp][checkpoint] size of input cloud is %d\n", inCloud->getSize());
-	//Building up the pointclouds for corresponding clusters
+//	printf("Parameters used or extraction:\n \t Min Cluster Size = %d\n"
+//			"\tMax Cluster Size=%d\n"
+//		"\tCluster Tolerance=%f\n Number of objects found: %d\n", this->minClusterSize,
+//			this->maxClusterSize, this->clusterTolerance, cluster_indices.size());
+//	printf("[EuclideanClusterExtraction.cpp][checkpoint] size of input cloud is %d\n", inCloud->getSize());
+//	//Building up the pointclouds for corresponding clusters
 	int index =0;
 	for (std::vector<pcl::PointIndices>::const_iterator it = cluster_indices.begin (); it != cluster_indices.end (); ++it){
 
@@ -65,13 +65,13 @@ void EucledeanClustering::extractClusters(BRICS_3D::PointCloud3D *inCloud,
 													inCloudPclPtr->points[*pit].y,
 													inCloudPclPtr->points[*pit].z) );
 		}
-		//printf("[EuclideanClusterExtraction.cpp][checkpoint] size of custer is %d\n", extractedClusters->data()[index]->getSize());
+	//	printf("[EuclideanClusterExtraction.cpp][checkpoint] size of cluster is %d\n", extractedClusters->data()[index]->getSize());
 		index++;
 	}
 }
 
 
-void EucledeanClustering::extractClusters(BRICS_3D::ColoredPointCloud3D *inCloud,
+void EuclideanClustering::extractClusters(BRICS_3D::ColoredPointCloud3D *inCloud,
 		std::vector<BRICS_3D::ColoredPointCloud3D*> *extractedClusters){
 
 	BRICS_3D::PCLTypecaster pclTypecaster;

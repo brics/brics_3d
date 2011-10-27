@@ -1,25 +1,24 @@
 /*
- * EuclideanClusterExtraction.h
+ * EuclideanClustering3D.h
  *
- *  Created on: Oct 14, 2011
+ *  Created on: Oct 24, 2011
  *      Author: Pinaki Sunil Banerjee
  */
 
-#ifndef EUCLEDEANCLUSTEREXTRACTION_H_
-#define EUCLEDEANCLUSTEREXTRACTION_H_
+#ifndef EUCLIDEANCLUSTERING3D_H_
+#define EUCLIDEANCLUSTERING3D_H_
 
 #include "core/PointCloud3D.h"
 #include "core/ColoredPointCloud3D.h"
-
+#include "algorithm/nearestNeighbor/NearestNeighborANN.h"
+#include "algorithm/nearestNeighbor/NearestNeighborFLANN.h"
 
 #include <vector>
 #include<stdio.h>
+
 namespace BRICS_3D {
 
-/**
- * The class provides a wrapper for ONLY simple KDTree based Euclidean Cluster Extraction in PCL
- */
-class EuclideanClustering {
+class EuclideanClustering3D {
 
 private:
 
@@ -32,18 +31,18 @@ private:
 	/**
 	 * Minimum number of points to consider it as a cluster
 	 */
-	int minClusterSize;
+	unsigned int minClusterSize;
 
 
 	/**
 	 * Maximum number of points to be in the cluster
 	 */
-	int maxClusterSize;
+	unsigned int maxClusterSize;
 
 
 public:
-	EuclideanClustering();
-	virtual ~EuclideanClustering();
+	EuclideanClustering3D();
+	virtual ~EuclideanClustering3D();
 
 	/**
 	 * Takes a pointcloud and returns an array of pointcloud that make up the clusters.
@@ -125,4 +124,4 @@ public:
 
 }
 
-#endif /* EUCLEDEANCLUSTEREXTRACTION_H_ */
+#endif /* EUCLIDEANCLUSTERING3D_H_ */
