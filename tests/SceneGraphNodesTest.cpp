@@ -1083,6 +1083,112 @@ void SceneGraphNodesTest::testGlobalTransformCalculation() {
 
 }
 
+void SceneGraphNodesTest::testAttributeFinder() {
+	/* Graph structure: (remember: nodes can only serve as are leaves)
+	 *                 root
+	 *                   |
+	 *        -----------+----------
+	 *        |          |         |
+	 *       tf1        group2    node3
+	 *        |          |
+	 *        +----  ----+
+	 *            |  |
+	 *            geode4
+	 */
+	unsigned const int rootId = 0;
+	unsigned const int tf1Id = 1;
+	unsigned const int group2Id = 2;
+	unsigned const int node3Id = 3;
+	unsigned const int geode4Id = 4;
+
+	Attribute testAttribute1("name","test1");
+	Attribute testAttribute2("name","test1");
+	Attribute testAttribute3("name","test2");
+	Attribute testAttribute4("noName","test1");
+	cout << testAttribute1 << endl;
+
+	CPPUNIT_ASSERT(testAttribute1 == testAttribute2);
+	CPPUNIT_ASSERT(!(testAttribute1 == testAttribute3));
+	CPPUNIT_ASSERT(!(testAttribute1 == testAttribute4));
+
+	CPPUNIT_ASSERT(!(testAttribute1 != testAttribute2));
+	CPPUNIT_ASSERT(testAttribute1 != testAttribute3);
+	CPPUNIT_ASSERT(testAttribute1 != testAttribute4);
+
+	CPPUNIT_ASSERT(testAttribute1 == Attribute("name","test1"));
+
+	vector<Attribute> tmpAttributes;
+
+	Group::GroupPtr root(new Group());
+	root->setId(rootId);
+	tmpAttributes.clear();
+	tmpAttributes.push_back(Attribute("name","root"));
+	root->setAttributes(tmpAttributes);
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(root->getAttributes().size()));
+	CPPUNIT_ASSERT(root->getAttributes()[0] == Attribute("name","root"));
+
+	RSG::Transform::TransformPtr tf1(new RSG::Transform());
+	tf1->setId(tf1Id);
+	tmpAttributes.clear();
+	tmpAttributes.push_back(Attribute("frameID","base_link"));
+	tf1->setAttributes(tmpAttributes);
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(tf1->getAttributes().size()));
+	CPPUNIT_ASSERT(tf1->getAttributes()[0] == Attribute("frameID","base_link"));
+
+	Group::GroupPtr group2(new Group());
+	group2->setId(group2Id);
+	tmpAttributes.clear();
+	tmpAttributes.push_back(Attribute("taskType","targetArea"));
+	tmpAttributes.push_back(Attribute("name","Goal Area"));
+	group2->setAttributes(tmpAttributes);
+	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(group2->getAttributes().size()));
+	CPPUNIT_ASSERT(group2->getAttributes()[0] == Attribute("taskType","targetArea"));
+	CPPUNIT_ASSERT(group2->getAttributes()[1] == Attribute("name","Goal Area"));
+
+	Node::NodePtr node3(new Node());
+	node3->setId(node3Id);
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(node3->getAttributes().size()));
+
+	GeometricNode::GeometricNodePtr geode4(new GeometricNode());
+	geode4->setId(geode4Id);
+	tmpAttributes.clear();
+	tmpAttributes.push_back(Attribute("taskType","targetArea"));
+	tmpAttributes.push_back(Attribute("shapeType","Cylinder"));
+	geode4->setAttributes(tmpAttributes);
+	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(geode4->getAttributes().size()));
+	CPPUNIT_ASSERT(geode4->getAttributes()[0] == Attribute("taskType","targetArea"));
+	CPPUNIT_ASSERT(geode4->getAttributes()[1] == Attribute("shapeType","Cylinder"));
+
+	CPPUNIT_ASSERT_EQUAL(rootId, root->getId()); // preconditions:
+	CPPUNIT_ASSERT_EQUAL(tf1Id, tf1->getId());
+	CPPUNIT_ASSERT_EQUAL(group2Id, group2->getId());
+	CPPUNIT_ASSERT_EQUAL(node3Id, node3->getId());
+	CPPUNIT_ASSERT_EQUAL(geode4Id, geode4->getId());
+
+	/* setup scenegraph */
+	root->addChild(tf1);
+	root->addChild(group2);
+	root->addChild(node3);
+	tf1->addChild(geode4);
+	group2->addChild(geode4);
+
+	/*
+	 * query for certain attributes
+	 */
+	AttributeFinder* attributeFinder = new AttributeFinder();
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(attributeFinder->getMatchingNodes().size()));
+	tmpAttributes.clear();
+	tmpAttributes.push_back(Attribute("name","root"));
+	attributeFinder->setQueryAttributes(tmpAttributes);
+	root->accept(attributeFinder);
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(attributeFinder->getMatchingNodes().size()));
+	CPPUNIT_ASSERT((*attributeFinder->getMatchingNodes()[0]).getAttributes()[0] == Attribute("shapeType","Cylinder"));
+
+	delete attributeFinder;
+
+
+}
+
 }  // namespace unitTests
 
 /* EOF */

@@ -35,7 +35,7 @@ void WorldModelTest::testSimpleHanoiUseCase() {
 
 	/* Add predefined area */
 	SceneObject* targetArea = new SceneObject();
-	Shape* targetShape = new Cylinder();//(0.5,0); // radius and height in [m] TODO: boost::units ?
+	Shape* targetShape = new Cylinder(0.5,0); // radius and height in [m] TODO: boost::units ?
 	targetArea->shape = targetShape;
 	targetArea->transform = new HomogeneousMatrix44(); // here: identity matrix
 	targetArea->parentId =  myWM->getRootNodeId(); // hook in after root node

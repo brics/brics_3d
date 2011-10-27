@@ -41,7 +41,12 @@
 #define ATTRIBUTE_H
 
 #include <string>
+#include <vector>
+#include <iostream>
+using std::ostream;
+using std::istream;
 using std::string;
+using std::vector;
 
 namespace BRICS_3D {
 
@@ -56,20 +61,32 @@ class Attribute {
 //     operator<<();
 
     Attribute (string key, string value);
+//
+//    Attribute(Attribute & source);
+//
+//    Attribute(const Attribute & source);
+//
+//    Attribute & operator=(Attribute & source);
+//
+//    Attribute & operator=(const Attribute & source);
 
-    Attribute(Attribute & source);
+    bool operator==(Attribute& other);
 
-    Attribute(const Attribute & source);
+    bool operator==(const Attribute& other);
 
-    Attribute & operator=(Attribute & source);
+    bool operator!=(Attribute& other);
 
-    Attribute & operator=(const Attribute & source);
+    bool operator!=(const Attribute& other);
 
     Attribute();
 
     virtual ~Attribute();
 
+	friend ostream& operator<<(ostream &outStream, const Attribute &attribute);
+
 };
+
+extern bool attributeListContainsAttribute(Attribute queryAttribute, vector<Attribute>& attributeList);
 
 } // namespace BRICS_3D::RSG
 
