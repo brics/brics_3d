@@ -117,9 +117,10 @@ IF (USE_OSG)
     	${OSGGA_LIBRARY_DEBUG}
     	${OSGVIEWER_LIBRARY_DEBUG}
     )	
-    
+     
     IF (USE_PCL AND USE_EIGEN3)	
-        INCLUDE_DIRECTORIES(${PCL_INCLUDE_DIRS} ${OPENNI_INCLUDE_DIRS})    
+        INCLUDE_DIRECTORIES(${PCL_INCLUDE_DIRS} ${OPENNI_INCLUDE_DIRS})
+
         ADD_EXECUTABLE(kinect_test kinect_test) 
         TARGET_LINK_LIBRARIES(kinect_test 
             brics_3dpm_core 
@@ -130,6 +131,18 @@ IF (USE_OSG)
         	${OSGVIEWER_LIBRARY_DEBUG}
         	${PCL_IO_LIBRARY}
         )
+        
+        ADD_EXECUTABLE(extract_object_clusters extract_object_clusters) 
+        TARGET_LINK_LIBRARIES(extract_object_clusters 
+            brics_3dpm_core 
+            brics_3dpm_algorithm 
+            brics_3dpm_util
+            ${OSG_LIBRARY_DEBUG}
+        	${OSGGA_LIBRARY_DEBUG}
+        	${OSGVIEWER_LIBRARY_DEBUG}
+        	${PCL_IO_LIBRARY}
+        )
+        
         
         INCLUDE_DIRECTORIES(${PCL_INCLUDE_DIRS} ${OPENNI_INCLUDE_DIRS})    
         ADD_EXECUTABLE(detection_test detection_test) 
@@ -178,3 +191,4 @@ TARGET_LINK_LIBRARIES(demoSegmentationPlane brics_3dpm_algorithm)
 
 ADD_EXECUTABLE(demoSegmentationNormalPlane demoSegmentationNormalPlane)
 TARGET_LINK_LIBRARIES(demoSegmentationNormalPlane brics_3dpm_algorithm)
+
