@@ -1394,8 +1394,67 @@ void SceneGraphNodesTest::testSceneManager(){
 	CPPUNIT_ASSERT_EQUAL(group2Id, static_cast<unsigned int>(resultChildIds[1]));
 
 	/* node3Id */
+	tmpAttributes.clear();
+	CPPUNIT_ASSERT(node3Id == 0);
+	CPPUNIT_ASSERT(scene.addNode(rootId, node3Id, tmpAttributes));
+	CPPUNIT_ASSERT(node3Id != 0);
+
+	resultParentIds.clear();
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultParentIds.size()) );
+	CPPUNIT_ASSERT(scene.getNodeParents(node3Id, resultParentIds));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultParentIds.size()));
+	CPPUNIT_ASSERT_EQUAL(rootId, static_cast<unsigned int>(resultParentIds[0]));
+
+	resultChildIds.clear();
+	CPPUNIT_ASSERT(scene.getGroupChildren(rootId, resultChildIds));
+	CPPUNIT_ASSERT_EQUAL(3u, static_cast<unsigned int>(resultChildIds.size()));
+	CPPUNIT_ASSERT_EQUAL(tf1Id, static_cast<unsigned int>(resultChildIds[0]));
+	CPPUNIT_ASSERT_EQUAL(group2Id, static_cast<unsigned int>(resultChildIds[1]));
+	CPPUNIT_ASSERT_EQUAL(node3Id, static_cast<unsigned int>(resultChildIds[2]));
+
+	CPPUNIT_ASSERT(!scene.addNode(invalidId, node3Id, tmpAttributes));
 
 	/*geode4Id */
+	tmpAttributes.clear();
+	CPPUNIT_ASSERT(geode4Id == 0);
+	Cylinder::CylinderPtr cylinder1(new Cylinder(0.2,0.1));
+	tmpAttributes.push_back(Attribute("shapeType","Cylinder"));
+	CPPUNIT_ASSERT(scene.addGeometricNode(tf1Id, geode4Id, tmpAttributes, cylinder1, dummyTime));
+	CPPUNIT_ASSERT(geode4Id != 0);
+
+	resultParentIds.clear();
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultParentIds.size()) );
+	CPPUNIT_ASSERT(scene.getNodeParents(geode4Id, resultParentIds));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultParentIds.size()));
+	CPPUNIT_ASSERT_EQUAL(tf1Id, static_cast<unsigned int>(resultParentIds[0]));
+
+	resultChildIds.clear();
+	CPPUNIT_ASSERT(scene.getGroupChildren(tf1Id, resultChildIds));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultChildIds.size()));
+	CPPUNIT_ASSERT_EQUAL(geode4Id, static_cast<unsigned int>(resultChildIds[0]));
+
+	CPPUNIT_ASSERT(!scene.getGroupChildren(geode4Id, resultChildIds));
+	CPPUNIT_ASSERT(!scene.addGeometricNode(invalidId, geode4Id, tmpAttributes, cylinder1, dummyTime));
+
+	/* make it a graph */
+	CPPUNIT_ASSERT(scene.addParent(geode4Id, group2Id));
+
+	resultParentIds.clear();
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultParentIds.size()) );
+	CPPUNIT_ASSERT(scene.getNodeParents(geode4Id, resultParentIds));
+	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(resultParentIds.size()));
+	CPPUNIT_ASSERT_EQUAL(tf1Id, static_cast<unsigned int>(resultParentIds[0]));
+	CPPUNIT_ASSERT_EQUAL(group2Id, static_cast<unsigned int>(resultParentIds[1]));
+
+	resultChildIds.clear();
+	CPPUNIT_ASSERT(scene.getGroupChildren(tf1Id, resultChildIds));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultChildIds.size()));
+	CPPUNIT_ASSERT_EQUAL(geode4Id, static_cast<unsigned int>(resultChildIds[0]));
+	resultChildIds.clear();
+	CPPUNIT_ASSERT(scene.getGroupChildren(node3Id, resultChildIds));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultChildIds.size()));
+	CPPUNIT_ASSERT_EQUAL(geode4Id, static_cast<unsigned int>(resultChildIds[0]));
+
 
 }
 

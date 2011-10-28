@@ -46,6 +46,10 @@
 #include "GeometricNode.h"
 #include "INodeVisitor.h"
 
+namespace BRICS_3D {
+
+namespace RSG {
+
 /**
  * @brief Node visitor that collects paths.
  *
@@ -53,10 +57,6 @@
  * The node from where the traversal is initiated will excluded from the paths.
  *
  */
-namespace BRICS_3D {
-
-namespace RSG {
-
 class PathCollector : public INodeVisitor {
 public:
 	PathCollector();

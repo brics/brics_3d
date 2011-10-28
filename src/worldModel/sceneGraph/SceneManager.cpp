@@ -169,6 +169,25 @@ bool SceneManager::addTransformNode(unsigned int parentId, unsigned int& assigne
 	return false;
 }
 
+bool SceneManager::addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp) {
+	Node* node = findNodeRecerence(parentId);
+	Group* parentGroup = dynamic_cast<Group*>(node);
+	if (parentGroup != 0) {
+		GeometricNode::GeometricNodePtr newGeometricNode(new GeometricNode());
+		newGeometricNode->setId(idGenerator->getNextValidId());
+		newGeometricNode->setAttributes(attributes);
+		newGeometricNode->setShape(shape);
+		newGeometricNode->setTimeStamp(timeStamp);
+		parentGroup->addChild(newGeometricNode);
+		assignedId = newGeometricNode->getId();
+		idLookUpTable.insert(std::make_pair(newGeometricNode->getId(), newGeometricNode.get()));
+		return true;
+	}
+	LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new geometric node as a child of it.";
+	return false;
+}
+
+
 bool SceneManager::setNodeAttributes(unsigned int id, vector<Attribute> newAttributes) {
 	Node* node = findNodeRecerence(id);
 	if (node != 0) {
@@ -178,11 +197,23 @@ bool SceneManager::setNodeAttributes(unsigned int id, vector<Attribute> newAttri
 	return false;
 }
 
+bool SceneManager::addParent(unsigned int id, unsigned int parentId) {
+	Node* node = findNodeRecerence(parentId);
+	Node* parentNode = findNodeRecerence(parentId);
+	Group* parentGroup = dynamic_cast<Group*>(parentNode);
+	if (parentGroup != 0 && node != 0) {
+//		parentGroup->addChild(node);// TODO shared ref.
+		return true;
+	}
+	LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new parent-child relation.";
+	return false;
+}
+
 
 Node* SceneManager::findNodeRecerence(unsigned int id) {
 	nodeIterator = idLookUpTable.find(id);
 	if (nodeIterator != idLookUpTable.end()) { //TODO multiple IDs?
-		assert (id == nodeIterator->second->getId()); // Otherwise something really went wrong wile maintaining IDs...
+		assert (id == nodeIterator->second->getId()); // Otherwise something really went wrong while maintaining IDs...
 		return nodeIterator->second;
 	}
 	LOG(WARNING) << "Scene graph does not contain a node with ID " << id;

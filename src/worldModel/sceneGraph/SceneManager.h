@@ -47,6 +47,7 @@
 #include "Node.h"
 #include "Transform.h"
 #include "GeometricNode.h"
+#include "Shape.h"
 #include <map>
 using std::map;
 
@@ -89,11 +90,11 @@ class SceneManager : public ISceneGraphQuery, public ISceneGraphUpdate {
     bool addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes);
     bool addGroup(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes);
     bool addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp);
-//    void addGeometricNode(unsigned int parentId, unsigned int* assignedId, Shape shape, vector<Attribute> attributes, TimeStamp timeStamp);
+    bool addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp);
     bool setNodeAttributes(unsigned int id, vector<Attribute> newAttributes);
 //    void setTransform(unsigned int id, BRICS_3D::IHomogeneousMatrix44* transformation, TimeStamp timeStamp);
 //    void deleteNode(unsigned int id);
-//    void addParent(unsigned int id, unsigned int parentId);
+    bool addParent(unsigned int id, unsigned int parentId);
 
   private:
 
