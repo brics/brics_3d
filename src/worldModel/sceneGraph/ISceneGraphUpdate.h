@@ -76,8 +76,6 @@ class ISceneGraphUpdate {
 
     /**
      * @brief Add a geometric node that contains 3D data to the robot scenegraph.
-     * 
-     * 
      */
     void addGeometricNode(unsigned int parentId, unsigned int* assignedId, Shape shape, vector<Attribute> attributes, TimeStamp timeStamp);
 
@@ -100,6 +98,8 @@ class ISceneGraphUpdate {
      * @brief Add a new parent-child relation between two nodes.
      */
     void addParent(unsigned int id, unsigned int parentId);
+
+    //void delete parent
 
 };
 

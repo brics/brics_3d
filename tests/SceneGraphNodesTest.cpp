@@ -1288,6 +1288,116 @@ void SceneGraphNodesTest::testIdGenerator(){
 	delete idGenerator;
 }
 
+void SceneGraphNodesTest::testSceneManager(){
+	/* Graph structure: (remember: nodes can only serve as are leaves)
+	 *                 root
+	 *                   |
+	 *        -----------+----------
+	 *        |          |         |
+	 *       tf1        group2    node3
+	 *        |          |
+	 *        +----  ----+
+	 *            |  |
+	 *            geode4
+	 */
+
+	/* will be assigned later */
+	unsigned int rootId = 0;
+	unsigned int tf1Id = 0;
+	unsigned int group2Id = 0;
+	unsigned int node3Id = 0;
+	unsigned int geode4Id = 0;
+	unsigned const int invalidId = 100000000;
+
+	SceneManager scene;
+	vector<Attribute> tmpAttributes;
+	vector<unsigned int> resultParentIds;
+	vector<unsigned int> resultChildIds;
+
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform123(new HomogeneousMatrix44(1,0,0,  	//Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             1,2,3)); 						//Translation coefficients
+	TimeStamp dummyTime(20);
+
+	/* test root */
+	CPPUNIT_ASSERT_EQUAL(1u, scene.getRootId()); //assumption: uses SimpleIdGenerator
+	rootId = scene.getRootId();
+
+	resultParentIds.clear();
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultParentIds.size()) );
+	CPPUNIT_ASSERT(scene.getNodeParents(scene.getRootId(), resultParentIds));
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultParentIds.size()) );
+	CPPUNIT_ASSERT(!scene.getNodeParents(invalidId, resultParentIds));
+
+	tmpAttributes.clear();
+	CPPUNIT_ASSERT(scene.getNodeAttributes(rootId, tmpAttributes));
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(tmpAttributes.size()));
+	CPPUNIT_ASSERT(!scene.getNodeAttributes(invalidId, tmpAttributes));
+
+	tmpAttributes.clear();
+	tmpAttributes.push_back(Attribute("name","root"));
+	CPPUNIT_ASSERT(scene.setNodeAttributes(rootId, tmpAttributes));
+
+	tmpAttributes.clear();
+	CPPUNIT_ASSERT(scene.getNodeAttributes(rootId, tmpAttributes));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(tmpAttributes.size()));
+	CPPUNIT_ASSERT(tmpAttributes[0] == Attribute("name","root"));
+	CPPUNIT_ASSERT(!scene.setNodeAttributes(invalidId, tmpAttributes));
+
+	resultChildIds.clear();
+	CPPUNIT_ASSERT(scene.getGroupChildren(rootId, resultChildIds));
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultChildIds.size()));
+	CPPUNIT_ASSERT(!scene.getGroupChildren(invalidId, resultChildIds));
+
+
+	/* tf1Id */
+	tmpAttributes.clear();
+	tmpAttributes.push_back(Attribute("name","tf"));
+	CPPUNIT_ASSERT(tf1Id == 0);
+	CPPUNIT_ASSERT(scene.addTransformNode(rootId, tf1Id, tmpAttributes, transform123, dummyTime));
+	CPPUNIT_ASSERT(tf1Id != 0);
+	CPPUNIT_ASSERT(!scene.addTransformNode(invalidId, tf1Id, tmpAttributes, transform123, dummyTime));
+
+	resultParentIds.clear();
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultParentIds.size()) );
+	CPPUNIT_ASSERT(scene.getNodeParents(tf1Id, resultParentIds));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultParentIds.size()));
+	CPPUNIT_ASSERT_EQUAL(rootId, static_cast<unsigned int>(resultParentIds[0]));
+	CPPUNIT_ASSERT(!scene.getNodeParents(invalidId, resultParentIds));
+
+	resultChildIds.clear();
+	CPPUNIT_ASSERT(scene.getGroupChildren(rootId, resultChildIds));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultChildIds.size()));
+	CPPUNIT_ASSERT_EQUAL(tf1Id, static_cast<unsigned int>(resultChildIds[0]));
+
+
+	/* group2Id */
+	tmpAttributes.clear();
+	CPPUNIT_ASSERT(group2Id == 0);
+	CPPUNIT_ASSERT(scene.addGroup(rootId, group2Id, tmpAttributes));
+	CPPUNIT_ASSERT(group2Id != 0);
+
+	unsigned int tmpId = group2Id;
+	resultParentIds.clear();
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultParentIds.size()) );
+	CPPUNIT_ASSERT(scene.getNodeParents(group2Id, resultParentIds));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultParentIds.size()));
+	CPPUNIT_ASSERT_EQUAL(rootId, static_cast<unsigned int>(resultParentIds[0]));
+	CPPUNIT_ASSERT(!scene.addGroup(invalidId, group2Id, tmpAttributes));
+	CPPUNIT_ASSERT_EQUAL(tmpId, group2Id); // check if there is a side effect
+
+	resultChildIds.clear();
+	CPPUNIT_ASSERT(scene.getGroupChildren(rootId, resultChildIds));
+	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(resultChildIds.size()));
+	CPPUNIT_ASSERT_EQUAL(tf1Id, static_cast<unsigned int>(resultChildIds[0]));
+	CPPUNIT_ASSERT_EQUAL(group2Id, static_cast<unsigned int>(resultChildIds[1]));
+
+	/* node3Id */
+
+	/*geode4Id */
+
+}
 
 }  // namespace unitTests
 

@@ -70,7 +70,9 @@ class ISceneGraphQuery {
     /**
      * @brief Get all the parent IDs of a certain node.
      */
-    void getNodeParents(unsigned int id, vector <unsigned int>* parentIds);
+    virtual bool getNodeParents(unsigned int id, vector<unsigned int>& parentIds) = 0;
+
+//    void getGroupChildren
 
     /**
      * @brief Get the transform of a TransformNode at a certain time.

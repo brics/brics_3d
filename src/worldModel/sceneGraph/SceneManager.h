@@ -40,43 +40,79 @@
 #ifndef SCENEMANAGER_H
 #define SCENEMANAGER_H
 
-#include "Group.h"
-#include "Node.h"
-#include <map>
-using std::map;
 #include "ISceneGraphQuery.h"
 #include "ISceneGraphUpdate.h"
+#include "IIdGenerator.h"
+#include "Group.h"
+#include "Node.h"
+#include "Transform.h"
+#include "GeometricNode.h"
+#include <map>
+using std::map;
 
-namespace BRICS_3D { namespace RSG { class Attribute; }  } 
-namespace BRICS_3D { class WorldModel; } 
-namespace BRICS_3D { namespace RSG { class IIdGenerator; }  } 
+
+//namespace BRICS_3D { namespace RSG { class Attribute; }  }
+//namespace BRICS_3D { class WorldModel; }
+//namespace BRICS_3D { namespace RSG { class IIdGenerator; }  }
 
 namespace BRICS_3D {
 
 namespace RSG {
 
 /**
- * @brief The central handle to create and maintain a robot scenegraph. It holds the root node of the scene graph. 
+ * @brief The central handle to create and maintain a robot scenegraph. It holds the root node of the scene graph.
+ *
+ * The SceneManager takes care (maintains consistency) of mapping between IDs and internal pointers.
+ * The implemented interfaces allow to create and maintain a scengraph bases on the node IDs only.
+ *
  */
 class SceneManager : public ISceneGraphQuery, public ISceneGraphUpdate {
-  private:
-    Group rootNode;
-
 
   public:
+	SceneManager();
+
+    SceneManager(IIdGenerator* idGenerator);
+
+    virtual ~SceneManager();
+
+    unsigned int getRootId();
+
+    /* Implemented query interfaces */
+//    void getNodes(vector<Attribute> attributes, vector<unsigned int>* ids);
+    bool getNodeAttributes(unsigned int id, vector<Attribute>& attributes);
+    bool getNodeParents(unsigned int id, vector<unsigned int>& parentIds);
+    bool getGroupChildren(unsigned int id, vector<unsigned int>& childIds);
+//    void getTransform(unsigned int id, TimeStamp timeStamp, BRICS_3D::IHomogeneousMatrix44* transform);
+//    void getGeometry(unsigned int id, Shape* shape, TimeStamp* timeStamp);
+
+    /* Implemented update interfaces */
+    bool addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes);
+    bool addGroup(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes);
+    bool addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp);
+//    void addGeometricNode(unsigned int parentId, unsigned int* assignedId, Shape shape, vector<Attribute> attributes, TimeStamp timeStamp);
+    bool setNodeAttributes(unsigned int id, vector<Attribute> newAttributes);
+//    void setTransform(unsigned int id, BRICS_3D::IHomogeneousMatrix44* transformation, TimeStamp timeStamp);
+//    void deleteNode(unsigned int id);
+//    void addParent(unsigned int id, unsigned int parentId);
+
+  private:
+
+    void initialize();
+
+    Node* findNodeRecerence(unsigned int id);
+
     void findSceneNodes(const Attribute & attributes, Node & nodeReferences);
 
 
-  private:
-    map<unsigned int, Node*> identifierLookUpTable;
+    Group::GroupPtr rootNode; // root of all evil...
+
+    map<unsigned int, Node*> idLookUpTable;
+    map<unsigned int, Node*>::const_iterator nodeIterator;
+
+    IIdGenerator* idGenerator;
 
 
-  public:
-    Node findNodeRecerence(unsigned int identifier);
 
-    SceneManager();
-
-    virtual ~SceneManager();
 
 };
 
