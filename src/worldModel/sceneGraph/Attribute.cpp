@@ -108,7 +108,7 @@ ostream& operator<<(ostream &outStream, const Attribute &attribute) {
 	return outStream;
 }
 
-extern bool attributeListContainsAttribute(Attribute queryAttribute, vector<Attribute>& attributeList) {
+extern bool attributeListContainsAttribute(vector<Attribute> attributeList, Attribute queryAttribute) {
 	for (unsigned int i = 0; i < static_cast<unsigned int>(attributeList.size()); ++i) {
 		if (attributeList[i] == queryAttribute) {
 			return true;
@@ -116,6 +116,7 @@ extern bool attributeListContainsAttribute(Attribute queryAttribute, vector<Attr
 	}
 	return false;
 }
+
 
 } // namespace BRICS_3D::RSG
 

@@ -86,7 +86,7 @@ class Attribute {
 
 };
 
-extern bool attributeListContainsAttribute(Attribute queryAttribute, vector<Attribute>& attributeList);
+extern bool attributeListContainsAttribute(vector<Attribute> attributeList, Attribute queryAttribute);
 
 } // namespace BRICS_3D::RSG
 

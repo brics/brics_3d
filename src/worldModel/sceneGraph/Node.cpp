@@ -55,7 +55,7 @@ Node::~Node() {
 
 }
 
-vector<Attribute> Node::getAttributes() const
+vector<Attribute> Node::getAttributes()
 {
     return attributes;
 }

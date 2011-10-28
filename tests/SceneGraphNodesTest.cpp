@@ -1118,6 +1118,13 @@ void SceneGraphNodesTest::testAttributeFinder() {
 	CPPUNIT_ASSERT(testAttribute1 == Attribute("name","test1"));
 
 	vector<Attribute> tmpAttributes;
+	tmpAttributes.push_back(Attribute("taskType","targetArea"));
+	tmpAttributes.push_back(Attribute("name","Goal Area"));
+
+	CPPUNIT_ASSERT((attributeListContainsAttribute(tmpAttributes, Attribute("name","Goal Area"))) == true );
+	CPPUNIT_ASSERT((attributeListContainsAttribute(tmpAttributes, Attribute("taskType","targetArea"))) == true );
+	CPPUNIT_ASSERT((attributeListContainsAttribute(tmpAttributes, Attribute("name123","Goal Area"))) == false );
+
 
 	Group::GroupPtr root(new Group());
 	root->setId(rootId);
@@ -1152,12 +1159,12 @@ void SceneGraphNodesTest::testAttributeFinder() {
 	GeometricNode::GeometricNodePtr geode4(new GeometricNode());
 	geode4->setId(geode4Id);
 	tmpAttributes.clear();
-	tmpAttributes.push_back(Attribute("taskType","targetArea"));
 	tmpAttributes.push_back(Attribute("shapeType","Cylinder"));
+	tmpAttributes.push_back(Attribute("taskType","targetArea"));
 	geode4->setAttributes(tmpAttributes);
 	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(geode4->getAttributes().size()));
-	CPPUNIT_ASSERT(geode4->getAttributes()[0] == Attribute("taskType","targetArea"));
-	CPPUNIT_ASSERT(geode4->getAttributes()[1] == Attribute("shapeType","Cylinder"));
+	CPPUNIT_ASSERT(geode4->getAttributes()[0] == Attribute("shapeType","Cylinder"));
+	CPPUNIT_ASSERT(geode4->getAttributes()[1] == Attribute("taskType","targetArea"));
 
 	CPPUNIT_ASSERT_EQUAL(rootId, root->getId()); // preconditions:
 	CPPUNIT_ASSERT_EQUAL(tf1Id, tf1->getId());
@@ -1182,7 +1189,85 @@ void SceneGraphNodesTest::testAttributeFinder() {
 	attributeFinder->setQueryAttributes(tmpAttributes);
 	root->accept(attributeFinder);
 	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(attributeFinder->getMatchingNodes().size()));
+	CPPUNIT_ASSERT((*attributeFinder->getMatchingNodes()[0]).getAttributes()[0] == Attribute("name", "root"));
+	CPPUNIT_ASSERT_EQUAL(rootId, (*attributeFinder->getMatchingNodes()[0]).getId());
+
+	attributeFinder->reset();
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(attributeFinder->getMatchingNodes().size()));
+	tmpAttributes.clear();
+	tmpAttributes.push_back(Attribute("frameID","base_link"));
+	attributeFinder->setQueryAttributes(tmpAttributes);
+	root->accept(attributeFinder);
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(attributeFinder->getMatchingNodes().size()));
+	CPPUNIT_ASSERT((*attributeFinder->getMatchingNodes()[0]).getAttributes()[0] == Attribute("frameID","base_link"));
+	CPPUNIT_ASSERT_EQUAL(tf1Id, (*attributeFinder->getMatchingNodes()[0]).getId());
+
+	attributeFinder->reset();
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(attributeFinder->getMatchingNodes().size()));
+	tmpAttributes.clear();
+	tmpAttributes.push_back(Attribute("taskType","targetArea"));
+	attributeFinder->setQueryAttributes(tmpAttributes);
+	root->accept(attributeFinder);
+	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(attributeFinder->getMatchingNodes().size()));
+	CPPUNIT_ASSERT((*attributeFinder->getMatchingNodes()[0]).getAttributes()[1] == Attribute("taskType","targetArea"));
+	CPPUNIT_ASSERT_EQUAL(geode4Id, (*attributeFinder->getMatchingNodes()[0]).getId());
+	CPPUNIT_ASSERT((*attributeFinder->getMatchingNodes()[1]).getAttributes()[0] == Attribute("taskType","targetArea"));
+	CPPUNIT_ASSERT_EQUAL(group2Id, (*attributeFinder->getMatchingNodes()[1]).getId());
+
+	attributeFinder->reset();
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(attributeFinder->getMatchingNodes().size()));
+	tmpAttributes.clear();
+	tmpAttributes.push_back(Attribute("name","Goal Area"));
+	attributeFinder->setQueryAttributes(tmpAttributes);
+	root->accept(attributeFinder);
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(attributeFinder->getMatchingNodes().size()));
+	CPPUNIT_ASSERT((*attributeFinder->getMatchingNodes()[0]).getAttributes()[1] == Attribute("name","Goal Area"));
+	CPPUNIT_ASSERT_EQUAL(group2Id, (*attributeFinder->getMatchingNodes()[0]).getId());
+
+	attributeFinder->reset();
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(attributeFinder->getMatchingNodes().size()));
+	tmpAttributes.clear();
+	tmpAttributes.push_back(Attribute("shapeType","Cylinder"));
+	attributeFinder->setQueryAttributes(tmpAttributes);
+	root->accept(attributeFinder);
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(attributeFinder->getMatchingNodes().size()));
 	CPPUNIT_ASSERT((*attributeFinder->getMatchingNodes()[0]).getAttributes()[0] == Attribute("shapeType","Cylinder"));
+	CPPUNIT_ASSERT_EQUAL(geode4Id, (*attributeFinder->getMatchingNodes()[0]).getId());
+
+	attributeFinder->reset();
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(attributeFinder->getMatchingNodes().size()));
+	tmpAttributes.clear();
+	tmpAttributes.push_back(Attribute("justSomething","Cylinder"));
+	attributeFinder->setQueryAttributes(tmpAttributes);
+	root->accept(attributeFinder);
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(attributeFinder->getMatchingNodes().size()));
+
+
+	/* test AND */
+	attributeFinder->reset();
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(attributeFinder->getMatchingNodes().size()));
+	tmpAttributes.clear();
+	tmpAttributes.push_back(Attribute("taskType","targetArea"));
+	tmpAttributes.push_back(Attribute("name","Goal Area"));
+	attributeFinder->setQueryAttributes(tmpAttributes);
+	root->accept(attributeFinder);
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(attributeFinder->getMatchingNodes().size()));
+	CPPUNIT_ASSERT((*attributeFinder->getMatchingNodes()[0]).getAttributes()[0] == Attribute("taskType","targetArea"));
+	CPPUNIT_ASSERT((*attributeFinder->getMatchingNodes()[0]).getAttributes()[1] == Attribute("name","Goal Area"));
+	CPPUNIT_ASSERT_EQUAL(group2Id, (*attributeFinder->getMatchingNodes()[0]).getId());
+
+
+	attributeFinder->reset();
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(attributeFinder->getMatchingNodes().size()));
+	tmpAttributes.clear();
+	tmpAttributes.push_back(Attribute("shapeType","Cylinder"));
+	tmpAttributes.push_back(Attribute("taskType","targetArea"));
+	attributeFinder->setQueryAttributes(tmpAttributes);
+	root->accept(attributeFinder);
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(attributeFinder->getMatchingNodes().size()));
+	CPPUNIT_ASSERT((*attributeFinder->getMatchingNodes()[0]).getAttributes()[0] == Attribute("shapeType","Cylinder"));
+	CPPUNIT_ASSERT((*attributeFinder->getMatchingNodes()[0]).getAttributes()[1] == Attribute("taskType","targetArea"));
+	CPPUNIT_ASSERT_EQUAL(geode4Id, (*attributeFinder->getMatchingNodes()[0]).getId());
 
 	delete attributeFinder;
 

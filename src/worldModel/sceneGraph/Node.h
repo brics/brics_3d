@@ -72,7 +72,7 @@ public:
 
 	virtual ~Node();
 
-	vector<Attribute> getAttributes() const;
+	vector<Attribute> getAttributes();
 	unsigned int getId() const;
 
 	void setAttributes(vector<Attribute> attributes);
