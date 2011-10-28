@@ -9,7 +9,7 @@
 #define SIMPLEPOINTCLOUDGENERATORCUBE_H_
 
 #include "ISimplePointCloudGenerator.h"
-
+#include "iostream"
 #include "core/PointCloud3D.h"
 
 namespace BRICS_3D {

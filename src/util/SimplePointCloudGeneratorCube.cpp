@@ -85,11 +85,13 @@ SimplePointCloudGeneratorCube::~SimplePointCloudGeneratorCube() {
 
 void SimplePointCloudGeneratorCube::generatePointCloud(BRICS_3D::PointCloud3D *generatedPointCloud){
 
+	std::cout<< "Generating the cloud" << std::endl;
+
 	double incr = (this->cubeSideLength)/ ((double)(this->pointsOnEachSide));
 	float xincr, yincr, zincr;
 	BRICS_3D::Point3D tempPoint3D;
 
-	generatedPointCloud->getPointCloud()->clear();
+//	generatedPointCloud->getPointCloud()->clear();
 
     origin[0]= origin[0] -cubeSideLength/2.0;
     origin[1]= origin[1] -cubeSideLength/2.0;
@@ -109,7 +111,7 @@ void SimplePointCloudGeneratorCube::generatePointCloud(BRICS_3D::PointCloud3D *g
 					tempPoint3D.setX(xincr);
 					tempPoint3D.setY(yincr);
 					tempPoint3D.setZ(origin[2]+cubeSideLength);
-					generatedPointCloud->addPoint(tempPoint3D);
+//					generatedPointCloud->addPoint(tempPoint3D);
 					yincr += incr;
 				}
 				xincr += incr;
@@ -125,7 +127,7 @@ void SimplePointCloudGeneratorCube::generatePointCloud(BRICS_3D::PointCloud3D *g
 					tempPoint3D.setX(origin[0]);
 					tempPoint3D.setY(yincr);
 					tempPoint3D.setZ(zincr);
-					generatedPointCloud->addPoint(tempPoint3D);
+//					generatedPointCloud->addPoint(tempPoint3D);
 					zincr += incr;
 				}
 				yincr += incr;
@@ -141,7 +143,7 @@ void SimplePointCloudGeneratorCube::generatePointCloud(BRICS_3D::PointCloud3D *g
 					tempPoint3D.setX(xincr);
 					tempPoint3D.setY(origin[1]);
 					tempPoint3D.setZ(zincr);
-					generatedPointCloud->addPoint(tempPoint3D);
+//					generatedPointCloud->addPoint(tempPoint3D);
 					zincr += incr;
 				}
 				xincr += incr;
