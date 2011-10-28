@@ -1274,6 +1274,21 @@ void SceneGraphNodesTest::testAttributeFinder() {
 
 }
 
+void SceneGraphNodesTest::testIdGenerator(){
+	IIdGenerator* idGenerator = new SimpleIdGenerator();
+
+	CPPUNIT_ASSERT_EQUAL(1u, idGenerator->getRootId());
+	CPPUNIT_ASSERT_EQUAL(2u, idGenerator->getNextValidId());
+	CPPUNIT_ASSERT_EQUAL(1u, idGenerator->getRootId());
+	CPPUNIT_ASSERT_EQUAL(3u, idGenerator->getNextValidId());
+	CPPUNIT_ASSERT_EQUAL(4u, idGenerator->getNextValidId());
+	CPPUNIT_ASSERT_EQUAL(5u, idGenerator->getNextValidId());
+	CPPUNIT_ASSERT_EQUAL(6u, idGenerator->getNextValidId());
+
+	delete idGenerator;
+}
+
+
 }  // namespace unitTests
 
 /* EOF */

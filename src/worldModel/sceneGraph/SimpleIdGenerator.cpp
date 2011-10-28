@@ -43,6 +43,22 @@ namespace BRICS_3D {
 
 namespace RSG {
 
+SimpleIdGenerator::SimpleIdGenerator() {
+	rootId = 1u; //just an arbitrary choice here
+	runningNumber = rootId + 1;
+}
+
+SimpleIdGenerator::~SimpleIdGenerator(){
+
+}
+
+unsigned int SimpleIdGenerator::getNextValidId(){
+	return runningNumber++;
+}
+
+unsigned int SimpleIdGenerator::getRootId(){
+	return rootId;
+}
 
 } // namespace BRICS_3D::RSG
 

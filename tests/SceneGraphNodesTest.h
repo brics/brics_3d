@@ -22,6 +22,7 @@
 #include "worldModel/sceneGraph/INodeVisitor.h"
 #include "worldModel/sceneGraph/PathCollector.h"
 #include "worldModel/sceneGraph/AttributeFinder.h"
+#include "worldModel/sceneGraph/SimpleIdGenerator.h"
 
 namespace unitTests {
 
@@ -71,6 +72,7 @@ class SceneGraphNodesTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testTransformVisitor );
 	CPPUNIT_TEST( testGlobalTransformCalculation );
 	CPPUNIT_TEST( testAttributeFinder );
+	CPPUNIT_TEST( testIdGenerator );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -88,6 +90,7 @@ public:
 	void testTransformVisitor();
 	void testGlobalTransformCalculation();
 	void testAttributeFinder();
+	void testIdGenerator();
 
 private:
 	  /// Maximum deviation for equality check of double variables

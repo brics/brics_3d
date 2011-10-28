@@ -46,9 +46,21 @@ namespace BRICS_3D {
 
 namespace RSG {
 
+/**
+ * @brief Implementation for IIdGenerator based on a running number.
+ */
 class SimpleIdGenerator : public IIdGenerator {
-  private:
-    unsigned int runningNumber;
+
+public:
+	SimpleIdGenerator();
+	virtual ~SimpleIdGenerator();
+
+	unsigned int getNextValidId();
+	unsigned int getRootId();
+
+private:
+	unsigned int runningNumber;
+	unsigned int rootId;
 
 };
 
