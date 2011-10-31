@@ -74,7 +74,7 @@ void SceneManager::initialize() {
 	rootNode = Group::GroupPtr(new Group());
 	rootNode->setId(idGenerator->getRootId());
 	assert(rootNode->getId() == idGenerator->getRootId());
-	idLookUpTable.insert(std::make_pair(rootNode->getId(), rootNode.get()));
+	idLookUpTable.insert(std::make_pair(rootNode->getId(), rootNode));
 }
 
 unsigned int SceneManager::getRootId() {
@@ -83,7 +83,8 @@ unsigned int SceneManager::getRootId() {
 
 bool SceneManager::getNodeAttributes(unsigned int id, vector<Attribute>& attributes) {
 	attributes.clear();
-	Node* node = findNodeRecerence(id);
+	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
+	Node::NodePtr node = tmpNode.lock();
 	if (node != 0) {
 		if (node != 0) {
 			for (unsigned int i = 0; i < static_cast<unsigned int>(node->getAttributes().size()) ; ++i) {
@@ -97,7 +98,8 @@ bool SceneManager::getNodeAttributes(unsigned int id, vector<Attribute>& attribu
 
 bool SceneManager::getNodeParents(unsigned int id, vector<unsigned int>& parentIds) {
 	parentIds.clear();
-	Node* node = findNodeRecerence(id);
+	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
+	Node::NodePtr node = tmpNode.lock();
 	if (node != 0) {
 		for (unsigned int i = 0; i < node->getNumberOfParents(); ++i) {
 			parentIds.push_back(node->getParent(i)->getId());
@@ -108,8 +110,9 @@ bool SceneManager::getNodeParents(unsigned int id, vector<unsigned int>& parentI
 }
 
 bool SceneManager::getGroupChildren(unsigned int id, vector<unsigned int>& childIds) {
-	Node* node = findNodeRecerence(id);
-	Group* group = dynamic_cast<Group*>(node);
+	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
+	Node::NodePtr node = tmpNode.lock();
+	Group::GroupPtr group = boost::dynamic_pointer_cast<Group>(node);
 	if (group != 0) {
 		for (unsigned int i = 0; i < group->getNumberOfChildren(); ++i) {
 			childIds.push_back(group->getChild(i)->getId());
@@ -121,15 +124,16 @@ bool SceneManager::getGroupChildren(unsigned int id, vector<unsigned int>& child
 }
 
 bool SceneManager::addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes) {
-	Node* node = findNodeRecerence(parentId);
-	Group* parentGroup = dynamic_cast<Group*>(node);
+	Node::NodeWeakPtr tmpNode = findNodeRecerence(parentId);
+	Node::NodePtr node = tmpNode.lock();
+	Group::GroupPtr parentGroup = boost::dynamic_pointer_cast<Group>(node);
 	if (parentGroup != 0) {
 		Node::NodePtr newNode(new Node());
 		newNode->setId(idGenerator->getNextValidId());
 		newNode->setAttributes(attributes);
 		parentGroup->addChild(newNode);
 		assignedId = newNode->getId();
-		idLookUpTable.insert(std::make_pair(newNode->getId(), newNode.get()));
+		idLookUpTable.insert(std::make_pair(newNode->getId(), newNode));
 		return true;
 	}
 	LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new node as a child of it.";
@@ -137,15 +141,16 @@ bool SceneManager::addNode(unsigned int parentId, unsigned int& assignedId, vect
 }
 
 bool SceneManager::addGroup(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes) {
-	Node* node = findNodeRecerence(parentId);
-	Group* parentGroup = dynamic_cast<Group*>(node);
+	Node::NodeWeakPtr tmpNode = findNodeRecerence(parentId);
+	Node::NodePtr node = tmpNode.lock();
+	Group::GroupPtr parentGroup = boost::dynamic_pointer_cast<Group>(node);
 	if (parentGroup != 0) {
 		Group::GroupPtr newGroup(new Group());
 		newGroup->setId(idGenerator->getNextValidId());
 		newGroup->setAttributes(attributes);
 		parentGroup->addChild(newGroup);
 		assignedId = newGroup->getId();
-		idLookUpTable.insert(std::make_pair(newGroup->getId(), newGroup.get()));
+		idLookUpTable.insert(std::make_pair(newGroup->getId(), newGroup));
 		return true;
 	}
 	LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new group as a child of it.";
@@ -153,8 +158,10 @@ bool SceneManager::addGroup(unsigned int parentId, unsigned int& assignedId, vec
 }
 
 bool SceneManager::addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp) {
-	Node* node = findNodeRecerence(parentId);
-	Group* parentGroup = dynamic_cast<Group*>(node);
+	Node::NodeWeakPtr tmpNode = findNodeRecerence(parentId);
+	Node::NodePtr node = tmpNode.lock();
+	//	Group* parentGroup = dynamic_cast<Group*>(node);
+		Group::GroupPtr parentGroup = boost::dynamic_pointer_cast<Group>(node);
 	if (parentGroup != 0) {
 		RSG::Transform::TransformPtr newTransform(new Transform());
 		newTransform->setId(idGenerator->getNextValidId());
@@ -162,7 +169,7 @@ bool SceneManager::addTransformNode(unsigned int parentId, unsigned int& assigne
 		newTransform->insertTransform(transform, timeStamp);
 		parentGroup->addChild(newTransform);
 		assignedId = newTransform->getId();
-		idLookUpTable.insert(std::make_pair(newTransform->getId(), newTransform.get()));
+		idLookUpTable.insert(std::make_pair(newTransform->getId(), newTransform));
 		return true;
 	}
 	LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new transform as a child of it.";
@@ -170,8 +177,10 @@ bool SceneManager::addTransformNode(unsigned int parentId, unsigned int& assigne
 }
 
 bool SceneManager::addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp) {
-	Node* node = findNodeRecerence(parentId);
-	Group* parentGroup = dynamic_cast<Group*>(node);
+	Node::NodeWeakPtr tmpNode = findNodeRecerence(parentId);
+	Node::NodePtr node = tmpNode.lock();
+	//	Group* parentGroup = dynamic_cast<Group*>(node);
+	Group::GroupPtr parentGroup = boost::dynamic_pointer_cast<Group>(node);
 	if (parentGroup != 0) {
 		GeometricNode::GeometricNodePtr newGeometricNode(new GeometricNode());
 		newGeometricNode->setId(idGenerator->getNextValidId());
@@ -180,7 +189,7 @@ bool SceneManager::addGeometricNode(unsigned int parentId, unsigned int& assigne
 		newGeometricNode->setTimeStamp(timeStamp);
 		parentGroup->addChild(newGeometricNode);
 		assignedId = newGeometricNode->getId();
-		idLookUpTable.insert(std::make_pair(newGeometricNode->getId(), newGeometricNode.get()));
+		idLookUpTable.insert(std::make_pair(newGeometricNode->getId(), newGeometricNode));
 		return true;
 	}
 	LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new geometric node as a child of it.";
@@ -189,7 +198,9 @@ bool SceneManager::addGeometricNode(unsigned int parentId, unsigned int& assigne
 
 
 bool SceneManager::setNodeAttributes(unsigned int id, vector<Attribute> newAttributes) {
-	Node* node = findNodeRecerence(id);
+	//	Node* node = findNodeRecerence(id);
+	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
+	Node::NodePtr node = tmpNode.lock();
 	if (node != 0) {
 		node->setAttributes(newAttributes);
 		return true;
@@ -198,11 +209,14 @@ bool SceneManager::setNodeAttributes(unsigned int id, vector<Attribute> newAttri
 }
 
 bool SceneManager::addParent(unsigned int id, unsigned int parentId) {
-	Node* node = findNodeRecerence(parentId);
-	Node* parentNode = findNodeRecerence(parentId);
-	Group* parentGroup = dynamic_cast<Group*>(parentNode);
+	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
+	Node::NodePtr node = tmpNode.lock();
+	Node::NodeWeakPtr tmpParentNode = findNodeRecerence(parentId);
+	Node::NodePtr parentNode = tmpParentNode.lock();
+	Group::GroupPtr parentGroup = boost::dynamic_pointer_cast<Group>(parentNode);
+
 	if (parentGroup != 0 && node != 0) {
-//		parentGroup->addChild(node);// TODO shared ref.
+		parentGroup->addChild(node);// TODO shared ref.
 		return true;
 	}
 	LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new parent-child relation.";
@@ -210,16 +224,19 @@ bool SceneManager::addParent(unsigned int id, unsigned int parentId) {
 }
 
 
-Node* SceneManager::findNodeRecerence(unsigned int id) {
+Node::NodeWeakPtr SceneManager::findNodeRecerence(unsigned int id) {
 	nodeIterator = idLookUpTable.find(id);
 	if (nodeIterator != idLookUpTable.end()) { //TODO multiple IDs?
-		assert (id == nodeIterator->second->getId()); // Otherwise something really went wrong while maintaining IDs...
-		return nodeIterator->second;
+		Node::NodePtr tmpNodeHandle = nodeIterator->second.lock();
+		if(tmpNodeHandle !=0) {
+			assert (id == tmpNodeHandle->getId()); // Otherwise something really went wrong while maintaining IDs...
+			return nodeIterator->second;
+		}
+		LOG(WARNING) << "ID " << id << " seems to be orphaned. Possibly its node has been delete earlier.";
 	}
 	LOG(WARNING) << "Scene graph does not contain a node with ID " << id;
-	return 0;
+	return Node::NodeWeakPtr(); // should be kind of null...
 }
-
 
 } // namespace BRICS_3D::RSG
 

@@ -48,7 +48,9 @@
 #include "Transform.h"
 #include "GeometricNode.h"
 #include "Shape.h"
+
 #include <map>
+#include <boost/weak_ptr.hpp>
 using std::map;
 
 
@@ -100,16 +102,17 @@ class SceneManager : public ISceneGraphQuery, public ISceneGraphUpdate {
 
     void initialize();
 
-    Node* findNodeRecerence(unsigned int id);
+    Node::NodeWeakPtr findNodeRecerence(unsigned int id);
 
     void findSceneNodes(const Attribute & attributes, Node & nodeReferences);
 
 
     Group::GroupPtr rootNode; // root of all evil...
 
-    map<unsigned int, Node*> idLookUpTable;
-    map<unsigned int, Node*>::const_iterator nodeIterator;
+    map<unsigned int, Node::NodeWeakPtr > idLookUpTable;
+    map<unsigned int, Node::NodeWeakPtr >::const_iterator nodeIterator;
 
+    boost::weak_ptr<Node> testPtr;
     IIdGenerator* idGenerator;
 
 

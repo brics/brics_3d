@@ -316,7 +316,7 @@ void SceneGraphNodesTest::testOwnership() {
 	 * duration of the test...
 	 */
 	Group::GroupPtr root(new Group());
-	boost::weak_ptr<Group> testWeakPtr();
+	boost::weak_ptr<Group> testWeakPtr;
 
 	unsigned const int rootId = 0;
 	unsigned const int group1Id = 1;
@@ -337,11 +337,13 @@ void SceneGraphNodesTest::testOwnership() {
 		group2->addChild(group3);
 
 		Group::GroupPtr test(new Group());
-//		testWeakPtr = test;
-//		CPPUNIT_ASSERT(testWeakPtr.lock() != 0);
+		testWeakPtr = test;
+//		boost::weak_ptr<Group> tmptWeakPtr(test);
+//		testWeakPtr = tmptWeakPtr;
+		CPPUNIT_ASSERT(testWeakPtr.lock() != 0);
 
 	} // let the local shared pointer go out of scope...
-//	CPPUNIT_ASSERT(testWeakPtr.lock() == 0);
+	CPPUNIT_ASSERT(testWeakPtr.lock() == 0);
 
 	CPPUNIT_ASSERT_EQUAL(2u, root->getNumberOfChildren());
 	CPPUNIT_ASSERT_EQUAL(2u, boost::dynamic_pointer_cast<Group>(root->getChild(0))->getChild(0)->getNumberOfParents());
@@ -1451,9 +1453,11 @@ void SceneGraphNodesTest::testSceneManager(){
 	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultChildIds.size()));
 	CPPUNIT_ASSERT_EQUAL(geode4Id, static_cast<unsigned int>(resultChildIds[0]));
 	resultChildIds.clear();
-	CPPUNIT_ASSERT(scene.getGroupChildren(node3Id, resultChildIds));
+	CPPUNIT_ASSERT(scene.getGroupChildren(group2Id, resultChildIds));
 	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultChildIds.size()));
 	CPPUNIT_ASSERT_EQUAL(geode4Id, static_cast<unsigned int>(resultChildIds[0]));
+
+	CPPUNIT_ASSERT(!scene.getGroupChildren(node3Id, resultChildIds));
 
 
 }

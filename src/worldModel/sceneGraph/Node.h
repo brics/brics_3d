@@ -42,6 +42,7 @@
 
 #include <vector>
 #include <boost/shared_ptr.hpp>
+#include <boost/weak_ptr.hpp>
 #include "Attribute.h"
 #include "INodeVisitor.h"
 
@@ -69,6 +70,9 @@ public:
 
 	typedef boost::shared_ptr<Node> NodePtr;
 	typedef boost::shared_ptr<Node const> NodeConstPtr;
+
+	typedef boost::weak_ptr<Node> NodeWeakPtr;
+	typedef boost::weak_ptr<Node const> NodeWeakConstPtr;
 
 //	typedef vector< Node::NodePtr > NodePath;
 	typedef vector< Node* > NodePath;
