@@ -145,6 +145,7 @@ SET (UTIL_LIBRARY_SOURCES
 	./util/IpaDatasetLoader
 	./util/Timer
 	./util/Benchmark
+	./util/SimplePointCloudGeneratorCube
 )	
 
 SET (WORLD_MODEL_LIBRARY_SOURCES
