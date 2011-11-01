@@ -92,10 +92,10 @@ void SimplePointCloudGeneratorCube::generatePointCloud(BRICS_3D::PointCloud3D *g
 	BRICS_3D::Point3D tempPoint3D;
 
 //	generatedPointCloud->getPointCloud()->clear();
-
-    origin[0]= origin[0] -cubeSideLength/2.0;
-    origin[1]= origin[1] -cubeSideLength/2.0;
-    origin[2]= origin[2] -cubeSideLength/2.0;
+	double orgn[3];
+    orgn[0]= this->origin[0]- this->cubeSideLength/2.0;
+    orgn[1]= this->origin[0]- this->cubeSideLength/2.0;
+    orgn[2]= this->origin[0]-this->cubeSideLength/2.0;
 
 
 
@@ -104,14 +104,14 @@ void SimplePointCloudGeneratorCube::generatePointCloud(BRICS_3D::PointCloud3D *g
 
 		case 0:
 			//xy-plane
-			xincr = origin[0];//+maxWidthCube/cloudWidthEachFace;
+			xincr = orgn[0];//+maxWidthCube/cloudWidthEachFace;
 			for (int i = 0; i < pointsOnEachSide; i++){
-				yincr = origin[1];//+maxWidthCube/cloudWidthEachFace;
+				yincr = orgn[1];//+maxWidthCube/cloudWidthEachFace;
 				for (int j = 0; j < pointsOnEachSide; j++) {
 					tempPoint3D.setX(xincr);
 					tempPoint3D.setY(yincr);
-					tempPoint3D.setZ(origin[2]+cubeSideLength);
-//					generatedPointCloud->addPoint(tempPoint3D);
+					tempPoint3D.setZ(orgn[2]+cubeSideLength);
+					generatedPointCloud->addPoint(tempPoint3D);
 					yincr += incr;
 				}
 				xincr += incr;
@@ -120,14 +120,14 @@ void SimplePointCloudGeneratorCube::generatePointCloud(BRICS_3D::PointCloud3D *g
 
 		case 1:
 			//yz-plane
-			yincr = origin[1];//+maxWidthCube/cloudWidthEachFace;
+			yincr = orgn[1];//+maxWidthCube/cloudWidthEachFace;
 			for (int i = 0; i < pointsOnEachSide; i++){
-				zincr = origin[2];//+maxWidthCube/cloudWidthEachFace;
+				zincr = orgn[2];//+maxWidthCube/cloudWidthEachFace;
 				for (int j = 0; j < pointsOnEachSide; j++) {
-					tempPoint3D.setX(origin[0]);
+					tempPoint3D.setX(orgn[0]);
 					tempPoint3D.setY(yincr);
 					tempPoint3D.setZ(zincr);
-//					generatedPointCloud->addPoint(tempPoint3D);
+					generatedPointCloud->addPoint(tempPoint3D);
 					zincr += incr;
 				}
 				yincr += incr;
@@ -136,14 +136,14 @@ void SimplePointCloudGeneratorCube::generatePointCloud(BRICS_3D::PointCloud3D *g
 
 		case 2:
 			//xz-plane
-			xincr = origin[0];//+maxWidthCube/cloudWidthEachFace;
+			xincr = orgn[0];//+maxWidthCube/cloudWidthEachFace;
 			for (int i = 0; i < pointsOnEachSide; i++){
-				zincr = origin[2];//+maxWidthCube/cloudWidthEachFace;
+				zincr = orgn[2];//+maxWidthCube/cloudWidthEachFace;
 				for (int j = 0; j < pointsOnEachSide; j++) {
 					tempPoint3D.setX(xincr);
-					tempPoint3D.setY(origin[1]);
+					tempPoint3D.setY(orgn[1]);
 					tempPoint3D.setZ(zincr);
-//					generatedPointCloud->addPoint(tempPoint3D);
+					generatedPointCloud->addPoint(tempPoint3D);
 					zincr += incr;
 				}
 				xincr += incr;
