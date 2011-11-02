@@ -1,11 +1,21 @@
-/*
- * @File: RegionBasedSACSegmentationUsingNormals.h
- *
- * @brief: Adapter class for initialization of sample consensus based segmentation method
- * which requires point normals
- * @Date: Apr 24, 2011
- * @Author: reon
- */
+/******************************************************************************
+* BRICS_3D - 3D Perception and Modeling Library
+* Copyright (c) 2011, GPS GmbH
+*
+* Author: Pinaki Sunil Banerjee
+*
+*
+* This software is published under a dual-license: GNU Lesser General Public
+* License LGPL 2.1 and Modified BSD license. The dual-license implies that
+* users of this code may choose which terms they prefer.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU Lesser General Public License LGPL and the BSD license for
+* more details.
+*
+******************************************************************************/
 
 #ifndef REGIONBASEDSACSEGMENTATIONUSINGNORMALS_H_
 #define REGIONBASEDSACSEGMENTATIONUSINGNORMALS_H_
@@ -20,6 +30,10 @@
 
 namespace BRICS_3D {
 
+/**
+ * @brief: Adapter class for initialization of sample consensus based segmentation method
+ * which requires point normals
+ */
 class RegionBasedSACSegmentationUsingNormals : public RegionBasedSACSegmentation{
 
 private:
