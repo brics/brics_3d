@@ -123,6 +123,31 @@ bool SceneManager::getGroupChildren(unsigned int id, vector<unsigned int>& child
 	return false;
 }
 
+bool SceneManager::getTransform(unsigned int id, TimeStamp timeStamp, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform) {
+	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
+	Node::NodePtr node = tmpNode.lock();
+	RSG::Transform::TransformPtr transformNode = boost::dynamic_pointer_cast<RSG::Transform>(node);
+	if (transformNode != 0) {
+		transform = transformNode->getTransform(timeStamp);
+		return true;
+	}
+	LOG(ERROR) << "Node with ID " << id << " is not a transform. Cannot return transform data.";
+	return false;
+}
+
+bool SceneManager::getGeometry(unsigned int id, Shape::ShapePtr& shape, TimeStamp& timeStamp) {
+	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
+	Node::NodePtr node = tmpNode.lock();
+	GeometricNode::GeometricNodePtr geometricNode = boost::dynamic_pointer_cast<GeometricNode>(node);
+	if (geometricNode != 0) {
+		shape = geometricNode->getShape();
+		timeStamp = geometricNode->getTimeStamp();
+		return true;
+	}
+	LOG(ERROR) << "Node with ID " << id << " is not a geometric node. Cannot return shape data.";
+	return false;
+}
+
 bool SceneManager::addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes) {
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(parentId);
 	Node::NodePtr node = tmpNode.lock();

@@ -85,8 +85,9 @@ class SceneManager : public ISceneGraphQuery, public ISceneGraphUpdate {
     bool getNodeAttributes(unsigned int id, vector<Attribute>& attributes);
     bool getNodeParents(unsigned int id, vector<unsigned int>& parentIds);
     bool getGroupChildren(unsigned int id, vector<unsigned int>& childIds);
-//    void getTransform(unsigned int id, TimeStamp timeStamp, BRICS_3D::IHomogeneousMatrix44* transform);
-//    void getGeometry(unsigned int id, Shape* shape, TimeStamp* timeStamp);
+    bool getTransform(unsigned int id, TimeStamp timeStamp, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform);
+//getGlobalTransformForNode
+    bool getGeometry(unsigned int id, Shape::ShapePtr& shape, TimeStamp& timeStamp);
 
     /* Implemented update interfaces */
     bool addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes);

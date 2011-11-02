@@ -1459,6 +1459,36 @@ void SceneGraphNodesTest::testSceneManager(){
 
 	CPPUNIT_ASSERT(!scene.getGroupChildren(node3Id, resultChildIds));
 
+	/* get transform data */
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr resultTransform;
+	CPPUNIT_ASSERT(scene.getTransform(tf1Id, dummyTime, resultTransform));
+
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, matrixPtr[12], maxTolerance); //check (just) translation
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, matrixPtr[14], maxTolerance);
+
+	CPPUNIT_ASSERT(!scene.getTransform(invalidId, dummyTime, resultTransform));
+	CPPUNIT_ASSERT(!scene.getTransform(rootId, dummyTime, resultTransform));
+	CPPUNIT_ASSERT(!scene.getTransform(group2Id, dummyTime, resultTransform));
+	CPPUNIT_ASSERT(!scene.getTransform(node3Id, dummyTime, resultTransform));
+	CPPUNIT_ASSERT(!scene.getTransform(geode4Id, dummyTime, resultTransform));
+
+	/* get geometry data */
+	Shape::ShapePtr resultShape;
+	CPPUNIT_ASSERT(scene.getGeometry(geode4Id, resultShape, dummyTime));
+	Cylinder::CylinderPtr resultCylinder;
+	resultCylinder = boost::dynamic_pointer_cast<Cylinder>(resultShape);
+	CPPUNIT_ASSERT(resultCylinder != 0);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.2, resultCylinder->getRadius(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.1, resultCylinder->getHeight(), maxTolerance);
+
+	CPPUNIT_ASSERT(!scene.getGeometry(invalidId, resultShape, dummyTime));
+	CPPUNIT_ASSERT(!scene.getGeometry(rootId, resultShape, dummyTime));
+	CPPUNIT_ASSERT(!scene.getGeometry(tf1Id, resultShape, dummyTime));
+	CPPUNIT_ASSERT(!scene.getGeometry(group2Id, resultShape, dummyTime));
+	CPPUNIT_ASSERT(!scene.getGeometry(node3Id, resultShape, dummyTime));
+
 
 }
 
