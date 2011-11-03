@@ -30,18 +30,18 @@ LINK_DIRECTORIES(
 
 # compile and link the executables 
 ADD_EXECUTABLE(depth_image_stream_test depth_image_stream_test)
-TARGET_LINK_LIBRARIES(depth_image_stream_test brics_3dpm_core brics_3dpm_algorithm brics_3dpm_util)
+TARGET_LINK_LIBRARIES(depth_image_stream_test brics3d_core brics3d_algorithm brics3d_util)
 
 ADD_EXECUTABLE(depth_image_transformation depth_image_transformation)
-TARGET_LINK_LIBRARIES(depth_image_transformation brics_3dpm_core brics_3dpm_algorithm brics_3dpm_util)
+TARGET_LINK_LIBRARIES(depth_image_transformation brics3d_core brics3d_algorithm brics3d_util)
 
 IF (USE_OSG)
 
     ADD_EXECUTABLE(BRICS_3D_Demo BRICS_3D_Demo)
     TARGET_LINK_LIBRARIES(BRICS_3D_Demo 
-        brics_3dpm_core 
-        brics_3dpm_algorithm
-        brics_3dpm_util
+        brics3d_core 
+        brics3d_algorithm
+        brics3d_util
     	${OSG_LIBRARY_DEBUG}
     	${OSGGA_LIBRARY_DEBUG}
     	${OSGVIEWER_LIBRARY_DEBUG}
@@ -49,9 +49,9 @@ IF (USE_OSG)
 
     ADD_EXECUTABLE(osg_point_plotter osg_point_plotter)
     TARGET_LINK_LIBRARIES(osg_point_plotter 
-        brics_3dpm_core 
-        brics_3dpm_algorithm
-        brics_3dpm_util
+        brics3d_core 
+        brics3d_algorithm
+        brics3d_util
     	${OSG_LIBRARY_DEBUG}
     	${OSGGA_LIBRARY_DEBUG}
     	${OSGVIEWER_LIBRARY_DEBUG}
@@ -59,9 +59,9 @@ IF (USE_OSG)
     
     ADD_EXECUTABLE(osg_triangle_plotter osg_triangle_plotter)
     TARGET_LINK_LIBRARIES(osg_triangle_plotter 
-        brics_3dpm_core 
-        brics_3dpm_algorithm
-        brics_3dpm_util
+        brics3d_core 
+        brics3d_algorithm
+        brics3d_util
     	${OSG_LIBRARY_DEBUG}
     	${OSGGA_LIBRARY_DEBUG}
     	${OSGVIEWER_LIBRARY_DEBUG}
@@ -69,9 +69,9 @@ IF (USE_OSG)
  
     ADD_EXECUTABLE(pointcloud_viewer pointcloud_viewer)
     TARGET_LINK_LIBRARIES(pointcloud_viewer
-        brics_3dpm_core 
-        brics_3dpm_algorithm
-        brics_3dpm_util
+        brics3d_core 
+        brics3d_algorithm
+        brics3d_util
     	${OSG_LIBRARY_DEBUG}
     	${OSGGA_LIBRARY_DEBUG}
     	${OSGVIEWER_LIBRARY_DEBUG}
@@ -79,9 +79,9 @@ IF (USE_OSG)
     	  	    	
     ADD_EXECUTABLE(osg_delaunay osg_delaunay)
     TARGET_LINK_LIBRARIES(osg_delaunay
-        brics_3dpm_core 
-        brics_3dpm_algorithm
-        brics_3dpm_util
+        brics3d_core 
+        brics3d_algorithm
+        brics3d_util
     	${OSG_LIBRARY_DEBUG}
     	${OSGGA_LIBRARY_DEBUG}
     	${OSGUTIL_LIBRARY_DEBUG}
@@ -90,9 +90,9 @@ IF (USE_OSG)
     
     ADD_EXECUTABLE(icp_test icp_test) 
     TARGET_LINK_LIBRARIES(icp_test
-        brics_3dpm_core 
-        brics_3dpm_algorithm
-        brics_3dpm_util
+        brics3d_core 
+        brics3d_algorithm
+        brics3d_util
     	${OSG_LIBRARY_DEBUG}
     	${OSGGA_LIBRARY_DEBUG}
     	${OSGVIEWER_LIBRARY_DEBUG}
@@ -100,9 +100,9 @@ IF (USE_OSG)
     
     ADD_EXECUTABLE(icp_benchmark icp_benchmark) 
     TARGET_LINK_LIBRARIES(icp_benchmark
-        brics_3dpm_core 
-        brics_3dpm_algorithm
-        brics_3dpm_util
+        brics3d_core 
+        brics3d_algorithm
+        brics3d_util
     	${OSG_LIBRARY_DEBUG}
     	${OSGGA_LIBRARY_DEBUG}
     	${OSGVIEWER_LIBRARY_DEBUG}
@@ -110,9 +110,9 @@ IF (USE_OSG)
     
     ADD_EXECUTABLE(point3D_benchmark point3D_benchmark) 
     TARGET_LINK_LIBRARIES(point3D_benchmark 
-        brics_3dpm_core 
-        brics_3dpm_algorithm 
-        brics_3dpm_util
+        brics3d_core 
+        brics3d_algorithm 
+        brics3d_util
         ${OSG_LIBRARY_DEBUG}
     	${OSGGA_LIBRARY_DEBUG}
     	${OSGVIEWER_LIBRARY_DEBUG}
@@ -123,9 +123,9 @@ IF (USE_OSG)
 
         ADD_EXECUTABLE(kinect_test kinect_test) 
         TARGET_LINK_LIBRARIES(kinect_test 
-            brics_3dpm_core 
-            brics_3dpm_algorithm 
-            brics_3dpm_util
+            brics3d_core 
+            brics3d_algorithm 
+            brics3d_util
             ${OSG_LIBRARY_DEBUG}
         	${OSGGA_LIBRARY_DEBUG}
         	${OSGVIEWER_LIBRARY_DEBUG}
@@ -134,9 +134,9 @@ IF (USE_OSG)
         
         ADD_EXECUTABLE(extract_object_clusters extract_object_clusters) 
         TARGET_LINK_LIBRARIES(extract_object_clusters 
-            brics_3dpm_core 
-            brics_3dpm_algorithm 
-            brics_3dpm_util
+            brics3d_core 
+            brics3d_algorithm 
+            brics3d_util
             ${OSG_LIBRARY_DEBUG}
         	${OSGGA_LIBRARY_DEBUG}
         	${OSGVIEWER_LIBRARY_DEBUG}
@@ -147,9 +147,9 @@ IF (USE_OSG)
         INCLUDE_DIRECTORIES(${PCL_INCLUDE_DIRS} ${OPENNI_INCLUDE_DIRS})    
         ADD_EXECUTABLE(detection_test detection_test) 
         TARGET_LINK_LIBRARIES(detection_test 
-            brics_3dpm_core 
-            brics_3dpm_algorithm 
-            brics_3dpm_util
+            brics3d_core 
+            brics3d_algorithm 
+            brics3d_util
             ${OSG_LIBRARY_DEBUG}
         	${OSGGA_LIBRARY_DEBUG}
         	${OSGVIEWER_LIBRARY_DEBUG}
@@ -166,10 +166,10 @@ IF (USE_OSG)
 ENDIF(USE_OSG)
 
 ADD_EXECUTABLE(rigidTransformation_benchmark rigidTransformation_benchmark)
-TARGET_LINK_LIBRARIES(rigidTransformation_benchmark brics_3dpm_core brics_3dpm_algorithm brics_3dpm_util)
+TARGET_LINK_LIBRARIES(rigidTransformation_benchmark brics3d_core brics3d_algorithm brics3d_util)
 
 ADD_EXECUTABLE(pointCorrespondence_benchmark pointCorrespondence_benchmark)
-TARGET_LINK_LIBRARIES(pointCorrespondence_benchmark brics_3dpm_core brics_3dpm_algorithm brics_3dpm_util)
+TARGET_LINK_LIBRARIES(pointCorrespondence_benchmark brics3d_core brics3d_algorithm brics3d_util)
 
 
 #ADD_DEFINITIONS(-DMAX_OPENMP_NUM_THREADS=4 -DOPENMP_NUM_THREADS=4)
@@ -180,15 +180,15 @@ ENDIF(NOT WIN32)
 
 #Executables for evaluation and comparison demo
 ADD_EXECUTABLE(demoEvaluation demoEvaluation)
-TARGET_LINK_LIBRARIES(demoEvaluation brics_3dpm_algorithm)
+TARGET_LINK_LIBRARIES(demoEvaluation brics3d_algorithm)
 
 ADD_EXECUTABLE(demoComparison demoComparison)
-TARGET_LINK_LIBRARIES(demoComparison brics_3dpm_algorithm)
+TARGET_LINK_LIBRARIES(demoComparison brics3d_algorithm)
 
 #Executables for 3D segmentation demo
 ADD_EXECUTABLE(demoSegmentationPlane demoSegmentationPlane)
-TARGET_LINK_LIBRARIES(demoSegmentationPlane brics_3dpm_algorithm)
+TARGET_LINK_LIBRARIES(demoSegmentationPlane brics3d_algorithm)
 
 ADD_EXECUTABLE(demoSegmentationNormalPlane demoSegmentationNormalPlane)
-TARGET_LINK_LIBRARIES(demoSegmentationNormalPlane brics_3dpm_algorithm)
+TARGET_LINK_LIBRARIES(demoSegmentationNormalPlane brics3d_algorithm)
 

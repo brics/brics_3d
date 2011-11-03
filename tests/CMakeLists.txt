@@ -26,14 +26,14 @@ MESSAGE("CppUnitTests: ${CPPUNITTEST_SOURCES}")
 
 # compile unit testing executable 
 ADD_EXECUTABLE(run_unit_tests TestRunner.cpp ${CPPUNITTEST_SOURCES})
-#TARGET_LINK_LIBRARIES(run_unit_tests cppunit brics_3dpm_core)
-TARGET_LINK_LIBRARIES(run_unit_tests ${CPPUNIT_LIBRARIES} brics_3dpm_core brics_3dpm_algorithm brics_3dpm_util brics_3dpm_world_model)
+#TARGET_LINK_LIBRARIES(run_unit_tests cppunit brics3d_core)
+TARGET_LINK_LIBRARIES(run_unit_tests ${CPPUNIT_LIBRARIES} brics3d_core brics3d_algorithm brics3d_util brics3d_world_model)
 
 
 # compile unit testing executable for ECUT eclipse plugin
 ADD_DEFINITIONS(-DECUT_MAIN=main)
 ADD_EXECUTABLE(run_ecut_unit_tests ECUTTestRunner.cpp ${CPPUNITTEST_SOURCES})
-#TARGET_LINK_LIBRARIES(run_ecut_unit_tests cppunit brics_3dpm_core)
-TARGET_LINK_LIBRARIES(run_ecut_unit_tests ${CPPUNIT_LIBRARIES} brics_3dpm_core brics_3dpm_algorithm brics_3dpm_util brics_3dpm_world_model)
+#TARGET_LINK_LIBRARIES(run_ecut_unit_tests cppunit brics3d_core)
+TARGET_LINK_LIBRARIES(run_ecut_unit_tests ${CPPUNIT_LIBRARIES} brics3d_core brics3d_algorithm brics3d_util brics3d_world_model)
 
 
