@@ -94,7 +94,7 @@ ENDIF (OPENSCENEGRAPH_FOUND)
 OPTION(USE_OSG "Enable Open Scene Graph" OFF)
 
 # search for PCL and related libraries
-OPTION(USE_PCL "Enable PCL Support" ON)
+OPTION(USE_PCL "Enable PCL Support" OFF)
 IF (USE_PCL)  
     #PCL
     FIND_PACKAGE(PCL 1.0 REQUIRED COMPONENTS)
@@ -112,7 +112,7 @@ ENDIF(USE_PCL)
 
 
 # search for Xerces xml library
-OPTION(USE_XERCES "Enable Xerces xml support for cinfig files" ON)
+OPTION(USE_XERCES "Enable Xerces xml support for cinfig files" OFF)
 IF (USE_XERCES)
     FIND_PACKAGE(Xerces)
     IF (XERCES_INCLUDE_DIR)
