@@ -41,7 +41,7 @@ endif ( CMAKE_COMPILER_IS_GNUCXX )
 
 ## set parameters
 # set parameters for compiler
-SET(CMAKE_BUILD_TYPE DEBUG) # enable debug mode (e.g. for embedded gdb in eclipse)
+#SET(CMAKE_BUILD_TYPE DEBUG) # enable debug mode (e.g. for embedded gdb in eclipse)
 #SET(CMAKE_VERBOSE_MAKEFILE ON) # shows compilation commands, etc.
 
 

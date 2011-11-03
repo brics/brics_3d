@@ -108,8 +108,12 @@ ADD_LIBRARY(scan_io_uos SHARED ${SCAN_IO_UOS_LIBRARY})
 ## compile binaries
 #ADD_EXECUTABLE(slam6D slam6D)
 #TARGET_LINK_LIBRARIES(slam6D 6dslam_core)
-
-
+INSTALL ( 
+    TARGETS newmat_cmake scanlib 6dslam_core
+    RUNTIME DESTINATION bin/${BRICS_3D_INSTALL_NAME}
+    LIBRARY DESTINATION lib/${BRICS_3D_INSTALL_NAME}
+    ARCHIVE DESTINATION lib/${BRICS_3D_INSTALL_NAME}
+)
 
 
 

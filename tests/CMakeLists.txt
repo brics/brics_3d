@@ -15,7 +15,7 @@ ENDIF (USE_EIGEN3)
 
 # add library directories (-L)
 LINK_DIRECTORIES(
-    ${CMAKE_HOME_DIRECTORY}/external/6dslam/lib
+
 )
 
 

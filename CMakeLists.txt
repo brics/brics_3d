@@ -94,7 +94,7 @@ ENDIF (OPENSCENEGRAPH_FOUND)
 OPTION(USE_OSG "Enable Open Scene Graph" OFF)
 
 # search for PCL and related libraries
-OPTION(USE_PCL "Enable PCL Support" OFF)
+OPTION(USE_PCL "Enable PCL Support" ON)
 IF (USE_PCL)  
     #PCL
     FIND_PACKAGE(PCL 1.0 REQUIRED COMPONENTS)
@@ -112,15 +112,17 @@ ENDIF(USE_PCL)
 
 
 # search for Xerces xml library
-FIND_PACKAGE(Xerces)
-IF (XERCES_INCLUDE_DIR)
-	MESSAGE(STATUS "SUCCESSFUL: Xerces found")
-	SET(BRICS_XERCES_ENABLE 1)
-	ADD_DEFINITIONS(-DBRICS_XERCES_ENABLE)
-ELSE (XERCES_INCLUDE_DIR)
-	MESSAGE(STATUS "WARNING: Xerces not found")
-ENDIF (XERCES_INCLUDE_DIR)
-
+OPTION(USE_XERCES "Enable Xerces xml support for cinfig files" ON)
+IF (USE_XERCES)
+    FIND_PACKAGE(Xerces)
+    IF (XERCES_INCLUDE_DIR)
+    	MESSAGE(STATUS "SUCCESSFUL: Xerces found")
+    	SET(BRICS_XERCES_ENABLE 1)
+    	ADD_DEFINITIONS(-DBRICS_XERCES_ENABLE)
+    ELSE (XERCES_INCLUDE_DIR)
+    	MESSAGE(STATUS "WARNING: Xerces not found")
+    ENDIF (XERCES_INCLUDE_DIR)
+ENDIF(USE_XERCES)
 
 
 ## perform platform dependant configurations
@@ -143,6 +145,7 @@ include(UseCodeCoverage) # for codecoverage tools with gcc (optional)
 # set parameters for build paths
 SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_HOME_DIRECTORY}/bin/ CACHE PATH "Configure the executable output path.")
 SET(LIBRARY_OUTPUT_PATH ${CMAKE_HOME_DIRECTORY}/lib/ CACHE PATH "Configure the library output path.")
+SET(BRICS_3D_INSTALL_NAME brics3d)
 #SET(INCLUDE_INSTALL_DIR /usr/local/include/brics CACHE PATH "The subdirectory to the header prefix")
 #SET(LIBRARY_INSTALL_DIR /usr/local/lib/brics CACHE PATH "The subdirectory to the header prefix")
 

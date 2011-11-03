@@ -16,17 +16,17 @@ INSTALL (
     RUNTIME DESTINATION python/pyflann/bindings
 )
 ELSE(WIN32)
-INSTALL (
-    TARGETS flann
-    LIBRARY DESTINATION python/pyflann/bindings
-)
+#INSTALL (
+#    TARGETS flann
+#    LIBRARY DESTINATION python/pyflann/bindings
+#)
 ENDIF(WIN32)
 
 INSTALL (
     TARGETS flann flann_s
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
+    RUNTIME DESTINATION bin/${BRICS_3D_INSTALL_NAME}
+    LIBRARY DESTINATION lib/${BRICS_3D_INSTALL_NAME}
+    ARCHIVE DESTINATION lib/${BRICS_3D_INSTALL_NAME}
 )
 
 # INSTALL (
@@ -35,7 +35,7 @@ INSTALL (
 #     LIBRARY DESTINATION ${PROJECT_SOURCE_DIR}/python
 # )
 
-INSTALL (
-    FILES flann.h constants.h
-    DESTINATION include
-)
+#INSTALL (
+#    FILES flann.h constants.h
+#    DESTINATION include
+#)
