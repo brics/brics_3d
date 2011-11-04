@@ -1,0 +1,113 @@
+ The Latest Version
+ ------------------
+
+The latest version can be found on the project page under 
+https://svn.best-of-robotics.org/brics/BROCRE/BRICS_3D/trunk
+
+
+External libraries 
+------------------
+
+Required libraries:	
+   * Boost 1.37 (or higher)
+   * Eigen2 2.0.13 (or higher, Eigen3 is recommended)
+   * OpenCV 2.0 (or higher) 
+
+Optional libraries
+   * XERCES
+   * OpenSceneGraph
+   * CPPUNIT
+   * CGAL
+   
+
+
+Preparation for installation
+----------------------------
+
+To setup compiler and tools, etc in particular 
+
+Install build-essential and cmake package.
+
+ $ sudo apt-get install build-essential cmake
+
+Installing required libraries:
+-----------------------------
+
+OpenCV
+ $ sudo apt-get install libopencv2.3-dev
+
+Boost: 
+ $ sudo apt-get install libboost-dev
+
+Eigen2/3: 
+
+ * Download Eigen 2.0.13:  http://bitbucket.org/eigen/eigen2/get/2.0.13.tar.gz 
+ * Compile and install with standard cmake procedure
+ 
+ $ mkdir build
+ $ cd build
+ $ cmake ..
+ $ make   
+ $ sudo make install 
+ 
+ or use 
+ $ sudo apt-get install libeigen2-dev
+ or
+ $ sudo apt-get install libeigen3-dev
+
+Installing optional libraries:
+-----------------------------
+
+XERCES:
+
+ $ sudo apt-get install libxerces-c-dev
+
+ NOTE: enable the USE_XERCES cmake variable during invocation of cmake for BRICS_3D 
+
+OpenSceneGraph (OSG):
+
+ $ sudo apt-get install libopenscenegraph-dev
+
+ NOTE: enable the USE_OSG cmake variable during invocation of cmake for BRICS_3D 
+
+CppUnit:
+
+ $ sudo apt-get install libcppunit-dev
+
+CGAL:
+
+ * Download CGAL e.g. version 3.4 or higher:  http://gforge.inria.fr/frs/download.php/15692/CGAL-3.4.tar.gz 
+ * Satisfy prerequisites with:
+ 
+ $ sudo apt-get install libgmp3-dev libmpfr-dev  qt4-dev-tools libboost-dev geomview zlib1g-dev
+
+ Compile and install with standard cmake procedure:
+
+ $ mkdir build
+ $ cd build
+ $ cmake ..
+ $ make   
+ $ sudo make install 
+ 
+  NOTE: enable the USE_OSG cmake variable during invocation of cmake for BRICS_3D 
+
+Compilation of BRICS_3D
+-----------------------
+
+ $ mkdir build
+ $ cd build 
+ $ cmake ..
+ $ make
+ $ sudo make install
+
+Note: Enable the USE_OSG cmake variable to compile all the applications with OSG
+visualization (e.g. BRICS_3D_Demo) In that case configure it with
+
+ $ cmake .. -DUSE_OSG
+ 
+ 
+Impressum
+---------
+
+Written by Sebastian Blumenthal (blumenthal@gps-stuttgart.de)
+Last update: 04.11.2011
