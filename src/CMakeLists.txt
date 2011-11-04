@@ -135,7 +135,8 @@ SET (ALGORITHM_LIBRARY_SOURCES
 	./algorithm/segmentation/SACMethods/SACMethodLMeDS
 	./algorithm/segmentation/SACMethods/SACMethodMLESAC
     ./algorithm/segmentation/RegionBasedSACSegmentation.h
-    ./algorithm/segmentation/RegionBasedSACSegmentationUsingNormals.h       
+    ./algorithm/segmentation/RegionBasedSACSegmentationUsingNormals.h
+    ./algorithm/segmentation/EuclideanClustering3D       
     ./algorithm/segmentation/EuclideanClustering3D
 )
 
@@ -181,7 +182,10 @@ ENDIF(USE_OSG)
 IF (USE_PCL AND USE_EIGEN3)
     list(APPEND UTIL_LIBRARY_SOURCES ./util/PCLTypecaster)
     list(APPEND ALGORITHM_LIBRARY_SOURCES ./algorithm/segmentation/EuclideanClustering) 
-    list(APPEND BRICS_3D_LIBRARIES_INCLUDE_DIRS ${PCL_INCLUDE_DIRS})
+    list(APPEND BRICS_3D_LIBRARIES_INCLUDE_DIRS ${PCL_INCLUDE_DIRS} )
+    list(APPEND UTIL_LIBRARY_LIBS  pcl_io)
+    list(APPEND ALGORITHM_LIBRARY_LIBS  pcl_io pcl_segmentation)
+    list(APPEND BRICS_3D_LIBRARIES_LIB_DIRS ${PCL_LIBRARY_DIRS} )
     list(APPEND UTIL_LIBRARY_LIBS ${PCL_IO_LIBRARY})
     list(APPEND ALGORITHM_LIBRARY_LIBS ${PCL_IO_LIBRARY} ${PCL_SEGMENTATION_LIBRARY} )
     list(APPEND BRICS_3D_LIBRARIES_LIB_DIRS ${PCL_LIBRARY_DIRS})
