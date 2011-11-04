@@ -28,6 +28,7 @@ namespace BRICS_3D {
 
 class Centroid3D {
 public:
+	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 	Centroid3D();
 	virtual ~Centroid3D();
 
