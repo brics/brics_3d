@@ -71,12 +71,15 @@ SET(STANN_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/external/stann/include)
 MESSAGE("Checking optional prerequisites: ")
 
 # search for cpp unut testing library
-FIND_PACKAGE(CppUnit)
-IF (CppUnit_FOUND)
-  MESSAGE(STATUS "SUCCESSFUL: CppUnit found")
-ELSE (CppUnit_FOUND)
-  MESSAGE(STATUS "WARNING: CppUnit not found")
-ENDIF (CppUnit_FOUND)
+OPTION(USE_CPPUNIT "Enable cppunit test." OFF)
+IF(USE_CPPUNIT)
+    FIND_PACKAGE(CppUnit)
+    IF (CppUnit_FOUND)
+      MESSAGE(STATUS "SUCCESSFUL: CppUnit found")
+    ELSE (CppUnit_FOUND)
+      MESSAGE(STATUS "WARNING: CppUnit not found")
+    ENDIF (CppUnit_FOUND)
+ENDIF(USE_CPPUNIT)
 
 # search for open scene graph (OSG) visualization library 
 FIND_PACKAGE(OpenSceneGraph COMPONENTS osgGA osgUtil osgViewer)

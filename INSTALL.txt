@@ -28,13 +28,10 @@ To setup compiler and tools, etc in particular
 
 Install build-essential and cmake package.
 
- $ sudo apt-get install build-essential cmake
+ $ sudo apt-get install build-essential cmake subversion
 
 Installing required libraries:
 -----------------------------
-
-OpenCV
- $ sudo apt-get install libopencv2.3-dev
 
 Boost: 
  $ sudo apt-get install libboost-dev
@@ -54,6 +51,9 @@ Eigen2/3:
  $ sudo apt-get install libeigen2-dev
  or
  $ sudo apt-get install libeigen3-dev
+
+OpenCV
+ $ sudo apt-get install libopencv2.3-dev
 
 Installing optional libraries:
 -----------------------------
