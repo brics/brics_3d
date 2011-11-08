@@ -54,6 +54,7 @@ SET (OpenCV_POSSIBLE_ROOT_DIRS
   "$ENV{ProgramFiles}/OpenCV"
   /usr/local
   /usr
+  /usr/include/opencv-2.3.1/
   )
 
 
@@ -86,6 +87,7 @@ FIND_PATH(OpenCV_ROOT_DIR
   include/opencv/cv.h # linux /opt/net
   include/cv/cv.h 
   include/cv.h 
+  opencv/cv.h
   PATHS ${OpenCV_POSSIBLE_ROOT_DIRS})
 DBG_MSG("OpenCV_ROOT_DIR=${OpenCV_ROOT_DIR}")
 
@@ -102,6 +104,8 @@ SET(OpenCV_INCDIR_SUFFIXES
   otherlibs/highgui
   otherlibs/highgui/include
   otherlibs/_graphics/include
+  opencv
+  opencv2
   )
 
 # library linkdir suffixes appended to OpenCV_ROOT_DIR 
@@ -135,6 +139,10 @@ FIND_PATH(OpenCV_CVCAM_INCLUDE_DIR
   NAMES cvcam.h 
   PATHS ${OpenCV_ROOT_DIR} 
   PATH_SUFFIXES ${OpenCV_INCDIR_SUFFIXES} )
+FIND_PATH(OpenCV2_CORE_INCLUDE_DIR    
+  NAMES opencv2/opencv.hpp
+  PATHS ${OpenCV_ROOT_DIR} 
+  PATH_SUFFIXES ${OpenCV_INCDIR_SUFFIXES} )  
 
 #
 # find sbsolute path to all libraries 
@@ -192,6 +200,12 @@ FOREACH(NAME ${OpenCV_FIND_REQUIRED_COMPONENTS} )
   
 ENDFOREACH(NAME)
 
+#just for opencv2 headers...
+IF (OpenCV2_CORE_INCLUDE_DIR)
+    LIST(APPEND OpenCV_INCLUDE_DIRS ${OpenCV2_CORE_INCLUDE_DIR})
+ENDIF (OpenCV2_CORE_INCLUDE_DIR )
+
+
 DBG_MSG("OpenCV_INCLUDE_DIRS=${OpenCV_INCLUDE_DIRS}")
 DBG_MSG("OpenCV_LIBRARIES=${OpenCV_LIBRARIES}")
 
@@ -218,6 +232,7 @@ MARK_AS_ADVANCED(
   OpenCV_HIGHGUI_LIBRARY
   OpenCV_ML_LIBRARY
   OpenCV_TRS_LIBRARY
+  OpenCV2_CORE_INCLUDE_DIR
   )
 
 
