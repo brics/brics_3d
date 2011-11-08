@@ -53,9 +53,9 @@ class SceneObject {
 
     unsigned int parentId;
 
-    IHomogeneousMatrix44* transform;
+    IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform;
 
-    BRICS_3D::RSG::Shape* shape;
+    RSG::Shape::ShapePtr shape;
 
     vector<RSG::Attribute> attributes;
 

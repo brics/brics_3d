@@ -37,9 +37,9 @@ namespace BRICS_3D {
  */
 class IWorldModelQuery {
   public:
-    virtual void getSceneObjects(vector<Attribute> attributes, vector<SceneObject>* results) = 0;
+    virtual void getSceneObjects(vector<Attribute> attributes, vector<SceneObject>& results) = 0;
 
-    virtual void getCurrentTransform(unsigned int id, IHomogeneousMatrix44* transform)= 0;
+    virtual void getCurrentTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform)= 0;
 
 };
 

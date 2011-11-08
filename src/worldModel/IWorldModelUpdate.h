@@ -34,7 +34,7 @@ class IWorldModelUpdate {
     /**
      * @brief Adds a new SceneObject to the world model representation. Internally it will be added to the root node.
      */
-    virtual void addSceneObject(SceneObject newObject, unsigned int* assignedId) = 0;
+    virtual void addSceneObject(SceneObject newObject, unsigned int& assignedId) = 0;
 
 };
 

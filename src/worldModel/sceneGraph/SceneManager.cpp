@@ -20,6 +20,7 @@
 #include "SceneManager.h"
 #include "SimpleIdGenerator.h"
 #include "core/Logger.h"
+#include "AttributeFinder.h"
 
 namespace BRICS_3D {
 
@@ -59,6 +60,24 @@ void SceneManager::initialize() {
 
 unsigned int SceneManager::getRootId() {
 	return idGenerator->getRootId();
+}
+
+bool SceneManager::getNodes(vector<Attribute> attributes, vector<unsigned int>& ids) {
+	ids.clear();
+	Node::NodeWeakPtr tmpNode = findNodeRecerence(getRootId());
+	Node::NodePtr node = tmpNode.lock();
+	if (node != 0) {
+			AttributeFinder attributeFinder;
+			attributeFinder.setQueryAttributes(attributes);
+			node->accept(&attributeFinder);
+			for (unsigned int i = 0; i < static_cast<unsigned int>(attributeFinder.getMatchingNodes().size()) ; ++i) {
+				ids.push_back((*attributeFinder.getMatchingNodes()[i]).getId());
+			}
+
+		return true;
+	}
+	LOG(ERROR) << "Cannot find root node. Aborting attribute search.";
+	return false;
 }
 
 bool SceneManager::getNodeAttributes(unsigned int id, vector<Attribute>& attributes) {

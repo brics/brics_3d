@@ -35,14 +35,15 @@ void WorldModelTest::testSimpleHanoiUseCase() {
 
 	/* Add predefined area */
 	SceneObject* targetArea = new SceneObject();
-	Shape* targetShape = new Cylinder(0.5,0); // radius and height in [m] TODO: boost::units ?
+	Shape::ShapePtr targetShape(new Cylinder(0.5,0)); // radius and height in [m] TODO: boost::units ?
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr initPose(new HomogeneousMatrix44()); 	// here: identity matrix
 	targetArea->shape = targetShape;
-	targetArea->transform = new HomogeneousMatrix44(); // here: identity matrix
+	targetArea->transform = initPose;
 	targetArea->parentId =  myWM->getRootNodeId(); // hook in after root node
 	targetArea->attributes.push_back(Attribute("shapeType","Cylinder"));
 	targetArea->attributes.push_back(Attribute("taskType","targetArea"));
-	uint targetAreaID; //Stores the ID assigned by the world modle, so we can later reference to the object.
-	myWM->addSceneObject(*targetArea, &targetAreaID);
+	uint targetAreaID; //Stores the ID assigned by the world model, so we can later reference to the object.
+	myWM->addSceneObject(*targetArea, targetAreaID);
 
 	/* Move the added object */
 	IHomogeneousMatrix44* tmpTrasformation = new HomogeneousMatrix44(0,0,0,  //Rotation coefficients
@@ -64,7 +65,7 @@ void WorldModelTest::testSimpleHanoiUseCase() {
 	queryArributes.push_back(Attribute("color","green"));
 	vector<SceneObject> resultObjects;
 
-	myWM->getSceneObjects(queryArributes, &resultObjects);
+	myWM->getSceneObjects(queryArributes, resultObjects);
 
 	/* Browse the results */
 	cout << resultObjects.size() << " green Boxes found." << endl;
@@ -81,9 +82,9 @@ void WorldModelTest::testSimpleHanoiUseCase() {
 		intrestingID = resultObjects[0].id;
 
 		/* See if object's pose changes */
-		HomogeneousMatrix44 transform;
+		IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform;
 		for(int i=0; i < 10 ; ++i) {
-			myWM->getCurrentTransform(intrestingID, &transform);
+			myWM->getCurrentTransform(intrestingID, transform);
 			cout << "TF: " << transform;
 			sleep(1); //[s]
 		}
@@ -93,8 +94,45 @@ void WorldModelTest::testSimpleHanoiUseCase() {
 	myWM->stopPerception();
 	delete myWM;
 	delete timer;
+}
 
-	CPPUNIT_FAIL("TODO: Implement.");
+void WorldModelTest::testTowerOfHanoi() {
+
+	WorldModel myWM;
+	SceneObject tmpSceneObject;
+	const double* matrixPtr;
+
+	Shape::ShapePtr targetShape(new Box(0.2, 0.40, 0.30)); // radius and height in [m] TODO: boost::units ?
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform456(new HomogeneousMatrix44(1,0,0,  	//Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             4,5,6)); 						//Translation coefficients
+	tmpSceneObject.shape = targetShape;
+	tmpSceneObject.transform = transform456;
+	tmpSceneObject.parentId =  myWM.getRootNodeId(); // hook in after root node
+	tmpSceneObject.attributes.clear();
+	tmpSceneObject.attributes.push_back(Attribute("shapeType","Box"));
+	tmpSceneObject.attributes.push_back(Attribute("taskType","targetArea"));
+	tmpSceneObject.attributes.push_back(Attribute("name","startArea"));
+
+	uint goalId;
+	myWM.addSceneObject(tmpSceneObject, goalId);
+
+	vector<Attribute> queryArributes;
+	queryArributes.push_back(Attribute("name","startArea"));
+	vector<SceneObject> resultObjects;
+
+	myWM.getSceneObjects(queryArributes, resultObjects);
+
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultObjects.size()));
+
+	matrixPtr = resultObjects[0].transform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, matrixPtr[12], maxTolerance); //check (just) translation
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(6.0, matrixPtr[14], maxTolerance);
+
+
+
 }
 
 }  // namespace unitTests

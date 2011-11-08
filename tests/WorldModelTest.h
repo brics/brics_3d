@@ -36,6 +36,7 @@ class WorldModelTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST_SUITE( WorldModelTest );
 	CPPUNIT_TEST( testConstructor );
 	CPPUNIT_TEST( testSimpleHanoiUseCase );
+	CPPUNIT_TEST( testTowerOfHanoi );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -44,6 +45,11 @@ public:
 
 	void testConstructor();
 	void testSimpleHanoiUseCase();
+	void testTowerOfHanoi();
+
+private:
+	  /// Maximum deviation for equality check of double variables
+	  static const double maxTolerance = 0.00001;
 };
 
 }

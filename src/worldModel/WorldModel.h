@@ -31,9 +31,6 @@ namespace BRICS_3D {
  * @brief <b>The</b> handle for a 3D world model.
  */
 class WorldModel : public IWorldModelQuery, public IWorldModelUpdate, public IWorldModelCoordination {
-  private:
-    BRICS_3D::RSG::SceneManager scene;
-
 
   public:
     WorldModel();
@@ -42,11 +39,13 @@ class WorldModel : public IWorldModelQuery, public IWorldModelUpdate, public IWo
 
     /* Implemented interfaces: */
 
-    void getSceneObjects(vector<Attribute> attributes, vector<SceneObject>* results);
+    void getSceneObjects(vector<Attribute> attributes, vector<SceneObject>& results);
 
-    void getCurrentTransform(unsigned int id, IHomogeneousMatrix44* transform);
+    void getCurrentTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform);
 
-    void addSceneObject(SceneObject newObject, unsigned int* assignedId);
+    void insertTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform);
+
+    void addSceneObject(SceneObject newObject, unsigned int& assignedId);
 
     void initPerception();
 
@@ -59,6 +58,7 @@ class WorldModel : public IWorldModelQuery, public IWorldModelUpdate, public IWo
     /* Helper functions */
     unsigned int getRootNodeId();
 
+    BRICS_3D::RSG::SceneManager scene;
 };
 
 } // namespace BRICS_3D

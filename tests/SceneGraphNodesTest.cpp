@@ -1510,6 +1510,30 @@ void SceneGraphNodesTest::testSceneManager(){
 	CPPUNIT_ASSERT(!scene.getTransform(group2Id, dummyTime, resultTransform));
 	CPPUNIT_ASSERT(!scene.getTransform(node3Id, dummyTime, resultTransform));
 
+	/* find nodes by attributes */
+	vector<unsigned int> resultIds;
+
+	tmpAttributes.clear();
+	tmpAttributes.push_back(Attribute("name","root"));
+	resultIds.clear();
+	CPPUNIT_ASSERT(scene.getNodes(tmpAttributes, resultIds));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultIds.size()));
+	CPPUNIT_ASSERT_EQUAL(rootId, resultIds[0]);
+
+	tmpAttributes.clear();
+	tmpAttributes.push_back(Attribute("name","tf"));
+	resultIds.clear();
+	CPPUNIT_ASSERT(scene.getNodes(tmpAttributes, resultIds));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultIds.size()));
+	CPPUNIT_ASSERT_EQUAL(tf1Id, resultIds[0]);
+
+	tmpAttributes.clear();
+	tmpAttributes.push_back(Attribute("shapeType","Cylinder"));
+	resultIds.clear();
+	CPPUNIT_ASSERT(scene.getNodes(tmpAttributes, resultIds));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultIds.size()));
+	CPPUNIT_ASSERT_EQUAL(geode4Id, resultIds[0]);
+
 }
 
 }  // namespace unitTests

@@ -34,23 +34,35 @@ SceneObject::~SceneObject() {
 }
 
 SceneObject::SceneObject(SceneObject & source) {
-  // Bouml preserved body begin 0002D383
-  // Bouml preserved body end 0002D383
+	this->id = source.id;
+	this->parentId = source.parentId;
+    this->transform = source.transform;
+    this->shape = source.shape;
+    this->attributes = source.attributes;
 }
 
 SceneObject::SceneObject(const SceneObject & source) {
-  // Bouml preserved body begin 0002D403
-  // Bouml preserved body end 0002D403
+	this->id = source.id;
+	this->parentId = source.parentId;
+    this->transform = source.transform;
+    this->shape = source.shape;
+    this->attributes = source.attributes;
 }
 
 SceneObject & SceneObject::operator=(SceneObject & source) {
-  // Bouml preserved body begin 0002D483
-  // Bouml preserved body end 0002D483
+	this->id = source.id;
+	this->parentId = source.parentId;
+    this->transform = source.transform;
+    this->shape = source.shape;
+    this->attributes = source.attributes;
 }
 
 SceneObject & SceneObject::operator=(const SceneObject & source) {
-  // Bouml preserved body begin 0002D503
-  // Bouml preserved body end 0002D503
+	this->id = source.id;
+	this->parentId = source.parentId;
+    this->transform = source.transform;
+    this->shape = source.shape;
+    this->attributes = source.attributes;
 }
 
  ostream & operator<<(ostream & os, const SceneObject & x) {
