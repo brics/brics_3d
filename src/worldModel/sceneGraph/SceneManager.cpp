@@ -213,6 +213,18 @@ bool SceneManager::setNodeAttributes(unsigned int id, vector<Attribute> newAttri
 	return false;
 }
 
+bool SceneManager::setTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp) {
+	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
+	Node::NodePtr node = tmpNode.lock();
+	RSG::Transform::TransformPtr transformNode = boost::dynamic_pointer_cast<RSG::Transform>(node);
+	if (transformNode != 0) {
+		transformNode->insertTransform(transform, timeStamp);
+		return true;
+	}
+	LOG(ERROR) << "Node with ID " << id << " is not a transform. Cannot set new transform data.";
+	return false;
+}
+
 bool SceneManager::addParent(unsigned int id, unsigned int parentId) {
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();

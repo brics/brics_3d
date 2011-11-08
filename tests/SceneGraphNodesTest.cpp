@@ -1489,6 +1489,26 @@ void SceneGraphNodesTest::testSceneManager(){
 	CPPUNIT_ASSERT(!scene.getGeometry(group2Id, resultShape, dummyTime));
 	CPPUNIT_ASSERT(!scene.getGeometry(node3Id, resultShape, dummyTime));
 
+	/* set new tf data */
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform456(new HomogeneousMatrix44(1,0,0,  	//Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             4,5,6)); 						//Translation coefficients
+
+
+	CPPUNIT_ASSERT(scene.setTransform(tf1Id, transform456, dummyTime));
+
+	CPPUNIT_ASSERT(scene.getTransform(tf1Id, dummyTime, resultTransform));
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, matrixPtr[12], maxTolerance); //check (just) translation
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(6.0, matrixPtr[14], maxTolerance);
+
+	CPPUNIT_ASSERT(!scene.getTransform(invalidId, dummyTime, resultTransform));
+	CPPUNIT_ASSERT(!scene.getTransform(rootId, dummyTime, resultTransform));
+	CPPUNIT_ASSERT(!scene.getTransform(geode4Id, dummyTime, resultTransform));
+	CPPUNIT_ASSERT(!scene.getTransform(group2Id, dummyTime, resultTransform));
+	CPPUNIT_ASSERT(!scene.getTransform(node3Id, dummyTime, resultTransform));
 
 }
 

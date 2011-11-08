@@ -75,7 +75,7 @@ class SceneManager : public ISceneGraphQuery, public ISceneGraphUpdate {
     bool addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp);
     bool addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp);
     bool setNodeAttributes(unsigned int id, vector<Attribute> newAttributes);
-//    void setTransform(unsigned int id, BRICS_3D::IHomogeneousMatrix44* transformation, TimeStamp timeStamp);
+    bool setTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp);
 //    void deleteNode(unsigned int id);
     bool addParent(unsigned int id, unsigned int parentId);
 
