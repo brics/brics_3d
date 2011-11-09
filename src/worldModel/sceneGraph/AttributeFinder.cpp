@@ -34,7 +34,7 @@ AttributeFinder::~AttributeFinder() {
 
 void AttributeFinder::visit(Node* node) {
 	assert (node != 0);
-	std::cout << "Visiting node with ID: " << node->getId() << std::endl;
+	LOG(DEBUG) << "Visiting node with ID: " << node->getId();
 
 	/* check for duplicates (possibly causesd by _graph_ traversal) */
 	for (unsigned int i = 0; i < static_cast<unsigned int>(matchingNodes.size()); ++i) {
@@ -54,12 +54,10 @@ void AttributeFinder::visit(Node* node) {
 	}
 
 	if (attributesMatch == true) {
-		std::cout << "	Adding node as it has: ";
+		LOG(DEBUG) << "	Adding node as it has: ";
 		for (unsigned int i = 0; i < static_cast<unsigned int>(queryAttributes.size()); ++i) {
-			std::cout << " " << queryAttributes[i];
+			LOG(DEBUG) << " " << queryAttributes[i];
 		}
-		std::cout << std::endl;
-
 		matchingNodes.push_back(node);
 	}
 }

@@ -69,8 +69,9 @@ void WorldModel::getCurrentTransform(unsigned int id, IHomogeneousMatrix44::IHom
 
 }
 
-void insertTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform) {
-
+void WorldModel::insertTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform) {
+	TimeStamp dummyTime;
+	scene.setTransform(id, transform, dummyTime);
 }
 
 void WorldModel::addSceneObject(SceneObject newObject, unsigned int& assignedId) {
