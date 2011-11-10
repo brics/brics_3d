@@ -70,7 +70,7 @@ SET(STANN_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/external/stann/include)
 ## check optional prerequisites
 MESSAGE("Checking optional prerequisites: ")
 
-# search for cpp unut testing library
+# search for cpp unit testing library
 OPTION(USE_CPPUNIT "Enable cppunit test." OFF)
 IF(USE_CPPUNIT)
     FIND_PACKAGE(CppUnit)
