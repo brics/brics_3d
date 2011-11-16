@@ -58,8 +58,20 @@ void WorldModel::getSceneObjects(vector<Attribute> attributes, vector<SceneObjec
 		}
 		tmpSceneObject.transform = tmpTransform;
 
-//		scene.getGroupChildren(resultIds[i], ) //TODO add shape in result
-//		tmpSceneObject.shape;
+		vector<unsigned int> childIds;
+		scene.getGroupChildren(resultIds[i], childIds);
+		for (unsigned int j = 0; j < static_cast<unsigned int>(childIds.size()); ++j) {
+			Shape::ShapePtr tmpShape;
+			if (scene.getGeometry(childIds[j], tmpShape, dummyTime) == true) {
+				tmpSceneObject.shape = tmpShape;
+				break; //stop on first found geometry
+			}
+		}
+
+
+		vector<RSG::Attribute> tmpAttributes;
+		scene.getNodeAttributes(resultIds[i], tmpAttributes);
+		tmpSceneObject.attributes = tmpAttributes; //TODO combined attributes from multible nodes?
 
 		results.push_back(tmpSceneObject);
 	}
