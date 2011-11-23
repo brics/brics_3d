@@ -61,7 +61,7 @@ void SimplePointCloudGeneratorCube::setCubeSideLength(double cubeSideLength)
 
 void SimplePointCloudGeneratorCube::setNumOfFaces(int numOfFaces)
 {
-	if(numOfFaces<=3){
+	if(numOfFaces<=6){
 		this->numOfFaces = numOfFaces;
 	} else {
 		this->numOfFaces = 3;
@@ -97,7 +97,7 @@ SimplePointCloudGeneratorCube::~SimplePointCloudGeneratorCube() {
 
 void SimplePointCloudGeneratorCube::generatePointCloud(BRICS_3D::PointCloud3D *generatedPointCloud){
 
-	std::cout<< "Generating the cloud" << std::endl;
+//	std::cout<< "Generating the cloud" << std::endl;
 
 	double incr = (this->cubeSideLength)/ ((double)(this->pointsOnEachSide));
 	float xincr, yincr, zincr;
@@ -154,6 +154,55 @@ void SimplePointCloudGeneratorCube::generatePointCloud(BRICS_3D::PointCloud3D *g
 				for (int j = 0; j < pointsOnEachSide; j++) {
 					tempPoint3D.setX(xincr);
 					tempPoint3D.setY(orgn[1]);
+					tempPoint3D.setZ(zincr);
+					generatedPointCloud->addPoint(tempPoint3D);
+					zincr += incr;
+				}
+				xincr += incr;
+			}
+
+			break;
+
+		case 3:
+
+			xincr = orgn[0];//+maxWidthCube/cloudWidthEachFace;
+			for (int i = 0; i < pointsOnEachSide; i++){
+				yincr = orgn[1];//+maxWidthCube/cloudWidthEachFace;
+				for (int j = 0; j < pointsOnEachSide; j++) {
+					tempPoint3D.setX(xincr);
+					tempPoint3D.setY(yincr);
+					tempPoint3D.setZ(orgn[2]);
+					generatedPointCloud->addPoint(tempPoint3D);
+					yincr += incr;
+				}
+				xincr += incr;
+			}
+			break;
+
+		case 4:
+			//yz-plane
+			yincr = orgn[1];//+maxWidthCube/cloudWidthEachFace;
+			for (int i = 0; i < pointsOnEachSide; i++){
+				zincr = orgn[2];//+maxWidthCube/cloudWidthEachFace;
+				for (int j = 0; j < pointsOnEachSide; j++) {
+					tempPoint3D.setX(orgn[0]+cubeSideLength);
+					tempPoint3D.setY(yincr);
+					tempPoint3D.setZ(zincr);
+					generatedPointCloud->addPoint(tempPoint3D);
+					zincr += incr;
+				}
+				yincr += incr;
+			}
+			break;
+
+		case 5:
+			//xz-plane
+			xincr = orgn[0];//+maxWidthCube/cloudWidthEachFace;
+			for (int i = 0; i < pointsOnEachSide; i++){
+				zincr = orgn[2];//+maxWidthCube/cloudWidthEachFace;
+				for (int j = 0; j < pointsOnEachSide; j++) {
+					tempPoint3D.setX(xincr);
+					tempPoint3D.setY(orgn[1]+cubeSideLength);
 					tempPoint3D.setZ(zincr);
 					generatedPointCloud->addPoint(tempPoint3D);
 					zincr += incr;
