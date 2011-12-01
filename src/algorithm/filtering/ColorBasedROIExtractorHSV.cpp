@@ -115,7 +115,7 @@ void ColorBasedROIExtractorHSV::extractColorBasedROI(BRICS_3D::ColoredPointCloud
 	BRICS_3D::Point3D tempPoint3D;
 	out_cloud->getPointCloud()->clear();
 
-		printf("Used H-S Limits for extraction: H:[%f %f] S:[%f %f]\n", minH, maxH, minS, maxS);
+	printf("Used H-S Limits for extraction: H:[%f %f] S:[%f %f]\n", minH, maxH, minS, maxS);
 	for (unsigned int i = 0; i < static_cast<unsigned int>(cloudSize); i++) {
 		passed = false;
 		//Getting the HSV values for the RGB points
@@ -163,21 +163,6 @@ void ColorBasedROIExtractorHSV::extractColorBasedROI(BRICS_3D::ColoredPointCloud
 
 
 		}else {
-			//		passed = false;
-			//		//Getting the HSV values for the RGB points
-			//		tempChar = in_cloud->getPointCloud()->data()[i].red;
-			//		tempR = tempChar << 0;
-			//		tempR = abs(tempR);
-			//
-			//		tempChar = in_cloud->getPointCloud()->data()[i].green;
-			//		tempG = tempChar << 0;
-			//		tempG = abs(tempG);
-			//
-			//		tempChar = in_cloud->getPointCloud()->data()[i].blue;
-			//		tempB = tempChar << 0;
-			//		tempB = abs(tempB);
-			//
-			//		colorConvertor.rgbToHsv(tempR, tempG, tempB, &tempH, &tempS, &tempV);
 
 			//Checking the values with the set limits
 			if ((tempH <= 255 && tempH >= minH) || (tempH >= 0 && tempH <= maxH)) {
@@ -228,7 +213,7 @@ void ColorBasedROIExtractorHSV::extractColorBasedROI(BRICS_3D::ColoredPointCloud
 	BRICS_3D::Point3D tempPoint3D;
 	out_cloud->getPointCloud()->clear();
 
-		printf("Used H-S Limits for extraction: H:[%f %f] S:[%f %f]\n", minH, maxH, minS, maxS);
+	printf("Used H-S Limits for extraction: H:[%f %f] S:[%f %f]\n", minH, maxH, minS, maxS);
 
 	for (unsigned int i = 0; i < static_cast<unsigned int>(cloudSize); i++) {
 
@@ -248,14 +233,22 @@ void ColorBasedROIExtractorHSV::extractColorBasedROI(BRICS_3D::ColoredPointCloud
 
 		colorConvertor.rgbToHsv(tempR, tempG, tempB, &tempH, &tempS, &tempV);
 
-		//Checking the values with the set limits
-		if (tempH <= maxH && tempH >= minH) {
-			if (tempS >= minS && tempS <= maxS) {
-				passed=true;
+		if(minH < maxH){
+			//Checking the values with the set limits
+			if (tempH <= maxH && tempH >= minH) {
+				if (tempS >= minS && tempS <= maxS) {
+					passed=true;
 
+				}
+			}
+		} else {
+			if ((tempH <= 255 && tempH >= minH) || (tempH >= 0 && tempH <= maxH)) {
+				if (tempS >= minS && tempS <= maxS) {
+					passed=true;
+
+				}
 			}
 		}
-
 		//		printf("H-S Limits: [%f %f %f %f]\n", minH, maxH, minS, maxS);
 		//		printf("Actual H-S Values: [%d %d %d %f %f]\n", tempR, tempG, tempB, tempH, tempS);
 
