@@ -84,8 +84,8 @@ SET (ALGORITHM_LIBRARY_SOURCES
     ./algorithm/filtering/IOctreeSetup
 	./algorithm/filtering/Octree
     ./algorithm/filtering/IColorBasedROIExtractor  
-    ./algorithm/filtering/ColorBasedROIExtractorHSV.cpp
-    ./algorithm/filtering/ColorBasedROIExtractorHSV.h    
+    ./algorithm/filtering/ColorBasedROIExtractorHSV
+    ./algorithm/filtering/ColorBasedROIExtractorRGB    
 
     ./algorithm/nearestNeighbor/INearestNeighbor
     ./algorithm/nearestNeighbor/INearestNeighborSetup
