@@ -52,7 +52,7 @@ protected:
 	/** @brief The input point-cloud to be processed*/
 	PointCloud3D* inputPointCloud;
 public:
-
+	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 //	ISACMethods();
 
 
