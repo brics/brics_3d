@@ -35,6 +35,8 @@
  *
  */
 
+//ToDo Replace using concrete classes in algoritm/featureExtraction
+
 #ifndef PCL_FEATURE_H_
 #define PCL_FEATURE_H_
 
@@ -64,7 +66,7 @@ inline void
     for (size_t i = 0; i < indices.size (); ++i)
     {
       // Check if the point is invalid
-      if (isnan ( points->data()[indices[i]].getX()) || isnan (points->data()[indices[i]].getY()) || isnan (points->data()[indices[i]].getZ()))
+      if (isnan ( isnan(points->data()[indices[i]].getX())) || isnan (points->data()[indices[i]].getY()) || isnan (points->data()[indices[i]].getZ()))
         continue;
 
       centroid[0] += points->data()[indices[i]].getX();

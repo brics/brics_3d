@@ -16,7 +16,7 @@
 * more details.
 *
 ******************************************************************************/
-
+//ToDo Replace using concrete classes in algoritm/featureExtraction
 #ifndef NORMALESTIMATION_H_
 #define NORMALESTIMATION_H_
 
@@ -67,7 +67,7 @@ public:
 	/** \brief Set the nearst neighborhood search method. */
 	inline void
 	setSearchMethod (INearestPoint3DNeighbor *nnSearchMethod)
-	{//ToDo check for input cloud is set or not
+	{	assert(this->inputPointCloud!=NULL);
 		this->nnSearchMethod = nnSearchMethod;
 		this->nnSearchMethod->setData(this->inputPointCloud);
 	}

@@ -23,6 +23,8 @@
 #include "core/NormalSet3D.h"
 #include "ROSfeature.h"
 
+//ToDo Replace using concrete classes in algoritm/featureExtraction
+
 namespace BRICS_3D{
 
 
