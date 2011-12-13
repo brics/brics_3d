@@ -1,25 +1,26 @@
 /******************************************************************************
-* BRICS_3D - 3D Perception and Modeling Library
-* Copyright (c) 2011, GPS GmbH
-*
-* Author: Pinaki Sunil Banerjee
-*
-*
-* This software is published under a dual-license: GNU Lesser General Public
-* License LGPL 2.1 and Modified BSD license. The dual-license implies that
-* users of this code may choose which terms they prefer.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU Lesser General Public License LGPL and the BSD license for
-* more details.
-*
-******************************************************************************/
+ * BRICS_3D - 3D Perception and Modeling Library
+ * Copyright (c) 2011, GPS GmbH
+ *
+ * Author: Pinaki Sunil Banerjee
+ *
+ *
+ * This software is published under a dual-license: GNU Lesser General Public
+ * License LGPL 2.1 and Modified BSD license. The dual-license implies that
+ * users of this code may choose which terms they prefer.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License LGPL and the BSD license for
+ * more details.
+ *
+ ******************************************************************************/
 
 #ifndef REGIONBASEDSACSEGMENTATION_H_
 #define REGIONBASEDSACSEGMENTATION_H_
 
+#include "algorithm/segmentation/ISegmentation.h"
 #include "algorithm/segmentation/objectModels/IObjectModel.h"
 #include "algorithm/segmentation/objectModels/IObjectModelUsingNormals.h"
 #include "algorithm/segmentation/SACMethods/ISACMethods.h"
@@ -49,14 +50,11 @@ namespace BRICS_3D{
 /**
  * @brief Adapter class for initialization of sample consensus based segmentation method.
  */
-class RegionBasedSACSegmentation {
+class RegionBasedSACSegmentation : public ISegmentation {
 
 protected:
 	/** @brief The object model to be searched for in its parametric form. */
 	IObjectModel *objectModel;
-
-	/** @brief The point normal based object model to be searched for in its parametric form. */
-	IObjectModelUsingNormals *objectModelUsingNormals;
 
 	/** @brief The sample consensus method to be used for model parameter estimation. */
 	ISACMethods *sacMethod;
@@ -90,11 +88,8 @@ protected:
 	 * */
 	int SACMethodType;
 
-	/** @brief Indicates if model coefficient refinement is enabled*/
-	bool optimizeCoefficients;
-
-	/** @brief The input point-cloud to be processed*/
-	PointCloud3D* inputPointCloud;
+//	/** @brief The input point-cloud to be processed*/
+//	PointCloud3D* inputPointCloud;
 
 public:
 
@@ -104,10 +99,8 @@ public:
 	const static int OBJMODEL_LINE = 1;
 	const static int OBJMODEL_CIRCLE = 2;
 	const static int OBJMODEL_SPHERE = 3;
-	const static int OBJMODEL_CYLINDER = 4;
 	const static int OBJMODEL_ORIENTED_LINE = 5;
 	const static int OBJMODEL_ORIENTED_PLANE = 6;
-	const static int OBJMODEL_NORMAL_PLANE = 7;
 	const static int OBJMODEL_PLANE_FROM_LINES = 8;
 	const static int OBJMODEL_PLANE_FROM_LINE_AND_POINT = 9;
 
@@ -125,15 +118,16 @@ public:
 		this->threshold = -1;
 		this->maxIterations = 10000;
 		this->probability = 0.99;
-	}
-	/**
-	 * @brief Set the input pointcloud to be processed
-	 * @param Pointcloud input pointcloudto be processed
-	 */
-	inline void setInputPointCloud(PointCloud3D *input) {
-		this->inputPointCloud = input;
 
 	}
+//	/**
+//	 * @brief Set the input pointcloud to be processed
+//	 * @param Pointcloud input pointcloudto be processed
+//	 */
+//	inline void setInputPointCloud(PointCloud3D *input) {
+//		this->inputPointCloud = input;
+//
+//	}
 
 	/** @brief Set the distance to model threshold.
 	 * @param threshold distance to model threshold
@@ -217,32 +211,23 @@ public:
 		return (this->SACMethodType);
 	}
 
-	inline void setOptimizeCoefficients(bool optimize) {
-		this->optimizeCoefficients = optimize;
-	}
-
-
-	inline bool getOptimizeCoefficients() {
-		return (this->optimizeCoefficients);
-	}
-
 
 	/** @brief Initialize the Sample Consensus model and set its parameters.
 	 *  @param model_type the type of SAC model that is to be used
 	 */
-	virtual inline bool initSACModel(const int modelType) {
+	inline bool initSACModel(const int modelType) {
 
 		// Build the model
 		switch (modelType) {
 		case OBJMODEL_PLANE: {
-			cout << "[initSACModel] Using a model of type: OBJECT_MODEL_PLANE"<<endl;
+			cout << "[SAC Segmentation] Using a model of type: OBJECT_MODEL_PLANE"<<endl;
 			objectModel = new ObjectModelPlane();
 			objectModel->setInputCloud(inputPointCloud);
 			break;
 		}
 		case OBJMODEL_CIRCLE:
 		{
-			cout << "[initSACModel] Using a model of type: OBJECT_MODEL_CIRCLE"<<endl;
+			cout << "[SAC Segmentation] Using a model of type: OBJECT_MODEL_CIRCLE"<<endl;
 			objectModel = new ObjectModelCircle();
 			objectModel->setInputCloud(inputPointCloud);
 			break;
@@ -250,14 +235,14 @@ public:
 		}
 		case OBJMODEL_SPHERE:
 		{
-			cout << "[initSACModel] Using a model of type: OBJECT_MODEL_SPHERE"<<endl;
+			cout << "[SAC Segmentation] Using a model of type: OBJECT_MODEL_SPHERE"<<endl;
 			objectModel = new ObjectModelSphere();
 			objectModel->setInputCloud(inputPointCloud);
 			break;
 		}
 		case OBJMODEL_LINE:
 		{
-			cout << "[initSACModel] Using a model of type: OBJECT_MODEL_LINE"<<endl;
+			cout << "[SAC Segmentation] Using a model of type: OBJECT_MODEL_LINE"<<endl;
 			objectModel = new ObjectModelLine();
 			objectModel->setInputCloud(inputPointCloud);
 			break;
@@ -273,7 +258,7 @@ public:
 		case OBJMODEL_ORIENTED_PLANE:
 		{
 			//ToDo check the initialization
-			cout << "[initSACModel] Using a model of type: OBJECT_MODEL_PLANE"<<endl;
+			cout << "[SAC Segmentation] Using a model of type: OBJECT_MODEL_PLANE"<<endl;
 			objectModel = new ObjectModelOrientedPlane();
 			objectModel->setInputCloud(inputPointCloud);
 			break;
@@ -281,7 +266,7 @@ public:
 		case OBJMODEL_PLANE_FROM_LINES:
 		{
 			//ToDo check the initialization
-			cout << "[initSACModel] Using a model of type: OBJECT_MODEL_PLANE_FROM_LINES"<<endl;
+			cout << "[SAC Segmentation] Using a model of type: OBJECT_MODEL_PLANE_FROM_LINES"<<endl;
 			objectModel = new ObjectModelPlaneFromLines();
 			objectModel->setInputCloud(inputPointCloud);
 			break;
@@ -289,7 +274,7 @@ public:
 		case OBJMODEL_PLANE_FROM_LINE_AND_POINT:
 		{
 			//ToDo check the initialization
-			cout << "[initSACModel] Using a model of type: OBJECT_MODEL_PLANE_FROM_LINE_AND_POINT"<<endl;
+			cout << "[SAC Segmentation] Using a model of type: OBJECT_MODEL_PLANE_FROM_LINE_AND_POINT"<<endl;
 			objectModel = new ObjectModelPlaneFromLineAndPoint;
 			objectModel->setInputCloud(inputPointCloud);
 			break;
@@ -305,7 +290,7 @@ public:
 	/** @brief Initialize the Sample Consensus method and set its parameters.
 	 * @param method_type the type of SAC method to be used
 	 */
-	virtual inline void initSACMethod(const int method_type) {
+	inline void initSACMethod(const int method_type) {
 
 		switch (method_type) {
 		case SAC_ALMeDS: {
@@ -318,7 +303,7 @@ public:
 		}
 		case SAC_RANSAC:
 		{
-			cout<< "[initSAC] Using a method of type: SAC_RANSAC_ROS with a model threshold of "<<threshold<<endl;
+			cout<< "[SAC Segmentation] Using a method of type: SAC_RANSAC_ROS with a model threshold of "<<threshold<<endl;
 			sacMethod = new SACMethodRANSAC();
 			sacMethod->setObjectModel(objectModel);
 			sacMethod->setDistanceThreshold(threshold);
@@ -326,7 +311,7 @@ public:
 			break;
 		}
 		case SAC_LMEDS: {
-			cout<<"[initSAC] Using a method of type: SAC_LMeDS_ROS with a model threshold of "<<threshold<<endl;
+			cout<<"[SAC Segmentation] Using a method of type: SAC_LMeDS_ROS with a model threshold of "<<threshold<<endl;
 			sacMethod = new SACMethodLMeDS();
 			sacMethod->setObjectModel(objectModel);
 			sacMethod->setDistanceThreshold(threshold);
@@ -334,7 +319,7 @@ public:
 			break;
 		}
 		case SAC_MSAC: {
-			cout<<"[initSAC] Using a method of type: SAC_MSAC_ROS with a model threshold of "<<threshold<<endl;
+			cout<<"[SAC Segmentation] Using a method of type: SAC_MSAC_ROS with a model threshold of "<<threshold<<endl;
 			sacMethod = new SACMethodMSAC();
 			sacMethod->setObjectModel(objectModel);
 			sacMethod->setDistanceThreshold(threshold);
@@ -342,7 +327,7 @@ public:
 			break;
 		}
 		case SAC_MLESAC: {
-			cout<<"[initSAC] Using a method of type: SAC_MLESAC_ROS with a model threshold of "<<threshold<<endl;
+			cout<<"[SAC Segmentation] Using a method of type: SAC_MLESAC_ROS with a model threshold of "<<threshold<<endl;
 			sacMethod = new SACMethodMLESAC();
 			sacMethod->setObjectModel(objectModel);
 			sacMethod->setDistanceThreshold(threshold);
@@ -352,13 +337,13 @@ public:
 		}
 		// Set the Sample Consensus parameters if they are given/changed
 		if (sacMethod->getProbability() != probability) {
-			cout<<"[initSAC] Setting the desired probability to "<< this->probability<<endl;
+			cout<<"[SAC Segmentation] Setting the desired probability to "<< this->probability<<endl;
 			sacMethod->setProbability(probability);
 		}
 
 		if (maxIterations!= -1 && sacMethod->getMaxIterations()
 				!= maxIterations) {
-			cout<<"[initSAC] Setting the maximum number of iterations to "<<maxIterations<<endl;
+			cout<<"[SAC Segmentation] Setting the maximum number of iterations to "<<maxIterations<<endl;
 			sacMethod->setMaxIterations(maxIterations);
 		}
 	}
@@ -368,56 +353,41 @@ public:
 	 *  @param inliers the point indices lying inside the estimated model
 	 *  @param model_coefficients the resultant model coefficients
 	 */
-	virtual void
-	segment (std::vector<int> &inliers, Eigen::VectorXd &model_coefficients)
+	int
+	segment ()
 	{
+		assert(this->inputPointCloud!=NULL);
+		if(this->isColoredInput){
+			cout<<"[SAC Segmentation] Error : Does not support colored point cloud segmentation"<<endl;
+			return 0;
+		} else {
+			// Initialize the Sample Consensus model and set its parameters
+			if (!initSACModel (modelType))
+			{
+				cout<<"[SAC Segmentation] Error initializing the SAC model!"<<endl;
+				return 0;
+			}
 
-		// Initialize the Sample Consensus model and set its parameters
-		if (!initSACModel (modelType))
-		{
-			cout<<"[segment] Error initializing the SAC model!"<<endl;
-			return;
+			// Initialize the Sample Consensus method and set its parameters
+			initSACMethod(SACMethodType);
+
+			//Compute the model
+
+			if (!sacMethod->computeModel())
+			{
+				cout<<"[SAC Segmentation] Error segmenting the model! No solution found"<<endl;
+			}
+
+
+			// Get the model inliers
+			sacMethod->getInliers(inliers);
+
+
+			// Get the model coefficients
+			sacMethod->getModelCoefficients (this->modelCoefficients);
+
+			return 1;
 		}
-
-		// Initialize the Sample Consensus method and set its parameters
-		initSACMethod(SACMethodType);
-
-		//Compute the model
-
-		if (!sacMethod->computeModel())
-		{
-			cout<<"[segment] Error segmenting the model! No solution found"<<endl;
-		}
-
-
-		// Get the model inliers
-		sacMethod->getInliers(inliers);
-
-
-		// Get the model coefficients
-		Eigen::VectorXd coeff;
-		sacMethod->getModelCoefficients (coeff);
-
-
-		// If the user needs optimized coefficients
-		if (optimizeCoefficients)
-		{
-			/*Eigen::VectorXd coeff_refined;
-
-			objectModel->optimizeModelCoefficients(inliers,coeff,coeff_refined);
-			this->modelCoefficients =coeff_refined;
-			// Refine inliers
-			objectModel->selectWithinDistance(coeff_refined,threshold,inliers);
-			*/
-		}
-		else
-		{
-			this->modelCoefficients = coeff;
-
-		}
-
-		model_coefficients=this->modelCoefficients;
-
 	}
 };
 }

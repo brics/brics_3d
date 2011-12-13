@@ -17,21 +17,18 @@
 *
 ******************************************************************************/
 
-#ifndef EUCLIDEANCLUSTERING3D_H_
-#define EUCLIDEANCLUSTERING3D_H_
-
 #include "core/PointCloud3D.h"
 #include "core/ColoredPointCloud3D.h"
-#include "algorithm/nearestNeighbor/NearestNeighborANN.h"
-#include "algorithm/nearestNeighbor/NearestNeighborFLANN.h"
 #include "algorithm/segmentation/ISegmentation.h"
 
 #include <vector>
 #include<stdio.h>
-
 namespace BRICS_3D {
 
-class EuclideanClustering3D : public ISegmentation{
+/**
+ * The class provides a wrapper for ONLY simple KDTree based Euclidean Cluster Extraction in PCL
+ */
+class EuclideanClustering3D_PCL : public ISegmentation {
 
 private:
 
@@ -44,19 +41,24 @@ private:
 	/**
 	 * Minimum number of points to consider it as a cluster
 	 */
-	unsigned int minClusterSize;
+	int minClusterSize;
 
 
 	/**
 	 * Maximum number of points to be in the cluster
 	 */
-	unsigned int maxClusterSize;
+	int maxClusterSize;
+
+
+	std::vector<BRICS_3D::PointCloud3D*> extractedClusters;
+
+	std::vector<BRICS_3D::ColoredPointCloud3D*> extractedClustersColored;
+
 
 	/**
 	 * Takes a pointcloud and returns an array of pointcloud that make up the clusters.
 	 * The clusters are defined by the parameters being set
 	 * @param inCloud	Input point cloud
-	 * @param extractedClusters Vector of pointcluds containing the extracted clusters
 	 */
 	void extractClusters(BRICS_3D::PointCloud3D *inCloud);
 
@@ -65,19 +67,25 @@ private:
 	 * Takes a pointcloud and returns an array of pointcloud that make up the clusters.
 	 * The clusters are defined by the parameters being set
 	 * @param inCloud	Input point cloud
-	 * @param extractedClusters Vector of pointcluds containing the extracted clusters
 	 */
 	void extractClusters(BRICS_3D::ColoredPointCloud3D *inCloud);
 
 
-	std::vector<BRICS_3D::PointCloud3D*> extractedClusters;
-
-	std::vector<BRICS_3D::ColoredPointCloud3D*> extractedClustersColored;
-
-
 public:
-	EuclideanClustering3D();
-	virtual ~EuclideanClustering3D();
+	EuclideanClustering3D_PCL();
+	virtual ~EuclideanClustering3D_PCL();
+
+
+
+	void getExtractedClusters(std::vector<BRICS_3D::PointCloud3D*> &extractedClusters){
+		if(!isColoredInput)
+		extractedClusters = this->extractedClusters;
+	}
+
+	void getExtractedClusters(std::vector<BRICS_3D::ColoredPointCloud3D*> &extractedClusters){
+		if(isColoredInput)
+		extractedClusters = this->extractedClustersColored;
+	}
 
 
 	/**
@@ -138,20 +146,9 @@ public:
 		this->minClusterSize = minClusterSize;
 	}
 
-
-	void getExtractedClusters(std::vector<BRICS_3D::PointCloud3D*> &extractedClusters){
-		if(!isColoredInput)
-		extractedClusters = this->extractedClusters;
-	}
-
-	void getExtractedClusters(std::vector<BRICS_3D::ColoredPointCloud3D*> &extractedClusters){
-		if(isColoredInput)
-		extractedClusters = this->extractedClustersColored;
-	}
-
 	int segment();
 };
 
 }
 
-#endif /* EUCLIDEANCLUSTERING3D_H_ */
+

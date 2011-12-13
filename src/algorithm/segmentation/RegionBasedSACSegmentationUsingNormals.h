@@ -1,21 +1,21 @@
 /******************************************************************************
-* BRICS_3D - 3D Perception and Modeling Library
-* Copyright (c) 2011, GPS GmbH
-*
-* Author: Pinaki Sunil Banerjee
-*
-*
-* This software is published under a dual-license: GNU Lesser General Public
-* License LGPL 2.1 and Modified BSD license. The dual-license implies that
-* users of this code may choose which terms they prefer.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU Lesser General Public License LGPL and the BSD license for
-* more details.
-*
-******************************************************************************/
+ * BRICS_3D - 3D Perception and Modeling Library
+ * Copyright (c) 2011, GPS GmbH
+ *
+ * Author: Pinaki Sunil Banerjee
+ *
+ *
+ * This software is published under a dual-license: GNU Lesser General Public
+ * License LGPL 2.1 and Modified BSD license. The dual-license implies that
+ * users of this code may choose which terms they prefer.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License LGPL and the BSD license for
+ * more details.
+ *
+ ******************************************************************************/
 
 #ifndef REGIONBASEDSACSEGMENTATIONUSINGNORMALS_H_
 #define REGIONBASEDSACSEGMENTATIONUSINGNORMALS_H_
@@ -38,6 +38,9 @@ class RegionBasedSACSegmentationUsingNormals : public RegionBasedSACSegmentation
 
 private:
 
+	/** @brief The point normal based object model to be searched for in its parametric form. */
+	IObjectModelUsingNormals *objectModelUsingNormals;
+
 	/** @brief  Minimum and maximum radius allowable for the models*/
 	double radiusMin, radiusMax;
 
@@ -56,6 +59,10 @@ private:
 	double epsAngle;
 
 public:
+
+	const static int OBJMODEL_CYLINDER = 4;
+	const static int OBJMODEL_NORMAL_PLANE = 7;
+
 	RegionBasedSACSegmentationUsingNormals(){
 		this->threshold = -1;
 		this->maxIterations = 10000;
@@ -162,13 +169,13 @@ public:
 	/** @brief Initialize the Sample Consensus model and set its parameters.
 	 *  @param model_type the type of SAC model that is to be used
 	 */
-	virtual    inline bool
+	inline bool
 	initSACModel (const int model_type)
 	{
 		//Check if input is synced with the normals
 		if (this->inputPointCloud->getSize() != this->normalSet->getSize())
 		{
-			cout<<"[initSACModelUsing Normals] The number of points inthe input point cloud differs than the number of points in the normals!";
+			cout<<"[SAC Segmentation] The number of points inthe input point cloud differs than the number of points in the normals!";
 			return (false);
 		}
 
@@ -177,7 +184,7 @@ public:
 		{
 		case OBJMODEL_CYLINDER:
 		{
-			cout<<"[OBJModelCylinder : initSACModel] Using a model of type: OBJMODEL_CYLINDER"<<endl;
+			cout<<"[SAC Segmentation] Using a model of type: OBJMODEL_CYLINDER"<<endl;
 
 			this->objectModelUsingNormals =  new ObjectModelCylinder();
 			this->objectModelUsingNormals->setInputCloud(this->inputPointCloud);
@@ -188,39 +195,39 @@ public:
 			this->objectModelUsingNormals->getRadiusLimits(min_radius,max_radius);
 			if (this->radiusMin != min_radius && this->radiusMax!= max_radius)
 			{
-				cout<<"[OBJModelCylinder : initSACModel] Setting radius limits to "<< this->radiusMin<< ", "<<this->radiusMax<<endl;
+				cout<<"[SAC Segmentation] Setting radius limits to "<< this->radiusMin<< ", "<<this->radiusMax<<endl;
 				this->objectModelUsingNormals->setRadiusLimits (this->radiusMin, this->radiusMax);
 			}
 			if (this->normalDistanceWeight != this->objectModelUsingNormals->getNormalDistanceWeight ())
 			{
-				cout<< "[OBJModelCylinder : initSACModel] Setting normal distance weight to "<< this->normalDistanceWeight <<endl;
+				cout<< "[SAC Segmentation] Setting normal distance weight to "<< this->normalDistanceWeight <<endl;
 				this->objectModelUsingNormals->setNormalDistanceWeight (this->normalDistanceWeight);
 			}
 			break;
 		}
 		case OBJMODEL_NORMAL_PLANE:
 		{
-			cout<<"[OBJModelNormalPlane : initSACModel] Using a model of type: OBJMODEL_NORMAL_PLANE"<<endl;
+			cout<<"[SAC Segmentation] Using a model of type: OBJMODEL_NORMAL_PLANE"<<endl;
 			this->objectModelUsingNormals = new ObjectModelNormalPlane();
-
+			this->objectModelUsingNormals->setInputCloud(this->inputPointCloud);
 			// Set the input normals
 			this->objectModelUsingNormals->setInputNormals(this->normalSet);
 
 			if (normalDistanceWeight != this->objectModelUsingNormals->getNormalDistanceWeight ())
 			{
-				cout<< "[OBJModelNormalPlane : initSACModel] Setting normal distance weight to "<< this->normalDistanceWeight;
+				cout<< "[SAC Segmentation] Setting normal distance weight to "<< this->normalDistanceWeight;
 				this->objectModelUsingNormals->setNormalDistanceWeight(this->normalDistanceWeight);
 			}
 
 			if (this->objectModelUsingNormals->getAxis() != this->axis)
 			{
-				cout<<"[OBJModelNormalPlane : initSACModel] Setting the axis to"<< axis[0] << ", "
+				cout<<"[SAC Segmentation] Setting the axis to"<< axis[0] << ", "
 						<< axis[1] << ", " <<axis[2] <<endl;
 				this->objectModelUsingNormals->setAxis(axis);
 			}
 			if (this->objectModelUsingNormals->getEpsAngle () != this->epsAngle)
 			{
-				cout << "[OBJModelPlane : initSACModel] Setting the epsilon angle to "<< this->epsAngle;
+				cout << "[SAC Segmentation] Setting the epsilon angle to "<< this->epsAngle;
 				this->objectModelUsingNormals->setEpsAngle (this->epsAngle);
 			}
 			break;
@@ -240,11 +247,13 @@ public:
 	/** @brief Initialize the segmentation method and set the required parameters.
 	 *  @param methodType the type of Sample Consensus method to be used
 	 */
-	virtual inline void initSACMethod(const int methodType) {
+	inline void initSACMethod(const int methodType) {
+
+
 
 		switch (methodType) {
 		case SAC_ALMeDS: {
-			cout<<"[initSAC] Using a method of type: SAC_ALMeDS with a model threshold of "<<threshold<<endl;
+			cout<<"[SAC Segmentation] Using a method of type: SAC_ALMeDS with a model threshold of "<<threshold<<endl;
 			sacMethod = new SACMethodALMeDS();
 			sacMethod->setObjectModel(objectModelUsingNormals);
 			sacMethod->setDistanceThreshold(threshold);
@@ -253,23 +262,25 @@ public:
 		}
 		case SAC_RANSAC:
 		{
-			cout<< "[initSAC] Using a method of type: SAC_RANSAC with a model threshold of "<<threshold<<endl;
+			cout<< "[SAC Segmentation] Using a method of type: SAC_RANSAC with a model threshold of "<<threshold<<endl;
 			sacMethod = new SACMethodRANSAC();
 			sacMethod->setObjectModel(objectModelUsingNormals);
+
 			sacMethod->setDistanceThreshold(threshold);
 			sacMethod->setPointCloud(inputPointCloud);
 			break;
 		}
 		case SAC_LMEDS: {
-			cout<<"[initSAC] Using a method of type: SAC_LMeDS with a model threshold of "<<threshold<<endl;
+			cout<<"[SAC Segmentation] Using a method of type: SAC_LMeDS with a model threshold of "<<threshold<<endl;
 			sacMethod = new SACMethodLMeDS();
 			sacMethod->setObjectModel(objectModelUsingNormals);
+
 			sacMethod->setDistanceThreshold(threshold);
 			sacMethod->setPointCloud(inputPointCloud);
 			break;
 		}
 		case SAC_MSAC: {
-			cout<<"[initSAC] Using a method of type: SAC_MSAC with a model threshold of "<<threshold<<endl;
+			cout<<"[SAC Segmentation] Using a method of type: SAC_MSAC with a model threshold of "<<threshold<<endl;
 			sacMethod = new SACMethodMSAC();
 			sacMethod->setObjectModel(objectModelUsingNormals);
 			sacMethod->setDistanceThreshold(threshold);
@@ -277,7 +288,7 @@ public:
 			break;
 		}
 		case SAC_MLESAC: {
-			cout<<"[initSAC] Using a method of type: SAC_MLESAC with a model threshold of "<<threshold<<endl;
+			cout<<"[SAC Segmentation] Using a method of type: SAC_MLESAC with a model threshold of "<<threshold<<endl;
 			sacMethod = new SACMethodMLESAC();
 			sacMethod->setObjectModel(objectModelUsingNormals);
 			sacMethod->setDistanceThreshold(threshold);
@@ -288,13 +299,13 @@ public:
 
 		// Set the Sample Consensus parameters if they are given/changed
 		if (sacMethod->getProbability() != probability) {
-			cout<<"[initSAC] Setting the desired probability to "<< this->probability<<endl;
+			cout<<"[SAC Segmentation] Setting the desired probability to "<< this->probability<<endl;
 			sacMethod->setProbability(probability);
 		}
 
 		if (maxIterations!= -1 && sacMethod->getMaxIterations()
 				!= maxIterations) {
-			cout<<"[initSAC] Setting the maximum number of iterations to "<<maxIterations<<endl;
+			cout<<"[SAC Segmentation] Setting the maximum number of iterations to "<<maxIterations<<endl;
 			sacMethod->setMaxIterations(maxIterations);
 		}
 	}
@@ -304,56 +315,43 @@ public:
 	 *  @param inliers the point indices lying inside the estimated model
 	 *  @param model_coefficients the resultant model coefficients
 	 */
-	virtual void
-	segment (std::vector<int> &inliers, Eigen::VectorXd &model_coefficients)
+	int
+	segment ()
 	{
+		assert(this->inputPointCloud != NULL);
 
-		// Initialize the Sample Consensus model and set its parameters
-		if (!initSACModel (modelType))
-		{
-			cout<<"[segment] Error initializing the SAC model!"<<endl;
-			return;
+		if(this->isColoredInput){
+			cout<<"[SAC Segmentation] Error : Does not support colored point cloud segmentation"<<endl;
+			return 0;
+		} else {
+
+
+			// Initialize the Sample Consensus model and set its parameters
+			if (!initSACModel (modelType))
+			{
+				cout<<"[SAC Segmentation] Error initializing the SAC model!"<<endl;
+				return 0;
+			}
+
+			// Initialize the Sample Consensus method and set its parameters
+			initSACMethod(SACMethodType);
+
+			//Compute the model
+
+			if (!sacMethod->computeModel())
+			{
+				cout<<"[SAC Segmentation] Error segmenting the model! No solution found"<<endl;
+			}
+
+
+			// Get the model inliers
+			sacMethod->getInliers(inliers);
+
+
+			// Get the model coefficients
+			sacMethod->getModelCoefficients (this->modelCoefficients);
 		}
-
-		// Initialize the Sample Consensus method and set its parameters
-		initSACMethod(SACMethodType);
-
-		//Compute the model
-
-		if (!sacMethod->computeModel())
-		{
-			cout<<"[segment] Error segmenting the model! No solution found"<<endl;
-		}
-
-
-		// Get the model inliers
-		sacMethod->getInliers(inliers);
-
-
-		// Get the model coefficients
-		Eigen::VectorXd coeff;
-		sacMethod->getModelCoefficients (coeff);
-
-
-		// If the user needs optimized coefficients
-		if (optimizeCoefficients)
-		{
-		/*	Eigen::VectorXd coeff_refined;
-
-			objectModel->optimizeModelCoefficients(inliers,coeff,coeff_refined);
-			this->modelCoefficients =coeff_refined;
-			// Refine inliers
-			objectModel->selectWithinDistance(coeff_refined,threshold,inliers);
-		*/
-		}
-		else
-		{
-			this->modelCoefficients = coeff;
-
-		}
-
-		model_coefficients=this->modelCoefficients;
-
+	return 1;
 	}
 
 };
