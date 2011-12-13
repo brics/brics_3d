@@ -51,6 +51,8 @@ void
 ObjectModelCylinder::getSamples (int &iterations, std::vector<int> &samples)
 {
 
+	assert(this->inputPointCloud!=NULL);
+
 	samples.resize (2);
 	double trand = this->inputPointCloud->getSize() / (RAND_MAX + 1.0);
 
@@ -74,7 +76,7 @@ ObjectModelCylinder::getSamples (int &iterations, std::vector<int> &samples)
 bool ObjectModelCylinder::computeModelCoefficients (const std::vector<int> &samples,
 		Eigen::VectorXd &model_coefficients){
 
-	//ToDo Check for (samples.size () == 2);
+	assert (samples.size () == 2);
 
 	if (!this->normals && this->normals->getSize()!=this->inputPointCloud->getSize())
 	{
@@ -145,7 +147,7 @@ bool ObjectModelCylinder::computeModelCoefficients (const std::vector<int> &samp
 
 void ObjectModelCylinder::getDistancesToModel (const Eigen::VectorXd &model_coefficients, std::vector<double> &distances){
 
-	//ToDo Check for (model_coefficients.size () == 7);
+	assert (model_coefficients.size () == 7);
 
 	distances.resize (this->inputPointCloud->getSize());
 
@@ -188,7 +190,7 @@ void ObjectModelCylinder::getDistancesToModel (const Eigen::VectorXd &model_coef
 
 void ObjectModelCylinder::selectWithinDistance (const Eigen::VectorXd &model_coefficients, double threshold,
 		std::vector<int> &inliers){
-	//ToDo Check for (model_coefficients.size () == 7);
+	assert (model_coefficients.size () == 7);
 
 	int nr_p = 0;
 	inliers.resize (this->inputPointCloud->getSize());
@@ -279,7 +281,7 @@ void ObjectModelCylinder::getInlierDistance (std::vector<int> &inliers, const Ei
 bool ObjectModelCylinder::doSamplesVerifyModel (const std::set<int> &indices, const Eigen::VectorXd &model_coefficients,
 		double threshold){
 
-    //ToDo Check for (model_coefficients.size () == 7);
+    assert (model_coefficients.size () == 7);
 
     Eigen::Vector4d pt;
     for (std::set<int>::iterator it = indices.begin (); it != indices.end (); ++it)

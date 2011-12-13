@@ -50,8 +50,10 @@ void ObjectModelPlaneFromLines::computeRandomModel (int &iterations, Eigen::Vect
 
 void ObjectModelPlaneFromLines::getSamples (int &iterations, std::vector<int> &samples){
 
+	assert(this->inputPointCloud!=NULL);
+
 	points = inputPointCloud->getPointCloud();
-	//ToDo check that the pointcloud size > 0
+
 	samples.resize (4);
 	double trand = inputPointCloud->getSize() / (RAND_MAX + 1.0);
 

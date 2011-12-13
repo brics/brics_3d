@@ -118,7 +118,7 @@ void ObjectModelNormalPlane::getSamples(int &iterations, std::vector<int> &sampl
 
 bool ObjectModelNormalPlane::computeModelCoefficients (const std::vector<int> &samples, Eigen::VectorXd &model_coefficients){
 
-	//ToDo Check for (samples.size () == 3);
+	assert (samples.size () == 3);
 
 	Eigen::Vector4d p0, p1, p2;
 	// SSE friendly data check
@@ -161,7 +161,7 @@ bool ObjectModelNormalPlane::computeModelCoefficients (const std::vector<int> &s
 void
 ObjectModelNormalPlane::getInlierDistance (std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,  std::vector<double> &distances) {
 	// Needs a valid model coefficients
-	//ToDo ROS_ASSERT (model_coefficients.size () == 4);
+	assert(model_coefficients.size () == 4);
 
 	distances.resize (inliers.size());
 
@@ -181,7 +181,7 @@ bool
 ObjectModelNormalPlane::doSamplesVerifyModel (const std::set<int> &indices,
 		const Eigen::VectorXd &model_coefficients, double threshold)
 {
-	//Todo Check for (model_coefficients.size () == 4);
+	assert (model_coefficients.size () == 4);
 
 	for (std::set<int>::iterator it = indices.begin (); it != indices.end (); ++it)
 		if (fabs (model_coefficients[0] * this->points->data()[*it].getX() +
@@ -197,7 +197,7 @@ ObjectModelNormalPlane::doSamplesVerifyModel (const std::set<int> &indices,
 void
   ObjectModelNormalPlane::selectWithinDistance (const Eigen::VectorXd &model_coefficients, double threshold, std::vector<int> &inliers){
 
-    //ToDo Check for (model_coefficients.size () == 4);
+    assert (model_coefficients.size () == 4);
     if (!this->normals && this->normals->getSize()!=this->inputPointCloud->getSize())
     {
       cout<<"[ObjectModelNormalPlane::getDistancesToModel] No input dataset containing normals was given!";
@@ -263,7 +263,7 @@ void
   ObjectModelNormalPlane::getDistancesToModel (const Eigen::VectorXd &model_coefficients,
 		  std::vector<double> &distances){
 
-    //ToDo Check for (model_coefficients.size () == 4);
+    assert (model_coefficients.size () == 4);
 
     if (!this->normals && this->normals->getSize()!=this->inputPointCloud->getSize())
     {

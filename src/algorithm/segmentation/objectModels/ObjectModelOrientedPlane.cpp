@@ -48,7 +48,7 @@ void ObjectModelOrientedPlane::selectWithinDistance(const Eigen::VectorXd &model
 
 void ObjectModelOrientedPlane::getDistancesToModel (const Eigen::VectorXd &model_coefficients,
 		std::vector<double> &distances){
-    //ToDo check for (model_coefficients.size () == 4);
+    assert (model_coefficients.size () == 4);
 
     // Obtain the plane normal
     Eigen::Vector4d coeff = model_coefficients;

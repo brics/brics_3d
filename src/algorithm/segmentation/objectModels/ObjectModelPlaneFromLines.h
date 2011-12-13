@@ -74,8 +74,8 @@ public:
 		const std::vector<double> &v0,
 		const std::vector<double> &v1,
 		std::vector<double> &v_out){
-		//ToDo ASSERT_(v0.size()==3)
-		//ToDo ASSERT_(v1.size()==3);
+		assert(v0.size()==3);
+		assert(v1.size()==3);
 		v_out[0] =  v0[1]*v1[2] - v0[2]*v1[1];
 		v_out[1] = -v0[0]*v1[2] + v0[2]*v1[0];
 		v_out[2] =  v0[0]*v1[1] - v0[1]*v1[0];

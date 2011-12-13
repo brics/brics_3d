@@ -78,7 +78,7 @@ void ObjectModelLine::getSamples (int &iterations, std::vector<int> &samples){
 bool ObjectModelLine::computeModelCoefficients (const std::vector<int> &samples,
 		Eigen::VectorXd &model_coefficients){
 
-	//ToDo check for (samples.size () == 2);
+	assert (samples.size () == 2);
 
 	model_coefficients.resize (6);
 	model_coefficients[0] = this->points->data()[samples[0]].getX();
@@ -100,7 +100,7 @@ bool ObjectModelLine::computeModelCoefficients (const std::vector<int> &samples,
 void ObjectModelLine::optimizeModelCoefficients (const std::vector<int> &inliers,
 		const Eigen::VectorXd &model_coefficients,
 		Eigen::VectorXd &optimized_coefficients){
-	//ToDo check for (model_coefficients.size () == 6);
+	assert (model_coefficients.size () == 6);
 
 	if (inliers.size () == 0)
 	{
@@ -109,7 +109,7 @@ void ObjectModelLine::optimizeModelCoefficients (const std::vector<int> &inliers
 		return;
 	}
 
-	//ToDo check for (inliers.size () > 2);
+	assert (inliers.size () > 2);
 
 	optimized_coefficients.resize (6);
 
@@ -139,7 +139,7 @@ void ObjectModelLine::optimizeModelCoefficients (const std::vector<int> &inliers
 
 void ObjectModelLine::getDistancesToModel (const Eigen::VectorXd &model_coefficients,
 		std::vector<double> &distances){
-	//ToDo check for (model_coefficients.size () == 6);
+	assert (model_coefficients.size () == 6);
 
 	distances.resize (this->inputPointCloud->getSize());
 
@@ -169,7 +169,7 @@ void ObjectModelLine::getDistancesToModel (const Eigen::VectorXd &model_coeffici
 
 void ObjectModelLine::selectWithinDistance (const Eigen::VectorXd &model_coefficients, double threshold,
 		std::vector<int> &inliers){
-	//ToDo check for (model_coefficients.size () == 6);
+	assert (model_coefficients.size () == 6);
 
 	double sqr_threshold = threshold * threshold;
 
@@ -212,7 +212,7 @@ void ObjectModelLine::selectWithinDistance (const Eigen::VectorXd &model_coeffic
 void ObjectModelLine::getInlierDistance (std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,
 		std::vector<double> &distances){
 
-	//ToDo Check for (model_coefficients.size () == 6);
+	assert (model_coefficients.size () == 6);
 
 	distances.resize (this->inputPointCloud->getSize());
 
@@ -245,7 +245,7 @@ void ObjectModelLine::projectPoints (const std::vector<int> &inliers, const Eige
 		PointCloud3D* projectedPointCloud){
 
 
-	//ToDo Check for (model_coefficients.size () == 6);
+	assert (model_coefficients.size () == 6);
 
 	// Obtain the line point and direction
 	Eigen::Vector4d line_pt  (model_coefficients[0], model_coefficients[1], model_coefficients[2], 0);
@@ -273,7 +273,7 @@ void ObjectModelLine::projectPoints (const std::vector<int> &inliers, const Eige
 bool ObjectModelLine::doSamplesVerifyModel (const std::set<int> &indices, const Eigen::VectorXd &model_coefficients,
 		double threshold){
 
-	//ToDo Check for (model_coefficients.size () == 6);
+	assert (model_coefficients.size () == 6);
 
      // Obtain the line point and direction
      Eigen::Vector4d line_pt  (model_coefficients[0], model_coefficients[1], model_coefficients[2], 0);

@@ -48,7 +48,7 @@ void ObjectModelPlane::computeRandomModel (int &iterations, Eigen::VectorXd &mod
 }
 
 void ObjectModelPlane::getSamples(int &iterations, std::vector<int> &samples){
-
+	assert(this->inputPointCloud!=NULL);
 	points = inputPointCloud->getPointCloud();
 
 	samples.resize (3);
@@ -115,7 +115,7 @@ void ObjectModelPlane::getSamples(int &iterations, std::vector<int> &samples){
 }
 
 bool ObjectModelPlane::computeModelCoefficients (const std::vector<int> &samples, Eigen::VectorXd &model_coefficients){
-	//ToDo Check (samples.size () == 3);
+	assert (samples.size () == 3);
 
 	Eigen::Vector4d p0, p1, p2;
 	// SSE friendly data check
@@ -158,8 +158,8 @@ bool ObjectModelPlane::computeModelCoefficients (const std::vector<int> &samples
 void
 ObjectModelPlane::getDistancesToModel (const Eigen::VectorXd &model_coefficients, std::vector<double> &distances)
 {
-	//Todo Check for a valid set of model coefficients
 
+	assert(model_coefficients.size() == 4);
 	distances.resize (this->inputPointCloud->getSize());
 
 	// Iterate through the 3d points and calculate the distances from them to the plane
@@ -178,7 +178,7 @@ ObjectModelPlane::getDistancesToModel (const Eigen::VectorXd &model_coefficients
 void
 ObjectModelPlane::selectWithinDistance (const Eigen::VectorXd &model_coefficients, double threshold, std::vector<int> &inliers)
 {
-	//Todo Check for a valid set of model coefficients
+	assert(model_coefficients.size() == 4);
 
 	int nr_p = 0;
 	inliers.resize (this->inputPointCloud->getSize());
@@ -204,7 +204,7 @@ ObjectModelPlane::selectWithinDistance (const Eigen::VectorXd &model_coefficient
 
 void
 ObjectModelPlane::getInlierDistance (std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,  std::vector<double> &distances) {
-	//Todo Check for a valid set of model coefficients
+	assert(model_coefficients.size() == 4);
 
 	distances.resize (inliers.size());
 
@@ -223,7 +223,7 @@ ObjectModelPlane::getInlierDistance (std::vector<int> &inliers, const Eigen::Vec
 bool
 ObjectModelPlane::doSamplesVerifyModel (const std::set<int> &indices, const Eigen::VectorXd &model_coefficients, double threshold)
 {
-	//Todo Check for a valid set of model coefficients
+	assert(model_coefficients.size() == 4);
 
 	for (std::set<int>::iterator it = indices.begin (); it != indices.end (); ++it)
 		if (fabs (model_coefficients[0] * this->points->data()[*it].getX() +

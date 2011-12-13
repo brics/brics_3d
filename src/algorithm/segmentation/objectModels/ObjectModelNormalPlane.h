@@ -47,7 +47,10 @@ private:
 
 
 public:
-	ObjectModelNormalPlane(){};
+
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
+    ObjectModelNormalPlane(){};
 	virtual ~ObjectModelNormalPlane(){};
 
     /** @brief Set the axis along which we need to search for a plane perpendicular to.

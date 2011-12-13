@@ -130,7 +130,7 @@ ObjectModelSphere:: getSamples (int &iterations, std::vector<int> &samples)
 bool
 ObjectModelSphere::computeModelCoefficients (const std::vector<int> &samples, Eigen::VectorXd &model_coefficients)
 {
-	// ToDo check for at-least 4 samples
+	assert(samples.size() == 4);
 
 	Eigen::Matrix4f temp;
 	for (int i = 0; i < 4; i++)
@@ -192,7 +192,7 @@ ObjectModelSphere::computeModelCoefficients (const std::vector<int> &samples, Ei
 void
 ObjectModelSphere:: getDistancesToModel (const Eigen::VectorXd &model_coefficients, std::vector<double> &distances)
 {
-	//ToDo Check if we have 4 model coefficients
+	assert(model_coefficients.size() == 4);
 
 	distances.resize (this->inputPointCloud->getSize());
 
@@ -217,7 +217,7 @@ void
 ObjectModelSphere::getInlierDistance (std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,
 		std::vector<double> &distances) {
 
-	//ToDo Check if we have 4 model coefficients
+	assert(model_coefficients.size() == 4);
 
 	distances.resize (inliers.size());
 
@@ -243,7 +243,7 @@ void
 ObjectModelSphere::selectWithinDistance (const Eigen::VectorXd &model_coefficients, double threshold, std::vector<int> &inliers)
 {
 
-	//ToDo Check if we have 4 model coefficients
+	assert(model_coefficients.size() == 4);
 	int nr_p = 0;
 	inliers.resize (this->inputPointCloud->getSize());
 
@@ -278,7 +278,7 @@ ObjectModelSphere::selectWithinDistance (const Eigen::VectorXd &model_coefficien
 bool
 ObjectModelSphere::doSamplesVerifyModel (const std::set<int> &indices, const Eigen::VectorXd &model_coefficients, double threshold)
 {
-	//ToDo Check if we have 4 model coefficients
+	assert(model_coefficients.size() == 4);
 
 	for (std::set<int>::iterator it = indices.begin (); it != indices.end (); ++it)
 		// Calculate the distance from the point to the sphere as the difference between

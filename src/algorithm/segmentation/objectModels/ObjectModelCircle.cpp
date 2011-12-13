@@ -54,6 +54,7 @@ void ObjectModelCircle::computeRandomModel (int &iterations, Eigen::VectorXd &mo
 void
 ObjectModelCircle::getSamples (int &iterations, std::vector<int> &samples)
 {
+	assert(this->inputPointCloud!=NULL);
 
 	samples.resize (3);
 	double trand = this->inputPointCloud->getSize() / (RAND_MAX + 1.0);
@@ -121,7 +122,7 @@ ObjectModelCircle::getSamples (int &iterations, std::vector<int> &samples)
 bool
 ObjectModelCircle::computeModelCoefficients (const std::vector<int> &samples, Eigen::VectorXd &model_coefficients)
 {
-	//ToDo Check for (samples.size () == 3);
+	assert (samples.size () == 3);
 
 	model_coefficients.resize (3);
 
@@ -155,7 +156,7 @@ ObjectModelCircle::computeModelCoefficients (const std::vector<int> &samples, Ei
 void
 ObjectModelCircle:: getDistancesToModel (const Eigen::VectorXd &model_coefficients, std::vector<double> &distances)
 {
-	//ToDo Check for (model_coefficients.size () == 3);
+	assert (model_coefficients.size () == 3);
 
 	distances.resize (this->inputPointCloud->getSize());
 
@@ -177,7 +178,7 @@ void
 ObjectModelCircle::getInlierDistance (std::vector<int> &inliers, const Eigen::VectorXd &model_coefficients,
 		std::vector<double> &distances) {
 
-	//Todo Check for (model_coefficients.size () == 3);
+	assert (model_coefficients.size () == 3);
 
 	distances.resize (inliers.size());
 
@@ -199,7 +200,7 @@ void
 ObjectModelCircle::selectWithinDistance (const Eigen::VectorXd &model_coefficients, double threshold, std::vector<int> &inliers)
 {
 
-	//Todo Check for (model_coefficients.size () == 3);
+	assert (model_coefficients.size () == 3);
 
 	int nr_p = 0;
 	inliers.resize (this->inputPointCloud->getSize());
@@ -229,7 +230,7 @@ ObjectModelCircle::selectWithinDistance (const Eigen::VectorXd &model_coefficien
 bool
 ObjectModelCircle:: doSamplesVerifyModel (const std::set<int> &indices, const Eigen::VectorXd &model_coefficients, double threshold)
 {
-	//ToDo Check for (model_coefficients.size () == 3);
+	assert (model_coefficients.size () == 3);
 
 	for (std::set<int>::iterator it = indices.begin (); it != indices.end (); ++it)
 		// Calculate the distance from the point to the sphere as the difference between

@@ -47,6 +47,9 @@ protected:
 	double epsAngle;
 
 public:
+
+	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
 	IObjectModelUsingNormals(){};
 	virtual ~IObjectModelUsingNormals(){};
 

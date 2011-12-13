@@ -37,6 +37,9 @@ private:
 	double epsAngle;
 
 public:
+
+	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
 	ObjectModelOrientedPlane(){};
 	virtual ~ObjectModelOrientedPlane(){};
 
