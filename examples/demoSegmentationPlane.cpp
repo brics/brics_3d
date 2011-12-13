@@ -48,17 +48,17 @@ int main(){
 	BRICS_3D::RegionBasedSACSegmentation sacSegmenter;
 
 	//Initialize the segmenter
+	sacSegmenter.setPointCloud(&cloud);
 	sacSegmenter.setDistanceThreshold(0.01);
-	sacSegmenter.setInputPointCloud(&cloud);
 	sacSegmenter.setMaxIterations(1000);
 	sacSegmenter.setMethodType(sacSegmenter.SAC_RANSAC);
 	sacSegmenter.setModelType(sacSegmenter.OBJMODEL_PLANE_FROM_LINE_AND_POINT);
-	sacSegmenter.setOptimizeCoefficients(true);
 	sacSegmenter.setProbability(0.99);
 
 	//Perform the segmentation
-	sacSegmenter.segment(inliers,modelCoefficients);
-
+	sacSegmenter.segment();
+	sacSegmenter.getInliers(inliers);
+	sacSegmenter.getModelCoefficients(modelCoefficients);
 
 	if (inliers.size() == 0)
 	{

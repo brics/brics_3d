@@ -39,7 +39,8 @@ int main(){
 
 	//read the points into the pointcloud
 	//Please modify the path if there is a file read error.
-	cloud.readFromTxtFile("./trunk/src/algorithm/segmentation/evaluation/data/demoCloud.txt");
+	//FIXME do not use absolute path
+	cloud.readFromTxtFile("./src/algorithm/segmentation/evaluation/data/demoCloud.txt");
 
 	if (cloud.getSize()>0){
 	cout<< "INFO: Current PointCloud Size: " <<cloud.getSize()<<endl;
@@ -66,18 +67,19 @@ int main(){
 	BRICS_3D::RegionBasedSACSegmentationUsingNormals sacSegmenterUsingNormals;
 
 	//Initialize the segmenter
+	sacSegmenterUsingNormals.setPointCloud(&cloud);
 	sacSegmenterUsingNormals.setDistanceThreshold(0.01);
-	sacSegmenterUsingNormals.setInputPointCloud(&cloud);
 	sacSegmenterUsingNormals.setMaxIterations(1000);
 	sacSegmenterUsingNormals.setMethodType(sacSegmenterUsingNormals.SAC_RANSAC);
-	sacSegmenterUsingNormals.setModelType(sacSegmenterUsingNormals.OBJMODEL_CYLINDER);
-	sacSegmenterUsingNormals.setOptimizeCoefficients(false);
+	sacSegmenterUsingNormals.setModelType(sacSegmenterUsingNormals.OBJMODEL_NORMAL_PLANE);
 	sacSegmenterUsingNormals.setProbability(0.99);
 	sacSegmenterUsingNormals.setInputNormals(&normalSet);
 
 
 	//Perform the segmentation
-	sacSegmenterUsingNormals.segment(inliers,modelCoefficients);
+	sacSegmenterUsingNormals.segment();
+	sacSegmenterUsingNormals.getInliers(inliers);
+	sacSegmenterUsingNormals.getModelCoefficients(modelCoefficients);
 
 	if (inliers.size() == 0)
 	{

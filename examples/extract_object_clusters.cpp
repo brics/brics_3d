@@ -23,7 +23,7 @@
 
 #include "util/PCLTypecaster.h"
 #include "algorithm/segmentation/EuclideanClustering3D.h"
-#include "algorithm/segmentation/EuclideanClustering.h"
+#include "algorithm/segmentation/EuclideanClustering3D_PCL.h"
 #include "algorithm/filtering/ColorBasedROIExtractorHSV.h"
 #include "algorithm/featureExtraction/Centroid3D.h"
 #include "core/ColorSpaceConvertor.h"
@@ -46,7 +46,7 @@ private:
 	BRICS_3D::PCLTypecaster pclTypecaster;
 	BRICS_3D::ColorBasedROIExtractorHSV roiExtractor;
 	BRICS_3D::EuclideanClustering3D clusterExtractor;
-	BRICS_3D::EuclideanClustering pclClusterExtractor;
+	BRICS_3D::EuclideanClustering3D_PCL pclClusterExtractor;
 	BRICS_3D::ColorSpaceConvertor colorSpaceConvertor;
 	BRICS_3D::Centroid3D centroid3DEstimator;
 	Eigen::Vector3d centroid;
@@ -70,21 +70,23 @@ public:
 
 			clock_t startTime = clock();
 			pclTypecaster.convertToBRICS3DDataType(cloud,inCloud);
-//			cout << "[CHEAT] Converted Input Cloud Size " << inCloud->getSize() << "\tExectution Time "
-//					<< double( clock() - startTime ) / (double)CLOCKS_PER_SEC<< " seconds." <<endl;
+			cout << "[CHEAT] Converted Input Cloud Size " << inCloud->getSize() << "\tExectution Time "
+					<< double( clock() - startTime ) / (double)CLOCKS_PER_SEC<< " seconds." <<endl;
 
 			//Extracting the HSV based Region of Interest
 			BRICS_3D::PointCloud3D *extractedRoiHSV = new BRICS_3D::PointCloud3D();
 			startTime = clock();
 			roiExtractor.extractColorBasedROI(inCloud,extractedRoiHSV);
-//			cout << "[CHEAT] ROI Extracted Cloud Size " << extractedRoiHSV->getSize() << "\t\tExectution Time "
-//					<< double( clock() - startTime ) / (double)CLOCKS_PER_SEC<< " seconds." <<endl;
+			cout << "[CHEAT] ROI Extracted Cloud Size " << extractedRoiHSV->getSize() << "\t\tExectution Time "
+					<< double( clock() - startTime ) / (double)CLOCKS_PER_SEC<< " seconds." <<endl;
 			//Extracting the Object Clusters
 			vector<BRICS_3D::PointCloud3D*> pclExtractedClusters;
 			startTime = clock();
-			pclClusterExtractor.extractClusters(extractedRoiHSV,&pclExtractedClusters);
-//			cout << "[CHEAT] No of clusters extracted (PCL): " << pclExtractedClusters.size() << "\t\tExectution Time "
-//					<< double( clock() - startTime ) / (double)CLOCKS_PER_SEC<< " seconds." <<endl;
+			pclClusterExtractor.setPointCloud(extractedRoiHSV);
+			pclClusterExtractor.segment();
+			pclClusterExtractor.getExtractedClusters(pclExtractedClusters);
+			cout << "[CHEAT] No of clusters extracted (PCL): " << pclExtractedClusters.size() << "\t\tExectution Time "
+					<< double( clock() - startTime ) / (double)CLOCKS_PER_SEC<< " seconds." <<endl;
 
 
 			//Extracting the Object Clusters
@@ -95,17 +97,17 @@ public:
 			//				<< double( clock() - startTime ) / (double)CLOCKS_PER_SEC<< " seconds." <<endl;
 
 			//Obtaining the inial 3D pose
-			for (size_t i=0; i< pclExtractedClusters.size(); i++){
-				centroid = centroid3DEstimator.computeCentroid(pclExtractedClusters[i]);
+//			for (size_t i=0; i< pclExtractedClusters.size(); i++){
+//				centroid = centroid3DEstimator.computeCentroid(pclExtractedClusters[i]);
 //				cout << "[CHEAT] Pose of Object-" << i+1 << " is : ["<<centroid[0] << ", "
 //						<< centroid[1] << ", " << centroid[2] << "]" << endl;
-			}
+//			}
 
 			//Visualizing the output
-
-//			viewer.addPointCloud(inCloudVis);
-			viewer.addPointCloud(extractedRoiHSV, 1, 0, 0, 0);
 			viewer.clearButLast();
+			viewer.addPointCloud(inCloudVis);
+			viewer.addPointCloud(extractedRoiHSV, 1, 0, 0, 0);
+
 
 
 			delete inCloud;
