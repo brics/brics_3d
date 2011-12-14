@@ -24,7 +24,7 @@
 #include "util/PCLTypecaster.h"
 #include "algorithm/segmentation/EuclideanClustering.h"
 #include "algorithm/segmentation/EuclideanClusteringPCL.h"
-//#include "algorithm/segmentation/RGBColorBasedEuclideanClustering.h"
+#include "algorithm/segmentation/RGBColorBasedEuclideanClustering.h"
 #include "algorithm/filtering/ColorBasedROIExtractorHSV.h"
 #include "algorithm/featureExtraction/Centroid3D.h"
 #include "core/ColorSpaceConvertor.h"
@@ -48,7 +48,7 @@ private:
 	BRICS_3D::ColorBasedROIExtractorHSV roiExtractor;
 	BRICS_3D::EuclideanClustering clusterExtractor;
 	BRICS_3D::EuclideanClusteringPCL pclClusterExtractor;
-//	BRICS_3D::RGBColorBasedEuclideanClustering rgbColorBasedClusterExtractor;
+	BRICS_3D::RGBColorBasedEuclideanClustering rgbColorBasedClusterExtractor;
 	BRICS_3D::ColorSpaceConvertor colorSpaceConvertor;
 	BRICS_3D::Centroid3D centroid3DEstimator;
 	Eigen::Vector3d centroid;
