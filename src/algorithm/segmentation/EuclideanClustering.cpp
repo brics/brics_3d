@@ -85,13 +85,13 @@ void EuclideanClustering::extractClusters(BRICS_3D::PointCloud3D *inCloud){
 
 			sq_idx++;
 		}
-		std::cout << "[CHEAT][EuclideanClustering3D] {sq_id : seed_q.size}"<< sq_idx << " : "<< seed_queue.size() << std::endl;
+//		std::cout << "[CHEAT][EuclideanClustering3D] {sq_id : seed_q.size}"<< sq_idx << " : "<< seed_queue.size() << std::endl;
 		// If this queue is satisfactory, add to the clusters
 		if (seed_queue.size () >= minClusterSize && seed_queue.size () <= maxClusterSize)
 		{
-			std::cout << "[CHEAT][EuclideanClustering3D] found one cluster, size="<< seed_queue.size() << std::endl;
+//			std::cout << "[CHEAT][EuclideanClustering3D] found one cluster, size="<< seed_queue.size() << std::endl;
 
-			seed_queue.erase(std::unique(seed_queue.begin(), seed_queue.end()));
+			seed_queue.erase(std::unique(seed_queue.begin(), seed_queue.end()),seed_queue.end());
 			BRICS_3D::PointCloud3D *tempPointCloud =  new BRICS_3D::PointCloud3D();
 
 			for (size_t j = 0; j < seed_queue.size (); ++j) {
@@ -107,12 +107,10 @@ void EuclideanClustering::extractClusters(BRICS_3D::PointCloud3D *inCloud){
 			extractedClusters.push_back(tempPointCloud);
 			delete tempPointCloud;
 		}
-		std::cout << "[CHEAT][EuclideanClustering3D] "<< i << " : " << seed_queue.size () << std::endl;
+//		std::cout << "[CHEAT][EuclideanClustering3D] "<< i << " : " << seed_queue.size () << std::endl;
 	}
 }
 void EuclideanClustering::extractClusters(BRICS_3D::ColoredPointCloud3D *inCloud){
-	printf("Nothing is implemented for Colored Point CLouds\n");
-
 
 	int k = inCloud->getSize();
 	BRICS_3D::NearestNeighborANN nearestneighborSearch;
@@ -165,13 +163,13 @@ void EuclideanClustering::extractClusters(BRICS_3D::ColoredPointCloud3D *inCloud
 
 			sq_idx++;
 		}
-		std::cout << "[CHEAT][EuclideanClustering3D] {sq_id : seed_q.size}"<< sq_idx << " : "<< seed_queue.size() << std::endl;
+//		std::cout << "[CHEAT][EuclideanClustering3D] {sq_id : seed_q.size}"<< sq_idx << " : "<< seed_queue.size() << std::endl;
 		// If this queue is satisfactory, add to the clusters
 		if (seed_queue.size () >= minClusterSize && seed_queue.size () <= maxClusterSize)
 		{
-			std::cout << "[CHEAT][EuclideanClustering3D] found one cluster, size="<< seed_queue.size() << std::endl;
+//			std::cout << "[CHEAT][EuclideanClustering3D] found one cluster, size="<< seed_queue.size() << std::endl;
 
-			seed_queue.erase(std::unique(seed_queue.begin(), seed_queue.end()));
+			seed_queue.erase(std::unique(seed_queue.begin(), seed_queue.end()),seed_queue.end());
 			BRICS_3D::ColoredPointCloud3D *tempPointCloud =  new BRICS_3D::ColoredPointCloud3D();
 
 			for (size_t j = 0; j < seed_queue.size (); ++j) {
@@ -190,7 +188,7 @@ void EuclideanClustering::extractClusters(BRICS_3D::ColoredPointCloud3D *inCloud
 			extractedClusters.push_back(tempPointCloud);
 			delete tempPointCloud;
 		}
-		std::cout << "[CHEAT][EuclideanClustering3D] "<< i << " : " << seed_queue.size () << std::endl;
+//		std::cout << "[CHEAT][EuclideanClustering3D] "<< i << " : " << seed_queue.size () << std::endl;
 	}
 
 }

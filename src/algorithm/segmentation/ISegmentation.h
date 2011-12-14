@@ -61,7 +61,7 @@ public:
 	 *  @param pointer to the input pointcloud
 	 */
 	inline void
-	setPointCloud (ColoredPointCloud3D* inputPointCloud)
+	setPointCloud (ColoredPointCloud3D* inputPointCloudColored)
 	{
 		this->inputPointCloudColored = inputPointCloudColored;
 		isColoredInput = true;
