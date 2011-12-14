@@ -136,8 +136,7 @@ SET (ALGORITHM_LIBRARY_SOURCES
 	./algorithm/segmentation/SACMethods/SACMethodMLESAC
     ./algorithm/segmentation/RegionBasedSACSegmentation.h
     ./algorithm/segmentation/RegionBasedSACSegmentationUsingNormals.h
-    ./algorithm/segmentation/EuclideanClustering3D       
-    ./algorithm/segmentation/EuclideanClustering3D
+    ./algorithm/segmentation/EuclideanClustering       
 )
 
 SET (UTIL_LIBRARY_SOURCES
@@ -181,7 +180,7 @@ ENDIF(USE_OSG)
 
 IF (USE_PCL AND USE_EIGEN3)
     list(APPEND UTIL_LIBRARY_SOURCES ./util/PCLTypecaster)
-    list(APPEND ALGORITHM_LIBRARY_SOURCES ./algorithm/segmentation/EuclideanClustering3D_PCL) 
+    list(APPEND ALGORITHM_LIBRARY_SOURCES ./algorithm/segmentation/EuclideanClusteringPCL) 
     list(APPEND BRICS_3D_LIBRARIES_INCLUDE_DIRS ${PCL_INCLUDE_DIRS} )
     list(APPEND UTIL_LIBRARY_LIBS  pcl_io)
     list(APPEND ALGORITHM_LIBRARY_LIBS  pcl_io pcl_segmentation)
