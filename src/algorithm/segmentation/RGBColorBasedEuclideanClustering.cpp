@@ -93,6 +93,7 @@ int RGBColorBasedEuclideanClustering::getMaxClusterSize() const
 
     void RGBColorBasedEuclideanClustering::extractClusters(BRICS_3D::ColoredPointCloud3D *inCloud)
     {
+    	this->extractedClusters.clear();
         BRICS_3D::PCLTypecaster pclTypecaster;
         pcl::PointCloud<pcl::PointXYZ>::Ptr inputXYZ(new pcl::PointCloud<pcl::PointXYZ>());
         pcl::PointCloud<pcl::PointXYZRGB>::Ptr inputXYZRGB(new pcl::PointCloud<pcl::PointXYZRGB>());
