@@ -30,7 +30,7 @@ class Transform;
 class GeometricNode;
 
 /**
- * @brief Abstract interface for visitors of the scene graph
+ * @brief Abstract interface for visitors of the scene graph (Visitor pattern).
  */
 class INodeVisitor {
 public:

@@ -26,6 +26,9 @@ namespace BRICS_3D {
 
 namespace RSG {
 
+/**
+ * Abstract interface for point cloud data in the scenegraph.
+ */
 class PointCloud : public Shape {
   public:
     PointCloud();

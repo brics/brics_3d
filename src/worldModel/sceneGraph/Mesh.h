@@ -26,6 +26,9 @@ namespace BRICS_3D {
 
 namespace RSG {
 
+/**
+ * Abstract interface for mesh data in the scenegraph.
+ */
 class Mesh : public Shape {
   public:
     Mesh();

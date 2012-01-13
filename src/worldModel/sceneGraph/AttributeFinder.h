@@ -33,6 +33,9 @@ namespace BRICS_3D {
 
 namespace RSG {
 
+/**
+ * Special graph traversal to find those nodes that contain a certain subset of Attributes.
+ */
 class AttributeFinder: public INodeVisitor {
 public:
 	AttributeFinder();

@@ -1,0 +1,17 @@
+/*!
+
+@page examples Examples
+
+This page summarizes examples on how to use the BRICS_3D library.
+
+@section demo_example Demo application
+
+@include BRICS_3D_Demo.cpp
+
+@section morld_model_example World model sample application
+
+@dontinclude WorldModelTest.cpp 
+@skip testSimpleHanoiUseCase
+@until testTowerOfHanoi
+
+*/

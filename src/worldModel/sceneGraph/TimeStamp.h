@@ -24,6 +24,9 @@ namespace BRICS_3D {
 
 namespace RSG {
 
+/**
+ * Simple container for time data.
+ */
 class TimeStamp {
   public:
 	TimeStamp(){};

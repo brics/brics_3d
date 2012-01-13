@@ -30,6 +30,7 @@ void WorldModelTest::testConstructor() {
 }
 
 void WorldModelTest::testSimpleHanoiUseCase() {
+	///[world_model_hanoi_example]
 	WorldModel* myWM = new WorldModel();
 	Timer* timer = new Timer();
 
@@ -94,6 +95,7 @@ void WorldModelTest::testSimpleHanoiUseCase() {
 	myWM->stopPerception();
 	delete myWM;
 	delete timer;
+	///[world_model_hanoi_example]
 }
 
 void WorldModelTest::testTowerOfHanoi() {

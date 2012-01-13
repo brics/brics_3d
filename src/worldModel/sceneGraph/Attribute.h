@@ -32,6 +32,19 @@ namespace BRICS_3D {
 
 namespace RSG {
 
+/**
+ * Attribute lists store (string-based) key-value pairs. Each node has attached attributes.
+ * So it is possible to start a search query on all nodes in a scenegraph and identify
+ * those nodes specified by the attributes. This concept can be seen as "semantic tagging"
+ * of the elements in a scene. These tags could contain something generic like a name or
+ * a node type or task specific tags like (color, green) or "robot" or "obstacle", etc.
+ *
+ * For a particular application a convention for these attributes need to be introduced.
+ * Such an example could be:
+ *
+ *   - "shapeType": {"Box"}
+ *   - "color": {"red", "green", "yellow"}
+ */
 class Attribute {
   public:
     string key;
@@ -66,6 +79,12 @@ class Attribute {
 
 };
 
+/**
+ * Helper tool to check if a certain attribute is included in an attribute list.
+ * @param attributeList The list to be checked.
+ * @param queryAttribute THe attribute of intrest.
+ * @return True if list contains the attribute otherwise false.
+ */
 extern bool attributeListContainsAttribute(vector<Attribute> attributeList, Attribute queryAttribute);
 
 } // namespace BRICS_3D::RSG
