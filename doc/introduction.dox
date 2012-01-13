@@ -6,8 +6,11 @@
 
 The 3D perception and modeling domain can be classified into several subareas: 
  - @ref depth_perception_def
+ - @ref filtering_def
+ - @ref feature_extraction_def
  - @ref registration_def
  - @ref segmentation_def
+ - @ref classification_def
  - @ref mesh_generation_def
  - @ref visualization_def
  
@@ -22,6 +25,9 @@ range images. Although the depth perception is a crucial step for 3D perception,
 this work that depth images are already given. Algorithms in this domain are typically hardware
 dependent. This library will provide functionality to turn a depth image into a point cloud representation.
 
+Further information on the implemented algorithms can be found in the @ref depth_perception section.
+
+
 @subsection filtering_def Filtering
 A filter is an algorithm that is able to process a data stream, in this case point cloud data.
 Three major filtering techniques are often applied to point clouds: noise reduction, size reduction
@@ -30,14 +36,23 @@ and normal estimation.
  
 Noise reduction filters try to remedy shortcomings of the sensors measurements. Size reduction
 filters sub-sample the input data to get an approximated but smaller amount of data. The less
-input data an algorithms has, the faster the processing is. Normal estimation filters are needed to
-compute a normal vector for each point in a point cloud. The normal represents the plane normal
-vector of an underlying patch of the surface. Many algorithms requires point clouds with normals
-to further process the data. The filtering stage can be regarded as optional, but it is a valuable
+input data an algorithms has, the faster the processing is. The filtering stage can be regarded as optional, but it is a valuable
 contribution to create more robust or faster results.
 
-@see filtering "More" 
- 
+Further information on the implemented algorithms can be found in the @ref filtering section. 
+
+
+@subsection feature_extraction_def Feature extraction
+
+Feature extraction methods typically try to detect distinctive points or regions in the input image or 
+point cloud data. Different descriptors exist to describe these regions on a local scale for points and
+regions or on global scale that takes bigger portions or the complete scene into account. 
+
+Normal estimation methods are needed to
+compute a normal vector for each point in a point cloud. The normal represents the plane normal
+vector of an underlying patch of the surface. Many algorithms requires point clouds with normals
+to further process the data.  
+
  
 @subsection registration_def Registration
 Registration, also sometimes referred as <i>matching</i>, is the process of merging captures from
@@ -47,6 +62,9 @@ different perspectives. Some tasks require to integrate all perceived scene capt
 model to reason about it (for example to plan a path). The most prominent algorithm to
 solve the registration problem for point clouds is the Iterative Closest Point (ICP) method.
 
+Further information on the implemented algorithms can be found in the @ref registration section.
+
+
 @subsection segmentation_def Segmentation
 Segmentation means a spatial partition of point clouds into subsets that belong to different
 objects. 3D models of special shapes, like boxes, cylinders or balls are often fitted into these
@@ -54,6 +72,14 @@ regions to model the perceived objects. <br>
 With respect to a mobile manipulation application that needs a triangle set representation of an 
 environment this stage can be regarded as optional. However, the segmentation of data might
 be helpful to recognize objects that can be grasped, for example.
+
+@subsection classification_def Classification
+
+A classification algorithm tries to associate the data with categories or objects stored in prior
+knowledge database. To find such correspondences, methods like for instance Nearest Neighbor Search,
+Support Vector Machines or Neural Networks can be used. 
+
+Further information on the implemented algorithms can be found in the @ref nearestNeighbor section.
  
 @subsection mesh_generation_def Mesh generation
 The goal of the mesh generation step is to transform a 3D point cloud into a triangle mesh.
@@ -62,6 +88,8 @@ inverse CAD or geometric modeling</i> (in computer vision). Most of these terms 
 in a broader context that already includes some filtering or registration steps. The notion mesh
 generation is used here in a more limited way restricted to the part of model transformation from
 point cloud to triangle mesh.
+
+Further information on the implemented algorithms can be found in the @ref mesh_generation section.
 
 @subsection visualization_def Visualization 
 Visualization, or rendering, is the process of displaying the 3D models. This involves a
@@ -74,5 +102,6 @@ Robotic applications do not necessarily need to visualize the generated models, 
 can serve as a development or debug tool to visually inspect intermediate results or the
 output of certain algorithms. 
 
+Further information on the implemented algorithms can be found in the @ref visualization section.
 
 */
