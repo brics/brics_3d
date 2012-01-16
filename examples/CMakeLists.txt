@@ -70,18 +70,7 @@ IF (USE_OSG)
     	${OSGGA_LIBRARY_DEBUG}
     	${OSGVIEWER_LIBRARY_DEBUG}
     )
-    	  	    	
-    ADD_EXECUTABLE(osg_delaunay osg_delaunay)
-    TARGET_LINK_LIBRARIES(osg_delaunay
-        brics3d_core 
-        brics3d_algorithm
-        brics3d_util
-    	${OSG_LIBRARY_DEBUG}
-    	${OSGGA_LIBRARY_DEBUG}
-    	${OSGUTIL_LIBRARY_DEBUG}
-    	${OSGVIEWER_LIBRARY_DEBUG}   	
-    )
-    
+    	  	    	    
     ADD_EXECUTABLE(icp_test icp_test) 
     TARGET_LINK_LIBRARIES(icp_test
         brics3d_core 

@@ -6,6 +6,14 @@ This page summarizes examples on how to use the BRICS_3D library.
 
 @section demo_example Demo application
 
+The BRIC_3D_Demo program demonstrates some core capabilities of the BRICS_3D library.
+It will start by loading either a depth image or a point cloud,
+down-sample the data in an Octree-based filtering step,
+optionally register two point clouds into common coordinate system,
+creates triangle mesh and visualize the result.
+
+The programs sources are listed below. Find further explanation inline in the code.
+
 @include BRICS_3D_Demo.cpp
 
 @section morld_model_example World model sample application

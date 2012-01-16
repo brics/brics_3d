@@ -17,6 +17,7 @@
 *
 ******************************************************************************/
 
+/* BRICS_3D includes */
 #include <util/DepthImageLoader.h>
 #include <util/OSGPointCloudVisualizer.h>
 #include <util/OSGTriangleMeshVisualizer.h>
@@ -29,7 +30,7 @@
 #include <algorithm/depthPerception/DepthImageToPointCloudTransformation.h>
 #include <algorithm/meshGeneration/DelaunayTriangulationOSG.h>
 
-
+/* general includes */
 #include <iostream>
 #include <cstring>
 
@@ -37,12 +38,25 @@ using namespace std;
 using namespace BRICS_3D;
 
 
-
+/*
+ * The program demonstrates some capabilities of the BRICS_3D library.
+ * It will:
+ *  1.) start by loading either a depth image or a point cloud,
+ *  2.) down-sample the data in an Octree-based filtering step,
+ *  3.) optionally register two point clouds into common coordinate system,
+ *  4.) creates triangle mesh and
+ *  5.) visualize the result.
+ *
+ */
 int main(int argc, char **argv) {
-	bool loadDepthImage = false; // if true, load depth  image, other wise load from txt file
-	int nInputClouds = 1; // number of input point clouds
+	bool loadDepthImage = false;    // if true, load depth  image, other wise load from txt file
+	int nInputClouds = 1;           // number of input point clouds
 
-	/* check argument */
+	/* check arguments
+	 * In case no arguments are given a default depth image will be loaded.
+	 * In case one argument is given it will be treated as a depth image.
+	 * In case two arguments are given the files will be treated as txt files.
+	 */
 	string filename1;
 	string filename2;
 	if (argc == 1) {
@@ -56,7 +70,7 @@ int main(int argc, char **argv) {
 		loadDepthImage = true;
 	} else if (argc == 2) {
 		filename1 = argv[1];
-		loadDepthImage = false; //TODO implement function that decides automatically by file extension
+		loadDepthImage = false;
 		cout << filename1 << endl;
 	} else if (argc == 3) {
 		filename1 = argv[1];
@@ -68,9 +82,11 @@ int main(int argc, char **argv) {
 		return -1;
 	}
 
-
+	/* create the point cloud containers */
 	PointCloud3D* pointCloud1 = new PointCloud3D();
 	PointCloud3D* pointCloud2 = new PointCloud3D();
+
+	/* load 3d data */
 	if (loadDepthImage == true) {
 
 		/* get depth image */
@@ -95,23 +111,21 @@ int main(int argc, char **argv) {
 	cout << "Size of point cloud: " << pointCloud1->getSize() << endl;
 
 
-	/* (optionally) reduce  point cloud with octree filter */
+	/* reduce point cloud with Octree filter */
 	Octree* octreeFilter = new Octree();
-	octreeFilter->setVoxelSize(4.0); //value deduce from roughly knowing the bounding box
+	octreeFilter->setVoxelSize(4.0); 	//value deduced from roughly knowing the data in advance...
 	PointCloud3D* reducedPointCloud = new PointCloud3D();
 	octreeFilter->reducePointCloud(pointCloud1, reducedPointCloud);
-//	delete pointCloud;
-//	pointCloud = reducedPointCloud;
 
-
-	/* if necessary perform registration  */
+	/* optionally perform registration via ICP */
 	if(nInputClouds == 2) {
 		IterativeClosestPointFactory* icpFactory = new IterativeClosestPointFactory();
 		IIterativeClosestPointPtr icp;
-		icp = icpFactory->createIterativeClosestPoint(); //take default
+		icp = icpFactory->createIterativeClosestPoint(); //take default ICP, otherwise pass a configuration file as parameter
 		IHomogeneousMatrix44* resultTransformation = new HomogeneousMatrix44();
 		icp->match(pointCloud1, pointCloud2, resultTransformation);
 
+		/* here we use the streaming functionality to append a point cloud to another */
 		stringstream tmpSteam;
 		tmpSteam << *pointCloud2;
 		tmpSteam >> *pointCloud1;
@@ -119,21 +133,22 @@ int main(int argc, char **argv) {
 
 	cout << "Size of point cloud: " << pointCloud1->getSize() << endl;
 
-	/* visualize point cloud */
+	/* visualize the point cloud */
 	OSGPointCloudVisualizer* visualizer = new OSGPointCloudVisualizer();
 	visualizer->visualizePointCloud(pointCloud1);
 
 	/* create mesh */
-//	ITriangleMesh* mesh = new TriangleMeshImplicit();
 	ITriangleMesh* mesh = new TriangleMeshExplicit();
 	DelaunayTriangulationOSG* meshGenerator = new DelaunayTriangulationOSG();
 	meshGenerator->triangulate(pointCloud1, mesh);
 	cout << "Number of generated triangles: " << mesh->getSize() << endl;
+
 	/* visualize mesh */
 	OSGTriangleMeshVisualizer* meshVisualizer = new OSGTriangleMeshVisualizer();
 	meshVisualizer->addTriangleMesh(mesh);
 	meshVisualizer->visualize();
 
+	/* clean up */
 	delete meshVisualizer;
 	delete meshGenerator;
 	delete visualizer;
