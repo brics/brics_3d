@@ -13,6 +13,19 @@ This library is biased towards 3D perception and modeling for mobile manipulatio
  - @ref demo_example
  - @ref pointcloud_viewer
  - @ref world_model_example
+- @ref tutorials
+  - @ref point_tutorial
+  - @ref point_cloud_tutorial
+  - @ref transformation_tutorial
+  - @ref triangle_mesh_tutorial
+  - @ref visualizer_tutorial
+- @ref Algorithms
+ - @ref depth_perception
+ - @ref filtering
+ - @ref registration 
+ - @ref nearestNeighbor
+ - @ref mesh_generation
+ - @ref visualization
 - @ref license 
 
 @section license Licensing
@@ -37,11 +50,15 @@ called <a href="../../LGPL-2.1">LGPL-2.1</a> and <a href="../../BSDlicense">BSDl
  
 @defgroup depth_perception Depth perception
 	@brief This module has simple capabilities for depth perception.
+		
+	An introduction can be found in the @ref depth_perception_def section. 
 
  
  
 @defgroup filtering Filtering
 	@brief This module contains algorithms for filtering of point clouds. 
+	
+    An introduction can be found in the @ref filtering_def section. 
  
 	For example the Octree based size reduction filter can be found here.
  
@@ -50,24 +67,31 @@ called <a href="../../LGPL-2.1">LGPL-2.1</a> and <a href="../../BSDlicense">BSDl
 @defgroup registration Registration
 	@brief This module contains algorithms for registration of point clouds.
  
-	The module comprises in particular the Iterative Closest Point algorithm (ICP) and atomic sub components.
+    An introduction can be found in the @ref registration_def section. 
+    This modules module comprises in particular the Iterative Closest Point algorithm (ICP) and atomic sub components.
  
  
   
 @defgroup mesh_generation Mesh generation
  	@brief This module offers algorithms for mesh generation.
-  
+
+    An introduction can be found in the @ref mesh_generation_def section.   
  	The module contains Delaunay triangulation and related methods.
   
   
  
 @defgroup visualization Visualization
- 	@brief This module has tools for visualization od 3D representations
+ 	@brief This module has tools for visualization of 3D representations
   
+    An introduction can be found in the @ref visualization_def section.
   
   
 @defgroup nearestNeighbor NearestNeighbor
 	@brief This module contains algorithms for nearest neighbor search.
 
+    An introduction can be found in the @ref classification_def section.
+    
+    
+    
  */
   

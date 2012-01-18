@@ -37,7 +37,8 @@ namespace BRICS_3D {
 
 /**
  * @class OSGPointCloudVisualizer
- * @brief Displays point clouds in an Open Scene Graph (OSG) viewer
+ * @brief Displays point clouds in an Open Scene Graph (OSG) viewer.
+ * @ingroup visualization
  */
 class OSGPointCloudVisualizer {
 public:

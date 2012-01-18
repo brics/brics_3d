@@ -27,6 +27,10 @@
 
 namespace BRICS_3D {
 
+/**
+ * @brief Abstract interface for color-based extractions point cloud subsets
+ * @ingroup filtering
+ */
 class IColorBasedROIExtractor {
 public:
 

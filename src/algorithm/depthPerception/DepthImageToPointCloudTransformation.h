@@ -33,14 +33,9 @@
 namespace BRICS_3D {
 
 /**
- * @class DepthImageToPointCloudTransformation
- * @brief Transforms a depth image into a point cloud
- * @author Sebastian Blumenthal
- * @date Aug 25, 2009
+ * @brief Transforms a depth image into a point cloud.
  *
- * TODO: Note that this class needs further implementation regarding intrinsic camera parameters.
- *
- * Results are at the moment <b>just preliminary</b>!
+ * @ingroup depth_perception
  *
  *  Point cloud frame:
  *

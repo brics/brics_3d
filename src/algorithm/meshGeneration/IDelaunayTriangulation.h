@@ -31,6 +31,10 @@ enum axis {
 	z
 };
 
+/**
+ * @brief Abstract interface for Delaunay triangulation methods
+ * @ingroup mesh_generation
+ */
 class IDelaunayTriangulation {
 public:
 	IDelaunayTriangulation(){};

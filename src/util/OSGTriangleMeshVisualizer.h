@@ -31,6 +31,10 @@
 
 namespace BRICS_3D {
 
+/**
+ * @brief Displays triangle meshes in an Open Scene Graph (OSG) viewer.
+ * @ingroup visualization
+ */
 class OSGTriangleMeshVisualizer {
 public:
 

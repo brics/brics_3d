@@ -17,6 +17,10 @@
 
 namespace BRICS_3D {
 
+/**
+ * @brief Extracts subset of input point cloud based on color-properties in RGB color space
+ * @ingroup filtering
+ */
 class ColorBasedROIExtractorRGB : public IColorBasedROIExtractor  {
 
 	int red;

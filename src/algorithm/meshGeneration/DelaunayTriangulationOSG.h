@@ -24,6 +24,14 @@
 
 namespace BRICS_3D {
 
+/**
+ * @brief Implementation for 2.5D Delaunay triangulation method offered from OSG library.
+ * @ingroup mesh_generation
+ *
+ * This algorithm takes a point cloud as input and flattens it along one axis. This
+ * projection is used to perform a Delaunay triangulation in 2D space.
+ *
+ */
 class DelaunayTriangulationOSG : public IDelaunayTriangulation {
 public:
 	DelaunayTriangulationOSG();

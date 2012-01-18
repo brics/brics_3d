@@ -24,6 +24,10 @@
 
 namespace BRICS_3D {
 
+/**
+ * @brief Extracts subset of input point cloud based on color-properties in HSV color space
+ * @ingroup filtering
+ */
 class ColorBasedROIExtractorHSV : public IColorBasedROIExtractor {
 
 private:
