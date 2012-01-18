@@ -36,31 +36,31 @@ void WorldModelTest::testSimpleHanoiUseCase() {
 
 	/* Add predefined area */
 	SceneObject* targetArea = new SceneObject();
-	Shape::ShapePtr targetShape(new Cylinder(0.5,0)); // radius and height in [m] TODO: boost::units ?
-	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr initPose(new HomogeneousMatrix44()); 	// here: identity matrix
+	Shape::ShapePtr targetShape(new Cylinder(0.5,0)); // radius and height in [m]
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr initPose(new HomogeneousMatrix44()); 	// here we use the identity matrix as it is the default constructor
 	targetArea->shape = targetShape;
 	targetArea->transform = initPose;
 	targetArea->parentId =  myWM->getRootNodeId(); // hook in after root node
-	targetArea->attributes.push_back(Attribute("shapeType","Cylinder"));
+	targetArea->attributes.push_back(Attribute("shapeType","Cylinder")); //here we choose some meaning full tags; theses tags will help us to formulate queries later
 	targetArea->attributes.push_back(Attribute("taskType","targetArea"));
 	uint targetAreaID; //Stores the ID assigned by the world model, so we can later reference to the object.
 	myWM->addSceneObject(*targetArea, targetAreaID);
 
-	/* Move the added object */
+	/* Move the added object a little bit */
 	IHomogeneousMatrix44* tmpTrasformation = new HomogeneousMatrix44(0,0,0,  //Rotation coefficients
 	                                                                 0,0,0,
 	                                                                 0,0,0,
 	                                                                 2,3,0); //Translation coefficients
 	TimeStamp currentTimeStamp;
 	currentTimeStamp.timeStamp = timer->getCurrentTime();
-//	myWM->setTransform(targetAreaID, tmpTransform, currentTimeStamp); // FIXME how much RSG should be exposed?
+//	myWM->setTransform(targetAreaID, tmpTransform, currentTimeStamp);
 
 
 	/* Start perception */
 	myWM->initPerception();
 	myWM->runPerception(); //starts some thread
 
-	/* Pose a query */
+	/* Pose a query formed by Attributes. Please note that multiple Attributes are logically connected via AND */
 	vector<Attribute> queryArributes;
 	queryArributes.push_back(Attribute("shapeType","Box"));
 	queryArributes.push_back(Attribute("color","green"));
@@ -70,7 +70,7 @@ void WorldModelTest::testSimpleHanoiUseCase() {
 
 	/* Browse the results */
 	cout << resultObjects.size() << " green Boxes found." << endl;
-	for(unsigned int i = 0; i < resultObjects.size() ; ++i) {
+	for(unsigned int i = 0; i < resultObjects.size() ; ++i) { // just loop over all objects
 	    cout << "ID: " << resultObjects[i].id << endl;
 	    cout << "TF: " << resultObjects[i].transform << endl;
 	    for(unsigned int j = 0; j < resultObjects[i].attributes.size() ; ++j) {

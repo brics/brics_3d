@@ -1,0 +1,123 @@
+/*!
+
+@page quickstart Getting started
+
+This page is a brief guide to get the first program running with the BRICS_3D library.
+
+@section quickstart_installation How to install
+
+As an overview you will need to satisfy (at least) the required dependencies:
+
+   -# Boost 1.37 (or higher)
+   -# Eigen2 2.0.13 (or higher, Eigen3 is recommended)
+   -# OpenCV 2.0 (or higher) 
+
+Then compile with:
+
+@code
+ $ mkdir build
+ $ cd build 
+ $ cmake ..
+ $ make
+ $ sudo make install
+@endcode
+
+Please see the @ref installation page for detailed instructions.
+
+
+
+@section fist_program A first program
+
+Create a file with name hallo_world.cpp and add the following lines:
+
+@code
+#include <core/PointCloud3D.h>
+#include <iostream>
+
+int main(int argc, char **argv) {
+	BRICS_3D::PointCloud3D* myPointCloud = new BRICS_3D::PointCloud3D();
+
+	myPointCloud->addPoint(BRICS_3D::Point3D(0,0,0));
+	myPointCloud->addPoint(BRICS_3D::Point3D(1,0,0));
+	myPointCloud->addPoint(BRICS_3D::Point3D(0,1,0));
+	myPointCloud->addPoint(BRICS_3D::Point3D(0,0,1));
+
+	std::cout << *myPointCloud;
+
+	delete myPointCloud;
+}
+@endcode
+
+
+
+@section fist_program_compilation Compiling and running the first program
+
+Create a CMakeLists.txt file that contains the following lines:
+
+@verbatim
+CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+PROJECT(BRICS_3D_hallo_world)
+
+SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/external/cmake_modules")
+FIND_PACKAGE(BRICS_3D REQUIRED)
+
+# add include directories ()-I
+INCLUDE_DIRECTORIES(${BRICS_3D_INCLUDE_DIRS})
+
+# add library directories (-L)
+LINK_DIRECTORIES(${BRICS_3D_LINK_DIRECTORIES})
+
+# compile and link the executables 
+ADD_EXECUTABLE(hallo_world hallo_world.cpp)
+TARGET_LINK_LIBRARIES(hallo_world ${BRICS_3D_LIBRARIES})
+@endverbatim
+
+Create a subfolder external/cmake_moduled and copy over the FindBRICS_3D.cmake file from the BRICS_3D sources. 
+It is located in external/cmake_moduled subfolder too.
+
+@code
+ $ mkdir build
+ $ cd build 
+ $ cmake ..
+ $ make
+@endcode
+
+the you can run the executable via typing:
+
+@code
+ $ ./hello_world
+@endcode
+
+You should retrieve an output like this:
+
+@verbatim
+0 0 0
+1 0 0
+0 1 0
+0 0 1
+@endverbatim
+
+
+
+@section fist_program_explanation Explanation of the first program
+
+The header @code #include <core/PointCloud3D.h> @endcode includes the point cloud representation used within BRICS_3D. 
+Then an empty point cloud is created by issuing @code BRICS_3D::PointCloud3D* myPointCloud = new BRICS_3D::PointCloud3D(); @endcode
+This is cloud is then filled with four Cartesian points:
+
+@code
+	myPointCloud->addPoint(BRICS_3D::Point3D(0,0,0));
+	myPointCloud->addPoint(BRICS_3D::Point3D(1,0,0));
+	myPointCloud->addPoint(BRICS_3D::Point3D(0,1,0));
+	myPointCloud->addPoint(BRICS_3D::Point3D(0,0,1));
+@endcode
+
+The point cloud can be then easily print out via streaming to cout:
+
+@code
+	std::cout << *myPointCloud; 		
+@endcode
+
+Further examples and explanations can be found on the @ref examples page.
+
+*/

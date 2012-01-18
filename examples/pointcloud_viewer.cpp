@@ -28,10 +28,18 @@ using namespace std;
 using namespace BRICS_3D;
 
 
-
+/*
+ * This program loads a point cloud from a txt file, optionally filters the data with in Octree based
+ * sub-sampling filter to reduce the data and finally visualizes the result.
+ */
 int main(int argc, char **argv) {
 
-	/* check argument */
+	/* check arguments
+	 * In case no arguments are given a default txt file with 3D data will be loaded.
+	 * In case one argument is given it will be treated a txt file
+	 * In case two arguments are given the first argument specifies the txt file and the second on defines a
+	 * voxelsize for an activated Octree based filtering.
+	 */
 	string filename;
 	bool useOctree = false;
 	double voxelSize = 0.0;
@@ -56,18 +64,22 @@ int main(int argc, char **argv) {
 		return -1;
 	}
 
-	/* convert to point cloud */
+	/* load to point cloud */
 	PointCloud3D* pointCloud = new PointCloud3D();
 	pointCloud->readFromTxtFile(filename);
 	cout << "Size of cloud: " << pointCloud->getSize() << endl;
 
 	/* optionally reduce with octree */
 	if (useOctree == true) {
+		/* create and parameterize the Octree filter */
 		Octree* octreeReductionFilter = new Octree();
 		octreeReductionFilter->setVoxelSize(voxelSize);
+
+		/* do the filtering */
 		PointCloud3D* reducedPointCloud = new PointCloud3D();
 		octreeReductionFilter->reducePointCloud(pointCloud, reducedPointCloud);
-		delete pointCloud;
+
+		delete pointCloud; // here we discard the old data
 		pointCloud = reducedPointCloud;
 		cout << "Octree reduction filtering performed with voxel size: " << voxelSize <<endl;
 		cout << "Size of reduced cloud: " << pointCloud->getSize() << endl;
@@ -76,7 +88,7 @@ int main(int argc, char **argv) {
 	/* visualize point cloud */
 	OSGPointCloudVisualizer* visualizer = new OSGPointCloudVisualizer();
 	visualizer->visualizePointCloud(pointCloud);
-//	visualizer->visualizePointCloud(pointCloud, 0.0f, 1.0f, 0.0f, 1.0f); //green
+//	visualizer->visualizePointCloud(pointCloud, 0.0f, 1.0f, 0.0f, 1.0f); //this will change the color to green
 
 	return 0;
 }

@@ -8,8 +8,11 @@ This library is biased towards 3D perception and modeling for mobile manipulatio
 
 - @ref introduction
 - @ref installation
+- @ref quickstart
 - @ref examples
  - @ref demo_example
+ - @ref pointcloud_viewer
+ - @ref world_model_example
 - @ref license 
 
 @section license Licensing
