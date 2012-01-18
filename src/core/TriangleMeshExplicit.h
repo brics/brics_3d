@@ -26,6 +26,9 @@
 
 namespace BRICS_3D {
 
+/**
+ * @brief @e Explicit triangle mesh representation.
+ */
 class TriangleMeshExplicit : public ITriangleMesh {
 public:
 

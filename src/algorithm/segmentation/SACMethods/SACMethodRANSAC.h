@@ -14,8 +14,10 @@
 namespace BRICS_3D {
 
 /**
- * @brief class implementing the Random Sample Consensus based segmentation method. The code is a re-factored version
- *  of the algorithm implementation in ROS:PCL.
+ * @brief class implementing the Random Sample Consensus based segmentation method.
+ * @ingroup segmentation
+ *
+ * The code is a re-factored version of the algorithm implementation in ROS:PCL.
  *
  **/
 //ToDo add reference to the method

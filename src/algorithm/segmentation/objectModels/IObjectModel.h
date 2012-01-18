@@ -32,8 +32,12 @@
 using namespace std;
 
 namespace BRICS_3D{
-/*
- * @brief Base class for representing 3D shapes. The base functions and interfaces are
+
+/**
+ * @brief Base class for representing 3D shapes.
+ * @ingroup segmentation
+ *
+ * The base functions and interfaces are
  * derived from various open-source libraries which provide segmentation functionalities
  * for example ROS:PCL, MRPT, ITk, etc
  */

@@ -73,6 +73,10 @@ With respect to a mobile manipulation application that needs a triangle set repr
 environment this stage can be regarded as optional. However, the segmentation of data might
 be helpful to recognize objects that can be grasped, for example.
 
+Further information on the implemented algorithms can be found in the @ref segmentation section.
+
+
+ 
 @subsection classification_def Classification
 
 A classification algorithm tries to associate the data with categories or objects stored in prior

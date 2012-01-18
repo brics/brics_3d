@@ -26,6 +26,7 @@ namespace BRICS_3D {
 /**
  * @brief Finds a plane model from two 3D line segments in the data.
  * @note The implementation is reusing the object model implementation in MRPT
+ * @ingroup segmentation
  */
 class ObjectModelPlaneFromLines : public ObjectModelPlane {
 protected:

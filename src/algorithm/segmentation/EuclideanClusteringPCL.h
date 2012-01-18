@@ -29,6 +29,7 @@ namespace BRICS_3D {
 
 /**
  * The class provides a wrapper for ONLY simple KDTree based Euclidean Cluster Extraction in PCL
+ * @ingroup segmentation
  */
 class EuclideanClusteringPCL : public ISegmentation {
 

@@ -15,6 +15,10 @@
 #include <float.h>
 namespace BRICS_3D {
 
+/**
+ * @brief Abstract interface for Sample-Based-Consensus(SAC) methods.
+ * @ingroup segmentation
+ */
 class ISACMethods {
 protected:
 	/** @brief The object model to be searched for in its parametric form. */

@@ -28,6 +28,10 @@
 
 namespace BRICS_3D {
 
+/**
+ * @brief Segmentation based on Eucledian distance and distance in RGB color-space.
+ * @ingroup segmentation
+ */
 class RGBColorBasedEuclideanClustering : public ISegmentation{
 
 private:

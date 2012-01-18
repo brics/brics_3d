@@ -24,6 +24,9 @@
 
 namespace BRICS_3D {
 
+/**
+ * @ingroup segmentation
+ */
 class ObjectModelCircle : public IObjectModel {
 
 private:

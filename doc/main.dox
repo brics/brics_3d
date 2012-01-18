@@ -22,7 +22,8 @@ This library is biased towards 3D perception and modeling for mobile manipulatio
 - @ref Algorithms
  - @ref depth_perception
  - @ref filtering
- - @ref registration 
+ - @ref registration
+ - @ref segmentation 
  - @ref nearestNeighbor
  - @ref mesh_generation
  - @ref visualization
@@ -70,7 +71,11 @@ called <a href="../../LGPL-2.1">LGPL-2.1</a> and <a href="../../BSDlicense">BSDl
     An introduction can be found in the @ref registration_def section. 
     This modules module comprises in particular the Iterative Closest Point algorithm (ICP) and atomic sub components.
  
+@defgroup segmentation Segmentation
+	@brief This module contains algorithms for segmenation algorithms for point clouds.
  
+    An introduction can be found in the @ref segmentation_def section. 
+
   
 @defgroup mesh_generation Mesh generation
  	@brief This module offers algorithms for mesh generation.

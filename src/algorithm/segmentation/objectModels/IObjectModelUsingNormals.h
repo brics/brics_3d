@@ -26,7 +26,9 @@
 namespace BRICS_3D {
 
 
-
+/**
+ * @ingroup segmentation
+ */
 class IObjectModelUsingNormals : public IObjectModel{
 
 

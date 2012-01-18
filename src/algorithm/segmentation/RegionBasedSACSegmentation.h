@@ -49,6 +49,7 @@ namespace BRICS_3D{
 
 /**
  * @brief Adapter class for initialization of sample consensus based segmentation method.
+ * @ingroup segmentation
  */
 class RegionBasedSACSegmentation : public ISegmentation {
 

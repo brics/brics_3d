@@ -26,6 +26,10 @@
 
 namespace BRICS_3D{
 
+/**
+ * @brief Abstract interface for segmentation methods.
+ * @ingroup segmentation
+ */
 class ISegmentation{
 
 protected:

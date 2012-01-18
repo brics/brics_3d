@@ -26,6 +26,7 @@ namespace BRICS_3D {
 
 /**
  * @note The implementation is reusing the object model implementation in MRPT
+ * @ingroup segmentation
  */
 class ObjectModelPlaneFromLineAndPoint : public ObjectModelPlane{
 protected:

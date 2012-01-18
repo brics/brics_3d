@@ -52,6 +52,7 @@ pointToPlaneDistanceSigned (const Point3D &p, const Eigen::Vector4d &plane_coeff
 
 /**
  * @note The implementation is reusing the object model implementation in ROS:PCl
+ * @ingroup segmentation
  */
 class ObjectModelPlane:public IObjectModel {
 

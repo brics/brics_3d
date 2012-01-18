@@ -31,6 +31,10 @@
 
 namespace BRICS_3D {
 
+/**
+ * @brief Segmentation based on Eucledian distance between point clusters.
+ * @ingroup segmentation
+ */
 class EuclideanClustering : public ISegmentation{
 
 private:

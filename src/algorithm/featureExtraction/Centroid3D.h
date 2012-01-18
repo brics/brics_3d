@@ -26,6 +26,9 @@
 #include <Eigen/Dense>
 namespace BRICS_3D {
 
+/**
+ * @brief Computes the centroid of a point cloud.
+ */
 class Centroid3D {
 public:
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW

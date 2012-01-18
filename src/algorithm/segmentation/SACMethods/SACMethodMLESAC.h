@@ -14,8 +14,10 @@
 namespace BRICS_3D {
 
 /**
- * @brief class implementing the MLESAC method. The code is a re-factored version
- *  of the algorithm implementation in ROS:PCL
+ * @brief class implementing the MLESAC method.
+ * @ingroup segmentation
+ *
+ * The code is a re-factored version of the algorithm implementation in ROS:PCL
  */
 //ToDo add reference to the method
 class SACMethodMLESAC : public ISACMethods {

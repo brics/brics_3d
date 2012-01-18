@@ -13,6 +13,10 @@
 
 namespace BRICS_3D {
 //ToDo add reference to the method
+
+/**
+ * @ingroup segmentation
+ */
 class SACMethodALMeDS : public ISACMethods {
 
 public:
