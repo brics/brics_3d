@@ -1534,6 +1534,141 @@ void SceneGraphNodesTest::testSceneManager(){
 	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultIds.size()));
 	CPPUNIT_ASSERT_EQUAL(geode4Id, resultIds[0]);
 
+
+	/*
+	 * now we delete the nodes
+	 */
+
+	/* deletion of geode4: preconditions */
+	resultParentIds.clear();
+	CPPUNIT_ASSERT(scene.getNodeParents(geode4Id, resultParentIds));
+	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(resultParentIds.size()));
+
+	/* deletion of geode4: actual deletion */
+	CPPUNIT_ASSERT(scene.deleteNode(geode4Id));
+
+	/* after deletion:
+	 *                 root
+	 *                   |
+	 *        -----------+----------
+	 *        |          |         |
+	 *       tf1        group2    node3
+	 */
+
+	/* deletion of geode4: postconditions */
+	resultParentIds.clear();
+	CPPUNIT_ASSERT(!scene.getNodeParents(geode4Id, resultParentIds)); // now it should fail is it is not present anymore...
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultParentIds.size()));
+	CPPUNIT_ASSERT(!scene.getNodeAttributes(geode4Id, tmpAttributes));
+	CPPUNIT_ASSERT(!scene.setNodeAttributes(geode4Id, tmpAttributes));
+
+	resultChildIds.clear();
+	CPPUNIT_ASSERT(scene.getGroupChildren(tf1Id, resultChildIds));
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultChildIds.size()));
+	resultChildIds.clear();
+	CPPUNIT_ASSERT(scene.getGroupChildren(group2Id, resultChildIds));
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultChildIds.size()));
+
+	resultChildIds.clear();
+	CPPUNIT_ASSERT(scene.getGroupChildren(rootId, resultChildIds));
+	CPPUNIT_ASSERT_EQUAL(3u, static_cast<unsigned int>(resultChildIds.size()));
+	CPPUNIT_ASSERT_EQUAL(tf1Id, static_cast<unsigned int>(resultChildIds[0]));
+	CPPUNIT_ASSERT_EQUAL(group2Id, static_cast<unsigned int>(resultChildIds[1]));
+	CPPUNIT_ASSERT_EQUAL(node3Id, static_cast<unsigned int>(resultChildIds[2]));
+
+
+	/* deletion of tf1: preconditions */
+	resultParentIds.clear();
+	CPPUNIT_ASSERT(scene.getNodeParents(tf1Id, resultParentIds));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultParentIds.size()));
+
+	/* deletion of tf1: actual deletion */
+	CPPUNIT_ASSERT(scene.deleteNode(tf1Id));
+
+	/* after deletion:
+	 *                 root
+	 *                   |
+	 *                   +----------
+	 *                   |         |
+	 *                group2    node3
+	 */
+
+	/* deletion of tf1: postconditions */
+	resultParentIds.clear();
+	CPPUNIT_ASSERT(!scene.getNodeParents(tf1Id, resultParentIds)); // now it should fail is it is not present anymore...
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultParentIds.size()));
+	CPPUNIT_ASSERT(!scene.getNodeAttributes(tf1Id, tmpAttributes));
+	CPPUNIT_ASSERT(!scene.setNodeAttributes(tf1Id, tmpAttributes));
+
+	resultChildIds.clear();
+	CPPUNIT_ASSERT(scene.getGroupChildren(group2Id, resultChildIds));
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultChildIds.size()));
+
+	resultChildIds.clear();
+	CPPUNIT_ASSERT(scene.getGroupChildren(rootId, resultChildIds));
+	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(resultChildIds.size()));
+	CPPUNIT_ASSERT_EQUAL(group2Id, static_cast<unsigned int>(resultChildIds[0]));
+	CPPUNIT_ASSERT_EQUAL(node3Id, static_cast<unsigned int>(resultChildIds[1]));
+
+	/* deletion of group2: preconditions */
+	resultParentIds.clear();
+	CPPUNIT_ASSERT(scene.getNodeParents(group2Id, resultParentIds));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultParentIds.size()));
+
+	/* deletion of group2: actual deletion */
+	CPPUNIT_ASSERT(scene.deleteNode(group2Id));
+
+	/* after deletion:
+	 *                 root
+	 *                   |
+	 *                   +----------
+	 *                             |
+	 *                           node3
+	 */
+
+	/* deletion of group2: postconditions */
+	resultParentIds.clear();
+	CPPUNIT_ASSERT(!scene.getNodeParents(group2Id, resultParentIds)); // now it should fail is it is not present anymore...
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultParentIds.size()));
+	CPPUNIT_ASSERT(!scene.getNodeAttributes(group2Id, tmpAttributes));
+	CPPUNIT_ASSERT(!scene.setNodeAttributes(group2Id, tmpAttributes));
+
+	resultChildIds.clear();
+	CPPUNIT_ASSERT(scene.getGroupChildren(rootId, resultChildIds));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultChildIds.size()));
+	CPPUNIT_ASSERT_EQUAL(node3Id, static_cast<unsigned int>(resultChildIds[0]));
+
+
+	/* deletion of node3: preconditions */
+	resultParentIds.clear();
+	CPPUNIT_ASSERT(scene.getNodeParents(node3Id, resultParentIds));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultParentIds.size()));
+
+	/* deletion of node3: actual deletion */
+	CPPUNIT_ASSERT(scene.deleteNode(node3Id));
+
+	/* after deletion:
+	 *                 root
+	 */
+
+	/* deletion of node3: postconditions */
+	resultParentIds.clear();
+	CPPUNIT_ASSERT(!scene.getNodeParents(node3Id, resultParentIds)); // now it should fail is it is not present anymore...
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultParentIds.size()));
+	CPPUNIT_ASSERT(!scene.getNodeAttributes(node3Id, tmpAttributes));
+	CPPUNIT_ASSERT(!scene.setNodeAttributes(node3Id, tmpAttributes));
+
+	resultChildIds.clear();
+	CPPUNIT_ASSERT(scene.getGroupChildren(rootId, resultChildIds));
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultChildIds.size()));
+
+	/* trying to delete root */
+	CPPUNIT_ASSERT(!scene.deleteNode(rootId));
+
+	resultChildIds.clear();
+	CPPUNIT_ASSERT(scene.getGroupChildren(rootId, resultChildIds));
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultChildIds.size()));
+
 }
 
 }  // namespace unitTests

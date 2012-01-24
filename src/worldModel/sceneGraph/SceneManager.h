@@ -76,7 +76,7 @@ class SceneManager : public ISceneGraphQuery, public ISceneGraphUpdate {
     bool addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp);
     bool setNodeAttributes(unsigned int id, vector<Attribute> newAttributes);
     bool setTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp);
-//    void deleteNode(unsigned int id);
+	bool deleteNode(unsigned int id);
     bool addParent(unsigned int id, unsigned int parentId);
 
   private:
@@ -93,7 +93,6 @@ class SceneManager : public ISceneGraphQuery, public ISceneGraphUpdate {
     map<unsigned int, Node::NodeWeakPtr > idLookUpTable;
     map<unsigned int, Node::NodeWeakPtr >::const_iterator nodeIterator;
 
-    boost::weak_ptr<Node> testPtr;
     IIdGenerator* idGenerator;
 
 

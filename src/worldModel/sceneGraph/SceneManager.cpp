@@ -244,6 +244,37 @@ bool SceneManager::setTransform(unsigned int id, IHomogeneousMatrix44::IHomogene
 	return false;
 }
 
+bool SceneManager::deleteNode(unsigned int id) {
+	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
+	Node::NodePtr node = tmpNode.lock();
+	if (node != 0) {
+		if (node->getNumberOfParents() == 0) { // oops we are trying to delete the root node, but this on has no parents...
+			assert (id == getRootId()); // just to be sure something really strange did not happend...
+			LOG(WARNING) << "The root node with ID " << id << " cannot be deleted.";
+			return false;
+		}
+
+		/*
+		 * so we found the handle to the current node; now we will invoke
+		 * the according delete function for every parent
+		 */
+		while (node->getNumberOfParents() > 0) { //NOTE: node->getNumberOfParents() will decrease within every iteration...
+			unsigned int i = 0;
+			RSG::Node* parentNode;
+			parentNode = node->getParent(i);
+			Group* parentGroup =  dynamic_cast<Group*>(parentNode);
+			if (parentGroup != 0 ) {
+				parentGroup->removeChild(node);
+			} else {
+				assert(false); // actually parents need to be groups otherwise sth. really went wrong
+			}
+		}
+		idLookUpTable.erase(id); //erase by ID (if not done here there would be orphaned IDs)
+		return true;
+	}
+	return false;
+}
+
 bool SceneManager::addParent(unsigned int id, unsigned int parentId) {
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();
@@ -268,7 +299,7 @@ Node::NodeWeakPtr SceneManager::findNodeRecerence(unsigned int id) {
 			assert (id == tmpNodeHandle->getId()); // Otherwise something really went wrong while maintaining IDs...
 			return nodeIterator->second;
 		}
-		LOG(WARNING) << "ID " << id << " seems to be orphaned. Possibly its node has been delete earlier.";
+		LOG(WARNING) << "ID " << id << " seems to be orphaned. Possibly its node has been deleted earlier.";
 	}
 	LOG(WARNING) << "Scene graph does not contain a node with ID " << id;
 	return Node::NodeWeakPtr(); // should be kind of null...

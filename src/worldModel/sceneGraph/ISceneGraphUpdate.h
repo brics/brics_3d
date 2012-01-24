@@ -73,7 +73,7 @@ class ISceneGraphUpdate {
     /**
      * @brief Delete a node in the robot scenegraph.
      */
-	bool deleteNode(unsigned int id); //  = 0 FIXME
+	virtual bool deleteNode(unsigned int id) = 0;
 
     /**
      * @brief Add a new parent-child relation between two nodes.
