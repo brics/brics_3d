@@ -24,9 +24,9 @@
 #include <vector>
 using std::vector;
 #include "TimeStamp.h"
+#include "Shape.h"
 
 namespace BRICS_3D { namespace RSG { class Attribute; }  } 
-namespace BRICS_3D { namespace RSG { class Shape; }  } 
 
 namespace BRICS_3D {
 
@@ -40,29 +40,32 @@ class ISceneGraphQuery {
     /**
      * @brief Find all nodes that have at least the specified attributes.
      */
-    void getNodes(vector<Attribute> attributes, vector<unsigned int>* ids);
+	virtual bool getNodes(vector<Attribute> attributes, vector<unsigned int>& ids) = 0;
 
     /**
      * @brief Get the attributes of a node.
      */
-    void getNodeAttributes(unsigned int id, vector<Attribute>* attributes);
+	virtual bool getNodeAttributes(unsigned int id, vector<Attribute>& attributes) = 0;
 
     /**
      * @brief Get all the parent IDs of a certain node.
      */
     virtual bool getNodeParents(unsigned int id, vector<unsigned int>& parentIds) = 0;
 
-//    void getGroupChildren
+    /**
+     * @brief Gett all cild IDs for a certain group node.
+     */
+    virtual bool getGroupChildren(unsigned int id, vector<unsigned int>& childIds) = 0;
 
     /**
      * @brief Get the transform of a TransformNode at a certain time.
      */
-    void getTransform(unsigned int id, TimeStamp timeStamp, BRICS_3D::IHomogeneousMatrix44* transform);
+    virtual bool getTransform(unsigned int id, TimeStamp timeStamp, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform) = 0;
 
     /**
      * @brief Get the data of a GeometryNode.
      */
-    void getGeometry(unsigned int id, Shape* shape, TimeStamp* timeStamp);
+    virtual bool getGeometry(unsigned int id, Shape::ShapePtr& shape, TimeStamp& timeStamp) = 0;
 
 };
 

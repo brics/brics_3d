@@ -37,47 +37,48 @@ namespace RSG {
  */
 class ISceneGraphUpdate {
   public:
+
     /**
      * @brief Add a new node to the robot scenegraph.
      */
-    void addNode(unsigned int parentId, unsigned int* assignedId, vector<Attribute> attributes);
+	virtual bool addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes) = 0;
 
     /**
      * @brief Add a group node to the robot scenegraph.
      * 
      * The group allows to create the graph structure as it has children, in contrast to a simple node.
      */
-    void addGroup(unsigned int parentId, unsigned int* assignedId, vector<Attribute> attributes);
+	virtual bool addGroup(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes) = 0;
 
     /**
      * @brief Add a new transform node the the robot scenegraph.
      */
-    void addTransformNode(unsigned int parentId, unsigned int* assignedId, vector<Attribute> attributes, BRICS_3D::IHomogeneousMatrix44* transform, TimeStamp timeStamp);
+	virtual bool addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp) = 0;
 
     /**
      * @brief Add a geometric node that contains 3D data to the robot scenegraph.
      */
-    void addGeometricNode(unsigned int parentId, unsigned int* assignedId, Shape shape, vector<Attribute> attributes, TimeStamp timeStamp);
+	virtual bool addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp) = 0;
 
     /**
      * @brief Override the attributes of a node.
      */
-    void setNodeAttributes(unsigned int id, vector<Attribute> newAttributes);
+	virtual bool setNodeAttributes(unsigned int id, vector<Attribute> newAttributes) = 0;
 
     /**
      * @brief Update the transformation of an existing TransformNode.
      */
-    void setTransformation(unsigned int id, BRICS_3D::IHomogeneousMatrix44* transformation, TimeStamp timeStamp);
+	virtual bool setTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp) = 0;
 
     /**
      * @brief Delete a node in the robot scenegraph.
      */
-    void deleteNode(unsigned int id);
+	bool deleteNode(unsigned int id); //  = 0 FIXME
 
     /**
      * @brief Add a new parent-child relation between two nodes.
      */
-    void addParent(unsigned int id, unsigned int parentId);
+	virtual bool addParent(unsigned int id, unsigned int parentId) = 0;
 
     //void delete parent
 
