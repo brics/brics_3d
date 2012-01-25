@@ -17,7 +17,7 @@
 *
 ******************************************************************************/
 
-#include "SceneManager.h"
+#include "SceneGraphFacade.h"
 #include "SimpleIdGenerator.h"
 #include "core/Logger.h"
 #include "AttributeFinder.h"
@@ -26,43 +26,43 @@ namespace BRICS_3D {
 
 namespace RSG {
 
-void SceneManager::findSceneNodes(const Attribute & attributes, Node & nodeReferences) {
+void SceneGraphFacade::findSceneNodes(const Attribute & attributes, Node & nodeReferences) {
   // Bouml preserved body begin 00022703
   // Bouml preserved body end 00022703
 }
 
 
 
-SceneManager::SceneManager() {
+SceneGraphFacade::SceneGraphFacade() {
 	this->idGenerator = new SimpleIdGenerator();
 	initialize();
 }
 
-SceneManager::SceneManager(IIdGenerator* idGenerator) {
+SceneGraphFacade::SceneGraphFacade(IIdGenerator* idGenerator) {
 	assert(idGenerator != 0);
 	this->idGenerator = idGenerator;
 	initialize();
 }
 
-SceneManager::~SceneManager() {
+SceneGraphFacade::~SceneGraphFacade() {
 	if (idGenerator) {
 		delete idGenerator;
 		idGenerator = 0;
 	}
 }
 
-void SceneManager::initialize() {
+void SceneGraphFacade::initialize() {
 	rootNode = Group::GroupPtr(new Group());
 	rootNode->setId(idGenerator->getRootId());
 	assert(rootNode->getId() == idGenerator->getRootId());
 	idLookUpTable.insert(std::make_pair(rootNode->getId(), rootNode));
 }
 
-unsigned int SceneManager::getRootId() {
+unsigned int SceneGraphFacade::getRootId() {
 	return idGenerator->getRootId();
 }
 
-bool SceneManager::getNodes(vector<Attribute> attributes, vector<unsigned int>& ids) {
+bool SceneGraphFacade::getNodes(vector<Attribute> attributes, vector<unsigned int>& ids) {
 	ids.clear();
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(getRootId());
 	Node::NodePtr node = tmpNode.lock();
@@ -80,7 +80,7 @@ bool SceneManager::getNodes(vector<Attribute> attributes, vector<unsigned int>& 
 	return false;
 }
 
-bool SceneManager::getNodeAttributes(unsigned int id, vector<Attribute>& attributes) {
+bool SceneGraphFacade::getNodeAttributes(unsigned int id, vector<Attribute>& attributes) {
 	attributes.clear();
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();
@@ -95,7 +95,7 @@ bool SceneManager::getNodeAttributes(unsigned int id, vector<Attribute>& attribu
 	return false;
 }
 
-bool SceneManager::getNodeParents(unsigned int id, vector<unsigned int>& parentIds) {
+bool SceneGraphFacade::getNodeParents(unsigned int id, vector<unsigned int>& parentIds) {
 	parentIds.clear();
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();
@@ -108,7 +108,7 @@ bool SceneManager::getNodeParents(unsigned int id, vector<unsigned int>& parentI
 	return false;
 }
 
-bool SceneManager::getGroupChildren(unsigned int id, vector<unsigned int>& childIds) {
+bool SceneGraphFacade::getGroupChildren(unsigned int id, vector<unsigned int>& childIds) {
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();
 	Group::GroupPtr group = boost::dynamic_pointer_cast<Group>(node);
@@ -122,7 +122,7 @@ bool SceneManager::getGroupChildren(unsigned int id, vector<unsigned int>& child
 	return false;
 }
 
-bool SceneManager::getTransform(unsigned int id, TimeStamp timeStamp, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform) {
+bool SceneGraphFacade::getTransform(unsigned int id, TimeStamp timeStamp, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform) {
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();
 	RSG::Transform::TransformPtr transformNode = boost::dynamic_pointer_cast<RSG::Transform>(node);
@@ -134,7 +134,7 @@ bool SceneManager::getTransform(unsigned int id, TimeStamp timeStamp, IHomogeneo
 	return false;
 }
 
-bool SceneManager::getGeometry(unsigned int id, Shape::ShapePtr& shape, TimeStamp& timeStamp) {
+bool SceneGraphFacade::getGeometry(unsigned int id, Shape::ShapePtr& shape, TimeStamp& timeStamp) {
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();
 	GeometricNode::GeometricNodePtr geometricNode = boost::dynamic_pointer_cast<GeometricNode>(node);
@@ -147,7 +147,7 @@ bool SceneManager::getGeometry(unsigned int id, Shape::ShapePtr& shape, TimeStam
 	return false;
 }
 
-bool SceneManager::addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes) {
+bool SceneGraphFacade::addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes) {
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(parentId);
 	Node::NodePtr node = tmpNode.lock();
 	Group::GroupPtr parentGroup = boost::dynamic_pointer_cast<Group>(node);
@@ -164,7 +164,7 @@ bool SceneManager::addNode(unsigned int parentId, unsigned int& assignedId, vect
 	return false;
 }
 
-bool SceneManager::addGroup(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes) {
+bool SceneGraphFacade::addGroup(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes) {
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(parentId);
 	Node::NodePtr node = tmpNode.lock();
 	Group::GroupPtr parentGroup = boost::dynamic_pointer_cast<Group>(node);
@@ -181,7 +181,7 @@ bool SceneManager::addGroup(unsigned int parentId, unsigned int& assignedId, vec
 	return false;
 }
 
-bool SceneManager::addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp) {
+bool SceneGraphFacade::addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp) {
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(parentId);
 	Node::NodePtr node = tmpNode.lock();
 	//	Group* parentGroup = dynamic_cast<Group*>(node);
@@ -200,7 +200,7 @@ bool SceneManager::addTransformNode(unsigned int parentId, unsigned int& assigne
 	return false;
 }
 
-bool SceneManager::addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp) {
+bool SceneGraphFacade::addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp) {
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(parentId);
 	Node::NodePtr node = tmpNode.lock();
 	//	Group* parentGroup = dynamic_cast<Group*>(node);
@@ -221,7 +221,7 @@ bool SceneManager::addGeometricNode(unsigned int parentId, unsigned int& assigne
 }
 
 
-bool SceneManager::setNodeAttributes(unsigned int id, vector<Attribute> newAttributes) {
+bool SceneGraphFacade::setNodeAttributes(unsigned int id, vector<Attribute> newAttributes) {
 	//	Node* node = findNodeRecerence(id);
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();
@@ -232,7 +232,7 @@ bool SceneManager::setNodeAttributes(unsigned int id, vector<Attribute> newAttri
 	return false;
 }
 
-bool SceneManager::setTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp) {
+bool SceneGraphFacade::setTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp) {
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();
 	RSG::Transform::TransformPtr transformNode = boost::dynamic_pointer_cast<RSG::Transform>(node);
@@ -244,7 +244,7 @@ bool SceneManager::setTransform(unsigned int id, IHomogeneousMatrix44::IHomogene
 	return false;
 }
 
-bool SceneManager::deleteNode(unsigned int id) {
+bool SceneGraphFacade::deleteNode(unsigned int id) {
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();
 	if (node != 0) {
@@ -275,7 +275,7 @@ bool SceneManager::deleteNode(unsigned int id) {
 	return false;
 }
 
-bool SceneManager::addParent(unsigned int id, unsigned int parentId) {
+bool SceneGraphFacade::addParent(unsigned int id, unsigned int parentId) {
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();
 	Node::NodeWeakPtr tmpParentNode = findNodeRecerence(parentId);
@@ -291,7 +291,7 @@ bool SceneManager::addParent(unsigned int id, unsigned int parentId) {
 }
 
 
-Node::NodeWeakPtr SceneManager::findNodeRecerence(unsigned int id) {
+Node::NodeWeakPtr SceneGraphFacade::findNodeRecerence(unsigned int id) {
 	nodeIterator = idLookUpTable.find(id);
 	if (nodeIterator != idLookUpTable.end()) { //TODO multiple IDs?
 		Node::NodePtr tmpNodeHandle = nodeIterator->second.lock();

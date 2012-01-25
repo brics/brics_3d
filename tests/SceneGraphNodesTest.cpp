@@ -1290,7 +1290,7 @@ void SceneGraphNodesTest::testIdGenerator(){
 	delete idGenerator;
 }
 
-void SceneGraphNodesTest::testSceneManager(){
+void SceneGraphNodesTest::testSceneGraphFacade(){
 	/* Graph structure: (remember: nodes can only serve as are leaves)
 	 *                 root
 	 *                   |
@@ -1311,7 +1311,7 @@ void SceneGraphNodesTest::testSceneManager(){
 	unsigned int geode4Id = 0;
 	unsigned const int invalidId = 100000000;
 
-	SceneManager scene;
+	SceneGraphFacade scene;
 	vector<Attribute> tmpAttributes;
 	vector<unsigned int> resultParentIds;
 	vector<unsigned int> resultChildIds;

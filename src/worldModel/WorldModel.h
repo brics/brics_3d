@@ -21,7 +21,7 @@
 #define WORLDMODEL_H
 
 #include "IWorldModelQuery.h"
-#include "sceneGraph/SceneManager.h"
+#include "sceneGraph/SceneGraphFacade.h"
 #include "IWorldModelUpdate.h"
 #include "IWorldModelCoordination.h"
 
@@ -58,7 +58,7 @@ class WorldModel : public IWorldModelQuery, public IWorldModelUpdate, public IWo
     /* Helper functions */
     unsigned int getRootNodeId();
 
-    BRICS_3D::RSG::SceneManager scene;
+    BRICS_3D::RSG::SceneGraphFacade scene;
 };
 
 } // namespace BRICS_3D

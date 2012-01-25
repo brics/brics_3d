@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef SCENEMANAGER_H
-#define SCENEMANAGER_H
+#ifndef SCENEGRAPHFACADE_H
+#define SCENEGRAPHFACADE_H
 
 #include "ISceneGraphQuery.h"
 #include "ISceneGraphUpdate.h"
@@ -45,18 +45,18 @@ namespace RSG {
 /**
  * @brief The central handle to create and maintain a robot scenegraph. It holds the root node of the scene graph.
  *
- * The SceneManager takes care (maintains consistency) of mapping between IDs and internal pointers.
+ * The SceneGraphFacade takes care (maintains consistency) of mapping between IDs and internal pointers.
  * The implemented interfaces allow to create and maintain a scengraph bases on the node IDs only.
  *
  */
-class SceneManager : public ISceneGraphQuery, public ISceneGraphUpdate {
+class SceneGraphFacade : public ISceneGraphQuery, public ISceneGraphUpdate {
 
   public:
-	SceneManager();
+	SceneGraphFacade();
 
-    SceneManager(IIdGenerator* idGenerator);
+    SceneGraphFacade(IIdGenerator* idGenerator);
 
-    virtual ~SceneManager();
+    virtual ~SceneGraphFacade();
 
     unsigned int getRootId();
 

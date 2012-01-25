@@ -161,7 +161,7 @@ SET (WORLD_MODEL_LIBRARY_SOURCES
     ./worldModel/sceneGraph/Mesh
     ./worldModel/sceneGraph/Node
     ./worldModel/sceneGraph/PointCloud
-    ./worldModel/sceneGraph/SceneManager
+    ./worldModel/sceneGraph/SceneGraphFacade
     ./worldModel/sceneGraph/Shape
     ./worldModel/sceneGraph/SimpleIdGenerator
     ./worldModel/sceneGraph/TimeStamp
