@@ -51,8 +51,7 @@ void WorldModelTest::testSimpleHanoiUseCase() {
 	                                                                 0,0,0,
 	                                                                 0,0,0,
 	                                                                 2,3,0); //Translation coefficients
-	TimeStamp currentTimeStamp;
-	currentTimeStamp.timeStamp = timer->getCurrentTime();
+	TimeStamp currentTimeStamp(timer->getCurrentTime());
 //	myWM->setTransform(targetAreaID, tmpTransform, currentTimeStamp);
 
 

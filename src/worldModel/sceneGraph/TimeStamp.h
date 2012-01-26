@@ -30,10 +30,22 @@ namespace RSG {
 class TimeStamp {
   public:
 	TimeStamp(){};
-	TimeStamp(unsigned long timeStamp){this->timeStamp = timeStamp;};
+	TimeStamp(long double timeStamp){this->timeStamp = timeStamp;};
 	virtual ~TimeStamp(){};
 
-    unsigned long timeStamp;
+	TimeStamp operator-(const TimeStamp &rhs) const;
+	TimeStamp operator+(const TimeStamp &rhs) const;
+	TimeStamp& operator+=(const TimeStamp &rhs);
+	TimeStamp& operator-=(const TimeStamp &rhs);
+	bool operator==(const TimeStamp &rhs) const;
+	bool operator!=(const TimeStamp &rhs);
+	bool operator>(const TimeStamp &rhs) const;
+	bool operator<(const TimeStamp &rhs) const;
+	bool operator>=(const TimeStamp &rhs) const;
+	bool operator<=(const TimeStamp &rhs) const;
+
+private:
+    long double timeStamp;
 
 };
 

@@ -24,6 +24,8 @@
 #include "core/Logger.h"
 #include "PathCollector.h"
 
+//#define STATIC_TRANSFORM
+
 namespace BRICS_3D {
 
 namespace RSG {
@@ -63,26 +65,99 @@ IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransform(Node::NodePtr n
 	return result;
 }
 
-Transform::Transform() {
+Transform::Transform() : maxHistoryDuration(dafaultMaxHistoryDuration) {
+#ifdef STATIC_TRANSFORM
 	history.resize(1);
+#else
+	history.clear();
+#endif
 }
 
 Transform::~Transform() {
+#ifdef STATIC_TRANSFORM
 	history.clear();
+#else
+	history.clear();
+#endif
 }
 
 void Transform::insertTransform(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr newTransform, TimeStamp timeStamp) {
 	assert(newTransform != 0);
+#ifdef STATIC_TRANSFORM
 	history[0].first = newTransform;
 	history[0].second = timeStamp;
+#else
+
+	/* history policy: descending order of timestamps (the older the closer to the end - like humans...)
+	 *  latest              oldest
+	 *   |-------------------|
+	 *  begin               end
+	 */
+
+	historyIterator = history.begin();
+//	if (historyIterator == history.end()) {
+//		LOG(ERROR) << "";
+//		return;
+//	}
+
+	/* insert new data at its correct place in time */
+	while(historyIterator != history.end()) { // loop over history
+		if (historyIterator->second <= timeStamp) {
+			break;
+		}
+		historyIterator++;
+	}
+	history.insert(historyIterator, std::make_pair(newTransform, timeStamp)); // fit into correct temporal place
+	deleteOutdatedTransforms();
+
+#endif
+}
+
+void Transform::deleteOutdatedTransforms() {
+	historyIterator = history.begin();
+
+	/*
+	 * in this case the temporal reference is deduced from the stored data and not
+	 * from the current (real) time. TODO: design a method that passes the latest time as parameter
+	 *
+	 */
+	TimeStamp latestTimeStamp = history.begin()->second;
+
+	/*
+	 * delete all transforms where the durartion (delta between latestTime and stored) exeeds
+	 * the defined maximum history duration
+	 */
+	while(!history.empty() && (history.back().second + maxHistoryDuration < latestTimeStamp)) {
+		history.pop_back();
+	}
 }
 
 IHomogeneousMatrix44::IHomogeneousMatrix44Ptr  Transform::getTransform(TimeStamp timeStamp) {
+#ifdef STATIC_TRANSFORM
 	return history[0].first;
+#else
+	return history.begin()->first;
+#endif
 }
 
 IHomogeneousMatrix44::IHomogeneousMatrix44Ptr Transform::getLatestTransform(){
+#ifdef STATIC_TRANSFORM
 	return history[0].first;
+#else
+	return history.begin()->first;
+#endif
+}
+
+TimeStamp Transform::getMaxHistoryDuration() {
+    return maxHistoryDuration;
+}
+
+void Transform::setMaxHistoryDuration(TimeStamp maxHistoryDuration) {
+    this->maxHistoryDuration = maxHistoryDuration;
+}
+
+unsigned int Transform::getCurrentHistoryLenght() {
+	return static_cast<unsigned int>(history.size());
 }
 
 void Transform::accept(INodeVisitor* visitor){

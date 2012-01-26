@@ -23,6 +23,59 @@ namespace BRICS_3D {
 
 namespace RSG {
 
+TimeStamp TimeStamp::operator-(const TimeStamp &rhs) const {
+	return (TimeStamp(timeStamp - rhs.timeStamp));
+}
+
+TimeStamp TimeStamp::operator+(const TimeStamp &rhs) const {
+	return ((TimeStamp(timeStamp + rhs.timeStamp)));
+}
+
+TimeStamp& TimeStamp::operator+=(const TimeStamp &rhs) {
+	*this = *this + rhs;
+	return *this;
+}
+
+TimeStamp& TimeStamp::operator-=(const TimeStamp &rhs) {
+	*this = *this - rhs;
+	return *this;
+}
+
+bool TimeStamp::operator==(const TimeStamp &rhs) const {
+	return timeStamp == rhs.timeStamp;
+}
+
+bool TimeStamp::operator!=(const TimeStamp &rhs) {
+	return timeStamp != rhs.timeStamp;
+}
+
+bool TimeStamp::operator>(const TimeStamp &rhs) const {
+	if (timeStamp > rhs.timeStamp) {
+		return true;
+	}
+	return false;
+}
+
+bool TimeStamp::operator<(const TimeStamp &rhs) const {
+	if (timeStamp < rhs.timeStamp) {
+		return true;
+	}
+	return false;
+}
+
+bool TimeStamp::operator>=(const TimeStamp &rhs) const {
+	if (timeStamp >= rhs.timeStamp) {
+		return true;
+	}
+	return false;
+}
+
+bool TimeStamp::operator<=(const TimeStamp &rhs) const {
+	if (timeStamp <= rhs.timeStamp) {
+		return true;
+	}
+	return false;
+}
 
 } // namespace BRICS_3D::RSG
 
