@@ -29,7 +29,7 @@ namespace RSG {
  */
 class TimeStamp {
   public:
-	TimeStamp(){};
+	TimeStamp(){this->timeStamp = 0.0;};
 	TimeStamp(long double timeStamp){this->timeStamp = timeStamp;};
 	virtual ~TimeStamp(){};
 

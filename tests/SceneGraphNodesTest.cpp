@@ -398,6 +398,176 @@ void SceneGraphNodesTest::testTemporalTransform() {
 
 }
 
+void SceneGraphNodesTest::testTemporalTransformAccess() {
+	Group::GroupPtr root(new Group);
+	RSG::Transform::TransformPtr transform1 (new RSG::Transform);
+	RSG::Transform::TransformPtr transform2 (new RSG::Transform);
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr resultTransform;
+
+	unsigned const int rootId = 1;
+	unsigned const int transform1Id = 2;
+	unsigned const int transform2Id = 3;
+
+	root->setId(rootId);
+	transform1->setId(transform1Id);
+	transform2->setId(transform2Id);
+
+	CPPUNIT_ASSERT_EQUAL(rootId, root->getId()); // preconditions
+	CPPUNIT_ASSERT_EQUAL(transform1Id, transform1->getId());
+	CPPUNIT_ASSERT_EQUAL(transform2Id, transform2->getId());
+
+	root->addChild(transform1);
+	root->addChild(transform2);
+
+	/* set transforms */
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform123(new HomogeneousMatrix44(1,0,0,  //Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             1,2,3)); //Translation coefficients
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform234(new HomogeneousMatrix44(1,0,0,  //Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             2,3,4)); //Translation coefficients
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform345(new HomogeneousMatrix44(1,0,0,  //Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             3,4,5)); //Translation coefficients
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform456(new HomogeneousMatrix44(1,0,0,  //Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             4,5,6)); //Translation coefficients
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform567(new HomogeneousMatrix44(1,0,0,  //Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             5,6,7)); //Translation coefficients
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform678(new HomogeneousMatrix44(1,0,0,  //Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             6,7,8)); //Translation coefficients
+
+	TimeStamp t1(0.0);
+	CPPUNIT_ASSERT(t1 == t1);
+	CPPUNIT_ASSERT(TimeStamp(0.0) == t1);
+	CPPUNIT_ASSERT(TimeStamp(0.0) == TimeStamp(0.0));
+
+	CPPUNIT_ASSERT_EQUAL(0u, transform1->getCurrentHistoryLenght());
+	transform1->setMaxHistoryDuration(TimeStamp(10.0)); //this is just an arbitrary number!!!
+	CPPUNIT_ASSERT(transform1->getMaxHistoryDuration() == TimeStamp(10.0));
+
+	transform1->insertTransform(transform123, TimeStamp(0.0));
+	CPPUNIT_ASSERT(transform1->getOldestTimeStamp() == TimeStamp(0.0));
+	CPPUNIT_ASSERT(transform1->getLatestTimeStamp() == TimeStamp(0.0));
+
+	transform1->insertTransform(transform234, TimeStamp(1.0));
+	CPPUNIT_ASSERT(transform1->getOldestTimeStamp() == TimeStamp(0.0));
+	CPPUNIT_ASSERT(transform1->getLatestTimeStamp() == TimeStamp(1.0));
+
+	transform1->insertTransform(transform456, TimeStamp(3.0)); // input shall not be ordered
+	CPPUNIT_ASSERT(transform1->getOldestTimeStamp() == TimeStamp(0.0));
+	CPPUNIT_ASSERT(transform1->getLatestTimeStamp() == TimeStamp(3.0));
+
+	transform1->insertTransform(transform345, TimeStamp(2.0)); // input shall not be ordered
+	CPPUNIT_ASSERT(transform1->getOldestTimeStamp() == TimeStamp(0.0));
+	CPPUNIT_ASSERT(transform1->getLatestTimeStamp() == TimeStamp(3.0));
+
+	transform1->insertTransform(transform567, TimeStamp(4.0));
+	CPPUNIT_ASSERT(transform1->getOldestTimeStamp() == TimeStamp(0.0));
+	CPPUNIT_ASSERT(transform1->getLatestTimeStamp() == TimeStamp(4.0));
+
+	CPPUNIT_ASSERT_EQUAL(5u, transform1->getCurrentHistoryLenght());
+
+	/* get latest */
+	resultTransform = transform1->getLatestTransform();
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, matrixPtr[12], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(6.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(7.0, matrixPtr[14], maxTolerance);
+
+	/* get with existing time stamps */
+	resultTransform = transform1->getTransform(TimeStamp(0.0));
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, matrixPtr[12], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, matrixPtr[14], maxTolerance);
+
+	resultTransform = transform1->getTransform(TimeStamp(1.0));
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, matrixPtr[12], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, matrixPtr[14], maxTolerance);
+
+	resultTransform = transform1->getTransform(TimeStamp(2.0));
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, matrixPtr[12], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, matrixPtr[14], maxTolerance);
+
+	resultTransform = transform1->getTransform(TimeStamp(3.0));
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, matrixPtr[12], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(6.0, matrixPtr[14], maxTolerance);
+
+	resultTransform = transform1->getTransform(TimeStamp(4.0));
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, matrixPtr[12], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(6.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(7.0, matrixPtr[14], maxTolerance);
+
+
+	/* get with interpolated time stamps */
+	resultTransform = transform1->getTransform(TimeStamp(0.1));
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, matrixPtr[12], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, matrixPtr[14], maxTolerance);
+
+
+	resultTransform = transform1->getTransform(TimeStamp(0.5));
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, matrixPtr[12], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, matrixPtr[14], maxTolerance);
+
+	resultTransform = transform1->getTransform(TimeStamp(0.9));
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, matrixPtr[12], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, matrixPtr[14], maxTolerance);
+
+	resultTransform = transform1->getTransform(TimeStamp(1.4));
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, matrixPtr[12], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, matrixPtr[14], maxTolerance);
+
+	resultTransform = transform1->getTransform(TimeStamp(1.5));
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, matrixPtr[12], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, matrixPtr[14], maxTolerance);
+
+	resultTransform = transform1->getTransform(TimeStamp(1.8));
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, matrixPtr[12], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, matrixPtr[14], maxTolerance);
+
+	resultTransform = transform1->getTransform(TimeStamp(2.3));
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, matrixPtr[12], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, matrixPtr[14], maxTolerance);
+
+	/* tests with an empty history */
+	CPPUNIT_ASSERT_EQUAL(0u, transform2->getCurrentHistoryLenght());
+	CPPUNIT_ASSERT(transform2->getLatestTransform() == 0);
+	CPPUNIT_ASSERT(transform2->getTransform(TimeStamp(0.0)) == 0);
+	CPPUNIT_ASSERT(transform2->getLatestTimeStamp() == TimeStamp(0.0));
+	CPPUNIT_ASSERT(transform2->getOldestTimeStamp() == TimeStamp(0.0));
+
+}
+
 void SceneGraphNodesTest::testGeometricNode() {
 	/* Graph structure: (remember: nodes can only serve as leaves)
 	 *       root(tf)

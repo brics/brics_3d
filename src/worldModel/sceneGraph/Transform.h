@@ -31,6 +31,8 @@ namespace BRICS_3D {
 
 namespace RSG {
 
+typedef vector< pair<IHomogeneousMatrix44::IHomogeneousMatrix44Ptr, TimeStamp> >::iterator HistoryIterator;
+
 /**
  * @brief Determine the accumulated transform along a path of nodes.
  * @param nodePath A path of nodes from root descending.
@@ -70,20 +72,20 @@ class Transform : public Group {
     /**
      * @brief Add a new transform to the history.
      * @param newTransform The transform to be added.
-     * @param timeStamp The times stamp that is associated with the transform. (So far this as no effect yet.)
+     * @param timeStamp The times stamp that is associated with the transform.
      */
     void insertTransform(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr newTransform, TimeStamp timeStamp);
 
     /**
-     * @brief Retrieve a transform that is closest to the specified timesStamp.
-     * @param timeStamp No effect yet!
-     * @return Shared pointer to the transform.
+     * @brief Retrieve a transform in the history cache whose time stamp matches best a given stamp.
+     * @param timeStamp Time stamp to wich the temporal closest transform shall be found.
+     * @return Shared pointer to the transform. It will be null in case that no transform is found.
      */
     IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getTransform(TimeStamp timeStamp);
 
     /**
      * @brief Retrieve the latest/newest transform.
-     * @return Shared pointer to the transform.
+     * @return Shared pointer to the transform. It will be null in case that no transform is found.
      */
     IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getLatestTransform();
 
@@ -102,20 +104,43 @@ class Transform : public Group {
      */
     unsigned int getCurrentHistoryLenght();
 
+    /**
+     * @brief Get the latest time stamp that is in the history cache.
+     * @return The latest time stamp or 0.0 in case of an empty history cache.
+     */
+    TimeStamp getLatestTimeStamp();
+
+    /**
+     * @brief Get the oldest time stamp that is in the history cache.
+     * @return The oldest time stamp or 0.0 in case of an empty history cache.
+     */
+    TimeStamp getOldestTimeStamp();
+
     void accept(INodeVisitor* visitor);
 
     /**
-     * @brief Delete all data from the history/cache that is older than the defined threshold maxHistoryDurations.
+     * @brief Delete all data from the history/cache that is older than the latestTimeStamp minus the duration of maxHistoryDuration.
+     * @param latestTimeStamp The time stamp the defines the "current" time. To this stamp the maximim duration will relate.
+     *        Plase note that in case that you do not pass the timeStamp from the history cache via getLatestTimeStamp() the complete history might
+     *        get earased! Use the function outside the scope of this class with care.
      */
-    void deleteOutdatedTransforms();
+    void deleteOutdatedTransforms(TimeStamp latestTimeStamp);
 
   private:
+
+    /**
+     * @brief Determine the position in the history cache whose time stamp matches best a given stamp.
+     * @param timeStamp Time stamp to wich the temporal closest data shall be found.
+     * @return Iterator to the transform with closest time stamp. In case timeStamp is exactly in between
+     * two times stamps of the cache the latest of both will be taken.
+     */
+    HistoryIterator getClosestTransform(TimeStamp timeStamp);
 
     ///History of transforms. Each transform has an associated time stamp.
     vector< pair<IHomogeneousMatrix44::IHomogeneousMatrix44Ptr, TimeStamp> > history;
 
     ///Iterator for the history data.
-    vector< pair<IHomogeneousMatrix44::IHomogeneousMatrix44Ptr, TimeStamp> >::iterator historyIterator;
+    HistoryIterator historyIterator;
 
     ///Maximum duration of storing the history of transforms.
     TimeStamp maxHistoryDuration; //TODO: should be of some Duration type not a time stamp...

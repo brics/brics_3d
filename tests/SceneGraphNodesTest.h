@@ -66,6 +66,7 @@ class SceneGraphNodesTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testGroup );
 	CPPUNIT_TEST( testTransform );
 	CPPUNIT_TEST( testTemporalTransform);
+	CPPUNIT_TEST( testTemporalTransformAccess);
 	CPPUNIT_TEST( testGeometricNode );
 	CPPUNIT_TEST( testSimpleGraph );
 	CPPUNIT_TEST( testOwnership );
@@ -86,6 +87,7 @@ public:
 	void testGroup();
 	void testTransform();
 	void testTemporalTransform();
+	void testTemporalTransformAccess();
 	void testGeometricNode();
 	void testOwnership();
 	void testSimpleGraph();
