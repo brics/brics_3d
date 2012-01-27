@@ -65,7 +65,7 @@ IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransform(Node::NodePtr n
 	return result;
 }
 
-Transform::Transform() : maxHistoryDuration(dafaultMaxHistoryDuration) {
+Transform::Transform() : maxHistoryDuration(dafaultMaxHistoryDuration), updateCount(0) {
 #ifdef STATIC_TRANSFORM
 	history.resize(1);
 #else
@@ -113,7 +113,7 @@ void Transform::insertTransform(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr ne
 	historyIterator = history.begin(); // we already know that there is already one element...
 	TimeStamp latestTimeStamp = history.begin()->second;
 	deleteOutdatedTransforms(latestTimeStamp);
-
+	updateCount ++;
 #endif
 }
 
@@ -213,6 +213,9 @@ TimeStamp Transform::getOldestTimeStamp() {
 	return history.back().second;
 }
 
+unsigned int Transform::getUpdateCount() {
+    return updateCount;
+}
 
 void Transform::accept(INodeVisitor* visitor){
 	visitor->visit(this);

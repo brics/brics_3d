@@ -453,26 +453,32 @@ void SceneGraphNodesTest::testTemporalTransformAccess() {
 	CPPUNIT_ASSERT_EQUAL(0u, transform1->getCurrentHistoryLenght());
 	transform1->setMaxHistoryDuration(TimeStamp(10.0)); //this is just an arbitrary number!!!
 	CPPUNIT_ASSERT(transform1->getMaxHistoryDuration() == TimeStamp(10.0));
+	CPPUNIT_ASSERT(transform1->getUpdateCount() == 0u);
 
 	transform1->insertTransform(transform123, TimeStamp(0.0));
 	CPPUNIT_ASSERT(transform1->getOldestTimeStamp() == TimeStamp(0.0));
 	CPPUNIT_ASSERT(transform1->getLatestTimeStamp() == TimeStamp(0.0));
+	CPPUNIT_ASSERT(transform1->getUpdateCount() == 1u);
 
 	transform1->insertTransform(transform234, TimeStamp(1.0));
 	CPPUNIT_ASSERT(transform1->getOldestTimeStamp() == TimeStamp(0.0));
 	CPPUNIT_ASSERT(transform1->getLatestTimeStamp() == TimeStamp(1.0));
+	CPPUNIT_ASSERT(transform1->getUpdateCount() == 2u);
 
 	transform1->insertTransform(transform456, TimeStamp(3.0)); // input shall not be ordered
 	CPPUNIT_ASSERT(transform1->getOldestTimeStamp() == TimeStamp(0.0));
 	CPPUNIT_ASSERT(transform1->getLatestTimeStamp() == TimeStamp(3.0));
+	CPPUNIT_ASSERT(transform1->getUpdateCount() ==3u);
 
 	transform1->insertTransform(transform345, TimeStamp(2.0)); // input shall not be ordered
 	CPPUNIT_ASSERT(transform1->getOldestTimeStamp() == TimeStamp(0.0));
 	CPPUNIT_ASSERT(transform1->getLatestTimeStamp() == TimeStamp(3.0));
+	CPPUNIT_ASSERT(transform1->getUpdateCount() == 4u);
 
 	transform1->insertTransform(transform567, TimeStamp(4.0));
 	CPPUNIT_ASSERT(transform1->getOldestTimeStamp() == TimeStamp(0.0));
 	CPPUNIT_ASSERT(transform1->getLatestTimeStamp() == TimeStamp(4.0));
+	CPPUNIT_ASSERT(transform1->getUpdateCount() == 5u);
 
 	CPPUNIT_ASSERT_EQUAL(5u, transform1->getCurrentHistoryLenght());
 

@@ -116,6 +116,12 @@ class Transform : public Group {
      */
     TimeStamp getOldestTimeStamp();
 
+    /**
+     * @brief Get the counter for how often this transform node has been updated.
+     */
+    unsigned int getUpdateCount();
+
+
     void accept(INodeVisitor* visitor);
 
     /**
@@ -136,18 +142,20 @@ class Transform : public Group {
      */
     HistoryIterator getClosestTransform(TimeStamp timeStamp);
 
-    ///History of transforms. Each transform has an associated time stamp.
+    /// History of transforms. Each transform has an associated time stamp.
     vector< pair<IHomogeneousMatrix44::IHomogeneousMatrix44Ptr, TimeStamp> > history;
 
-    ///Iterator for the history data.
+    /// Iterator for the history data.
     HistoryIterator historyIterator;
 
-    ///Maximum duration of storing the history of transforms.
+    /// Maximum duration of storing the history of transforms.
     TimeStamp maxHistoryDuration; //TODO: should be of some Duration type not a time stamp...
 
     /// 10s in [ms] in case that the BRICS_3D::Timer is used, otherwise this number has no real meaning and should just serve as @p a default.
     static const long double dafaultMaxHistoryDuration = 10000.0;
 
+    /// Counter for how often this transform node has been updated via insertTransform.
+    unsigned int updateCount;
 };
 
 } // namespace BRICS_3D::RSG
