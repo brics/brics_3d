@@ -1,0 +1,20 @@
+<package>
+  <description brief="brics_3d">
+
+	BRICS_3D - 3D Perception and Modeling Library  
+
+  </description>
+  <author>Sebastian Blumenthal/blumenthal@gps-stuttgart.de</author>
+  <license>BSD / LGPL</license>
+  <review status="unreviewed" notes=""/>
+  <url>https://trac.best-of-robotics.org/brics/wiki/BRICS_3D/Mainpage</url>
+
+  <rosdep name="boost" />
+  <rosdep name="eigen" />
+  <depend package="cv_bridge" /> <!-- neede to find correct rosdep.yaml --> 
+  <rosdep name="opencv2.3"/>    
+  <!--<depend package="opencv2"/>-->
+  <!--<depend package="pcl"/>-->
+</package>
+
+
