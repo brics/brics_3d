@@ -45,6 +45,7 @@ public:
     virtual void insertChild(NodePtr child, unsigned int index);
     void removeChild(NodePtr child);
     unsigned int getChildIndex(NodePtr node);
+    unsigned int getChildIndex(Node* node); //especially intresting for upward traversals
     virtual void removeChildren(unsigned int startIndex, unsigned int numberOfChildrenToRemove = 1);
 
     unsigned int getNumberOfChildren() const;

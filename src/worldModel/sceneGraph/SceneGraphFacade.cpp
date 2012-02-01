@@ -270,6 +270,7 @@ bool SceneGraphFacade::deleteNode(unsigned int id) {
 			}
 		}
 		idLookUpTable.erase(id); //erase by ID (if not done here there would be orphaned IDs)
+		// TODO: do we have to delete children?
 		return true;
 	}
 	return false;
@@ -290,6 +291,13 @@ bool SceneGraphFacade::addParent(unsigned int id, unsigned int parentId) {
 	return false;
 }
 
+bool SceneGraphFacade::executeGraphTraverser(INodeVisitor* visitor) {
+	if (rootNode == 0) {
+		return false;
+	}
+	rootNode->accept(visitor);
+	return true;
+}
 
 Node::NodeWeakPtr SceneGraphFacade::findNodeRecerence(unsigned int id) {
 	nodeIterator = idLookUpTable.find(id);

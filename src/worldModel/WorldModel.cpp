@@ -82,21 +82,21 @@ void WorldModel::getCurrentTransform(unsigned int id, IHomogeneousMatrix44::IHom
 }
 
 void WorldModel::insertTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform) {
-	TimeStamp dummyTime;
-	scene.setTransform(id, transform, dummyTime);
+	TimeStamp currentTime(timer.getCurrentTime());
+	scene.setTransform(id, transform, currentTime);
 }
 
 void WorldModel::addSceneObject(SceneObject newObject, unsigned int& assignedId) {
-	RSG::TimeStamp dummyTime;
+	TimeStamp currentTime(timer.getCurrentTime());
 	unsigned int dummyResultID;
 	vector<Attribute> emptyAttributes;
 	emptyAttributes.clear();
 
 	/* a scene object is essentially a transform */
-	scene.addTransformNode(scene.getRootId(), assignedId, newObject.attributes, newObject.transform, dummyTime);
+	scene.addTransformNode(scene.getRootId(), assignedId, newObject.attributes, newObject.transform, currentTime);
 
 	/* add shape as a child node */
-	scene.addGeometricNode(assignedId, dummyResultID, emptyAttributes, newObject.shape, dummyTime);
+	scene.addGeometricNode(assignedId, dummyResultID, emptyAttributes, newObject.shape, currentTime);
 }
 
 void WorldModel::initPerception() {

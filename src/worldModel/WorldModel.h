@@ -24,6 +24,7 @@
 #include "sceneGraph/SceneGraphFacade.h"
 #include "IWorldModelUpdate.h"
 #include "IWorldModelCoordination.h"
+#include "util/Timer.h"
 
 namespace BRICS_3D {
 
@@ -59,6 +60,10 @@ class WorldModel : public IWorldModelQuery, public IWorldModelUpdate, public IWo
     unsigned int getRootNodeId();
 
     BRICS_3D::RSG::SceneGraphFacade scene;
+
+  private:
+
+    Timer timer; //TODO unfortunately here we introduce a dependency to the brics_3d_util lib...
 };
 
 } // namespace BRICS_3D

@@ -24,6 +24,8 @@
 #include "worldModel/sceneGraph/AttributeFinder.h"
 #include "worldModel/sceneGraph/SimpleIdGenerator.h"
 #include "worldModel/sceneGraph/SceneGraphFacade.h"
+#include "worldModel/sceneGraph/OutdatedDataDeleter.h"
+
 
 namespace unitTests {
 
@@ -75,6 +77,7 @@ class SceneGraphNodesTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testTransformVisitor );
 	CPPUNIT_TEST( testGlobalTransformCalculation );
 	CPPUNIT_TEST( testAttributeFinder );
+	CPPUNIT_TEST( testOutdatedDataDeleter );
 	CPPUNIT_TEST( testIdGenerator );
 	CPPUNIT_TEST( testSceneGraphFacade );
 	CPPUNIT_TEST_SUITE_END();
@@ -96,6 +99,7 @@ public:
 	void testTransformVisitor();
 	void testGlobalTransformCalculation();
 	void testAttributeFinder();
+	void testOutdatedDataDeleter();
 	void testIdGenerator();
 	void testSceneGraphFacade();
 

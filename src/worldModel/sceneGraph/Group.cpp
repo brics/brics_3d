@@ -93,6 +93,16 @@ unsigned int Group::getChildIndex(NodePtr node){
     return getNumberOfChildren(); // not found.
 }
 
+unsigned int Group::getChildIndex(Node* node) {
+    for (unsigned int childIndex = 0; childIndex < getNumberOfChildren(); ++childIndex)
+    {
+        if (children[childIndex].get() == node) {
+        	return childIndex;
+        }
+    }
+    return getNumberOfChildren(); // not foun
+}
+
 Group::NodePtr Group::getChild(unsigned int index) {
 	return children[index];
 }

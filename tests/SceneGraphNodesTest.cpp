@@ -104,6 +104,23 @@ void SceneGraphNodesTest::testGroup() {
 //	CPPUNIT_ASSERT_THROW(child1->getParent(1000)->getId(), out_of_range);
 //	CPPUNIT_ASSERT_THROW(root.getChild(1000)->getId(), out_of_range);
 
+	/* set up some graph again */
+	root.addChild(child1);
+	root.addChild(child2);
+
+	CPPUNIT_ASSERT_EQUAL(1u, child1->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(1u, child2->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(2u, root.getNumberOfChildren());
+	CPPUNIT_ASSERT_EQUAL(child1testId, root.getChild(0)->getId());
+	CPPUNIT_ASSERT_EQUAL(child2testId, root.getChild(1)->getId());
+
+	CPPUNIT_ASSERT_EQUAL(0u, root.getChildIndex(child1));
+	CPPUNIT_ASSERT_EQUAL(0u, root.getChildIndex(child1.get()));
+
+	CPPUNIT_ASSERT_EQUAL(1u, root.getChildIndex(child2));
+	CPPUNIT_ASSERT_EQUAL(1u, root.getChildIndex(child2.get()));
+
+
 }
 
 void SceneGraphNodesTest::testTransform() {
@@ -1632,6 +1649,142 @@ void SceneGraphNodesTest::testAttributeFinder() {
 
 	delete attributeFinder;
 
+
+}
+
+void SceneGraphNodesTest::testOutdatedDataDeleter() {
+	/* Graph structure: (remember: nodes can only serve as are leaves)
+	 *                 root
+	 *                   |
+	 *        -----------+----------
+	 *        |          |         |
+	 *       tf1        tf2       tf3
+	 *        |          |
+	 *        +----  ----+
+	 *            |  |
+	 *             tf4
+	 */
+	unsigned int rootId = 0;
+	unsigned int tf1Id = 1;
+	unsigned int tf2Id = 2;
+	unsigned int tf3Id = 3;
+	unsigned int tf4Id = 4;
+
+	Group::GroupPtr root(new Group());
+	root->setId(rootId);
+
+	RSG::Transform::TransformPtr tf1(new RSG::Transform());
+	tf1->setId(tf1Id);
+	RSG::Transform::TransformPtr tf2(new RSG::Transform());
+	tf2->setId(tf2Id);
+	RSG::Transform::TransformPtr tf3(new RSG::Transform());
+	tf3->setId(tf3Id);
+	RSG::Transform::TransformPtr tf4(new RSG::Transform());
+	tf4->setId(tf4Id);
+
+	root->addChild(tf1);
+	root->addChild(tf2);
+	root->addChild(tf3);
+	tf1->addChild(tf4);
+	tf2->addChild(tf4);
+
+	/* check that graph actually is as we expect */
+	CPPUNIT_ASSERT_EQUAL(0u, root->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(3u, root->getNumberOfChildren());
+
+	CPPUNIT_ASSERT_EQUAL(1u, tf1->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(1u, tf1->getNumberOfChildren());
+
+	CPPUNIT_ASSERT_EQUAL(1u, tf2->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(1u, tf2->getNumberOfChildren());
+
+	CPPUNIT_ASSERT_EQUAL(1u, tf3->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(0u, tf3->getNumberOfChildren());
+
+	CPPUNIT_ASSERT_EQUAL(2u, tf4->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(0u, tf4->getNumberOfChildren());
+
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform123(new HomogeneousMatrix44(1,0,0,  //Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             1,2,3)); //Translation coefficients
+
+	/* configure cache size */
+	tf1->setMaxHistoryDuration(TimeStamp(10.0));
+	tf2->setMaxHistoryDuration(TimeStamp(10.0));
+	tf3->setMaxHistoryDuration(TimeStamp(10.0));
+	tf4->setMaxHistoryDuration(TimeStamp(10.0));
+
+
+	/* update tf data such that all have 2 elements in history cache exept for tf3 => tf3 will b deleted */
+	tf1->insertTransform(transform123, TimeStamp(0.0));
+	tf1->insertTransform(transform123, TimeStamp(5.0));
+
+	tf2->insertTransform(transform123, TimeStamp(0.0));
+	tf2->insertTransform(transform123, TimeStamp(5.0));
+
+	tf3->insertTransform(transform123, TimeStamp(0.0));
+
+	tf4->insertTransform(transform123, TimeStamp(0.0));
+	tf4->insertTransform(transform123, TimeStamp(5.0));
+
+	OutdatedDataDeleter* deleter = new OutdatedDataDeleter();
+	root->accept(deleter);
+
+	/* check if tf3 is deleted */
+	CPPUNIT_ASSERT_EQUAL(0u, root->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(2u, root->getNumberOfChildren());
+
+	CPPUNIT_ASSERT_EQUAL(1u, tf1->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(1u, tf1->getNumberOfChildren());
+
+	CPPUNIT_ASSERT_EQUAL(1u, tf2->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(1u, tf2->getNumberOfChildren());
+
+	CPPUNIT_ASSERT_EQUAL(0u, tf3->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(0u, tf3->getNumberOfChildren());
+
+	CPPUNIT_ASSERT_EQUAL(2u, tf4->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(0u, tf4->getNumberOfChildren());
+
+	/* trigger deletion of tf2 as cach will only have 1 element */
+	tf2->insertTransform(transform123, TimeStamp(20.0));
+	root->accept(deleter);
+
+	/* check if tf2 is deleted */
+	CPPUNIT_ASSERT_EQUAL(0u, root->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(1u, root->getNumberOfChildren());
+
+	CPPUNIT_ASSERT_EQUAL(1u, tf1->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(1u, tf1->getNumberOfChildren());
+
+	CPPUNIT_ASSERT_EQUAL(0u, tf2->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(0u, tf2->getNumberOfChildren()); //1?
+
+	CPPUNIT_ASSERT_EQUAL(0u, tf3->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(0u, tf3->getNumberOfChildren());
+
+	CPPUNIT_ASSERT_EQUAL(1u, tf4->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(0u, tf4->getNumberOfChildren());
+
+	/* trigger deletion of tf1 as cache will only have 1 element */
+	tf1->insertTransform(transform123, TimeStamp(20.0));
+	root->accept(deleter);
+
+	CPPUNIT_ASSERT_EQUAL(0u, root->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(0u, root->getNumberOfChildren());
+
+	CPPUNIT_ASSERT_EQUAL(0u, tf1->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(0u, tf1->getNumberOfChildren());
+
+	CPPUNIT_ASSERT_EQUAL(0u, tf2->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(0u, tf2->getNumberOfChildren()); //1?
+
+	CPPUNIT_ASSERT_EQUAL(0u, tf3->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(0u, tf3->getNumberOfChildren());
+
+	CPPUNIT_ASSERT_EQUAL(0u, tf4->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(0u, tf4->getNumberOfChildren());
 
 }
 

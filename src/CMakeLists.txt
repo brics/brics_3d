@@ -168,6 +168,7 @@ SET (WORLD_MODEL_LIBRARY_SOURCES
     ./worldModel/sceneGraph/Transform
     ./worldModel/sceneGraph/PathCollector
     ./worldModel/sceneGraph/AttributeFinder
+    ./worldModel/sceneGraph/OutdatedDataDeleter
 )
 
 #optional sources

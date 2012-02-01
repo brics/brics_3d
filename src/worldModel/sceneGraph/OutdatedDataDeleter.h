@@ -17,34 +17,36 @@
 *
 ******************************************************************************/
 
-#ifndef IWORLDMODELQUERY_H
-#define IWORLDMODELQUERY_H
+#ifndef OUTDATEDDATADELETER_H_
+#define OUTDATEDDATADELETER_H_
 
-#include "core/IHomogeneousMatrix44.h"
-#include <vector>
-using std::vector;
-
-namespace BRICS_3D { namespace RSG { class Attribute; }  } 
-namespace BRICS_3D { class SceneObject; } 
-namespace BRICS_3D { namespace RSG { class GeometricNode; }  } 
-
-using namespace BRICS_3D::RSG;
+#include "Node.h"
+#include "Group.h"
+#include "Transform.h"
+#include "GeometricNode.h"
+#include "INodeVisitor.h"
 
 namespace BRICS_3D {
 
-/**
- * @brief Interface to get access to elements in the 3D model.
- */
-class IWorldModelQuery {
-  public:
-    virtual void getSceneObjects(vector<Attribute> attributes, vector<SceneObject>& results) = 0;
+namespace RSG {
 
-    virtual void getCurrentTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform)= 0;
+class OutdatedDataDeleter : public INodeVisitor {
+public:
+	OutdatedDataDeleter();
+	virtual ~OutdatedDataDeleter();
+
+	virtual void visit(Node* node);
+	virtual void visit(Group* node);
+	virtual void visit(Transform* node);
+	virtual void visit(GeometricNode* node);
+
 
 };
 
-} // namespace BRICS_3D
-#endif
+}
+
+}
+
+#endif /* OUTDATEDDATADELETER_H_ */
 
 /* EOF */
-
