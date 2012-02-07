@@ -26,6 +26,7 @@
 #include "worldModel/sceneGraph/SceneGraphFacade.h"
 #include "worldModel/sceneGraph/OutdatedDataDeleter.h"
 
+#include "util/Timer.h"
 
 namespace unitTests {
 

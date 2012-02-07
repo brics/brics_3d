@@ -419,19 +419,23 @@ void SceneGraphNodesTest::testTemporalTransformAccess() {
 	Group::GroupPtr root(new Group);
 	RSG::Transform::TransformPtr transform1 (new RSG::Transform);
 	RSG::Transform::TransformPtr transform2 (new RSG::Transform);
+	RSG::Transform::TransformPtr transform3 (new RSG::Transform);
 	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr resultTransform;
 
 	unsigned const int rootId = 1;
 	unsigned const int transform1Id = 2;
 	unsigned const int transform2Id = 3;
+	unsigned const int transform3Id = 4;
 
 	root->setId(rootId);
 	transform1->setId(transform1Id);
 	transform2->setId(transform2Id);
+	transform3->setId(transform3Id);
 
 	CPPUNIT_ASSERT_EQUAL(rootId, root->getId()); // preconditions
 	CPPUNIT_ASSERT_EQUAL(transform1Id, transform1->getId());
 	CPPUNIT_ASSERT_EQUAL(transform2Id, transform2->getId());
+	CPPUNIT_ASSERT_EQUAL(transform3Id, transform3->getId());
 
 	root->addChild(transform1);
 	root->addChild(transform2);
@@ -462,10 +466,15 @@ void SceneGraphNodesTest::testTemporalTransformAccess() {
 	                                                             0,0,1,
 	                                                             6,7,8)); //Translation coefficients
 
+	/* Some simple tests for time stamps */
 	TimeStamp t1(0.0);
 	CPPUNIT_ASSERT(t1 == t1);
 	CPPUNIT_ASSERT(TimeStamp(0.0) == t1);
 	CPPUNIT_ASSERT(TimeStamp(0.0) == TimeStamp(0.0));
+	CPPUNIT_ASSERT(TimeStamp(1.0) > TimeStamp(0.0));
+	CPPUNIT_ASSERT(TimeStamp(1.0) >= TimeStamp(0.0));
+	CPPUNIT_ASSERT(TimeStamp(0.0) < TimeStamp(1.0));
+	CPPUNIT_ASSERT(TimeStamp(1.0) >= TimeStamp(0.0));
 
 	CPPUNIT_ASSERT_EQUAL(0u, transform1->getCurrentHistoryLenght());
 	transform1->setMaxHistoryDuration(TimeStamp(10.0)); //this is just an arbitrary number!!!
@@ -588,6 +597,34 @@ void SceneGraphNodesTest::testTemporalTransformAccess() {
 	CPPUNIT_ASSERT(transform2->getTransform(TimeStamp(0.0)) == 0);
 	CPPUNIT_ASSERT(transform2->getLatestTimeStamp() == TimeStamp(0.0));
 	CPPUNIT_ASSERT(transform2->getOldestTimeStamp() == TimeStamp(0.0));
+
+
+	/*
+	 * Test with real time.
+	 */
+	Timer timer;
+
+	CPPUNIT_ASSERT_EQUAL(0u, transform3->getCurrentHistoryLenght());
+	transform3->insertTransform(transform123, TimeStamp(timer.getCurrentTime()));
+	CPPUNIT_ASSERT_EQUAL(1u, transform3->getCurrentHistoryLenght());
+	transform3->insertTransform(transform234, TimeStamp(timer.getCurrentTime()));
+	CPPUNIT_ASSERT_EQUAL(2u, transform3->getCurrentHistoryLenght());
+
+	/* oldest */
+	resultTransform = transform3->getTransform(TimeStamp(0.0));
+	CPPUNIT_ASSERT(resultTransform != 0);
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, matrixPtr[12], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, matrixPtr[14], maxTolerance);
+
+	/* latest */
+	resultTransform = transform3->getTransform(TimeStamp(timer.getCurrentTime()));
+	CPPUNIT_ASSERT(resultTransform != 0);
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, matrixPtr[12], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, matrixPtr[14], maxTolerance);
 
 }
 

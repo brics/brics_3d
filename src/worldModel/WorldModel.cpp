@@ -32,7 +32,7 @@ WorldModel::~WorldModel() {
 }
 
 void WorldModel::getSceneObjects(vector<Attribute> attributes, vector<SceneObject>& results) {
-	RSG::TimeStamp dummyTime;
+	TimeStamp currentTime(timer.getCurrentTime());
 	vector<unsigned int>resultIds;
 	results.clear();
 
@@ -50,9 +50,8 @@ void WorldModel::getSceneObjects(vector<Attribute> attributes, vector<SceneObjec
 			tmpSceneObject.parentId = parentIds[0]; // here we arbitrarily select the fist parent; assumption: tree
 		}
 
-		TimeStamp dummyTime;
 		IHomogeneousMatrix44::IHomogeneousMatrix44Ptr tmpTransform(new HomogeneousMatrix44());
-		if(!scene.getTransform(resultIds[i], dummyTime, tmpTransform)) {
+		if(!scene.getTransform(resultIds[i], currentTime, tmpTransform)) {
 			LOG(WARNING) << "SceneObject with ID " << resultIds[i] << " is not a TansformNode. Skipping.";
 			continue;
 		}
@@ -62,7 +61,7 @@ void WorldModel::getSceneObjects(vector<Attribute> attributes, vector<SceneObjec
 		scene.getGroupChildren(resultIds[i], childIds);
 		for (unsigned int j = 0; j < static_cast<unsigned int>(childIds.size()); ++j) {
 			Shape::ShapePtr tmpShape;
-			if (scene.getGeometry(childIds[j], tmpShape, dummyTime) == true) {
+			if (scene.getGeometry(childIds[j], tmpShape, currentTime) == true) {
 				tmpSceneObject.shape = tmpShape;
 				break; //stop on first found geometry
 			}

@@ -152,6 +152,14 @@ HistoryIterator Transform::getClosestTransform(TimeStamp timeStamp) {
 		resultIterator++;
 	}
 
+	/*
+	 * We might reach this line when timeStamp is older thant the oldest element in the history.
+	 * In that case we want to return the last/oldest element.
+	 */
+	if(getCurrentHistoryLenght() > 1) {
+		resultIterator = history.end() - 1;
+		assert(timeStamp < resultIterator->second); // just to be sure...
+	}
 	return resultIterator;
 }
 
