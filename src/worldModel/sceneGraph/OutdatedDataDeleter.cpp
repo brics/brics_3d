@@ -26,7 +26,8 @@ namespace BRICS_3D {
 namespace RSG {
 
 OutdatedDataDeleter::OutdatedDataDeleter() {
-
+	performAutomaticHistoryUpdates = true;
+	minHistoryLength = 1;
 }
 
 OutdatedDataDeleter::~OutdatedDataDeleter() {
@@ -42,15 +43,21 @@ void OutdatedDataDeleter::visit(Group* node){
 }
 
 void OutdatedDataDeleter::visit(Transform* node){
+
+	if (performAutomaticHistoryUpdates) {
+		/* optionally update history/cache */
+		node->deleteOutdatedTransforms(TimeStamp(timer.getCurrentTime()));
+	}
+
 	/* check if node is outdated */
-	unsigned int minHistoryLength = 2;
 	if (node->getCurrentHistoryLenght() < minHistoryLength) {
 
-		/* delete _this_ from the gragh by deleting all handles that the parents have */
-		if (node->getNumberOfParents() == 0) { // oops we are trying to delete the root node, but this on has no parents...
+		/* delete _this_ from the graph by deleting all handles that the parents have */
+		if (node->getNumberOfParents() == 0) { // oops we are trying to delete the root node, but this one has no parents...
 			LOG(WARNING) << "OutdatedDataDeleter: The root node with ID " << node->getId() << " cannot be deleted.";
 			return;
 		}
+		LOG(DEBUG) << "Deleting Transform node with ID " << node->getId();
 
 		/*
 		 * so we found the handle to the current node; now we will invoke
@@ -64,7 +71,6 @@ void OutdatedDataDeleter::visit(Transform* node){
 			Group* parentGroup =  dynamic_cast<Group*>(parentNode);
 			if (parentGroup != 0 ) {
 				//parentGroup->removeChild(node); //TODO: shared count will/might go to 0...
-				//TODO add getChildIndex for real pointer to the group node
 				childIndex = parentGroup->getChildIndex(node);
 				parentGroup->removeChildren(childIndex);
 			} else {
@@ -84,6 +90,22 @@ void OutdatedDataDeleter::visit(Transform* node){
 
 void OutdatedDataDeleter::visit(GeometricNode* node){
 	//nothing to delete (yet)
+}
+
+bool OutdatedDataDeleter::getPerformAutomaticHistoryUpdates() const {
+    return performAutomaticHistoryUpdates;
+}
+
+void OutdatedDataDeleter::setPerformAutomaticHistoryUpdates(bool performAutomaticHistoryUpdates) {
+    this->performAutomaticHistoryUpdates = performAutomaticHistoryUpdates;
+}
+
+unsigned int OutdatedDataDeleter::getMinHistoryLength() const {
+    return minHistoryLength;
+}
+
+void OutdatedDataDeleter::setMinHistoryLength(unsigned int minHistoryLength) {
+    this->minHistoryLength = minHistoryLength;
 }
 
 }

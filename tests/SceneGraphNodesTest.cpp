@@ -1766,6 +1766,10 @@ void SceneGraphNodesTest::testOutdatedDataDeleter() {
 	tf4->insertTransform(transform123, TimeStamp(5.0));
 
 	OutdatedDataDeleter* deleter = new OutdatedDataDeleter();
+	deleter->setPerformAutomaticHistoryUpdates(false);
+	CPPUNIT_ASSERT(deleter->getPerformAutomaticHistoryUpdates() == false);
+	deleter->setMinHistoryLength(2u);
+	CPPUNIT_ASSERT_EQUAL(2u, deleter->getMinHistoryLength());
 	root->accept(deleter);
 
 	/* check if tf3 is deleted */
