@@ -34,22 +34,30 @@ namespace RSG {
 
 /**
  * Visitor that traverses the graph and deletes transform nodes that are outdated.
+ *
+ * This class also serves as a "Template method pattern" whereas the node deletion
+ * implementation might vary but the skeleton of the deletion algorithm will be
+ * preserved. Thus the doDeleteNode is the one and only one primitive operation that
+ * might be overriden by another conrete implementation.
+ *
  */
 class OutdatedDataDeleter : public INodeVisitor {
 public:
 	OutdatedDataDeleter();
 	virtual ~OutdatedDataDeleter();
 
-	virtual void visit(Node* node);
-	virtual void visit(Group* node);
-	virtual void visit(Transform* node);
-	virtual void visit(GeometricNode* node);
+	void visit(Node* node);
+	void visit(Group* node);
+	void visit(Transform* node);
+	void visit(GeometricNode* node);
 
     bool getPerformAutomaticHistoryUpdates() const;
     void setPerformAutomaticHistoryUpdates(bool performAutomaticHistoryUpdates);
 
     unsigned int getMinHistoryLength() const;
     void setMinHistoryLength(unsigned int minHistoryLength);
+
+    virtual void doDeleteNode(Node* node);
 
 private:
 

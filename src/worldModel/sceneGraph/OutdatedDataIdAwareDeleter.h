@@ -17,49 +17,38 @@
 *
 ******************************************************************************/
 
-#ifndef OCTREE_H_
-#define OCTREE_H_
+#ifndef OUTDATEDDATAIDAWAREDELETER_H_
+#define OUTDATEDDATAIDAWAREDELETER_H_
 
-#include "algorithm/filtering/IOctreeReductionFilter.h"
-#include "algorithm/filtering/IOctreePartition.h"
-#include "algorithm/filtering/IOctreeSetup.h"
+#include "OutdatedDataDeleter.h"
+#include "SceneGraphFacade.h"
 
 namespace BRICS_3D {
 
+namespace RSG {
+
 /**
- * @brief Implementation of the Octree component.
- * @ingroup filtering
+ * A more specialized visitor version to be used in conjunction with a SceneGraphFacade.
+ *
+ * This class behaves essentially the same as OutdatedDataDeleter, except that it will
+ * make use of the deleteNode function in the facade. Thus the IDs managed by the facade
+ * will be in sync.
  */
-class Octree : public IOctreeReductionFilter, public IOctreePartition, public IOctreeSetup {
+class OutdatedDataIdAwareDeleter : public OutdatedDataDeleter {
 public:
+	OutdatedDataIdAwareDeleter(SceneGraphFacade* facadeHandle);
+	virtual ~OutdatedDataIdAwareDeleter();
 
-	/**
-	 * @brief Standard constructor.
-	 */
-	Octree();
-
-	/**
-	 * @brief Standard destructor.
-	 */
-	virtual ~Octree();
-
-	void filter(PointCloud3D* originalPointCloud, PointCloud3D* resultPointCloud);
-
-	void partitionPointCloud(PointCloud3D* pointCloud, std::vector<PointCloud3D*>* pointCloudCells);
-
-	void setVoxelSize(double voxelSize);
-
-	double getVoxelSize();
+	void doDeleteNode(Node* node);
 
 private:
-
-	/// The maximum voxel size of the smallest cube in the Octree
-	double voxelSize;
-
+	SceneGraphFacade* facadeHandle;
 };
 
 }
 
-#endif /* OCTREE_H_ */
+}
+
+#endif /* OUTDATEDDATAIDAWAREDELETER_H_ */
 
 /* EOF */

@@ -115,7 +115,7 @@ int main(int argc, char **argv) {
 	Octree* octreeFilter = new Octree();
 	octreeFilter->setVoxelSize(4.0); 	//value deduced from roughly knowing the data in advance...
 	PointCloud3D* reducedPointCloud = new PointCloud3D();
-	octreeFilter->reducePointCloud(pointCloud1, reducedPointCloud);
+	octreeFilter->filter(pointCloud1, reducedPointCloud);
 
 	/* optionally perform registration via ICP */
 	if(nInputClouds == 2) {

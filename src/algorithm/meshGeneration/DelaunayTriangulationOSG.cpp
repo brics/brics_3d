@@ -133,6 +133,10 @@ void DelaunayTriangulationOSG::triangulate(PointCloud3D* pointCloud, ITriangleMe
 	}
 }
 
+void DelaunayTriangulationOSG::generateMesh(PointCloud3D* pointCloud, ITriangleMesh* mesh) {
+	triangulate(pointCloud, mesh);
+}
+
 }
 
 /* EOF */

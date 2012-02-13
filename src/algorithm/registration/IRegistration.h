@@ -17,39 +17,37 @@
 *
 ******************************************************************************/
 
-#ifndef IDELAUNAYTRIANGULATION_H_
-#define IDELAUNAYTRIANGULATION_H_
+#ifndef IREGISTRATION_H_
+#define IREGISTRATION_H_
 
 #include "core/PointCloud3D.h"
-#include "core/ITriangleMesh.h"
+#include "core/IHomogeneousMatrix44.h"
 
 namespace BRICS_3D {
 
-enum axis {
-	x,
-	y,
-	z
-};
-
 /**
- * @brief Abstract interface for Delaunay triangulation methods
- * @ingroup mesh_generation
+ * @brief Generic interface for a point cloud registration componennt.
+ * @ingroup registration
+ *
  */
-class IDelaunayTriangulation {
+class IRegistration {
 public:
-	IDelaunayTriangulation(){};
+	IRegistration(){};
+	virtual ~IRegistration(){};
 
-	virtual ~IDelaunayTriangulation(){};
-
-	virtual void triangulate(PointCloud3D* pointCloud, ITriangleMesh* mesh, axis ignore = z) = 0;
-
-//	virtual void triangulate(PointCloud3D* pointCloud, ITetrahedronSet* tetrahedrons) = 0;
-
+	/**
+	 * @brief Calculates the required transformation to align the data point cloud to the model point cloud
+	 *
+	 * @param[in] model Pointer to point cloud that represents the model
+	 * @param[in,out] data Pointer to point cloud that represents the data (points will be transformed during iterations)
+	 * @param[out] resultTransformation Pointer to resulting homogeneous transformation to align both point clouds
+	 */
+	virtual void match(PointCloud3D* model, PointCloud3D* data, IHomogeneousMatrix44* resultTransformation) = 0;
 
 };
 
 }
 
-#endif /* IDELAUNAYTRIANGULATION_H_ */
+#endif /* IREGISTRATION_H_ */
 
 /* EOF */

@@ -17,39 +17,28 @@
 *
 ******************************************************************************/
 
-#ifndef IDELAUNAYTRIANGULATION_H_
-#define IDELAUNAYTRIANGULATION_H_
-
-#include "core/PointCloud3D.h"
-#include "core/ITriangleMesh.h"
+#include "OutdatedDataIdAwareDeleter.h"
+#include <assert.h>
 
 namespace BRICS_3D {
 
-enum axis {
-	x,
-	y,
-	z
-};
+namespace RSG {
 
-/**
- * @brief Abstract interface for Delaunay triangulation methods
- * @ingroup mesh_generation
- */
-class IDelaunayTriangulation {
-public:
-	IDelaunayTriangulation(){};
+OutdatedDataIdAwareDeleter::OutdatedDataIdAwareDeleter(SceneGraphFacade* facadeHandle) {
+	assert(facadeHandle != 0);
+	this->facadeHandle = facadeHandle;
+}
 
-	virtual ~IDelaunayTriangulation(){};
+OutdatedDataIdAwareDeleter::~OutdatedDataIdAwareDeleter() {
+	facadeHandle = 0; //we do not delete, as we are not the owner
+}
 
-	virtual void triangulate(PointCloud3D* pointCloud, ITriangleMesh* mesh, axis ignore = z) = 0;
-
-//	virtual void triangulate(PointCloud3D* pointCloud, ITetrahedronSet* tetrahedrons) = 0;
-
-
-};
+void OutdatedDataIdAwareDeleter::doDeleteNode(Node* node) {
+	assert(node != 0);
+	facadeHandle->deleteNode(node->getId());
+}
 
 }
 
-#endif /* IDELAUNAYTRIANGULATION_H_ */
-
+}
 /* EOF */

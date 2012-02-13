@@ -22,6 +22,7 @@
 
 #include "core/PointCloud3D.h"
 #include "core/IHomogeneousMatrix44.h"
+#include "IRegistration.h"
 
 namespace BRICS_3D {
 
@@ -30,7 +31,7 @@ namespace BRICS_3D {
  * @brief Abstract stateless interface for the Iterative Closest Point (ICP) registration algorithm
  *
  */
-class IIterativeClosestPoint {
+class IIterativeClosestPoint : public IRegistration {
 public:
 
 	/**

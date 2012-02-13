@@ -107,7 +107,8 @@ void WorldModel::runPerception() {
 }
 
 void WorldModel::runOncePerception() {
-	OutdatedDataDeleter* deleter = new OutdatedDataDeleter();
+//	OutdatedDataDeleter* deleter = new OutdatedDataDeleter();
+	OutdatedDataIdAwareDeleter* deleter = new OutdatedDataIdAwareDeleter(&scene);
 	scene.executeGraphTraverser(deleter);
 }
 

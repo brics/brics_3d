@@ -21,6 +21,7 @@
 #define IOCTREEREDUCTIONFILTER_H_
 
 #include "core/PointCloud3D.h"
+#include "IFiltering.h"
 
 namespace BRICS_3D {
 
@@ -32,7 +33,7 @@ namespace BRICS_3D {
  *
  * @ingroup filtering
  */
-class IOctreeReductionFilter {
+class IOctreeReductionFilter : public IFiltering {
 public:
 
 	/**
@@ -54,7 +55,7 @@ public:
 	 * be modified.
 	 * @param[out] resultPointCloud The new point cloud with the reduced amount of points.
 	 */
-	virtual void reducePointCloud(PointCloud3D* originalPointCloud, PointCloud3D* resultPointCloud) = 0;
+	virtual void filter(PointCloud3D* originalPointCloud, PointCloud3D* resultPointCloud) = 0;
 
 
 };

@@ -34,7 +34,7 @@ Octree::~Octree() {
 
 }
 
-void Octree::reducePointCloud(PointCloud3D* originalPointCloud, PointCloud3D* resultPointCloud) {
+void Octree::filter(PointCloud3D* originalPointCloud, PointCloud3D* resultPointCloud) {
 	assert(originalPointCloud != 0);
 	assert(resultPointCloud != 0);
 

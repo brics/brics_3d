@@ -78,7 +78,8 @@ SET (ALGORITHM_LIBRARY_SOURCES
 	
 	./algorithm/featureExtraction/Centroid3D
 	./algorithm/featureExtraction/INormalEstimation
-	
+
+    ./algorithm/filtering/IFiltering
 	./algorithm/filtering/IOctreeReductionFilter
 	./algorithm/filtering/IOctreePartition	
     ./algorithm/filtering/IOctreeSetup
@@ -94,6 +95,7 @@ SET (ALGORITHM_LIBRARY_SOURCES
     ./algorithm/nearestNeighbor/NearestNeighborFLANN
     ./algorithm/nearestNeighbor/NearestNeighborSTANN
     
+    .//algorithm/registration/IRegistration
 	./algorithm/registration/IPointCorrespondence
 	./algorithm/registration/PointCorrespondenceKDTree
 	./algorithm/registration/PointCorrespondenceGenericNN
@@ -108,6 +110,7 @@ SET (ALGORITHM_LIBRARY_SOURCES
 	./algorithm/registration/IterativeClosestPoint
 	./algorithm/registration/IterativeClosestPointFactory
 	
+	./algorithm/meshGeneration/IMeshGeneration
 	./algorithm/meshGeneration/IDelaunayTriangulation
 		
     ./algorithm/segmentation/evaluation/Comparator
@@ -136,7 +139,7 @@ SET (ALGORITHM_LIBRARY_SOURCES
 	./algorithm/segmentation/SACMethods/SACMethodMLESAC
     ./algorithm/segmentation/RegionBasedSACSegmentation.h
     ./algorithm/segmentation/RegionBasedSACSegmentationUsingNormals.h
-    ./algorithm/segmentation/EuclideanClustering       
+    ./algorithm/segmentation/EuclideanClustering          
 )
 
 SET (UTIL_LIBRARY_SOURCES
@@ -169,6 +172,7 @@ SET (WORLD_MODEL_LIBRARY_SOURCES
     ./worldModel/sceneGraph/PathCollector
     ./worldModel/sceneGraph/AttributeFinder
     ./worldModel/sceneGraph/OutdatedDataDeleter
+    ./worldModel/sceneGraph/OutdatedDataIdAwareDeleter
 )
 
 #optional sources

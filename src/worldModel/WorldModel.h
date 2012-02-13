@@ -23,6 +23,7 @@
 #include "IWorldModelQuery.h"
 #include "sceneGraph/SceneGraphFacade.h"
 #include "sceneGraph/OutdatedDataDeleter.h"
+#include "sceneGraph/OutdatedDataIdAwareDeleter.h"
 #include "IWorldModelUpdate.h"
 #include "IWorldModelCoordination.h"
 #include "util/Timer.h"

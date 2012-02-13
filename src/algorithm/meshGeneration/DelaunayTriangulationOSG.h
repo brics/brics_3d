@@ -21,6 +21,7 @@
 #define DELAUNAYTRIANGULATIONOSG_H_
 
 #include "IDelaunayTriangulation.h"
+#include "IMeshGeneration.h"
 
 namespace BRICS_3D {
 
@@ -32,13 +33,15 @@ namespace BRICS_3D {
  * projection is used to perform a Delaunay triangulation in 2D space.
  *
  */
-class DelaunayTriangulationOSG : public IDelaunayTriangulation {
+class DelaunayTriangulationOSG : public IDelaunayTriangulation, public IMeshGeneration {
 public:
 	DelaunayTriangulationOSG();
 
 	virtual ~DelaunayTriangulationOSG();
 
 	void triangulate(PointCloud3D* pointCloud, ITriangleMesh* mesh, axis ignore = z);
+
+	void generateMesh(PointCloud3D* pointCloud, ITriangleMesh* mesh);
 };
 
 }

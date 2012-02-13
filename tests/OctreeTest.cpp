@@ -94,29 +94,29 @@ void OctreeTest::testSizeReduction() {
 
 	PointCloud3D* pointCloudResult = new PointCloud3D();
 
-	octreeComponent->reducePointCloud(pointCloudCube, pointCloudResult);
+	octreeComponent->filter(pointCloudCube, pointCloudResult);
 	CPPUNIT_ASSERT_EQUAL(10u, pointCloudCube->getSize()); //input size must not change
 	CPPUNIT_ASSERT_EQUAL(pointCloudCube->getSize(), pointCloudResult->getSize()); //no filtering involved with standard parameters
 
 	octreeComponent->setVoxelSize(0.05); //no change (too fine grid in this case)
-	octreeComponent->reducePointCloud(pointCloudCube, pointCloudResult);
+	octreeComponent->filter(pointCloudCube, pointCloudResult);
 	CPPUNIT_ASSERT_EQUAL(10u, pointCloudResult->getSize());
 
 	octreeComponent->setVoxelSize(0.1);
-	octreeComponent->reducePointCloud(pointCloudCube, pointCloudResult);
+	octreeComponent->filter(pointCloudCube, pointCloudResult);
 	CPPUNIT_ASSERT_EQUAL(9u, pointCloudResult->getSize());
 
 	octreeComponent->setVoxelSize(0.2);
-	octreeComponent->reducePointCloud(pointCloudCube, pointCloudResult);
+	octreeComponent->filter(pointCloudCube, pointCloudResult);
 	CPPUNIT_ASSERT_EQUAL(8u, pointCloudResult->getSize());
 
 	octreeComponent->setVoxelSize(2.0);
-	octreeComponent->reducePointCloud(pointCloudCube, pointCloudResult);
+	octreeComponent->filter(pointCloudCube, pointCloudResult);
 	CPPUNIT_ASSERT_EQUAL(1u, pointCloudResult->getSize());
 
 	/* again no filtering, check if result cloud is independent from input (might be a very subtile error) */
 	octreeComponent->setVoxelSize(0.0);
-	octreeComponent->reducePointCloud(pointCloudCube, pointCloudResult);
+	octreeComponent->filter(pointCloudCube, pointCloudResult);
 	CPPUNIT_ASSERT_EQUAL(10u, pointCloudResult->getSize());
 	Point3D inputPoint;
 	Point3D resultPoint;

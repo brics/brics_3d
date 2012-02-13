@@ -77,7 +77,7 @@ int main(int argc, char **argv) {
 
 		/* do the filtering */
 		PointCloud3D* reducedPointCloud = new PointCloud3D();
-		octreeReductionFilter->reducePointCloud(pointCloud, reducedPointCloud);
+		octreeReductionFilter->filter(pointCloud, reducedPointCloud);
 
 		delete pointCloud; // here we discard the old data
 		pointCloud = reducedPointCloud;

@@ -63,6 +63,7 @@ unsigned int SceneGraphFacade::getRootId() {
 }
 
 bool SceneGraphFacade::getNodes(vector<Attribute> attributes, vector<unsigned int>& ids) {
+	LOG(DEBUG) << " Current idLookUpTable lenght = " << idLookUpTable.size();
 	ids.clear();
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(getRootId());
 	Node::NodePtr node = tmpNode.lock();

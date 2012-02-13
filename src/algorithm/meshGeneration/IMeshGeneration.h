@@ -17,39 +17,28 @@
 *
 ******************************************************************************/
 
-#ifndef IDELAUNAYTRIANGULATION_H_
-#define IDELAUNAYTRIANGULATION_H_
+#ifndef IMESHGENERATION_H_
+#define IMESHGENERATION_H_
 
 #include "core/PointCloud3D.h"
 #include "core/ITriangleMesh.h"
 
 namespace BRICS_3D {
 
-enum axis {
-	x,
-	y,
-	z
-};
-
 /**
- * @brief Abstract interface for Delaunay triangulation methods
+ * @brief Generic interface for a triangle mesh generation componennt.
  * @ingroup mesh_generation
  */
-class IDelaunayTriangulation {
+class IMeshGeneration {
 public:
-	IDelaunayTriangulation(){};
+	IMeshGeneration(){};
+	virtual ~IMeshGeneration(){};
 
-	virtual ~IDelaunayTriangulation(){};
-
-	virtual void triangulate(PointCloud3D* pointCloud, ITriangleMesh* mesh, axis ignore = z) = 0;
-
-//	virtual void triangulate(PointCloud3D* pointCloud, ITetrahedronSet* tetrahedrons) = 0;
-
-
+	virtual void generateMesh(PointCloud3D* pointCloud, ITriangleMesh* mesh) = 0;
 };
 
 }
 
-#endif /* IDELAUNAYTRIANGULATION_H_ */
+#endif /* IMESHGENERATION_H_ */
 
 /* EOF */

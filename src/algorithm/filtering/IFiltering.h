@@ -16,50 +16,33 @@
 * more details.
 *
 ******************************************************************************/
+#ifndef IFILTERING_H_
+#define IFILTERING_H_
 
-#ifndef OCTREE_H_
-#define OCTREE_H_
-
-#include "algorithm/filtering/IOctreeReductionFilter.h"
-#include "algorithm/filtering/IOctreePartition.h"
-#include "algorithm/filtering/IOctreeSetup.h"
 
 namespace BRICS_3D {
 
 /**
- * @brief Implementation of the Octree component.
+ * @brief Generic interface for a point cloud filtering component.
  * @ingroup filtering
+ *
  */
-class Octree : public IOctreeReductionFilter, public IOctreePartition, public IOctreeSetup {
+class IFiltering {
 public:
+	IFiltering(){};
+	virtual ~IFiltering(){};
 
 	/**
-	 * @brief Standard constructor.
+	 * @brief Filter a point cloud.
+	 * @param[in] originalPointCloud The input point cloud that will be filtered. This data will not
+	 * be modified.
+	 * @param[out] resultPointCloud The filtered point cloud with.
 	 */
-	Octree();
-
-	/**
-	 * @brief Standard destructor.
-	 */
-	virtual ~Octree();
-
-	void filter(PointCloud3D* originalPointCloud, PointCloud3D* resultPointCloud);
-
-	void partitionPointCloud(PointCloud3D* pointCloud, std::vector<PointCloud3D*>* pointCloudCells);
-
-	void setVoxelSize(double voxelSize);
-
-	double getVoxelSize();
-
-private:
-
-	/// The maximum voxel size of the smallest cube in the Octree
-	double voxelSize;
-
+	virtual void filter(PointCloud3D* originalPointCloud, PointCloud3D* resultPointCloud) = 0;
 };
 
 }
 
-#endif /* OCTREE_H_ */
+#endif /* IFILTERING_H_ */
 
 /* EOF */
