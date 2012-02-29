@@ -148,6 +148,17 @@ bool SceneGraphFacade::getGeometry(unsigned int id, Shape::ShapePtr& shape, Time
 	return false;
 }
 
+bool SceneGraphFacade::getTransformForNode (unsigned int id, /*unsigned int idReferenceNode */ TimeStamp timeStamp, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform) {
+	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
+	Node::NodePtr node = tmpNode.lock();
+	if (node != 0) {
+		transform = getGlobalTransform(node);
+		return true;
+	}
+	return false;
+}
+
+
 bool SceneGraphFacade::addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes) {
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(parentId);
 	Node::NodePtr node = tmpNode.lock();

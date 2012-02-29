@@ -23,16 +23,19 @@ namespace BRICS_3D {
 
 namespace RSG {
 
-PointCloud::PointCloud() {
+#if 0
+template<typename PointCloudT>
+PointCloud<PointCloudT>::PointCloud() {
   // Bouml preserved body begin 0002DB03
   // Bouml preserved body end 0002DB03
 }
 
-PointCloud::~PointCloud() {
+template<typename PointCloudT>
+PointCloud<PointCloudT>::~PointCloud() {
   // Bouml preserved body begin 0002DB83
   // Bouml preserved body end 0002DB83
 }
-
+#endif
 
 } // namespace BRICS_3D::RSG
 

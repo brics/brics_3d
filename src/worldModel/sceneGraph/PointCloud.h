@@ -28,12 +28,22 @@ namespace RSG {
 
 /**
  * Abstract interface for point cloud data in the scenegraph.
+ *
+ * @TODO rename to PointCloudNode, otherwise too many point cloud types will be involved...
  */
+template<typename PointCloudT>
 class PointCloud : public Shape {
   public:
-    PointCloud();
 
-    virtual ~PointCloud();
+	typedef boost::shared_ptr< PointCloud<PointCloudT> > PointCloudPtr;
+	typedef boost::shared_ptr< PointCloud<PointCloudT> const> PointCloudConstPtr;
+
+    PointCloud(){};
+
+    virtual ~PointCloud(){};
+
+//    PointCloudT data;
+    boost::shared_ptr<PointCloudT> data;
 
 };
 

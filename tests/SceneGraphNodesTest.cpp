@@ -2224,6 +2224,110 @@ void SceneGraphNodesTest::testSceneGraphFacade(){
 
 }
 
+void SceneGraphNodesTest::testPointCloud() {
+	/* Graph structure: (remember: nodes can only serve as are leaves)
+	 *                 root
+	 *                   |
+	 *        -----------+----------
+	 *        |                    |
+	 *       pc1                  tf2
+	 *                             |
+	 *                            pc3
+	 *
+	 */
+	unsigned int rootId = 0;
+	unsigned int pc1Id = 1;
+	unsigned int tf2Id = 2;
+	unsigned int pc3Id = 3;
+
+	Group::GroupPtr root(new Group());
+	root->setId(rootId);
+
+	/*
+	 * the real data/ implementation
+	 */
+	BRICS_3D::PointCloud3D::PointCloud3DPtr pc1_data(new BRICS_3D::PointCloud3D());
+	BRICS_3D::PointCloud3D::PointCloud3DPtr pc3_data(new BRICS_3D::PointCloud3D());
+
+	/*SceneGraphNodesTest::testSceneGraphFacade
+	 * generic data containers
+	 */
+
+	// NODE with raw pointer
+//	BRICS_3D::PointCloud3D::PointCloud3DPtr pc1_test_data(new BRICS_3D::PointCloud3D());
+//	RSG::PointCloud<BRICS_3D::PointCloud3D>* pc1_test = new RSG::PointCloud<BRICS_3D::PointCloud3D>();
+//	pc1_test->data = pc1_test_data;
+//	pc1_test->data->addPoint(Point3D(1,2,3));
+	//std::cout << *(pc1_test->data);
+
+	// NODE with manual boost pointer
+	boost::shared_ptr<PointCloud<BRICS_3D::PointCloud3D> >  pc1(new RSG::PointCloud<BRICS_3D::PointCloud3D>());
+	pc1->data = pc1_data;
+	pc1->data->addPoint(Point3D(1,1,1));
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, (*pc1->data->getPointCloud())[0].getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, (*pc1->data->getPointCloud())[0].getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, (*pc1->data->getPointCloud())[0].getZ(), maxTolerance);
+//	std::cout << *(pc1->data);
+
+	// NODE with
+	PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr pc3(new RSG::PointCloud<BRICS_3D::PointCloud3D>());
+	pc3->data = pc3_data;
+	pc3->data->addPoint(Point3D(2,2,2));
+	pc3->data->addPoint(Point3D(3,3,3));
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, (*pc3->data->getPointCloud())[0].getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, (*pc3->data->getPointCloud())[0].getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, (*pc3->data->getPointCloud())[0].getZ(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, (*pc3->data->getPointCloud())[1].getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, (*pc3->data->getPointCloud())[1].getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, (*pc3->data->getPointCloud())[1].getZ(), maxTolerance);
+//	std::cout << *(pc3->data);
+
+	/*
+	 * geometric nodes
+	 */
+	GeometricNode::GeometricNodePtr pcGeode1(new GeometricNode());
+	pcGeode1->setId(pc1Id);
+	GeometricNode::GeometricNodePtr pcGeode3(new GeometricNode());
+	pcGeode1->setId(pc3Id);
+
+	pcGeode1->setShape(pc1);
+	pcGeode3->setShape(pc3);
+
+	RSG::Transform::TransformPtr tf2(new RSG::Transform());
+	tf2->setId(tf2Id);
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr someTransform(new HomogeneousMatrix44(1,0,0,  	//Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             10,10,10)); 						//Translation coefficients
+	tf2->insertTransform(someTransform, TimeStamp(0.0));
+
+	/*
+	 * finally construct some scenegraph
+	 */
+	root->addChild(pcGeode1);
+	root->addChild(tf2);
+	tf2->addChild(pcGeode3);
+
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr resultTransform;
+	resultTransform	= getGlobalTransform(pcGeode3);
+	cout << *resultTransform;
+
+	Shape::ShapePtr resultShape;
+	PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr resultPointCloud;
+	resultShape = pcGeode3->getShape();
+	resultPointCloud = boost::dynamic_pointer_cast<RSG::PointCloud<BRICS_3D::PointCloud3D> >(resultShape);
+	CPPUNIT_ASSERT(resultPointCloud != 0);
+	CPPUNIT_ASSERT_EQUAL(2u, resultPointCloud->data->getSize());
+	for (unsigned int index = 0; index < resultPointCloud->data->getSize(); ++index) {
+		BRICS_3D::Point3D resultPoint;
+		resultPoint = (*resultPointCloud->data->getPointCloud())[index];
+		cout << "raw Point value = " << resultPoint;
+		resultPoint.homogeneousTransformation(resultTransform.get());
+		cout << "transform Point value = " << resultPoint << endl;
+	}
+
+}
+
 }  // namespace unitTests
 
 /* EOF */

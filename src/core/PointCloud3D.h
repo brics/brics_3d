@@ -33,6 +33,9 @@ namespace BRICS_3D {
 class PointCloud3D {
 public:
 
+	typedef boost::shared_ptr<PointCloud3D> PointCloud3DPtr;
+	typedef boost::shared_ptr<PointCloud3D const> PointCloud3DConstPtr;
+
 	/**
 	 * @brief Standard constuctor
 	 */
