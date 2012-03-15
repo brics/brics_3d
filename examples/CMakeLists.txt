@@ -146,6 +146,17 @@ IF (USE_OSG)
         )
     ENDIF(USE_PCL AND USE_EIGEN3)    
     
+    ADD_EXECUTABLE(wm_processing wm_processing)
+    TARGET_LINK_LIBRARIES(wm_processing 
+        brics3d_core 
+        brics3d_algorithm
+        brics3d_world_model
+        brics3d_util
+    	${OSG_LIBRARY_DEBUG}
+    	${OSGGA_LIBRARY_DEBUG}
+    	${OSGVIEWER_LIBRARY_DEBUG}
+    )
+    
 ENDIF(USE_OSG)
 
 ADD_EXECUTABLE(rigidTransformation_benchmark rigidTransformation_benchmark)
