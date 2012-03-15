@@ -15,6 +15,10 @@
   <rosdep name="opencv2.3"/>    
   <!--<depend package="opencv2"/>-->
   <!--<depend package="pcl"/>-->
+  
+  <export>
+     <cpp cflags="-I${prefix}/src" lflags="-L${prefix}/lib" />
+  </export>
 </package>
 
 
