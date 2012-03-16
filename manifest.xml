@@ -17,7 +17,7 @@
   <!--<depend package="pcl"/>-->
   
   <export>
-     <cpp cflags="-I${prefix}/src" lflags="-L${prefix}/lib" />
+     <cpp cflags="-I${prefix}/src -I${prefix}/external" lflags="-L${prefix}/lib" />
   </export>
 </package>
 
