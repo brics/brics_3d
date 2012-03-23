@@ -81,13 +81,15 @@ public:
 
 
 	void getExtractedClusters(std::vector<BRICS_3D::PointCloud3D*> &extractedClusters){
-		if(!isColoredInput)
-		extractedClusters = this->extractedClusters;
+		if(!isColoredInput) {
+			extractedClusters = this->extractedClusters;
+		}
 	}
 
 	void getExtractedClusters(std::vector<BRICS_3D::ColoredPointCloud3D*> &extractedClusters){
-		if(isColoredInput)
-		extractedClusters = this->extractedClustersColored;
+		if(isColoredInput) {
+			extractedClusters = this->extractedClustersColored;
+		}
 	}
 
 
