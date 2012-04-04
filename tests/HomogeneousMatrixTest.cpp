@@ -343,6 +343,57 @@ void HomogeneousMatrixTest::testMultiplication() {
 	delete result;
 }
 
+void HomogeneousMatrixTest::testInverse() {
+	HomogeneousMatrix44 pureTranslation(1,0,0, 0,1,0, 0,0,1, 1,2,3);
+
+//	cout << "pureTranslation:" << endl << pureTranslation << endl;
+	pureTranslation.inverse();
+//	cout << "inverse of pureTranslation:" << endl << pureTranslation << endl;
+	matrixPtr = pureTranslation.getRawData();
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, matrixPtr[12], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-2.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(-3.0, matrixPtr[14], maxTolerance);
+
+	HomogeneousMatrix44 pureTranslation2(1,0,0, 0,1,0, 0,0,1, 3,4,5);
+	HomogeneousMatrix44 pureTranslation3(1,0,0, 0,1,0, 0,0,1, 3,4,5);
+	pureTranslation3.inverse();
+
+	IHomogeneousMatrix44* result = new HomogeneousMatrix44();
+	result = pureTranslation2 * pureTranslation3;
+	CPPUNIT_ASSERT(result->isIdentity() == true);
+
+
+	/* now translation and rotation */
+
+	AngleAxis<double> rotation(M_PI_2/4.0, Vector3d(1,0,0));
+	Transform3d transformation;
+	transformation = rotation;
+	transformation.translate(Vector3d(5,6,99.9));
+	IHomogeneousMatrix44* someTransform = new HomogeneousMatrix44(&transformation);
+	IHomogeneousMatrix44* someOtherTransform = new HomogeneousMatrix44();
+	*someOtherTransform = *someTransform;
+	someTransform->inverse();
+//	cout << "someTransform:" << endl << *someTransform << endl;
+
+	result = (*someTransform) * (*someOtherTransform);
+//	cout << "result:" << endl << *result << endl;
+	CPPUNIT_ASSERT(result->isIdentity() == true);
+
+
+}
+
+void HomogeneousMatrixTest::testIsIdentity() {
+	HomogeneousMatrix44 identity;
+	HomogeneousMatrix44 noIdentity(1,0,0, 0,1,0, 0,0,1, 1,2,3);
+	HomogeneousMatrix44 nearlyIdentity(1.001,0,0, 0,1,0, 0,0,0.999, 0,0,0.001);
+
+	CPPUNIT_ASSERT(identity.isIdentity() == true);
+	CPPUNIT_ASSERT(noIdentity.isIdentity() == false);
+	CPPUNIT_ASSERT(nearlyIdentity.isIdentity() == false);
+	CPPUNIT_ASSERT(nearlyIdentity.isIdentity(0.01) == true); // check with less precision
+}
+
 } // namespace unitTests
 
 /* EOF */

@@ -95,6 +95,10 @@ public:
 
 	IHomogeneousMatrix44* operator=(const IHomogeneousMatrix44 &matrix);
 
+	bool isIdentity(double precision = 0.00001);
+
+	void inverse();
+
 	friend ostream& operator<<(ostream &outStream, const IHomogeneousMatrix44 &matrix);
 
 

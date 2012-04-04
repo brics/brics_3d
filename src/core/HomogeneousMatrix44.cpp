@@ -116,6 +116,34 @@ IHomogeneousMatrix44* HomogeneousMatrix44::operator=(const IHomogeneousMatrix44 
     return this;
 }
 
+bool HomogeneousMatrix44::isIdentity(double precision) {
+	Eigen::Map<Eigen::Matrix4d> eigenMatrix(matrixData);
+	return eigenMatrix.isApprox(Eigen::Matrix4d::Identity(), precision);
+}
+
+void HomogeneousMatrix44::inverse() { //could be refactored towards returning a new inverse matrix
+	Transform3d result;
+
+	Eigen::Map<Eigen::Matrix4d> eigenMatrix(matrixData);
+	Transform3d transform;
+	transform.matrix() = eigenMatrix;
+	result = transform.inverse();
+
+	double *tmpMatrix;
+	tmpMatrix = result.data(); //get data in column-row order
+	memcpy(&matrixData, tmpMatrix, sizeof(double)*matrixElements);
+
+//	for (int i = 0; i < 16; ++i) {
+//#ifdef EIGEN3
+//		matrixData[i] = result.matrix()(i);
+//#else
+//		matrixData[i] = result[i];
+//#endif
+//
+//	}
+
+}
+
 ostream& operator<<(ostream &outStream, const IHomogeneousMatrix44 &matrix) {
 	const double *matrixData = matrix.getRawData();
 

@@ -86,6 +86,18 @@ public:
 	virtual IHomogeneousMatrix44* operator=(const IHomogeneousMatrix44 &matrix) = 0;
 
 	/**
+	 * @brief Quick check if this matix is approximately an identity matrix.
+	 * @param precision Precision when matrix elemets are considered to be equal
+	 * @return True if it is approximately an identity matrix.
+	 */
+	virtual bool isIdentity(double precision = 0.00001) = 0;
+
+	/**
+	 * @brief Invert the matrix.
+	 */
+	virtual void inverse() = 0;
+
+	/**
 	 * @brief Overridden << operator.
 	 *
 	 * Writes a homogeneous matrix to a stream e.g. std::cout << homMatObj;
