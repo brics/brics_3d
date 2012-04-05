@@ -58,7 +58,7 @@ void BoxROIExtractor::filter(PointCloud3D* originalPointCloud, PointCloud3D* res
 			if (tmpPoint.getX() >= -sizeX/2 && tmpPoint.getX() <= sizeX/2 &&
 					tmpPoint.getY() >= -sizeY/2 && tmpPoint.getY() <= sizeY/2 &&
 					tmpPoint.getZ() >= -sizeZ/2 && tmpPoint.getZ() <= sizeZ/2) {
-				resultPointCloud->addPoint(tmpPoint);
+				resultPointCloud->addPoint((*originalPointCloud->getPointCloud())[i]);
 			}
 		}
 		delete inverseOrigin;

@@ -26,6 +26,7 @@
 #include <core/TriangleMeshImplicit.h>
 #include <core/TriangleMeshExplicit.h>
 #include <algorithm/filtering/Octree.h>
+#include <algorithm/filtering/BoxROIExtractor.h>
 #include <algorithm/registration/IterativeClosestPointFactory.h>
 #include <algorithm/depthPerception/DepthImageToPointCloudTransformation.h>
 #include <algorithm/meshGeneration/DelaunayTriangulationOSG.h>
@@ -109,6 +110,15 @@ int main(int argc, char **argv) {
 //	octreeFilter->filter(pointCloud1.get(), reducedPointCloud);
 	octreeFilter->filter(reducedNode->data.get(), reducedPointCloud);
 
+
+	/* Create ane point cloud based on a box ROI */
+	BoxROIExtractor boxFilter(0.2,0.2,0.2); // (2,2,2) origin in 0,0,0 and box dimension from -1 to 1 for each axis.
+	HomogeneousMatrix44::IHomogeneousMatrix44Ptr translation(new HomogeneousMatrix44(1,0,0, 0,1,0, 0,0,1, 0,0.2,0));
+	boxFilter.setBoxOrigin(translation);
+	PointCloud3D* boxROIPointCloud = new PointCloud3D();
+	boxFilter.filter(reducedNode->data.get(), boxROIPointCloud);
+	cout << "ROI has " << boxROIPointCloud->getSize() << " points" << endl;
+
 	/* optionally perform registration via ICP */
 //	if(false) {
 //		IterativeClosestPointFactory* icpFactory = new IterativeClosestPointFactory();
@@ -128,8 +138,10 @@ int main(int argc, char **argv) {
 
 	/* visualize the point cloud */
 	OSGPointCloudVisualizer* visualizer = new OSGPointCloudVisualizer();
-	visualizer->addPointCloud(reducedPointCloud, 1, 0.1, 0.1, 1);
-	visualizer->visualizePointCloud(pointCloud1.get());
+	visualizer->addPointCloud(reducedPointCloud, 1, 0.1, 0.1, 0.8);
+	visualizer->visualizePointCloud(boxROIPointCloud, 0.1, 0.9, 0.2, 0.9);
+//	visualizer->addPointCloud(boxROIPointCloud, 0.1, 0.9, 0.2, 0.9);
+//	visualizer->visualizePointCloud(pointCloud1.get(), 1, 1, 1, 0.5);
 
 
 //	/* create mesh */
