@@ -73,31 +73,20 @@ double* HomogeneousMatrix44::setRawData() {
 }
 
 IHomogeneousMatrix44* HomogeneousMatrix44::operator*(const IHomogeneousMatrix44 &matrix) {
-	const double *multiplicand = matrix.getRawData();
+	const double *tmpMultiplicand = matrix.getRawData();
+	double multiplicand[matrixElements]; // this wil be interpreted(mapped) as an Eigen matrix, thus we need sth writable...
+	memcpy(&multiplicand, tmpMultiplicand, sizeof(double)*matrixElements);
 
-	Eigen::Matrix4d tempMatrix1;
-	Eigen::Matrix4d tempMatrix2;
+	Eigen::Map<Eigen::Matrix4d> tempMatrix1(matrixData); //layout for BRICS and Eigen2 4x4 matrices is the same ;-)
+	Eigen::Map<Eigen::Matrix4d> tempMatrix2(multiplicand);
 	Eigen::Matrix4d result;
-
-	for (int i = 0; i < 16; ++i) { //layout for BRICS and Eigen2 4x4 matrices is the same ;-)
-#ifdef EIGEN3
-		tempMatrix1(i) = matrixData[i];
-		tempMatrix2(i) = multiplicand[i];
-#else
-		tempMatrix1[i] = matrixData[i];
-		tempMatrix2[i] = multiplicand[i];
-#endif
-	}
 
 	result = tempMatrix1 * tempMatrix2;
 
-	for (int i = 0; i < 16; ++i) { //might be also implemented with memcopy
-#ifdef EIGEN3
-		matrixData[i] = result(i);
-#else
-		matrixData[i] = result[i];
-#endif
-	}
+	/* copy back the result */
+	double *tmpMatrix;
+	tmpMatrix = result.data(); //get data in column-row order
+	memcpy(&matrixData, tmpMatrix, sizeof(double)*matrixElements);
 
 	return this;
 }
@@ -108,10 +97,7 @@ IHomogeneousMatrix44* HomogeneousMatrix44::operator*(const IHomogeneousMatrix44 
 
 IHomogeneousMatrix44* HomogeneousMatrix44::operator=(const IHomogeneousMatrix44 &matrix) {
 	const double* newMatrixData = matrix.getRawData();
-
-	for (int i = 0; i < matrixElements; ++i) {
-		matrixData[i] = newMatrixData[i];
-	}
+	memcpy(&matrixData, newMatrixData, sizeof(double)*matrixElements);
 
     return this;
 }
@@ -127,20 +113,12 @@ void HomogeneousMatrix44::inverse() { //could be refactored towards returning a 
 	Eigen::Map<Eigen::Matrix4d> eigenMatrix(matrixData);
 	Transform3d transform;
 	transform.matrix() = eigenMatrix;
-	result = transform.inverse();
 
+
+	result = transform.inverse();
 	double *tmpMatrix;
 	tmpMatrix = result.data(); //get data in column-row order
 	memcpy(&matrixData, tmpMatrix, sizeof(double)*matrixElements);
-
-//	for (int i = 0; i < 16; ++i) {
-//#ifdef EIGEN3
-//		matrixData[i] = result.matrix()(i);
-//#else
-//		matrixData[i] = result[i];
-//#endif
-//
-//	}
 
 }
 

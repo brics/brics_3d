@@ -25,16 +25,13 @@
 
 #ifdef EIGEN3
 	#define EIGEN_ALIGN_MEMORY EIGEN_ALIGN16
-#else
-	#define EIGEN_ALIGN_MEMORY EIGEN_ALIGN_128
-#endif
-
-#ifdef EIGEN3
 	typedef Eigen::Affine3d Transform3d;
 #else
-	//typedef Eigen::Transform3d Transform3d;
+	#define EIGEN_ALIGN_MEMORY EIGEN_ALIGN_128
 	using Eigen::Transform3d;
+	#include <Eigen/LU>
 #endif
+
 
 namespace BRICS_3D {
 
