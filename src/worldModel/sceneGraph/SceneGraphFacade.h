@@ -22,6 +22,7 @@
 
 #include "ISceneGraphQuery.h"
 #include "ISceneGraphUpdate.h"
+#include "ISceneGraphUpdateObserver.h"
 #include "IIdGenerator.h"
 #include "Group.h"
 #include "Node.h"
@@ -83,6 +84,8 @@ class SceneGraphFacade : public ISceneGraphQuery, public ISceneGraphUpdate {
 
     /* Configuration */
 //    bool setGraphTraverser(INodeVisitor* visitor);
+    bool attachUpdateObserver(ISceneGraphUpdateObserver* observer);
+    bool detachUpdateObserver(ISceneGraphUpdateObserver* observer);
 
     /* Coordination methods */
 	bool executeGraphTraverser(INodeVisitor* visitor);
@@ -103,7 +106,7 @@ class SceneGraphFacade : public ISceneGraphQuery, public ISceneGraphUpdate {
 
     IIdGenerator* idGenerator;
 
-
+    std::vector<ISceneGraphUpdateObserver*> updateObservers;
 
 
 };

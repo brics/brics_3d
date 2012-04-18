@@ -20,6 +20,7 @@
 #include "worldModel/sceneGraph/Box.h"
 #include "worldModel/sceneGraph/Cylinder.h"
 #include "worldModel/sceneGraph/INodeVisitor.h"
+#include "worldModel/sceneGraph/ISceneGraphUpdateObserver.h"
 #include "worldModel/sceneGraph/PathCollector.h"
 #include "worldModel/sceneGraph/AttributeFinder.h"
 #include "worldModel/sceneGraph/SimpleIdGenerator.h"
@@ -64,6 +65,74 @@ public:
 	std::vector<unsigned int> collectedIDs;
 };
 
+/*
+ * Example hot to implement a custom observer
+ */
+class MyObserver : public ISceneGraphUpdateObserver {
+
+public:
+	MyObserver() {
+		addNodeCounter = 0;
+		addGroupCounter = 0;
+		addTransformCounter = 0;
+		addGeometricNodeCounter = 0;
+		setNodeAttributesCounter = 0;
+		setTransformCounter = 0;
+		deleteNodeCounter = 0;
+		addParentCounter = 0;
+	}
+
+	bool addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes) {
+		addNodeCounter++;
+		return true;
+	}
+
+	bool addGroup(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes) {
+		addGroupCounter++;
+		return true;
+	}
+
+	bool addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp) {
+		addTransformCounter++;
+		return true;
+	}
+
+	bool addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp) {
+		addGeometricNodeCounter++;
+		return true;
+	}
+
+	bool setNodeAttributes(unsigned int id, vector<Attribute> newAttributes) {
+		setNodeAttributesCounter++;
+		return true;
+	}
+
+	bool setTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp) {
+		setTransformCounter++;
+		return true;
+	}
+
+	bool deleteNode(unsigned int id) {
+		deleteNodeCounter++;
+		return true;
+	}
+
+	bool addParent(unsigned int id, unsigned int parentId) {
+		addParentCounter++;
+		return true;
+	}
+
+	int addNodeCounter;
+	int addGroupCounter;
+	int addTransformCounter;
+	int addGeometricNodeCounter;
+	int setNodeAttributesCounter;
+	int setTransformCounter;
+	int deleteNodeCounter;
+	int addParentCounter;
+};
+
+
 class SceneGraphNodesTest : public CPPUNIT_NS::TestFixture {
 
 	CPPUNIT_TEST_SUITE( SceneGraphNodesTest );
@@ -84,6 +153,7 @@ class SceneGraphNodesTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testIdGenerator );
 	CPPUNIT_TEST( testSceneGraphFacade );
 	CPPUNIT_TEST( testPointCloud );
+	CPPUNIT_TEST( testUpdateObserver );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -107,6 +177,7 @@ public:
 	void testIdGenerator();
 	void testSceneGraphFacade();
 	void testPointCloud();
+	void testUpdateObserver();
 
 private:
 	  /// Maximum deviation for equality check of double variables

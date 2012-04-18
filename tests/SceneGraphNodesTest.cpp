@@ -2310,7 +2310,7 @@ void SceneGraphNodesTest::testPointCloud() {
 
 	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr resultTransform;
 	resultTransform	= getGlobalTransform(pcGeode3);
-	cout << *resultTransform;
+	//cout << *resultTransform;
 
 	Shape::ShapePtr resultShape;
 	PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr resultPointCloud;
@@ -2321,10 +2321,133 @@ void SceneGraphNodesTest::testPointCloud() {
 	for (unsigned int index = 0; index < resultPointCloud->data->getSize(); ++index) {
 		BRICS_3D::Point3D resultPoint;
 		resultPoint = (*resultPointCloud->data->getPointCloud())[index];
-		cout << "raw Point value = " << resultPoint;
+		//cout << "raw Point value = " << resultPoint;
 		resultPoint.homogeneousTransformation(resultTransform.get());
-		cout << "transform Point value = " << resultPoint << endl;
+		//cout << "transform Point value = " << resultPoint << endl;
 	}
+
+}
+
+void SceneGraphNodesTest::testUpdateObserver() {
+	SceneGraphFacade scene;
+	unsigned int dymmyId = 0;
+	unsigned int tfId = 0;
+	unsigned int geodeId = 0;
+	TimeStamp dummyTime(20);
+	vector<Attribute> tmpAttributes;
+	vector<unsigned int> resultParentIds;
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform123(new HomogeneousMatrix44(1,0,0,  	//Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             1,2,3)); 						//Translation coefficients
+
+	Cylinder::CylinderPtr cylinder1(new Cylinder(0.2,0.1));
+
+	MyObserver testObserver;
+	CPPUNIT_ASSERT(scene.attachUpdateObserver(&testObserver) == true);
+
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.addNodeCounter); //precondition
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.addParentCounter);
+
+	CPPUNIT_ASSERT(scene.addNode(scene.getRootId(), dymmyId, tmpAttributes) == true);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addNodeCounter); //poscondition
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.addParentCounter);
+
+	CPPUNIT_ASSERT(scene.addGroup(scene.getRootId(), dymmyId, tmpAttributes) == true);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addNodeCounter); //poscondition
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.addParentCounter);
+
+	CPPUNIT_ASSERT(scene.addTransformNode(scene.getRootId(), tfId, tmpAttributes, transform123, dummyTime) == true);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addNodeCounter); //poscondition
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.addParentCounter);
+
+	CPPUNIT_ASSERT(scene.addGeometricNode(scene.getRootId(), geodeId, tmpAttributes, cylinder1, dummyTime) == true);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addNodeCounter); //poscondition
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.addParentCounter);
+
+	CPPUNIT_ASSERT(scene.setNodeAttributes(scene.getRootId(), tmpAttributes) == true);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addNodeCounter); //poscondition
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.addParentCounter);
+
+	CPPUNIT_ASSERT(scene.setTransform(tfId, transform123, dummyTime) == true);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addNodeCounter); //poscondition
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.addParentCounter);
+
+	CPPUNIT_ASSERT(scene.deleteNode(tfId) == true);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addNodeCounter); //poscondition
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.addParentCounter);
+
+	CPPUNIT_ASSERT(scene.addParent(geodeId, scene.getRootId()) == true); //actually same relation twice
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addNodeCounter); //poscondition
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addParentCounter);
+
+	/* detach -> no further updates are expected */
+	CPPUNIT_ASSERT(scene.detachUpdateObserver(&testObserver) == true);
+	CPPUNIT_ASSERT(scene.addGroup(scene.getRootId(), dymmyId, tmpAttributes) == true);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addNodeCounter); //poscondition
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addParentCounter);
+
+	CPPUNIT_ASSERT(scene.detachUpdateObserver(&testObserver) == false);
 
 }
 

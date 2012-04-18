@@ -56,6 +56,7 @@ void SceneGraphFacade::initialize() {
 	rootNode->setId(idGenerator->getRootId());
 	assert(rootNode->getId() == idGenerator->getRootId());
 	idLookUpTable.insert(std::make_pair(rootNode->getId(), rootNode));
+	updateObservers.clear();
 }
 
 unsigned int SceneGraphFacade::getRootId() {
@@ -160,6 +161,7 @@ bool SceneGraphFacade::getTransformForNode (unsigned int id, /*unsigned int idRe
 
 
 bool SceneGraphFacade::addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes) {
+	bool operationSucceeded = false;
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(parentId);
 	Node::NodePtr node = tmpNode.lock();
 	Group::GroupPtr parentGroup = boost::dynamic_pointer_cast<Group>(node);
@@ -170,13 +172,26 @@ bool SceneGraphFacade::addNode(unsigned int parentId, unsigned int& assignedId, 
 		parentGroup->addChild(newNode);
 		assignedId = newNode->getId();
 		idLookUpTable.insert(std::make_pair(newNode->getId(), newNode));
-		return true;
+		operationSucceeded = true;
 	}
-	LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new node as a child of it.";
-	return false;
+
+	/* Call all observers regardless if an error occured or not */
+	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
+	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
+		unsigned int assignedIdcopy = assignedId; // prevent that observer might change this....
+		(*observerIterator)->addNode(parentId, assignedIdcopy, attributes);
+	}
+
+	if (operationSucceeded) {
+		return true;
+	} else {
+		LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new node as a child of it.";
+		return false;
+	}
 }
 
 bool SceneGraphFacade::addGroup(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes) {
+	bool operationSucceeded = false;
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(parentId);
 	Node::NodePtr node = tmpNode.lock();
 	Group::GroupPtr parentGroup = boost::dynamic_pointer_cast<Group>(node);
@@ -187,13 +202,26 @@ bool SceneGraphFacade::addGroup(unsigned int parentId, unsigned int& assignedId,
 		parentGroup->addChild(newGroup);
 		assignedId = newGroup->getId();
 		idLookUpTable.insert(std::make_pair(newGroup->getId(), newGroup));
-		return true;
+		operationSucceeded = true;
 	}
-	LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new group as a child of it.";
-	return false;
+
+	/* Call all observers regardless if an error occured or not */
+	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
+	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
+		unsigned int assignedIdcopy = assignedId; // prevent that observer might change this....
+		(*observerIterator)->addGroup(parentId, assignedIdcopy, attributes);
+	}
+
+	if (operationSucceeded) {
+		return true;
+	} else {
+		LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new group as a child of it.";
+		return false;
+	}
 }
 
 bool SceneGraphFacade::addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp) {
+	bool operationSucceeded = false;
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(parentId);
 	Node::NodePtr node = tmpNode.lock();
 	//	Group* parentGroup = dynamic_cast<Group*>(node);
@@ -206,13 +234,26 @@ bool SceneGraphFacade::addTransformNode(unsigned int parentId, unsigned int& ass
 		parentGroup->addChild(newTransform);
 		assignedId = newTransform->getId();
 		idLookUpTable.insert(std::make_pair(newTransform->getId(), newTransform));
-		return true;
+		operationSucceeded = true;
 	}
-	LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new transform as a child of it.";
-	return false;
+
+	/* Call all observers regardless if an error occured or not */
+	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
+	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
+		unsigned int assignedIdcopy = assignedId; // prevent that observer might change this....
+		(*observerIterator)->addTransformNode(parentId, assignedIdcopy, attributes, transform, timeStamp);
+	}
+
+	if(operationSucceeded) {
+		return true;
+	} else {
+		LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new transform as a child of it.";
+		return false;
+	}
 }
 
 bool SceneGraphFacade::addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp) {
+	bool operationSucceeded = false;
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(parentId);
 	Node::NodePtr node = tmpNode.lock();
 	//	Group* parentGroup = dynamic_cast<Group*>(node);
@@ -226,69 +267,120 @@ bool SceneGraphFacade::addGeometricNode(unsigned int parentId, unsigned int& ass
 		parentGroup->addChild(newGeometricNode);
 		assignedId = newGeometricNode->getId();
 		idLookUpTable.insert(std::make_pair(newGeometricNode->getId(), newGeometricNode));
-		return true;
+		operationSucceeded = true;
 	}
-	LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new geometric node as a child of it.";
-	return false;
+
+	/* Call all observers regardless if an error occured or not */
+	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
+	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
+		unsigned int assignedIdcopy = assignedId; // prevent that observer might change this....
+		(*observerIterator)->addGeometricNode(parentId, assignedIdcopy, attributes, shape, timeStamp);
+	}
+
+	if(operationSucceeded) {
+		return true;
+	} else {
+		LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new geometric node as a child of it.";
+		return false;
+	}
 }
 
 
 bool SceneGraphFacade::setNodeAttributes(unsigned int id, vector<Attribute> newAttributes) {
-	//	Node* node = findNodeRecerence(id);
+	bool operationSucceeded = false;
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();
 	if (node != 0) {
 		node->setAttributes(newAttributes);
-		return true;
+		operationSucceeded = true;
 	}
-	return false;
+
+	/* Call all observers regardless if an error occured or not */
+	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
+	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
+		unsigned idCopy = id; // prevent that observer might change this....
+		(*observerIterator)->setNodeAttributes(idCopy, newAttributes);
+	}
+
+	if (operationSucceeded) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
 bool SceneGraphFacade::setTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp) {
+	bool operationSucceeded = false;
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();
 	RSG::Transform::TransformPtr transformNode = boost::dynamic_pointer_cast<RSG::Transform>(node);
 	if (transformNode != 0) {
 		transformNode->insertTransform(transform, timeStamp);
-		return true;
+		operationSucceeded = true;
 	}
-	LOG(ERROR) << "Node with ID " << id << " is not a transform. Cannot set new transform data.";
-	return false;
+
+	/* Call all observers regardless if an error occured or not */
+	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
+	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
+		(*observerIterator)->setTransform(id, transform, timeStamp);
+	}
+
+	if (operationSucceeded) {
+		return true;
+	} else {
+		LOG(ERROR) << "Node with ID " << id << " is not a transform. Cannot set new transform data.";
+		return false;
+	}
 }
 
 bool SceneGraphFacade::deleteNode(unsigned int id) {
+	bool operationSucceeded = false;
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();
 	if (node != 0) {
 		if (node->getNumberOfParents() == 0) { // oops we are trying to delete the root node, but this on has no parents...
 			assert (id == getRootId()); // just to be sure something really strange did not happend...
 			LOG(WARNING) << "The root node with ID " << id << " cannot be deleted.";
-			return false;
-		}
+			operationSucceeded = false;
 
-		/*
-		 * so we found the handle to the current node; now we will invoke
-		 * the according delete function for every parent
-		 */
-		while (node->getNumberOfParents() > 0) { //NOTE: node->getNumberOfParents() will decrease within every iteration...
-			unsigned int i = 0;
-			RSG::Node* parentNode;
-			parentNode = node->getParent(i);
-			Group* parentGroup =  dynamic_cast<Group*>(parentNode);
-			if (parentGroup != 0 ) {
-				parentGroup->removeChild(node);
-			} else {
-				assert(false); // actually parents need to be groups otherwise sth. really went wrong
+		} else {
+
+			/*
+			 * so we found the handle to the current node; now we will invoke
+			 * the according delete function for every parent
+			 */
+			while (node->getNumberOfParents() > 0) { //NOTE: node->getNumberOfParents() will decrease within every iteration...
+				unsigned int i = 0;
+				RSG::Node* parentNode;
+				parentNode = node->getParent(i);
+				Group* parentGroup =  dynamic_cast<Group*>(parentNode);
+				if (parentGroup != 0 ) {
+					parentGroup->removeChild(node);
+				} else {
+					assert(false); // actually parents need to be groups otherwise sth. really went wrong
+				}
 			}
+			idLookUpTable.erase(id); //erase by ID (if not done here there would be orphaned IDs)
+			// TODO: do we have to delete children?
+			operationSucceeded = true;
 		}
-		idLookUpTable.erase(id); //erase by ID (if not done here there would be orphaned IDs)
-		// TODO: do we have to delete children?
-		return true;
 	}
-	return false;
+
+	/* Call all observers regardless if an error occured or not */
+	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
+	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
+		(*observerIterator)->deleteNode(id);
+	}
+
+	if (operationSucceeded) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
 bool SceneGraphFacade::addParent(unsigned int id, unsigned int parentId) {
+	bool operationSucceeded = false;
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();
 	Node::NodeWeakPtr tmpParentNode = findNodeRecerence(parentId);
@@ -297,9 +389,37 @@ bool SceneGraphFacade::addParent(unsigned int id, unsigned int parentId) {
 
 	if (parentGroup != 0 && node != 0) {
 		parentGroup->addChild(node);// TODO shared ref.
-		return true;
+		operationSucceeded = true;
 	}
-	LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new parent-child relation.";
+
+	/* Call all observers regardless if an error occured or not */
+	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
+	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
+		(*observerIterator)->addParent(id, parentId);
+	}
+
+	if (operationSucceeded) {
+		return true;
+	} else {
+		LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new parent-child relation.";
+		return false;
+	}
+}
+
+bool SceneGraphFacade::attachUpdateObserver(ISceneGraphUpdateObserver* observer) {
+	assert(observer != 0);
+	updateObservers.push_back(observer);
+	return true;
+}
+
+bool SceneGraphFacade::detachUpdateObserver(ISceneGraphUpdateObserver* observer) {
+	assert(observer != 0);
+	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator = std::find(updateObservers.begin(), updateObservers.end(), observer);
+    if (observerIterator!=updateObservers.end()) {
+    	updateObservers.erase(observerIterator);
+    	return true;
+    }
+    LOG(ERROR) << "Cannot detach update observer. Provided reference does not match with any in the observers list.";
 	return false;
 }
 
