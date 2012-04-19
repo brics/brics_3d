@@ -182,6 +182,7 @@ IF (USE_OSG)
     list(APPEND UTIL_LIBRARY_SOURCES ./util/OSGPointCloudVisualizer)
     list(APPEND UTIL_LIBRARY_SOURCES ./util/OSGTriangleMeshVisualizer)
     list(APPEND ALGORITHM_LIBRARY_SOURCES ./algorithm/meshGeneration/DelaunayTriangulationOSG)
+    list(APPEND WORLD_MODEL_LIBRARY_SOURCES ./worldModel/sceneGraph/OSGVisualizer)
     list(APPEND BRICS_3D_LIBRARIES_INCLUDE_DIRS ${OSG_INCLUDE_DIR})
 ENDIF(USE_OSG)
 

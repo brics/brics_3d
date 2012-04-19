@@ -21,7 +21,9 @@
 #include <util/DepthImageLoader.h>
 #include <util/OSGPointCloudVisualizer.h>
 #include <util/OSGTriangleMeshVisualizer.h>
+#include <worldModel/sceneGraph/OSGVisualizer.h>
 #include <core/PointCloud3D.h>
+#include <core/Logger.h>
 #include <core/HomogeneousMatrix44.h>
 #include <core/TriangleMeshImplicit.h>
 #include <core/TriangleMeshExplicit.h>
@@ -53,6 +55,8 @@ int main(int argc, char **argv) {
 	strcat(defaultFilename2, "/bunny045.txt\0");
 	filename2 = defaultFilename2;
 
+	BRICS_3D::Logger::setMinLoglevel(BRICS_3D::Logger::LOGDEBUG);
+
 	/* create the point cloud containers */
 //	PointCloud3D* pointCloud1 = new PointCloud3D();
 	BRICS_3D::PointCloud3D::PointCloud3DPtr pointCloud1(new BRICS_3D::PointCloud3D());
@@ -70,16 +74,19 @@ int main(int argc, char **argv) {
 	/* Graph structure: (remember: nodes can only serve as are leaves)
 	 *                 root
 	 *                   |
-	 *        -----------+----------
-	 *        |          |          |
-	 *       pc1        pc2      pcReduced
+	 *        -----------+---------------------
+	 *        |          |          |         |
+	 *       pc1        pc2      pcReduced	boxROI
 	 */
 	unsigned int pc1Id;
 	unsigned int pc2Id;
-	unsigned int pcReduced;
+	unsigned int pcReducedId;
+	unsigned int pcBoxROIId;
+	unsigned int pcResultId;
 
 	WorldModel* wm = new WorldModel();
-
+	RSG::OSGVisualizer* wmObserver = new RSG::OSGVisualizer();
+	wm->scene.attachUpdateObserver(wmObserver);
 
 
 //	Shape::ShapePtr pointCloud1Shape(new);
@@ -93,31 +100,53 @@ int main(int argc, char **argv) {
 	/* reduce point cloud with Octree filter */
 	Octree* octreeFilter = new Octree();
 	octreeFilter->setVoxelSize(0.002); 	//value deduced from roughly knowing the data in advance...
-	PointCloud3D* reducedPointCloud = new PointCloud3D();
+	//PointCloud3D* reducedPointCloud = new PointCloud3D();
+	BRICS_3D::PointCloud3D::PointCloud3DPtr reducedPointCloud(new BRICS_3D::PointCloud3D());
 
 	vector<unsigned int> resultIds;
 	wm->scene.getNodes(tmpAttibutes, resultIds);
 	assert(resultIds.size() == 1);
-	pcReduced = resultIds[0];
-	cout << "Found ID for label point_cloud_1: " << pcReduced << endl;
+	pcResultId = resultIds[0];
+	cout << "Found ID for label point_cloud_1: " << pcResultId << endl;
 	Shape::ShapePtr resultShape;
 	TimeStamp resultTime;
-	wm->scene.getGeometry(pcReduced, resultShape, resultTime);
-	RSG::PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr reducedNode(new RSG::PointCloud<BRICS_3D::PointCloud3D>());
-	reducedNode = boost::dynamic_pointer_cast<PointCloud<BRICS_3D::PointCloud3D> >(resultShape);
-	assert(reducedNode != 0);
+	wm->scene.getGeometry(pcResultId, resultShape, resultTime);
+	RSG::PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr resultNode(new RSG::PointCloud<BRICS_3D::PointCloud3D>());
+	resultNode = boost::dynamic_pointer_cast<PointCloud<BRICS_3D::PointCloud3D> >(resultShape);
+	assert(resultNode != 0);
 
 //	octreeFilter->filter(pointCloud1.get(), reducedPointCloud);
-	octreeFilter->filter(reducedNode->data.get(), reducedPointCloud);
+	octreeFilter->filter(resultNode->data.get(), reducedPointCloud.get());
 
+	/* Add subsamlped point cloud to wm */
+	PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr pcReducedNode(new RSG::PointCloud<BRICS_3D::PointCloud3D>());
+	pcReducedNode->data = reducedPointCloud;
+	tmpAttibutes.clear();
+	tmpAttibutes.push_back(Attribute("name","point_cloud_reduced"));
+	wm->scene.addGeometricNode(wm->getRootNodeId(), pcReducedId, tmpAttibutes, pcReducedNode, TimeStamp(0.1));
 
 	/* Create ane point cloud based on a box ROI */
-	BoxROIExtractor boxFilter(0.2,0.2,0.2); // (2,2,2) origin in 0,0,0 and box dimension from -1 to 1 for each axis.
-	HomogeneousMatrix44::IHomogeneousMatrix44Ptr translation(new HomogeneousMatrix44(1,0,0, 0,1,0, 0,0,1, 0,0.2,0));
-	boxFilter.setBoxOrigin(translation);
-	PointCloud3D* boxROIPointCloud = new PointCloud3D();
-	boxFilter.filter(reducedNode->data.get(), boxROIPointCloud);
+	BoxROIExtractor boxFilter(0.2,0.015,0.2); // (2,2,2) origin in 0,0,0 and box dimension from -1 to 1 for each axis.
+
+	//HomogeneousMatrix44::IHomogeneousMatrix44Ptr transform(new HomogeneousMatrix44(1,0,0, 0,1,0, 0,0,1, 0,0.2,0));
+	Eigen::AngleAxis<double> rotation(M_PI_2/4.0, Eigen::Vector3d(0,0,1));
+	Transform3d transformation;
+	transformation = rotation;
+	transformation.translate(Eigen::Vector3d(0,0.15,0));
+	HomogeneousMatrix44::IHomogeneousMatrix44Ptr transform(new HomogeneousMatrix44(&transformation));
+
+	boxFilter.setBoxOrigin(transform);
+//	PointCloud3D* boxROIPointCloud = new PointCloud3D();
+	BRICS_3D::PointCloud3D::PointCloud3DPtr boxROIPointCloud(new BRICS_3D::PointCloud3D());
+	boxFilter.filter(resultNode->data.get(), boxROIPointCloud.get());
 	cout << "ROI has " << boxROIPointCloud->getSize() << " points" << endl;
+
+	/* Add ROI point cloud to wm */
+	PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr pcBoxROINode(new RSG::PointCloud<BRICS_3D::PointCloud3D>());
+	pcBoxROINode->data = boxROIPointCloud;
+	tmpAttibutes.clear();
+	tmpAttibutes.push_back(Attribute("name","point_cloud_box_roi"));
+	wm->scene.addGeometricNode(wm->getRootNodeId(), pcBoxROIId, tmpAttibutes, pcBoxROINode, TimeStamp(0.2));
 
 	/* optionally perform registration via ICP */
 //	if(false) {
@@ -137,11 +166,12 @@ int main(int argc, char **argv) {
 	cout << "Size of point cloud: " << reducedPointCloud->getSize() << endl;
 
 	/* visualize the point cloud */
-	OSGPointCloudVisualizer* visualizer = new OSGPointCloudVisualizer();
-	visualizer->addPointCloud(reducedPointCloud, 1, 0.1, 0.1, 0.8);
-	visualizer->visualizePointCloud(boxROIPointCloud, 0.1, 0.9, 0.2, 0.9);
-//	visualizer->addPointCloud(boxROIPointCloud, 0.1, 0.9, 0.2, 0.9);
-//	visualizer->visualizePointCloud(pointCloud1.get(), 1, 1, 1, 0.5);
+//	OSGPointCloudVisualizer* visualizer = new OSGPointCloudVisualizer();
+//	visualizer->addPointCloud(reducedPointCloud.get(), 1, 0.1, 0.1, 0.8);
+//	visualizer->visualizePointCloud(boxROIPointCloud, 0.1, 0.9, 0.2, 0.9);
+
+////	visualizer->addPointCloud(boxROIPointCloud, 0.1, 0.9, 0.2, 0.9);
+////	visualizer->visualizePointCloud(pointCloud1.get(), 1, 1, 1, 0.5);
 
 
 //	/* create mesh */
@@ -158,9 +188,17 @@ int main(int argc, char **argv) {
 	/* clean up */
 //	delete meshVisualizer;
 //	delete meshGenerator;
-	delete visualizer;
+//	delete visualizer;
 //	delete pointCloud1;
 //	delete pointCloud2;
+
+
+	while(!wmObserver->done()) { // wait until user closes the GUI
+		//nothing here
+	}
+
+	delete wmObserver;
+	delete wm;
 
 	return 0;
 }

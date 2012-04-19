@@ -21,8 +21,6 @@
 
 #include "OSGPointCloudVisualizer.h"
 #include <osg/Point>
-#include <osgGA/StateSetManipulator>
-#include <osgViewer/ViewerEventHandlers>
 
 namespace BRICS_3D {
 

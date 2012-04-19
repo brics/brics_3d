@@ -26,6 +26,8 @@
 #include <osgDB/ReadFile>
 #include <osgUtil/Optimizer>
 #include <osgViewer/Viewer>
+#include <osgGA/StateSetManipulator>
+#include <osgViewer/ViewerEventHandlers>
 
 #include "boost/thread.hpp"
 
@@ -129,7 +131,7 @@ public:
 	 * @param blue Specifies the amount of blue for the color of the point cloud. Range is 0.0f to 1.0f
 	 * @param alpha Specifies the amount of the alpha channel of the point cloud. Range is 0.0f to 1.0f
 	 */
-	osg::ref_ptr<osg::Node> createPointCloudNode(PointCloud3D* pointCloud, float red=1.0f, float green=1.0f, float blue=1.0f, float alpha=1.0f);
+	static osg::ref_ptr<osg::Node> createPointCloudNode(PointCloud3D* pointCloud, float red=1.0f, float green=1.0f, float blue=1.0f, float alpha=1.0f);
 
 	/**
 	 * @brief Creates a "geode" (geometric node) element for OSG out of a colored point cloud
