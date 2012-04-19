@@ -24,6 +24,7 @@
 #include "worldModel/sceneGraph/PointCloud.h"
 #include "util/OSGPointCloudVisualizer.h" //unfortunately libbrics3d_world_model depends now on libbrics3d_util
 
+#include <osg/MatrixTransform>
 #include <map>
 
 namespace BRICS_3D {
@@ -79,6 +80,8 @@ private:
 
 	///Grant helper classes full access
 	friend class OSGOperationAdd;
+	friend class OSGOperationRemove;
+	friend class OSGOperationUpdateTransform;
 
 	///ID management for OSG
     std::map<unsigned int, osg::ref_ptr<osg::Node> > idLookUpTable;

@@ -57,10 +57,8 @@ int main(int argc, char **argv) {
 
 	BRICS_3D::Logger::setMinLoglevel(BRICS_3D::Logger::LOGDEBUG);
 
-	/* create the point cloud containers */
-//	PointCloud3D* pointCloud1 = new PointCloud3D();
+	/* create the point clouds */
 	BRICS_3D::PointCloud3D::PointCloud3DPtr pointCloud1(new BRICS_3D::PointCloud3D());
-//	PointCloud3D* pointCloud2 = new PointCloud3D();
 	BRICS_3D::PointCloud3D::PointCloud3DPtr pointCloud2(new BRICS_3D::PointCloud3D());
 
 	/* load 3d data */
@@ -86,25 +84,24 @@ int main(int argc, char **argv) {
 
 	WorldModel* wm = new WorldModel();
 	RSG::OSGVisualizer* wmObserver = new RSG::OSGVisualizer();
-	wm->scene.attachUpdateObserver(wmObserver);
+	wm->scene.attachUpdateObserver(wmObserver); //enable visualization
 
 
-//	Shape::ShapePtr pointCloud1Shape(new);
 	PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr pc1Node(new RSG::PointCloud<BRICS_3D::PointCloud3D>());
 	pc1Node->data = pointCloud1;
-	vector<RSG::Attribute> tmpAttibutes;
-	tmpAttibutes.push_back(Attribute("name","point_cloud_1"));
-	wm->scene.addGeometricNode(wm->getRootNodeId(), pc1Id, tmpAttibutes, pc1Node, TimeStamp(0.0));
+	vector<RSG::Attribute> tmpAttributes;
+	tmpAttributes.push_back(Attribute("name","point_cloud_1"));
+	wm->scene.addGeometricNode(wm->getRootNodeId(), pc1Id, tmpAttributes, pc1Node, TimeStamp(0.0));
 	cout << "assigend ID for first point cloud: " << pc1Id << endl;
 
 	/* reduce point cloud with Octree filter */
 	Octree* octreeFilter = new Octree();
 	octreeFilter->setVoxelSize(0.002); 	//value deduced from roughly knowing the data in advance...
-	//PointCloud3D* reducedPointCloud = new PointCloud3D();
 	BRICS_3D::PointCloud3D::PointCloud3DPtr reducedPointCloud(new BRICS_3D::PointCloud3D());
 
+	/* query world model for relevant data */
 	vector<unsigned int> resultIds;
-	wm->scene.getNodes(tmpAttibutes, resultIds);
+	wm->scene.getNodes(tmpAttributes, resultIds);
 	assert(resultIds.size() == 1);
 	pcResultId = resultIds[0];
 	cout << "Found ID for label point_cloud_1: " << pcResultId << endl;
@@ -118,15 +115,15 @@ int main(int argc, char **argv) {
 //	octreeFilter->filter(pointCloud1.get(), reducedPointCloud);
 	octreeFilter->filter(resultNode->data.get(), reducedPointCloud.get());
 
-	/* Add subsamlped point cloud to wm */
+	/* Add subsampled point cloud to wm */
 	PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr pcReducedNode(new RSG::PointCloud<BRICS_3D::PointCloud3D>());
 	pcReducedNode->data = reducedPointCloud;
-	tmpAttibutes.clear();
-	tmpAttibutes.push_back(Attribute("name","point_cloud_reduced"));
-	wm->scene.addGeometricNode(wm->getRootNodeId(), pcReducedId, tmpAttibutes, pcReducedNode, TimeStamp(0.1));
+	tmpAttributes.clear();
+	tmpAttributes.push_back(Attribute("name","point_cloud_reduced"));
+	wm->scene.addGeometricNode(wm->getRootNodeId(), pcReducedId, tmpAttributes, pcReducedNode, TimeStamp(0.1));
 
-	/* Create ane point cloud based on a box ROI */
-	BoxROIExtractor boxFilter(0.2,0.015,0.2); // (2,2,2) origin in 0,0,0 and box dimension from -1 to 1 for each axis.
+	/* Create a point cloud based on a box ROI */
+	BoxROIExtractor boxFilter(0.2,0.015,0.2); // NOTE: each value describes range [origin-value/2, origin+value/2]
 
 	//HomogeneousMatrix44::IHomogeneousMatrix44Ptr transform(new HomogeneousMatrix44(1,0,0, 0,1,0, 0,0,1, 0,0.2,0));
 	Eigen::AngleAxis<double> rotation(M_PI_2/4.0, Eigen::Vector3d(0,0,1));
@@ -136,17 +133,23 @@ int main(int argc, char **argv) {
 	HomogeneousMatrix44::IHomogeneousMatrix44Ptr transform(new HomogeneousMatrix44(&transformation));
 
 	boxFilter.setBoxOrigin(transform);
-//	PointCloud3D* boxROIPointCloud = new PointCloud3D();
 	BRICS_3D::PointCloud3D::PointCloud3DPtr boxROIPointCloud(new BRICS_3D::PointCloud3D());
 	boxFilter.filter(resultNode->data.get(), boxROIPointCloud.get());
 	cout << "ROI has " << boxROIPointCloud->getSize() << " points" << endl;
 
+	/* Add a transformation node to wm */
+	HomogeneousMatrix44::IHomogeneousMatrix44Ptr offsetTransform(new HomogeneousMatrix44(1,0,0, 0,1,0, 0,0,1, 0,0.001,0));
+	unsigned int tfId = 0;
+	tmpAttributes.clear();
+	tmpAttributes.push_back(Attribute("name","offset_transform"));
+	wm->scene.addTransformNode(wm->getRootNodeId(), tfId, tmpAttributes, offsetTransform, TimeStamp(0.2));
+
 	/* Add ROI point cloud to wm */
 	PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr pcBoxROINode(new RSG::PointCloud<BRICS_3D::PointCloud3D>());
 	pcBoxROINode->data = boxROIPointCloud;
-	tmpAttibutes.clear();
-	tmpAttibutes.push_back(Attribute("name","point_cloud_box_roi"));
-	wm->scene.addGeometricNode(wm->getRootNodeId(), pcBoxROIId, tmpAttibutes, pcBoxROINode, TimeStamp(0.2));
+	tmpAttributes.clear();
+	tmpAttributes.push_back(Attribute("name","point_cloud_box_roi"));
+	wm->scene.addGeometricNode(tfId, pcBoxROIId, tmpAttributes, pcBoxROINode, TimeStamp(0.2));
 
 	/* optionally perform registration via ICP */
 //	if(false) {
@@ -165,13 +168,30 @@ int main(int argc, char **argv) {
 	cout << "Size of point cloud: " << pointCloud1->getSize() << endl;
 	cout << "Size of point cloud: " << reducedPointCloud->getSize() << endl;
 
-	/* visualize the point cloud */
-//	OSGPointCloudVisualizer* visualizer = new OSGPointCloudVisualizer();
-//	visualizer->addPointCloud(reducedPointCloud.get(), 1, 0.1, 0.1, 0.8);
-//	visualizer->visualizePointCloud(boxROIPointCloud, 0.1, 0.9, 0.2, 0.9);
 
-////	visualizer->addPointCloud(boxROIPointCloud, 0.1, 0.9, 0.2, 0.9);
-////	visualizer->visualizePointCloud(pointCloud1.get(), 1, 1, 1, 0.5);
+	/*
+	 * Some further capabilities of the world model:
+	 */
+	unsigned int dymmyId = 0;
+	unsigned int groupId = 0;
+	unsigned int nodeId = 0;
+	TimeStamp dummyTime(1.0);
+	tmpAttributes.clear();
+
+	/* add an group leaf node */
+	wm->scene.addGroup(wm->scene.getRootId(), groupId, tmpAttributes);
+
+	/* add an empty leafe node (child of ) */
+	wm->scene.addNode(groupId, nodeId, tmpAttributes);
+
+	/* delete the same one */
+	wm->scene.deleteNode(nodeId);
+//	wm->scene.deleteNode(pcReducedId);
+
+	/* add some more shapes */
+
+	/* update transform data */
+	wm->scene.setTransform(tfId, transform, dummyTime);
 
 
 //	/* create mesh */
@@ -179,18 +199,9 @@ int main(int argc, char **argv) {
 //	DelaunayTriangulationOSG* meshGenerator = new DelaunayTriangulationOSG();
 //	meshGenerator->triangulate(pointCloud1, mesh);
 //	cout << "Number of generated triangles: " << mesh->getSize() << endl;
-//
-//	/* visualize mesh */
-//	OSGTriangleMeshVisualizer* meshVisualizer = new OSGTriangleMeshVisualizer();
-//	meshVisualizer->addTriangleMesh(mesh);
-//	meshVisualizer->visualize();
 
 	/* clean up */
-//	delete meshVisualizer;
 //	delete meshGenerator;
-//	delete visualizer;
-//	delete pointCloud1;
-//	delete pointCloud2;
 
 
 	while(!wmObserver->done()) { // wait until user closes the GUI

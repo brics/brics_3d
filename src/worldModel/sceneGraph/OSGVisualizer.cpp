@@ -46,6 +46,62 @@ public:
 	osg::ref_ptr<osg::Group> parent;
 };
 
+class OSGOperationRemove : public osg::Operation {
+public:
+
+	OSGOperationRemove(OSGVisualizer* obj, osg::ref_ptr<osg::Node> node) : osg::Operation() {
+		this->obj = obj;
+		this->node = node;
+	}
+
+	void operator()(osg::Object*) {
+		/* loop over all parents and delete _this_ node in ther childrens list */
+
+		if (node->getNumParents() == 0) { // oops we are trying to delete the root node, but this on has no parents...
+			LOG(WARNING) << "The root node cannot be deleted.";
+			return;
+		} else {
+
+			/*
+			 * so we found the handle to the current node; now we will invoke
+			 * the according delete function for every parent
+			 */
+			while (node->getNumParents() > 0) { //NOTE: node->getNumberOfParents() will decrease within every iteration...
+				unsigned int i = 0;
+				osg::ref_ptr<osg::Node> parentNode = node->getParent(i);
+				osg::ref_ptr<osg::Group> parentGroup = parentNode->asGroup();
+				if (parentGroup != 0 ) {
+					parentGroup->removeChild(node);
+				} else {
+					assert(false); // actually parents need to be groups otherwise sth. really went wrong
+				}
+			}
+		}
+
+	}
+
+	OSGVisualizer* obj;
+	osg::ref_ptr<osg::Node> node;
+};
+
+class OSGOperationUpdateTransform : public osg::Operation {
+public:
+
+	OSGOperationUpdateTransform(OSGVisualizer* obj, osg::ref_ptr<osg::MatrixTransform> node, osg::Matrixd transformData) : osg::Operation() {
+		this->obj = obj;
+		this->node = node;
+		this->transformData = transformData;
+	}
+
+	void operator()(osg::Object*) {
+		node->setMatrix(transformData);
+	}
+
+	OSGVisualizer* obj; //volatile?
+	osg::ref_ptr<osg::MatrixTransform> node;
+	osg::Matrixd transformData;
+};
+
 OSGVisualizer::OSGVisualizer() {
 	init();
 }
@@ -98,32 +154,69 @@ struct DrawCallback: public osg::Drawable::DrawCallback {
 
 bool OSGVisualizer::addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes) {
 	LOG(DEBUG) << "OSGVisualizer: adding node";
-	return true;
+	osg::ref_ptr<osg::Node> node = findNodeRecerence(parentId);
+	osg::ref_ptr<osg::Group> parentGroup = 0;
+	if (node != 0) {
+		parentGroup = node->asGroup();
+	}
+	if (parentGroup != 0) {
+		osg::ref_ptr<osg::Node> newNode = new osg::Node();
+		viewer.addUpdateOperation(new OSGOperationAdd(this, newNode, parentGroup));
+		idLookUpTable.insert(std::make_pair(assignedId, newNode));
+		return true;
+	}
+	LOG(ERROR) << "OSGVisualizer: Parent with ID " << parentId << " is not a group. Cannot add a new node as a child of it.";
+	return false;
 }
 
 bool OSGVisualizer::addGroup(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes) {
 	LOG(DEBUG) << "OSGVisualizer: adding group";
-	return true;
+
+	osg::ref_ptr<osg::Node> node = findNodeRecerence(parentId);
+	osg::ref_ptr<osg::Group> parentGroup = 0;
+	if (node != 0) {
+		parentGroup = node->asGroup();
+	}
+	if (parentGroup != 0) {
+		osg::ref_ptr<osg::Group> newGroup = new osg::Group();
+		viewer.addUpdateOperation(new OSGOperationAdd(this, newGroup, parentGroup));
+		idLookUpTable.insert(std::make_pair(assignedId, newGroup));
+		return true;
+	}
+	LOG(ERROR) << "OSGVisualizer: Parent with ID " << parentId << " is not a group. Cannot add a new group as a child of it.";
+	return false;
 }
 
 bool OSGVisualizer::addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp) {
 	LOG(DEBUG) << "OSGVisualizer: adding transform node";
-	return true;
+
+	osg::ref_ptr<osg::Node> node = findNodeRecerence(parentId);
+	osg::ref_ptr<osg::Group> parentGroup = 0;
+	if (node != 0) {
+		parentGroup = node->asGroup();
+	}
+	if (parentGroup != 0) {
+		osg::ref_ptr<osg::MatrixTransform> newTransformNode = new osg::MatrixTransform();
+		osg::Matrixd transformMatrix;
+		transformMatrix.set(transform->getRawData());
+		newTransformNode->setMatrix(transformMatrix);
+		viewer.addUpdateOperation(new OSGOperationAdd(this, newTransformNode, parentGroup));
+		idLookUpTable.insert(std::make_pair(assignedId, newTransformNode));
+		return true;
+	}
+	LOG(ERROR) << "OSGVisualizer: Parent with ID " << parentId << " is not a group. Cannot add a new transform as a child of it.";
+	return false;
 }
 
 bool OSGVisualizer::addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp) {
 	LOG(DEBUG) << "OSGVisualizer: adding geode";
 
 	osg::ref_ptr<osg::Node> node = findNodeRecerence(parentId);
-	osg::ref_ptr<osg::Group> parentGroup = node->asGroup();
+	osg::ref_ptr<osg::Group> parentGroup = 0;
+	if (node != 0) {
+		parentGroup = node->asGroup();
+	}
 	if (parentGroup != 0) {
-//		GeometricNode::GeometricNodePtr newGeometricNode(new GeometricNode());
-//		newGeometricNode->setId(idGenerator->getNextValidId());
-//		newGeometricNode->setAttributes(attributes);
-//		newGeometricNode->setShape(shape);
-//		newGeometricNode->setTimeStamp(timeStamp);
-//		parentGroup->addChild(newGeometricNode);
-
 		RSG::PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr pointCloud(new RSG::PointCloud<BRICS_3D::PointCloud3D>());
 		pointCloud = boost::dynamic_pointer_cast<PointCloud<BRICS_3D::PointCloud3D> >(shape);
 		if(pointCloud !=0 ) {
@@ -133,7 +226,7 @@ bool OSGVisualizer::addGeometricNode(unsigned int parentId, unsigned int& assign
 			float blue = (rand()%100)/100.0;
 			float alpha = 0.3;
 			osg::ref_ptr<osg::Node> pointCloudNode = OSGPointCloudVisualizer::createPointCloudNode(pointCloud->data.get(), red, green, blue, alpha);
-			viewer.addUpdateOperation(new OSGOperationAdd(this, pointCloudNode));
+			viewer.addUpdateOperation(new OSGOperationAdd(this, pointCloudNode, parentGroup));
 			idLookUpTable.insert(std::make_pair(assignedId, pointCloudNode));
 			return true;
 //		} else if (...) { //more shapes & geometries to come...
@@ -153,12 +246,36 @@ bool OSGVisualizer::setNodeAttributes(unsigned int id, vector<Attribute> newAttr
 
 bool OSGVisualizer::setTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp) {
 	LOG(DEBUG) << "OSGVisualizer: updating transform data";
+
+	osg::ref_ptr<osg::Node> node = findNodeRecerence(id);
+	osg::ref_ptr<osg::Transform> transformNode;
+	osg::ref_ptr<osg::MatrixTransform> matrixTransformNode;
+	if (node != 0) {
+		transformNode = node->asTransform();
+		matrixTransformNode = transformNode->asMatrixTransform();
+	}
+	if (matrixTransformNode != 0) {
+		osg::Matrixd transformMatrix;
+		transformMatrix.set(transform->getRawData());
+		viewer.addUpdateOperation(new OSGOperationUpdateTransform(this, matrixTransformNode, transformMatrix));
+		return true;
+	}
+	LOG(ERROR) << "OSGVisualizer: Node with ID " << id << " is not a transform node. Cannot add a new transform data.";
+	return false;
+
 	return true;
 }
 
 bool OSGVisualizer::deleteNode(unsigned int id) {
 	LOG(DEBUG) << "OSGVisualizer: deleting node";
-	return true;
+
+	osg::ref_ptr<osg::Node> node = findNodeRecerence(id);
+	if (node != 0) {
+		viewer.addUpdateOperation(new OSGOperationRemove(this, node));
+		idLookUpTable.erase(id);
+		return true;
+	}
+	return false;
 }
 
 bool OSGVisualizer::addParent(unsigned int id, unsigned int parentId) {
@@ -171,7 +288,7 @@ bool OSGVisualizer::done() {
 }
 
 void OSGVisualizer::threadFunction(OSGVisualizer* obj) {
-	LOG(DEBUG) << "OSGViewer: Start.";
+	LOG(INFO) << "OSGVisualizer: Starting visualization.";
 //	boost::this_thread::sleep(boost::posix_time::milliseconds(100)); // Avoid race condition
 	viewer.setSceneData(rootGeode);
 	viewer.setUpViewInWindow(10, 10, 500, 500);
@@ -181,7 +298,7 @@ void OSGVisualizer::threadFunction(OSGVisualizer* obj) {
 
 	//The viewer.run() method starts the threads and the traversals.
 	viewer.run();
-	LOG(DEBUG) << "OSGViewer: Done.";
+	LOG(INFO) << "OSGVisualizer: Done.";
 }
 
 unsigned int OSGVisualizer::getRootId() {
@@ -198,7 +315,7 @@ osg::ref_ptr<osg::Node> OSGVisualizer::findNodeRecerence(unsigned int id) {
 		LOG(WARNING) << "OSGVisualizer: ID " << id << " seems to be orphaned. Possibly its node has been deleted earlier.";
 	}
 	LOG(WARNING) << "OSGVisualizer: Scene graph does not contain a node with ID " << id;
-	return 0; // should be kind of null...
+	return 0;
 }
 
 }  // namespace RSG
