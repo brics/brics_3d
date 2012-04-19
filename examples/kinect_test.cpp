@@ -60,7 +60,7 @@ public:
 
 		convertPCLToBRICS3D(cloud, viewerCloud);
 		std::string name = "kinPts.txt";
-		viewerCloud->storeToTxtFile(name);
+//		viewerCloud->storeToTxtFile(name);
 		viewer.addPointCloud(viewerCloud);
 		viewer.clearButLast();
 		delete viewerCloud;

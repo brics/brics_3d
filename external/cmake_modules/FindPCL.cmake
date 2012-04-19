@@ -37,6 +37,7 @@
 include(FindPackageHandleStandardArgs)
 #set a suffix based on project name and version
 set(PCL_SUFFIX pcl-1.0)
+#set(PCL_SUFFIX pcl-1.1)
 
 #set all pcl component and their account into variables
 set(pcl_all_components io common kdtree keypoints filters range_image registration sample_consensus segmentation features surface octree visualization )
