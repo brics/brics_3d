@@ -22,9 +22,13 @@
 
 #include "ISceneGraphUpdateObserver.h"
 #include "worldModel/sceneGraph/PointCloud.h"
+#include "worldModel/sceneGraph/Box.h"
+#include "worldModel/sceneGraph/Cylinder.h"
 #include "util/OSGPointCloudVisualizer.h" //unfortunately libbrics3d_world_model depends now on libbrics3d_util
 
 #include <osg/MatrixTransform>
+#include <osg/ShapeDrawable>
+#include <osg/BlendFunc>
 #include <map>
 
 namespace BRICS_3D {
@@ -65,9 +69,14 @@ private:
 	/// Viewer will get its own thread such that visialization does not block the main program.
 	void threadFunction(OSGVisualizer* obj);
 
+	/// get intranl root ID
     unsigned int getRootId();
 
+    /// map IDs to real references
     osg::ref_ptr<osg::Node> findNodeRecerence(unsigned int id);
+
+    /// Helper function to visualize coodinate frame
+    osg::ref_ptr<osg::Node> createFrameAxis(double axisLength = 1.0);
 
 	/// OSG viewer object
 	osgViewer::Viewer viewer;
@@ -87,7 +96,8 @@ private:
     std::map<unsigned int, osg::ref_ptr<osg::Node> > idLookUpTable;
     std::map<unsigned int, osg::ref_ptr<osg::Node> >::const_iterator nodeIterator;
 
-
+    /// Determines dimensions of visualizazion of the frames axis. Default is 1.0
+    double frameAxisVisualisationScale;
 
 
 };

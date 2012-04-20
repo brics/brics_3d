@@ -34,6 +34,8 @@
 #include <algorithm/meshGeneration/DelaunayTriangulationOSG.h>
 #include <worldModel/WorldModel.h>
 #include <worldModel/sceneGraph/PointCloud.h>
+#include <worldModel/sceneGraph/Box.h>
+#include <worldModel/sceneGraph/Cylinder.h>
 
 /* general includes */
 #include <iostream>
@@ -129,7 +131,7 @@ int main(int argc, char **argv) {
 	Eigen::AngleAxis<double> rotation(M_PI_2/4.0, Eigen::Vector3d(0,0,1));
 	Transform3d transformation;
 	transformation = rotation;
-	transformation.translate(Eigen::Vector3d(0,0.15,0));
+	transformation.translate(Eigen::Vector3d(0,0.1,0));
 	HomogeneousMatrix44::IHomogeneousMatrix44Ptr transform(new HomogeneousMatrix44(&transformation));
 
 	boxFilter.setBoxOrigin(transform);
@@ -149,7 +151,8 @@ int main(int argc, char **argv) {
 	pcBoxROINode->data = boxROIPointCloud;
 	tmpAttributes.clear();
 	tmpAttributes.push_back(Attribute("name","point_cloud_box_roi"));
-	wm->scene.addGeometricNode(tfId, pcBoxROIId, tmpAttributes, pcBoxROINode, TimeStamp(0.2));
+//	wm->scene.addGeometricNode(tfId, pcBoxROIId, tmpAttributes, pcBoxROINode, TimeStamp(0.2));
+	wm->scene.addGeometricNode(wm->scene.getRootId(), pcBoxROIId, tmpAttributes, pcBoxROINode, TimeStamp(0.2));
 
 	/* optionally perform registration via ICP */
 //	if(false) {
@@ -172,7 +175,7 @@ int main(int argc, char **argv) {
 	/*
 	 * Some further capabilities of the world model:
 	 */
-	unsigned int dymmyId = 0;
+	unsigned int dummyId = 0;
 	unsigned int groupId = 0;
 	unsigned int nodeId = 0;
 	TimeStamp dummyTime(1.0);
@@ -188,10 +191,28 @@ int main(int argc, char **argv) {
 	wm->scene.deleteNode(nodeId);
 //	wm->scene.deleteNode(pcReducedId);
 
-	/* add some more shapes */
+	/* add some more shapes and transforms */
+	HomogeneousMatrix44::IHomogeneousMatrix44Ptr tf1(new HomogeneousMatrix44(1,0,0, 0,1,0, 0,0,1, 0.1,0.1,0));
+	unsigned int tfBox1Id = 0;
+	wm->scene.addTransformNode(groupId, tfBox1Id, tmpAttributes, transform, dummyTime);
+	RSG::Box::BoxPtr box1(new RSG::Box(0.2,0.015,0.2));
+	wm->scene.addGeometricNode(tfBox1Id, dummyId, tmpAttributes, box1, dummyTime);
+
+	HomogeneousMatrix44::IHomogeneousMatrix44Ptr tf2(new HomogeneousMatrix44(1,0,0, 0,1,0, 0,0,1, 0.1,0.05,0));
+	unsigned int tfCylinder1Id = 0;
+	wm->scene.addTransformNode(groupId, tfCylinder1Id, tmpAttributes, tf2, dummyTime);
+	RSG::Cylinder::CylinderPtr cylinder1(new RSG::Cylinder(0.02,0.2));
+	wm->scene.addGeometricNode(tfCylinder1Id, dummyId, tmpAttributes, cylinder1, dummyTime);
+
+
+	HomogeneousMatrix44::IHomogeneousMatrix44Ptr tfReference1(new HomogeneousMatrix44(1,0,0, 0,1,0, 0,0,1, 0.1,0.1,0.1));
+	unsigned int tfReference1Id = 0;
+	wm->scene.addTransformNode(wm->scene.getRootId(), tfReference1Id, tmpAttributes, tfReference1, dummyTime);
+	HomogeneousMatrix44::IHomogeneousMatrix44Ptr tfReference2(new HomogeneousMatrix44(1,0,0, 0,1,0, 0,0,1, -0.1,0.0,0.0));
+	wm->scene.addTransformNode(tfReference1Id, dummyId, tmpAttributes, tfReference2, dummyTime);
 
 	/* update transform data */
-	wm->scene.setTransform(tfId, transform, dummyTime);
+//	wm->scene.setTransform(tfId, transform, dummyTime);
 
 
 //	/* create mesh */

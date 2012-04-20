@@ -103,6 +103,7 @@ public:
 };
 
 OSGVisualizer::OSGVisualizer() {
+	frameAxisVisualisationScale = 0.1;//1.0;
 	init();
 }
 
@@ -112,6 +113,16 @@ OSGVisualizer::~OSGVisualizer() {
 
 void OSGVisualizer::init() {
 	rootGeode = new osg::Group();
+
+	osg::ref_ptr<osg::BlendFunc> blendFunc = new osg::BlendFunc();
+	blendFunc->setFunction( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	osg::StateSet* stateset = rootGeode->getOrCreateStateSet();
+	stateset->setAttributeAndModes( blendFunc );
+	rootGeode->getOrCreateStateSet()->setRenderingHint(osg::StateSet::TRANSPARENT_BIN ); // this one igth be computaionally expensive as it causes reordering of the scene
+
+	/* optionally add some fram indication */
+	rootGeode->addChild(createFrameAxis(frameAxisVisualisationScale));
+
 	idLookUpTable.insert(std::make_pair(getRootId(), rootGeode));
     thread = new boost::thread(boost::bind(&OSGVisualizer::threadFunction, this, this));
 }
@@ -200,6 +211,7 @@ bool OSGVisualizer::addTransformNode(unsigned int parentId, unsigned int& assign
 		osg::Matrixd transformMatrix;
 		transformMatrix.set(transform->getRawData());
 		newTransformNode->setMatrix(transformMatrix);
+		newTransformNode->addChild(createFrameAxis(frameAxisVisualisationScale)); //optionally for visualization
 		viewer.addUpdateOperation(new OSGOperationAdd(this, newTransformNode, parentGroup));
 		idLookUpTable.insert(std::make_pair(assignedId, newTransformNode));
 		return true;
@@ -217,22 +229,56 @@ bool OSGVisualizer::addGeometricNode(unsigned int parentId, unsigned int& assign
 		parentGroup = node->asGroup();
 	}
 	if (parentGroup != 0) {
+		float red = (rand()%100)/100.0; // some randomized colors to better distinguish multible point clouds
+		float green = (rand()%100)/100.0;
+		float blue = (rand()%100)/100.0;
+		float alpha = 0.7;
+
 		RSG::PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr pointCloud(new RSG::PointCloud<BRICS_3D::PointCloud3D>());
 		pointCloud = boost::dynamic_pointer_cast<PointCloud<BRICS_3D::PointCloud3D> >(shape);
-		if(pointCloud !=0 ) {
-			LOG(DEBUG) << "                 -> adding a new point cloud";
-			float red = (rand()%100)/100.0; // some randomized colors to better distinguish multible point clouds
-			float green = (rand()%100)/100.0;
-			float blue = (rand()%100)/100.0;
-			float alpha = 0.3;
+		RSG::Box::BoxPtr box(new RSG::Box());
+		box =  boost::dynamic_pointer_cast<RSG::Box>(shape);
+		RSG::Cylinder::CylinderPtr cylinder(new RSG::Cylinder());
+		cylinder =  boost::dynamic_pointer_cast<RSG::Cylinder>(shape);
+		if(pointCloud !=0) {
+			LOG(DEBUG) << "                 -> Adding a new point cloud.";
 			osg::ref_ptr<osg::Node> pointCloudNode = OSGPointCloudVisualizer::createPointCloudNode(pointCloud->data.get(), red, green, blue, alpha);
 			viewer.addUpdateOperation(new OSGOperationAdd(this, pointCloudNode, parentGroup));
 			idLookUpTable.insert(std::make_pair(assignedId, pointCloudNode));
 			return true;
+		} else if (box !=0) {
+			LOG(DEBUG) << "                 -> Adding a new box.";
+			osg::ref_ptr<osg::Box> boxData = new osg::Box();
+			boxData->setHalfLengths(osg::Vec3(box->getSizeX()/2.0, box->getSizeY()/2.0,box->getSizeZ()/2.0));
+			osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+			osg::ref_ptr<osg::ShapeDrawable> geometry = new osg::ShapeDrawable();
+			geometry->setShape(boxData);
+			geometry->setColor(osg::Vec4(red, green, blue, alpha/2.0));
+			geode->addDrawable(geometry);
+			geode->getOrCreateStateSet()->setRenderingHint(osg::StateSet::TRANSPARENT_BIN ); // might comp. expensive
+
+			viewer.addUpdateOperation(new OSGOperationAdd(this, geode, parentGroup));
+
+		} else if (cylinder !=0) {
+			LOG(DEBUG) << "                 -> Adding a new cylinder.";
+			osg::ref_ptr<osg::Cylinder> cylinderData = new osg::Cylinder();
+			cylinderData->setRadius(static_cast<float>(cylinder->getRadius()));
+			cylinderData->setHeight(static_cast<float>(cylinder->getHeight()));
+			osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+			osg::ref_ptr<osg::ShapeDrawable> geometry = new osg::ShapeDrawable();
+			geometry->setShape(cylinderData);
+			geometry->setColor(osg::Vec4(red, green, blue, alpha/2.0));
+			geode->addDrawable(geometry);
+			geode->getOrCreateStateSet()->setRenderingHint(osg::StateSet::TRANSPARENT_BIN ); // might comp. expensive
+
+			viewer.addUpdateOperation(new OSGOperationAdd(this, geode, parentGroup));
 //		} else if (...) { //more shapes & geometries to come...
 //
+		} else {
+			LOG(WARNING) << "               -> Unsupported geometry type. Cannot add this.";
+			return false;
 		}
-
+		return true;
 	}
 	LOG(ERROR) << "OSGVisualizer: Parent with ID " << parentId << " is not a group. Cannot add a new geometric node as a child of it.";
 	return false;
@@ -317,6 +363,55 @@ osg::ref_ptr<osg::Node> OSGVisualizer::findNodeRecerence(unsigned int id) {
 	LOG(WARNING) << "OSGVisualizer: Scene graph does not contain a node with ID " << id;
 	return 0;
 }
+
+osg::ref_ptr<osg::Node> OSGVisualizer::createFrameAxis(double axisLength) {
+	osg::ref_ptr<osg::Group> frameNode = new osg::Group();
+	double height = axisLength;
+    double radius = height*0.04;
+    float alpha = 0.4;
+
+    osg::MatrixTransform* zmt = new osg::MatrixTransform();
+
+    frameNode->addChild(zmt);
+    osg::ShapeDrawable *zShape = new osg::ShapeDrawable(new osg::Cylinder(osg::Vec3(0.0f,0.0f,height/2),radius,height));
+
+    zShape->setColor(osg::Vec4(0.0f, 0.0f, 1.0f, alpha));
+    osg::Geode *z = new osg::Geode;
+    z->addDrawable(zShape);
+    zmt->addChild(z);
+
+    osg::MatrixTransform* mt = new osg::MatrixTransform();
+    frameNode->addChild(mt);
+
+    //osg::Matrix xMatrix = osg::Matrix::rotate(-osg::PI_2, 0.0, 1.0, 0.0);
+    osg::Matrix xMatrix = osg::Matrix::rotate(osg::PI_2, 0.0, 1.0, 0.0);
+    mt->setMatrix(xMatrix);
+
+
+    osg::ShapeDrawable *xShape = new osg::ShapeDrawable(new osg::Cylinder(osg::Vec3(0.0f,0.0f,height/2),radius,height));
+    xShape->setColor(osg::Vec4(1.0f, 0.0f, 0.0f, alpha));
+    osg::Geode *x = new osg::Geode;
+    x->addDrawable(xShape);
+    mt->addChild(x);
+
+
+    osg::MatrixTransform *yMt = new osg::MatrixTransform();
+    frameNode->addChild(yMt);
+    //osg::Matrix yMatrix = osg::Matrix::rotate(osg::PI_2, 1.0, 0.0, 0.0);
+    osg::Matrix yMatrix = osg::Matrix::rotate(-osg::PI_2, 1.0, 0.0, 0.0);
+    yMt->setMatrix(yMatrix);
+
+    osg::ShapeDrawable *yShape = new osg::ShapeDrawable(new osg::Cylinder(osg::Vec3(0.0f,0.0f,height/2),radius,height));
+    yShape->setColor(osg::Vec4(0.0f, 1.0f, 0.0f, alpha));
+    osg::Geode *y = new osg::Geode;
+    y->addDrawable(yShape);
+    yMt->addChild(y);
+
+    frameNode->getOrCreateStateSet()->setRenderingHint(osg::StateSet::TRANSPARENT_BIN ); // might comp. expensive
+
+    return frameNode;
+}
+
 
 }  // namespace RSG
 
