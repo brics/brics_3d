@@ -335,7 +335,7 @@ bool OSGVisualizer::done() {
 
 void OSGVisualizer::threadFunction(OSGVisualizer* obj) {
 	LOG(INFO) << "OSGVisualizer: Starting visualization.";
-//	boost::this_thread::sleep(boost::posix_time::milliseconds(100)); // Avoid race condition
+	boost::this_thread::sleep(boost::posix_time::milliseconds(100)); // Avoid race condition
 	viewer.setSceneData(rootGeode);
 	viewer.setUpViewInWindow(10, 10, 500, 500);
 	viewer.addEventHandler(new osgViewer::StatsHandler);

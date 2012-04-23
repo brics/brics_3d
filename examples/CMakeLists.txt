@@ -144,6 +144,18 @@ IF (USE_OSG)
         	${PCL_IO_LIBRARY} 
         	${PCL_FEATURES_LIBRARY} 
         )
+        
+        ADD_EXECUTABLE(wm_kinect_test wm_kinect_test) 
+        TARGET_LINK_LIBRARIES(wm_kinect_test
+            brics3d_core 
+            brics3d_algorithm 
+            brics3d_world_model
+            brics3d_util
+            ${OSG_LIBRARY_DEBUG}
+        	${OSGGA_LIBRARY_DEBUG}
+        	${OSGVIEWER_LIBRARY_DEBUG}
+        	${PCL_IO_LIBRARY}
+        )
     ENDIF(USE_PCL AND USE_EIGEN3)    
     
     ADD_EXECUTABLE(wm_processing wm_processing)
