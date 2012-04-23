@@ -161,6 +161,7 @@ int main(int argc, char **argv) {
 	icpConfigurator->setMaxIterations(100);
 	timer0.reset();
 	icp->match(pointCloud1, pointCloud2, resultTransformation);
+	cout << *resultTransformation << endl;
 	cout <<  "Time for matching [ms]: " << timer0.getElapsedTime() << endl;
 
 

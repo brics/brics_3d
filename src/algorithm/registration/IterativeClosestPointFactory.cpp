@@ -50,7 +50,9 @@ IterativeClosestPointFactory::~IterativeClosestPointFactory() {
 IIterativeClosestPointPtr IterativeClosestPointFactory::createIterativeClosestPoint() {
 	IPointCorrespondence* assigner = new PointCorrespondenceKDTree();;
 	IRigidTransformationEstimation* estimator = new RigidTransformationEstimationSVD();
-	return IIterativeClosestPointPtr(new IterativeClosestPoint(assigner, estimator));
+	IIterativeClosestPointPtr icp(new IterativeClosestPoint(assigner, estimator));
+	icpConfigurator = boost::dynamic_pointer_cast<IIterativeClosestPointSetup>(icp);
+	return icp;
 }
 
 IIterativeClosestPointPtr IterativeClosestPointFactory::createIterativeClosestPoint(std::string configurationFile) {
