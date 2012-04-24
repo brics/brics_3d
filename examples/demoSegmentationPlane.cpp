@@ -17,26 +17,26 @@
 *
 ******************************************************************************/
 
-#include "algorithm/segmentation/RegionBasedSACSegmentation.h"
-#include "core/PointCloud3D.h"
-#include "core/Point3D.h"
+#include <core/PointCloud3D.h>
+#include <core/Point3D.h>
+#include <algorithm/segmentation/RegionBasedSACSegmentation.h>
+#include <algorithm/filtering/MaskROIExtractor.h>
+#include <util/OSGPointCloudVisualizer.h>
+
 #include <iostream>
+
 using namespace std;
 int main(){
 	//Create a pointcloud object
 	BRICS_3D::PointCloud3D cloud;
+	BRICS_3D::PointCloud3D planeCloud;
 
 	//read the points into the pointcloud
 	//Please modify the path if there is a file read error.
-	cloud.readFromTxtFile("./src/algorithm/segmentation/evaluation/data/demoCloud.txt");
+//	cloud.readFromTxtFile("./src/algorithm/segmentation/evaluation/data/demoCloud.txt");
+	cloud.readFromTxtFile("./src/algorithm/segmentation/evaluation/groundTruthData/bureau3/bureau3.txt");
 
-	if (cloud.getSize()>0){
-		cout<< "INFO: Current PointCloud Size: " <<cloud.getSize()<<endl;
-	} else {
-		cout<< "INFO: Current PointCloud Size: " <<cloud.getSize()<<endl;
-		return 0;
-	}
-
+	cout<< "INFO: Current PointCloud Size: " <<cloud.getSize()<<endl;
 
 	//Create the vector to hold the model coefficients
 	Eigen::VectorXd modelCoefficients;
@@ -70,6 +70,13 @@ int main(){
 
 	cout<<"The model-coefficients are: (" << modelCoefficients[0]<<", " << modelCoefficients[1]<<
 			", " << modelCoefficients[2]<<", " << modelCoefficients[3]<<")" <<endl;
+
+	BRICS_3D::MaskROIExtractor extractor;
+	extractor.extractIndexedPointCloud(&cloud, inliers, &planeCloud);
+
+	BRICS_3D::OSGPointCloudVisualizer visualizer;
+	visualizer.addPointCloud(&cloud);
+	visualizer.visualizePointCloud(&planeCloud, 0, 1, 0, 0.8);
 
 	return(1);
 }

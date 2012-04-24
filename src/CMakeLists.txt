@@ -87,7 +87,8 @@ SET (ALGORITHM_LIBRARY_SOURCES
     ./algorithm/filtering/IColorBasedROIExtractor  
     ./algorithm/filtering/ColorBasedROIExtractorHSV
     ./algorithm/filtering/ColorBasedROIExtractorRGB    
-    ./algorithm/filtering/BoxROIExtractor    
+    ./algorithm/filtering/BoxROIExtractor
+    ./algorithm/filtering/MaskROIExtractor    
 
 
     ./algorithm/nearestNeighbor/INearestNeighbor

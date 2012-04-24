@@ -101,6 +101,15 @@ IF (USE_OSG)
     	${OSGVIEWER_LIBRARY_DEBUG}
     )	
      
+    ADD_EXECUTABLE(demoSegmentationPlane demoSegmentationPlane)
+    TARGET_LINK_LIBRARIES(demoSegmentationPlane 
+        brics3d_algorithm
+        brics3d_util
+        ${OSG_LIBRARY_DEBUG}
+    	${OSGGA_LIBRARY_DEBUG}
+    	${OSGVIEWER_LIBRARY_DEBUG}
+     ) 
+     
     IF (USE_PCL AND USE_EIGEN3)	
         INCLUDE_DIRECTORIES(${PCL_INCLUDE_DIRS} ${OPENNI_INCLUDE_DIRS})
 
@@ -192,9 +201,6 @@ ADD_EXECUTABLE(demoComparison demoComparison)
 TARGET_LINK_LIBRARIES(demoComparison brics3d_algorithm)
 
 #Executables for 3D segmentation demo
-ADD_EXECUTABLE(demoSegmentationPlane demoSegmentationPlane)
-TARGET_LINK_LIBRARIES(demoSegmentationPlane brics3d_algorithm)
-
 ADD_EXECUTABLE(demoSegmentationNormalPlane demoSegmentationNormalPlane)
 TARGET_LINK_LIBRARIES(demoSegmentationNormalPlane brics3d_algorithm)
 

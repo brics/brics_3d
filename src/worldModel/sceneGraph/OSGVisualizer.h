@@ -21,7 +21,6 @@
 #define OSGVISUALIZER_H_
 
 #include "ISceneGraphUpdateObserver.h"
-//#include "core/TriangleMeshExplicit.h"
 #include "worldModel/sceneGraph/PointCloud.h"
 #include "worldModel/sceneGraph/Mesh.h"
 #include "worldModel/sceneGraph/Box.h"
