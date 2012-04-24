@@ -46,15 +46,14 @@ public:
 
 	void visualize();
 
-	osg::Node* createTriangleMeshNode(ITriangleMesh* mesh);
-
+	static osg::ref_ptr<osg::Node> createTriangleMeshNode(ITriangleMesh* mesh, float red=1.0f, float green=1.0f, float blue=1.0f, float alpha=1.0f);
 
 private:
 
 	/**
 	 * @brief Create an OSG TriangleMesh from an ITriangleMesh.
 	 */
-	osg::TriangleMesh* createTriangleMesh(ITriangleMesh* mesh);
+	static osg::ref_ptr<osg::TriangleMesh> createTriangleMesh(ITriangleMesh* mesh);
 
 	/// OSG viewer object
 	osgViewer::Viewer viewer;

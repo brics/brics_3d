@@ -34,6 +34,7 @@
 #include <algorithm/meshGeneration/DelaunayTriangulationOSG.h>
 #include <worldModel/WorldModel.h>
 #include <worldModel/sceneGraph/PointCloud.h>
+#include <worldModel/sceneGraph/Mesh.h>
 #include <worldModel/sceneGraph/Box.h>
 #include <worldModel/sceneGraph/Cylinder.h>
 
@@ -207,11 +208,11 @@ int main(int argc, char **argv) {
 	RSG::Box::BoxPtr box1(new RSG::Box(0.2,0.015,0.2));
 	wm->scene.addGeometricNode(tfBox1Id, dummyId, tmpAttributes, box1, dummyTime);
 
-	HomogeneousMatrix44::IHomogeneousMatrix44Ptr tf2(new HomogeneousMatrix44(1,0,0, 0,1,0, 0,0,1, 0.1,0.05,0));
-	unsigned int tfCylinder1Id = 0;
-	wm->scene.addTransformNode(groupId, tfCylinder1Id, tmpAttributes, tf2, dummyTime);
-	RSG::Cylinder::CylinderPtr cylinder1(new RSG::Cylinder(0.02,0.2));
-	wm->scene.addGeometricNode(tfCylinder1Id, dummyId, tmpAttributes, cylinder1, dummyTime);
+//	HomogeneousMatrix44::IHomogeneousMatrix44Ptr tf2(new HomogeneousMatrix44(1,0,0, 0,1,0, 0,0,1, 0.1,0.05,0));
+//	unsigned int tfCylinder1Id = 0;
+//	wm->scene.addTransformNode(groupId, tfCylinder1Id, tmpAttributes, tf2, dummyTime);
+//	RSG::Cylinder::CylinderPtr cylinder1(new RSG::Cylinder(0.02,0.2));
+//	wm->scene.addGeometricNode(tfCylinder1Id, dummyId, tmpAttributes, cylinder1, dummyTime);
 
 
 //	HomogeneousMatrix44::IHomogeneousMatrix44Ptr tfReference1(new HomogeneousMatrix44(1,0,0, 0,1,0, 0,0,1, 0.1,0.1,0.1));
@@ -224,14 +225,22 @@ int main(int argc, char **argv) {
 //	wm->scene.setTransform(tfId, transform, dummyTime);
 
 
-//	/* create mesh */
-//	ITriangleMesh* mesh = new TriangleMeshExplicit();
-//	DelaunayTriangulationOSG* meshGenerator = new DelaunayTriangulationOSG();
-//	meshGenerator->triangulate(pointCloud1, mesh);
-//	cout << "Number of generated triangles: " << mesh->getSize() << endl;
+	/* create some mesh */
+	BRICS_3D::ITriangleMesh::ITriangleMeshPtr newMesh(new BRICS_3D::TriangleMeshExplicit());
+	BRICS_3D::RSG::Mesh<BRICS_3D::ITriangleMesh>::MeshPtr newMeshContainer(new BRICS_3D::RSG::Mesh<BRICS_3D::ITriangleMesh>());
+	newMeshContainer->data = newMesh;
+
+	DelaunayTriangulationOSG* meshGenerator = new DelaunayTriangulationOSG();
+	meshGenerator->triangulate(pcReducedContainer->data.get(), newMeshContainer->data.get());
+	LOG(INFO) << "Number of generated triangles: " << newMeshContainer->data->getSize();
+	tmpAttributes.clear();
+	tmpAttributes.push_back(Attribute("name","mesh_1"));
+	wm->scene.addGeometricNode(wm->scene.getRootId(), dummyId, tmpAttributes, newMeshContainer, dummyTime);
 
 	/* clean up */
-//	delete meshGenerator;
+	delete octreeFilter;
+	delete icpFactory;
+	delete meshGenerator;
 
 
 	while(!wmObserver->done()) { // wait until user closes the GUI

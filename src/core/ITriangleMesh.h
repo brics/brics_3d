@@ -36,6 +36,9 @@ namespace BRICS_3D {
 class ITriangleMesh {
 public:
 
+	typedef boost::shared_ptr<ITriangleMesh> ITriangleMeshPtr;
+	typedef boost::shared_ptr<ITriangleMesh const> ITriangleMeshConstPtr;
+
 	/**
 	 * @brief Standard constructor
 	 */

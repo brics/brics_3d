@@ -29,11 +29,18 @@ namespace RSG {
 /**
  * Abstract interface for mesh data in the scenegraph.
  */
+template<typename MeshT>
 class Mesh : public Shape {
   public:
-    Mesh();
 
-    virtual ~Mesh();
+	typedef boost::shared_ptr< Mesh<MeshT> > MeshPtr;
+	typedef boost::shared_ptr< Mesh<MeshT> const> MeshConstPtr;
+
+    Mesh(){};
+
+    virtual ~Mesh(){};
+
+    boost::shared_ptr<MeshT> data;
 
 };
 

@@ -236,6 +236,8 @@ bool OSGVisualizer::addGeometricNode(unsigned int parentId, unsigned int& assign
 
 		RSG::PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr pointCloud(new RSG::PointCloud<BRICS_3D::PointCloud3D>());
 		pointCloud = boost::dynamic_pointer_cast<PointCloud<BRICS_3D::PointCloud3D> >(shape);
+		RSG::Mesh<BRICS_3D::ITriangleMesh>::MeshPtr mesh(new RSG::Mesh<BRICS_3D::ITriangleMesh>());
+		mesh = boost::dynamic_pointer_cast<RSG::Mesh<BRICS_3D::ITriangleMesh> >(shape);
 		RSG::Box::BoxPtr box(new RSG::Box());
 		box =  boost::dynamic_pointer_cast<RSG::Box>(shape);
 		RSG::Cylinder::CylinderPtr cylinder(new RSG::Cylinder());
@@ -258,6 +260,12 @@ bool OSGVisualizer::addGeometricNode(unsigned int parentId, unsigned int& assign
 			geode->getOrCreateStateSet()->setRenderingHint(osg::StateSet::TRANSPARENT_BIN ); // might comp. expensive
 
 			viewer.addUpdateOperation(new OSGOperationAdd(this, geode, parentGroup));
+
+		} else if (mesh !=0) {
+			LOG(DEBUG) << "                 -> Adding a new mesh.";
+			osg::ref_ptr<osg::Node> meshNode = OSGTriangleMeshVisualizer::createTriangleMeshNode(mesh->data.get(), red, green, blue, alpha);
+			viewer.addUpdateOperation(new OSGOperationAdd(this, meshNode, parentGroup));
+			idLookUpTable.insert(std::make_pair(assignedId, meshNode));
 
 		} else if (cylinder !=0) {
 			LOG(DEBUG) << "                 -> Adding a new cylinder.";

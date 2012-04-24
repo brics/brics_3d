@@ -53,26 +53,27 @@ void OSGTriangleMeshVisualizer::visualize() {
 }
 
 
-osg::Node* OSGTriangleMeshVisualizer::createTriangleMeshNode(ITriangleMesh* mesh) {
-	osg::Geode* geode = new osg::Geode();
-	osg::TriangleMesh* osgMesh = createTriangleMesh(mesh);
-	osg::ShapeDrawable* drawable = new osg::ShapeDrawable(osgMesh);
+osg::ref_ptr<osg::Node> OSGTriangleMeshVisualizer::createTriangleMeshNode(ITriangleMesh* mesh, float red, float green, float blue, float alpha) {
+	osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+	osg::ref_ptr<osg::TriangleMesh> osgMesh = createTriangleMesh(mesh);
+	osg::ref_ptr<osg::ShapeDrawable> drawable = new osg::ShapeDrawable(osgMesh);
 
-	drawable->setColor(osg::Vec4(0, 1, 1, 0)); // TODO: changeable colors...
+	drawable->setColor(osg::Vec4(red, green, blue, alpha)); // TODO: changeable colors...
 	geode->addDrawable(drawable);
 	geode->setDataVariance(osg::Object::DYNAMIC);
 
-	osg::Group* group = new osg::Group;
+//	osg::Group* group = new osg::Group;
+	osg::ref_ptr<osg::Group> group = new osg::Group;
 	group->addChild(geode);
 
 	return group;
 }
 
-osg::TriangleMesh* OSGTriangleMeshVisualizer::createTriangleMesh(ITriangleMesh* mesh) {
+osg::ref_ptr<osg::TriangleMesh> OSGTriangleMeshVisualizer::createTriangleMesh(ITriangleMesh* mesh) {
 	int nVertices;
 	int nTriangles;
-	osg::Vec3Array* vertices;
-	osg::IntArray* indices;
+	osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
+	osg::ref_ptr<osg::IntArray> indices = new osg::IntArray;
 	Point3D tmpVertex;
 
 	//this is a smart converter... ;-)
@@ -124,7 +125,7 @@ osg::TriangleMesh* OSGTriangleMeshVisualizer::createTriangleMesh(ITriangleMesh* 
 		}
 	}
 
-	osg::TriangleMesh* osgMesh = new osg::TriangleMesh();
+	osg::ref_ptr<osg::TriangleMesh> osgMesh = new osg::TriangleMesh();
 //	std::cout << std::endl << *mesh;
 	osgMesh->setVertices(vertices);
 	osgMesh->setIndices(indices);

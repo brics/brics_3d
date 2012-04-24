@@ -23,17 +23,6 @@ namespace BRICS_3D {
 
 namespace RSG {
 
-Mesh::Mesh() {
-  // Bouml preserved body begin 0002DA03
-  // Bouml preserved body end 0002DA03
-}
-
-Mesh::~Mesh() {
-  // Bouml preserved body begin 0002DA83
-  // Bouml preserved body end 0002DA83
-}
-
-
 } // namespace BRICS_3D::RSG
 
 } // namespace BRICS_3D
