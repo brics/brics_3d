@@ -131,4 +131,14 @@ visualization (e.g. BRICS_3D_Demo) In that case configure it with
  $ cmake .. -DUSE_OSG
 @endcode 
 
+@section doxygen_generation Generating the latest documentation with Doxygen
+
+To generate the latest version of the accompanied documentation go the BRICS_3D folder and
+use the doxygen tool. Then open the html files with your favorite web browser. 
+
+@code
+ $ doxygen BRICS_3D.doxyfile
+ $ firefox ./doc/html/index.htm
+@endcode
+
 */
