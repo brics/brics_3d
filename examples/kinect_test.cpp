@@ -37,6 +37,7 @@ class KinectTest {
 public:
 	KinectTest(){
 		count = 0;
+		BRICS_3D::Logger::setMinLoglevel(BRICS_3D::Logger::LOGDEBUG);
 	}
 
 	/**
@@ -54,9 +55,8 @@ public:
 
 		LOG(INFO) <<  "Receiving new point cloud";
 		BRICS_3D::PointCloud3D* viewerCloud = new BRICS_3D::PointCloud3D();
-
 		converter.convertToBRICS3DDataType(cloud, viewerCloud);
-//		std::string name = "kinPts.txt";
+//		std::string name = "kinect_pointcloud.txt";
 //		viewerCloud->storeToTxtFile(name);
 		viewer.addPointCloud(viewerCloud);
 		viewer.clearButLast();

@@ -231,7 +231,8 @@ int main(int argc, char **argv) {
 	newMeshContainer->data = newMesh;
 
 	DelaunayTriangulationOSG* meshGenerator = new DelaunayTriangulationOSG();
-	meshGenerator->triangulate(pcReducedContainer->data.get(), newMeshContainer->data.get());
+//	meshGenerator->triangulate(pcReducedContainer->data.get(), newMeshContainer->data.get());
+	meshGenerator->triangulate(pc1Container->data.get(), newMeshContainer->data.get());
 	LOG(INFO) << "Number of generated triangles: " << newMeshContainer->data->getSize();
 	tmpAttributes.clear();
 	tmpAttributes.push_back(Attribute("name","mesh_1"));

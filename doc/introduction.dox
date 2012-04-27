@@ -31,12 +31,15 @@ Further information on the implemented algorithms can be found in the @ref depth
 @subsection filtering_def Filtering
 A filter is an algorithm that is able to process a data stream, in this case point cloud data.
 Three major filtering techniques are often applied to point clouds: noise reduction, size reduction
-and normal estimation.
+or ROI extraction.
  
  
 Noise reduction filters try to remedy shortcomings of the sensors measurements. Size reduction
 filters sub-sample the input data to get an approximated but smaller amount of data. The less
-input data an algorithms has, the faster the processing is. The filtering stage can be regarded as optional, but it is a valuable
+input data an algorithms has, the faster the processing is. Filters for ROI extraction follow the
+same spirit but they reduce the data by focusing on a particular region rather than sub-sampling 
+the complete input data. However how such ROI is derived is out scope of filtering algorithms.
+The filtering stage can be regarded as optional, but it is a valuable
 contribution to create more robust or faster results.
 
 Further information on the implemented algorithms can be found in the @ref filtering section. 
@@ -67,7 +70,7 @@ Further information on the implemented algorithms can be found in the @ref regis
 
 @subsection segmentation_def Segmentation
 Segmentation means a spatial partition of point clouds into subsets that belong to different
-objects. 3D models of special shapes, like boxes, cylinders or balls are often fitted into these
+objects. 3D models of special shapes, like planes, cylinders or speres are often fitted into these
 regions to model the perceived objects. <br>
 With respect to a mobile manipulation application that needs a triangle set representation of an 
 environment this stage can be regarded as optional. However, the segmentation of data might

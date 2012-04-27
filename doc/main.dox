@@ -27,7 +27,8 @@ This library is biased towards 3D perception and modeling for mobile manipulatio
  - @ref nearestNeighbor
  - @ref mesh_generation
  - @ref visualization
-- @ref license 
+- @ref license
+- @ref references 
 
 @section license Licensing
 This software is published under a dual-license: GNU Lesser General Public
@@ -35,10 +36,22 @@ License LGPL 2.1 and Modified BSD license. The dual-license implies that
 users of this code may choose which terms they prefer. Please see the files
 called <a href="../../LGPL-2.1">LGPL-2.1</a> and <a href="../../BSDlicense">BSDlicense</a>. 
 
- 
- 
+@section references References 
 
- 
+If you want to cite the BRICS_3D library you can use the following reference. Among others it contains an overwiew of the 3D Perception an Modeling domain and the basic design principles behind this library. 
+
+@code
+@INPROCEEDINGS{blumenthal11towards,
+  author = {Blumenthal, S. and Prassler, E. and Fischer, J. and Nowak, W.},
+  title = {Towards identification of best practice algorithms in 3D perception and modeling},
+  booktitle = {IEEE International Conference on Robotics and Automation (ICRA)},
+  year = {2011},
+  pages = {3554--3561},
+  organization = {IEEE},
+  doi = {10.1109/ICRA.2011.5980106}
+}
+@endcode
+
 */
  
 /*!  

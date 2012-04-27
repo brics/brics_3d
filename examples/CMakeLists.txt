@@ -33,19 +33,20 @@ IF (USE_OSG)
 
     ADD_EXECUTABLE(BRICS_3D_Demo BRICS_3D_Demo)
     TARGET_LINK_LIBRARIES(BRICS_3D_Demo 
-        brics3d_core 
         brics3d_algorithm
         brics3d_util
+        brics3d_core 
     	${OSG_LIBRARY_DEBUG}
     	${OSGGA_LIBRARY_DEBUG}
     	${OSGVIEWER_LIBRARY_DEBUG}
+    	${OSGUTIL_LIBRARY_DEBUG}
     )
 
     ADD_EXECUTABLE(osg_point_plotter osg_point_plotter)
     TARGET_LINK_LIBRARIES(osg_point_plotter 
-        brics3d_core 
         brics3d_algorithm
         brics3d_util
+        brics3d_core 
     	${OSG_LIBRARY_DEBUG}
     	${OSGGA_LIBRARY_DEBUG}
     	${OSGVIEWER_LIBRARY_DEBUG}
@@ -53,9 +54,9 @@ IF (USE_OSG)
     
     ADD_EXECUTABLE(osg_triangle_plotter osg_triangle_plotter)
     TARGET_LINK_LIBRARIES(osg_triangle_plotter 
-        brics3d_core 
         brics3d_algorithm
         brics3d_util
+        brics3d_core
     	${OSG_LIBRARY_DEBUG}
     	${OSGGA_LIBRARY_DEBUG}
     	${OSGVIEWER_LIBRARY_DEBUG}
@@ -63,9 +64,9 @@ IF (USE_OSG)
  
     ADD_EXECUTABLE(pointcloud_viewer pointcloud_viewer)
     TARGET_LINK_LIBRARIES(pointcloud_viewer
-        brics3d_core 
         brics3d_algorithm
         brics3d_util
+        brics3d_core 
     	${OSG_LIBRARY_DEBUG}
     	${OSGGA_LIBRARY_DEBUG}
     	${OSGVIEWER_LIBRARY_DEBUG}
@@ -73,9 +74,9 @@ IF (USE_OSG)
     	  	    	    
     ADD_EXECUTABLE(icp_test icp_test) 
     TARGET_LINK_LIBRARIES(icp_test
-        brics3d_core 
         brics3d_algorithm
         brics3d_util
+        brics3d_core 
     	${OSG_LIBRARY_DEBUG}
     	${OSGGA_LIBRARY_DEBUG}
     	${OSGVIEWER_LIBRARY_DEBUG}
@@ -83,9 +84,9 @@ IF (USE_OSG)
     
     ADD_EXECUTABLE(icp_benchmark icp_benchmark) 
     TARGET_LINK_LIBRARIES(icp_benchmark
-        brics3d_core 
         brics3d_algorithm
         brics3d_util
+        brics3d_core 
     	${OSG_LIBRARY_DEBUG}
     	${OSGGA_LIBRARY_DEBUG}
     	${OSGVIEWER_LIBRARY_DEBUG}
@@ -93,9 +94,9 @@ IF (USE_OSG)
     
     ADD_EXECUTABLE(point3D_benchmark point3D_benchmark) 
     TARGET_LINK_LIBRARIES(point3D_benchmark 
-        brics3d_core 
-        brics3d_algorithm 
+        brics3d_algorithm
         brics3d_util
+        brics3d_core 
         ${OSG_LIBRARY_DEBUG}
     	${OSGGA_LIBRARY_DEBUG}
     	${OSGVIEWER_LIBRARY_DEBUG}
@@ -105,6 +106,7 @@ IF (USE_OSG)
     TARGET_LINK_LIBRARIES(demoSegmentationPlane 
         brics3d_algorithm
         brics3d_util
+        brics3d_core 
         ${OSG_LIBRARY_DEBUG}
     	${OSGGA_LIBRARY_DEBUG}
     	${OSGVIEWER_LIBRARY_DEBUG}
@@ -115,9 +117,9 @@ IF (USE_OSG)
 
         ADD_EXECUTABLE(kinect_test kinect_test) 
         TARGET_LINK_LIBRARIES(kinect_test 
-            brics3d_core 
-            brics3d_algorithm 
+            brics3d_algorithm
             brics3d_util
+            brics3d_core 
             ${OSG_LIBRARY_DEBUG}
         	${OSGGA_LIBRARY_DEBUG}
         	${OSGVIEWER_LIBRARY_DEBUG}
@@ -126,9 +128,9 @@ IF (USE_OSG)
         
         ADD_EXECUTABLE(extract_object_clusters extract_object_clusters) 
         TARGET_LINK_LIBRARIES(extract_object_clusters 
-            brics3d_core 
-            brics3d_algorithm 
+            brics3d_algorithm
             brics3d_util
+            brics3d_core 
             ${OSG_LIBRARY_DEBUG}
         	${OSGGA_LIBRARY_DEBUG}
         	${OSGVIEWER_LIBRARY_DEBUG}
@@ -139,9 +141,9 @@ IF (USE_OSG)
         INCLUDE_DIRECTORIES(${PCL_INCLUDE_DIRS} ${OPENNI_INCLUDE_DIRS})    
         ADD_EXECUTABLE(detection_test detection_test) 
         TARGET_LINK_LIBRARIES(detection_test 
-            brics3d_core 
-            brics3d_algorithm 
+            brics3d_algorithm
             brics3d_util
+            brics3d_core 
             ${OSG_LIBRARY_DEBUG}
         	${OSGGA_LIBRARY_DEBUG}
         	${OSGVIEWER_LIBRARY_DEBUG}
@@ -156,10 +158,10 @@ IF (USE_OSG)
         
         ADD_EXECUTABLE(wm_kinect_test wm_kinect_test) 
         TARGET_LINK_LIBRARIES(wm_kinect_test
-            brics3d_core 
-            brics3d_algorithm 
             brics3d_world_model
+            brics3d_algorithm
             brics3d_util
+            brics3d_core 
             ${OSG_LIBRARY_DEBUG}
         	${OSGGA_LIBRARY_DEBUG}
         	${OSGVIEWER_LIBRARY_DEBUG}
@@ -169,13 +171,14 @@ IF (USE_OSG)
     
     ADD_EXECUTABLE(wm_processing wm_processing)
     TARGET_LINK_LIBRARIES(wm_processing 
-        brics3d_core 
-        brics3d_algorithm
         brics3d_world_model
+        brics3d_algorithm
         brics3d_util
+        brics3d_core 
     	${OSG_LIBRARY_DEBUG}
     	${OSGGA_LIBRARY_DEBUG}
     	${OSGVIEWER_LIBRARY_DEBUG}
+    	${OSGUTIL_LIBRARY_DEBUG}
     )
     
 ENDIF(USE_OSG)

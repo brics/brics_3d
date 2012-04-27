@@ -23,15 +23,18 @@
 
 #include <core/PointCloud3D.h>
 #include <core/HomogeneousMatrix44.h>
+#include <core/TriangleMeshExplicit.h>
 #include <core/Logger.h>
 #include <algorithm/filtering/BoxROIExtractor.h>
 #include <algorithm/segmentation/RegionBasedSACSegmentation.h>
 #include <algorithm/segmentation/EuclideanClustering.h>
 #include <algorithm/segmentation/EuclideanClusteringPCL.h>
+#include <algorithm/meshGeneration/DelaunayTriangulationOSG.h>
 #include <util/PCLTypecaster.h>
 #include <util/Timer.h>
 #include <worldModel/WorldModel.h>
 #include <worldModel/sceneGraph/PointCloud.h>
+#include <worldModel/sceneGraph/Mesh.h>
 #include <worldModel/sceneGraph/Box.h>
 #include <worldModel/sceneGraph/OSGVisualizer.h>
 
@@ -48,6 +51,7 @@ public:
 		wm->scene.attachUpdateObserver(wmObserver); //enable visualization
 		lastPointCloudId = 0;
 		lastFilteredPointCloudId = 0;
+		lastMeshId = 0;
 		roiDiff = 0.05; //[m]
 
 		/* init some ROI Box */
@@ -136,6 +140,7 @@ public:
 		boxROIPointCloudContainer->data = boxROIPointCloud;
 		boxFilter.filter(newPointCloudContainer->data.get(), boxROIPointCloudContainer->data.get());
 		LOG(INFO) << "ROI has " << boxROIPointCloudContainer->data->getSize() << " points";
+//		boxROIPointCloudContainer->data->storeToTxtFile("roi_box_filtered_point_cloud.txt");
 
 		tmpAttributes.clear();
 		tmpAttributes.push_back(Attribute("name","roi_box_filtered_point_cloud"));
@@ -163,6 +168,19 @@ public:
 //		cout << "Found Inliers: " << inliers.size() << endl;
 //		cout << "The model-coefficients are: " << endl << modelCoefficients << endl;
 
+//		/* create some mesh */
+//		BRICS_3D::ITriangleMesh::ITriangleMeshPtr newMesh(new BRICS_3D::TriangleMeshExplicit());
+//		BRICS_3D::RSG::Mesh<BRICS_3D::ITriangleMesh>::MeshPtr newMeshContainer(new BRICS_3D::RSG::Mesh<BRICS_3D::ITriangleMesh>());
+//		newMeshContainer->data = newMesh;
+//
+//		BRICS_3D::DelaunayTriangulationOSG meshGenerator;
+//		meshGenerator.triangulate(boxROIPointCloudContainer->data.get(), newMeshContainer->data.get());
+//		LOG(INFO) << "Number of generated triangles: " << newMeshContainer->data->getSize();
+//		tmpAttributes.clear();
+//		tmpAttributes.push_back(Attribute("name","mesh_1"));
+		unsigned int currentMeshId = 0;
+//		wm->scene.addGeometricNode(wm->scene.getRootId(), currentMeshId, tmpAttributes, newMeshContainer, TimeStamp(timer.getCurrentTime()));
+//		wm->scene.deleteNode(lastMeshId);
 
 		/* just for the fun: move the ROI */
 		wm->scene.getNodeParents(boxResultId, resultIds); // we know that the box has only one parent: a transform node
@@ -182,10 +200,10 @@ public:
 		matrixData[14] += roiDiff; //[m]
 		wm->scene.setTransform(tfResultId, transformNew, BRICS_3D::RSG::TimeStamp(timer.getCurrentTime()));
 
-
 		/* Setting hints to delet the correct data in next cycle */
 		lastPointCloudId = currentPointCloudId;
 		lastFilteredPointCloudId = currentFilteredPointCloudId;
+		lastMeshId = currentMeshId;
 
 		count++;
 	}
@@ -205,6 +223,7 @@ public:
 	/// Hint which point cloud is is from previous cycle.
 	unsigned int lastPointCloudId;
 	unsigned int lastFilteredPointCloudId;
+	unsigned int lastMeshId;
 
 	/// For stats & debugging
 	int count;
