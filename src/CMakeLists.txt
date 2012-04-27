@@ -174,6 +174,7 @@ SET (WORLD_MODEL_LIBRARY_SOURCES
     ./worldModel/sceneGraph/Transform
     ./worldModel/sceneGraph/PathCollector
     ./worldModel/sceneGraph/AttributeFinder
+    ./worldModel/sceneGraph/DotGraphGenerator    
     ./worldModel/sceneGraph/OutdatedDataDeleter
     ./worldModel/sceneGraph/OutdatedDataIdAwareDeleter
 )

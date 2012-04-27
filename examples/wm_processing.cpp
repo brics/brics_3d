@@ -37,6 +37,7 @@
 #include <worldModel/sceneGraph/Mesh.h>
 #include <worldModel/sceneGraph/Box.h>
 #include <worldModel/sceneGraph/Cylinder.h>
+#include <worldModel/sceneGraph/DotGraphGenerator.h>
 
 /* general includes */
 #include <iostream>
@@ -138,6 +139,7 @@ int main(int argc, char **argv) {
 	pcReducedContainer->data = reducedPointCloud;
 	tmpAttributes.clear();
 	tmpAttributes.push_back(Attribute("name","point_cloud_reduced"));
+	tmpAttributes.push_back(Attribute("filterType","octree"));
 	wm->scene.addGeometricNode(wm->getRootNodeId(), pcReducedId, tmpAttributes, pcReducedContainer, TimeStamp(0.1));
 
 	/* Create a point cloud based on a box ROI */
@@ -237,6 +239,10 @@ int main(int argc, char **argv) {
 	tmpAttributes.clear();
 	tmpAttributes.push_back(Attribute("name","mesh_1"));
 	wm->scene.addGeometricNode(wm->scene.getRootId(), dummyId, tmpAttributes, newMeshContainer, dummyTime);
+
+	BRICS_3D::RSG::DotGraphGenerator dotGraphTraverser;
+	wm->scene.executeGraphTraverser(&dotGraphTraverser);
+	cout << "GRAPH: "<< endl << dotGraphTraverser.getDotGraph() << endl;
 
 	/* clean up */
 	delete octreeFilter;
