@@ -2451,6 +2451,227 @@ void SceneGraphNodesTest::testUpdateObserver() {
 
 }
 
+void SceneGraphNodesTest::testDotGraphGenerator() {
+	BRICS_3D::RSG::SceneGraphFacade scene;			// The 3D world model handle
+	vector<Attribute> attributes;	// with this one we can attach attibutes / tags to the nodes
+
+	/* Some node Ids we would like to remember */
+	unsigned int dummyId = 0;
+	unsigned int tfId = 0; // We will use this multible times
+	unsigned int pointCloudId = 0;
+	unsigned int sensorGroupId = 0;
+	unsigned int filteredGroupId = 0;
+	unsigned int sceneObjectGroupId = 0;
+	unsigned int robotGroupId = 0;
+	unsigned int tableGroupId = 0;
+	unsigned int plateGroupId = 0;
+	unsigned int boxGroupId1 = 0;
+	unsigned int boxGroupId2 = 0;
+	unsigned int pointCloudId1 = 0;
+	unsigned int geometryId = 0;
+
+	/* Some (dummy) data to be use within the scenegraph */
+	BRICS_3D::RSG::TimeStamp dummyTime(0);
+	BRICS_3D::RSG::TimeStamp t1(1.0);
+	BRICS_3D::RSG::TimeStamp t2(2.0);
+	BRICS_3D::RSG::TimeStamp t3(3.0);
+	BRICS_3D::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform123(new BRICS_3D::HomogeneousMatrix44(1,0,0,  	// Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             1,2,3)); 						// Translation coefficients
+
+	BRICS_3D::PointCloud3D::PointCloud3DPtr dummyPointCloud(new BRICS_3D::PointCloud3D());		// An empty BRICS_3D point cloud as dummy
+	BRICS_3D::RSG::PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr dummyPointCloudContainer(new BRICS_3D::RSG::PointCloud<BRICS_3D::PointCloud3D>()); // Containter used within scenegraph
+	dummyPointCloudContainer->data=dummyPointCloud;		// Fill container with the point cloud data
+
+	BRICS_3D::RSG::Box::BoxPtr dummyBox(new BRICS_3D::RSG::Box());
+
+	/*
+	 * Set up the scenegraph
+	 */
+
+	/* nodes for raw data from sensor */
+	attributes.clear();
+	attributes.push_back(Attribute("name","sensor_tf"));
+	scene.addTransformNode(scene.getRootId(), tfId, attributes, transform123, dummyTime);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","sensor"));
+	scene.addGroup(tfId, sensorGroupId, attributes);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","pc1_tf"));
+	scene.addTransformNode(sensorGroupId, tfId, attributes, transform123, t1);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","point_cloud_1"));
+	scene.addGeometricNode(tfId, pointCloudId, attributes, dummyPointCloudContainer, t1);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","pc2_tf"));
+	scene.addTransformNode(sensorGroupId, tfId, attributes, transform123, t2);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","point_cloud_2"));
+	scene.addGeometricNode(tfId, pointCloudId, attributes, dummyPointCloudContainer, t2);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","pc3_tf"));
+	scene.addTransformNode(sensorGroupId, tfId, attributes, transform123, t3);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","point_cloud_3"));
+	scene.addGeometricNode(tfId, pointCloudId, attributes, dummyPointCloudContainer, t3);
+
+	/* nodes for processed (filtered) data */
+	attributes.clear();
+	attributes.push_back(Attribute("name","filtered_tf"));
+	scene.addTransformNode(scene.getRootId(), tfId, attributes, transform123, dummyTime);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","filtered_data"));
+	scene.addGroup(tfId, filteredGroupId, attributes);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","pc1_filterd_tf"));
+	scene.addTransformNode(filteredGroupId, tfId, attributes, transform123, t2);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","pc_filterd_1"));
+	scene.addGeometricNode(tfId, pointCloudId, attributes, dummyPointCloudContainer, t2);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","pc2_filtered_tf"));
+	scene.addTransformNode(filteredGroupId, tfId, attributes, transform123, t3);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","pc_filtered_2"));
+	scene.addGeometricNode(tfId, pointCloudId, attributes, dummyPointCloudContainer, t3);
+
+	/* nodes for hight level scene objects */
+	attributes.clear();
+	attributes.push_back(Attribute("name","scene_objects_tf"));
+	scene.addTransformNode(scene.getRootId(), tfId, attributes, transform123, dummyTime);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","scene_objects"));
+	attributes.push_back(Attribute("note","high level objects"));
+	scene.addGroup(tfId, sceneObjectGroupId, attributes);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","table_tf"));
+	scene.addTransformNode(sceneObjectGroupId, tfId, attributes, transform123, t2);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","Table"));
+	scene.addGroup(tfId, tableGroupId, attributes);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","table_to_plate_tf"));
+	scene.addTransformNode(tableGroupId, tfId, attributes, transform123, t2);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","Plate"));
+	scene.addGroup(tfId, plateGroupId, attributes);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","table_to_box_tf"));
+	scene.addTransformNode(plateGroupId, tfId, attributes, transform123, t2);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","Box"));
+	attributes.push_back(Attribute("color","red"));
+	scene.addGroup(tfId, boxGroupId1, attributes);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","table_to_leg1_tf"));
+	scene.addTransformNode(tableGroupId, tfId, attributes, transform123, t2);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","Leg1"));
+	scene.addGroup(tfId, plateGroupId, attributes);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","table_to_leg2_tf"));
+	scene.addTransformNode(tableGroupId, tfId, attributes, transform123, t2);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","Leg2"));
+	scene.addGroup(tfId, plateGroupId, attributes);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","cylinder_tf"));
+	scene.addTransformNode(sceneObjectGroupId, tfId, attributes, transform123, t2);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","Cylinder"));
+	attributes.push_back(Attribute("color","blue"));
+	scene.addGroup(tfId, dummyId, attributes);
+
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","box_tf"));
+	scene.addTransformNode(sceneObjectGroupId, tfId, attributes, transform123, t2);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","Box"));
+	attributes.push_back(Attribute("color","red"));
+	scene.addGroup(tfId, boxGroupId1, attributes);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","Geometry"));
+	scene.addGeometricNode(boxGroupId1, geometryId, attributes, dummyBox, dummyTime);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","box_tf1"));
+	scene.addTransformNode(sceneObjectGroupId, tfId, attributes, transform123, t1);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","Box"));
+	attributes.push_back(Attribute("color","green"));
+	scene.addGroup(tfId, boxGroupId2, attributes);
+
+	/* reference to the same geometry */
+	scene.addParent(geometryId, boxGroupId2);
+
+	/* multible obeservations to the same object */
+	attributes.clear();
+	attributes.push_back(Attribute("name","box_tf2"));
+	scene.addTransformNode(sceneObjectGroupId, tfId, attributes, transform123, t2);
+	scene.addParent(boxGroupId2, tfId);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","box_tf3"));
+	scene.addTransformNode(sceneObjectGroupId, tfId, attributes, transform123, t3);
+	scene.addParent(boxGroupId2, tfId);
+
+	/* finally create some robot representation */
+	attributes.clear();
+	attributes.push_back(Attribute("name","robot_tf"));
+	scene.addTransformNode(scene.getRootId(), tfId, attributes, transform123, dummyTime);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","robot"));
+	scene.addGroup(tfId, robotGroupId, attributes);
+
+	/* Visualize the structure */
+	BRICS_3D::RSG::DotGraphGenerator dotGraphGenerator;
+	string resultString;
+	resultString = dotGraphGenerator.getDotGraph();
+
+	cout << "Dot graph: " << endl << resultString << endl;
+
+	int expectedStringSizeForEmptyGraph = 14;
+	CPPUNIT_ASSERT_EQUAL(resultString.compare(""), expectedStringSizeForEmptyGraph);
+
+	scene.executeGraphTraverser(&dotGraphGenerator);
+	resultString = dotGraphGenerator.getDotGraph();
+
+	cout << "Dot graph: " << endl << resultString << endl;
+	CPPUNIT_ASSERT(resultString.compare("") != expectedStringSizeForEmptyGraph);
+
+}
+
 }  // namespace unitTests
 
 /* EOF */
