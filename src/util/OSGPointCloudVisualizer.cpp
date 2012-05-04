@@ -136,7 +136,7 @@ void OSGPointCloudVisualizer::addPointCloud(PointCloud3D* pointCloud, float red,
 }
 
 void OSGPointCloudVisualizer::addColoredPointCloud(ColoredPointCloud3D* pointCloud, float alpha) {
-	rootGeode->addChild(createColoredPointCloudNode(pointCloud, alpha));
+	viewer.addUpdateOperation(new OSGOperationAdd(this, createColoredPointCloudNode(pointCloud, alpha)));
 }
 
 //void OSGPointCloudVisualizer::addColoredPointCloud(PointCloud3D* coloredPointCloud, float alpha) {
@@ -259,7 +259,7 @@ osg::ref_ptr<osg::Node> OSGPointCloudVisualizer::createPointCloudNode(PointCloud
 	return group;
 }
 
-osg::Node* OSGPointCloudVisualizer::createColoredPointCloudNode(ColoredPointCloud3D* pointCloud, float alpha) {
+osg::ref_ptr<osg::Node> OSGPointCloudVisualizer::createColoredPointCloudNode(ColoredPointCloud3D* pointCloud, float alpha) {
 
 	float red = 0.0;
 	float green = 0.0;

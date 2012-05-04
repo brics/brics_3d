@@ -24,11 +24,16 @@
 
 // BRICS_3D includes
 #include <core/PointCloud3D.h>
+#include <core/ColoredPointCloud3D.h>
 #include <core/Logger.h>
 #include <util/PCLTypecaster.h>
 #include <util/OSGPointCloudVisualizer.h>
 
 using BRICS_3D::Logger;
+
+//typedef pcl::PointXYZ PointType;
+typedef pcl::PointXYZRGB PointType;
+
 
 /**
  * Example class to visualize a point cloud captured from a Kinect camera
@@ -44,7 +49,7 @@ public:
 	 * Function to be executed on arrival of a new point cloud from the sensor.
 	 * @param cloud The point cloud data.
 	 */
-	void callback (const pcl::PointCloud<pcl::PointXYZ>::ConstPtr &cloud)
+	void callback (const pcl::PointCloud<PointType>::ConstPtr &cloud)
 	{
 //		if (count > 2) {
 		if (viewer.done()) {
@@ -54,11 +59,13 @@ public:
 		}
 
 		LOG(INFO) <<  "Receiving new point cloud";
-		BRICS_3D::PointCloud3D* viewerCloud = new BRICS_3D::PointCloud3D();
+//		BRICS_3D::PointCloud3D* viewerCloud = new BRICS_3D::PointCloud3D();
+		BRICS_3D::ColoredPointCloud3D* viewerCloud = new BRICS_3D::ColoredPointCloud3D();
 		converter.convertToBRICS3DDataType(cloud, viewerCloud);
 //		std::string name = "kinect_pointcloud.txt";
 //		viewerCloud->storeToTxtFile(name);
-		viewer.addPointCloud(viewerCloud);
+//		viewer.addPointCloud(viewerCloud);
+		viewer.addColoredPointCloud(viewerCloud);
 		viewer.clearButLast();
 		delete viewerCloud;
 		count++;
@@ -69,7 +76,7 @@ public:
 	 */
 	void run () {
 	    interface = new pcl::OpenNIGrabber();
-	    boost::function<void (const pcl::PointCloud<pcl::PointXYZ>::ConstPtr&)> f = boost::bind (&KinectTest::callback, this, _1);
+	    boost::function<void (const pcl::PointCloud<PointType>::ConstPtr&)> f = boost::bind (&KinectTest::callback, this, _1);
 	    interface->registerCallback (f);
 	    interface->start ();
 	}

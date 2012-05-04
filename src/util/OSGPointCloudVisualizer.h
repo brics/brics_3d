@@ -138,7 +138,7 @@ public:
 	 * @param[in] pointCloud Pointer to colored point cloud that will be transformed into an OSG geode
 	 * @param alpha Specifies the amount of the alpha channel of the point cloud. Range is 0.0f to 1.0f
 	 */
-	osg::Node* createColoredPointCloudNode(ColoredPointCloud3D* pointCloud, float alpha=1.0f);
+	static osg::ref_ptr<osg::Node> createColoredPointCloudNode(ColoredPointCloud3D* pointCloud, float alpha=1.0f);
 
 	osg::Node* createColoredPointCloudNode(PointCloud3D* coloredPointCloud, float alpha=1.0f);
 
