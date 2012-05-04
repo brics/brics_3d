@@ -117,7 +117,7 @@ void OSGVisualizer::init() {
 	osg::ref_ptr<osg::BlendFunc> blendFunc = new osg::BlendFunc();
 	blendFunc->setFunction( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	osg::StateSet* stateset = rootGeode->getOrCreateStateSet();
-	stateset->setAttributeAndModes( blendFunc );
+//	stateset->setAttributeAndModes( blendFunc );  //FIXME colored point clouds are hardly visible with this
 	rootGeode->getOrCreateStateSet()->setRenderingHint(osg::StateSet::TRANSPARENT_BIN ); // this one igth be computaionally expensive as it causes reordering of the scene
 
 	/* optionally add some fram indication */
@@ -234,20 +234,39 @@ bool OSGVisualizer::addGeometricNode(unsigned int parentId, unsigned int& assign
 		float blue = (rand()%100)/100.0;
 		float alpha = 0.7;
 
+		bool noVisualisation = false;
+		Attribute noVisualisationTag("debugInfo","no_visualization");
+		noVisualisation = attributeListContainsAttribute(attributes, noVisualisationTag);
+		if (noVisualisation) {
+			LOG(DEBUG) << "OSGVisualizer: geode has no_visualization debug tag. Skipping visualization.";
+			return true;
+		}
+
 		RSG::PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr pointCloud(new RSG::PointCloud<BRICS_3D::PointCloud3D>());
 		pointCloud = boost::dynamic_pointer_cast<PointCloud<BRICS_3D::PointCloud3D> >(shape);
+		RSG::PointCloud<BRICS_3D::ColoredPointCloud3D>::PointCloudPtr coloredPointCloud(new RSG::PointCloud<BRICS_3D::ColoredPointCloud3D>());
+		coloredPointCloud = boost::dynamic_pointer_cast<PointCloud<BRICS_3D::ColoredPointCloud3D> >(shape);
 		RSG::Mesh<BRICS_3D::ITriangleMesh>::MeshPtr mesh(new RSG::Mesh<BRICS_3D::ITriangleMesh>());
 		mesh = boost::dynamic_pointer_cast<RSG::Mesh<BRICS_3D::ITriangleMesh> >(shape);
 		RSG::Box::BoxPtr box(new RSG::Box());
 		box =  boost::dynamic_pointer_cast<RSG::Box>(shape);
 		RSG::Cylinder::CylinderPtr cylinder(new RSG::Cylinder());
 		cylinder =  boost::dynamic_pointer_cast<RSG::Cylinder>(shape);
-		if(pointCloud !=0) {
+
+		if (coloredPointCloud !=0) {
+			LOG(DEBUG) << "                 -> Adding a new colored point cloud.";
+			osg::ref_ptr<osg::Node> pointCloudNode = OSGPointCloudVisualizer::createColoredPointCloudNode(coloredPointCloud->data.get());
+			pointCloudNode->getOrCreateStateSet()->setRenderingHint(osg::StateSet::DEFAULT_BIN );
+			viewer.addUpdateOperation(new OSGOperationAdd(this, pointCloudNode, parentGroup));
+			idLookUpTable.insert(std::make_pair(assignedId, pointCloudNode));
+			return true;
+		} else if(pointCloud !=0) {
 			LOG(DEBUG) << "                 -> Adding a new point cloud.";
 			osg::ref_ptr<osg::Node> pointCloudNode = OSGPointCloudVisualizer::createPointCloudNode(pointCloud->data.get(), red, green, blue, alpha);
 			viewer.addUpdateOperation(new OSGOperationAdd(this, pointCloudNode, parentGroup));
 			idLookUpTable.insert(std::make_pair(assignedId, pointCloudNode));
 			return true;
+
 		} else if (box !=0) {
 			LOG(DEBUG) << "                 -> Adding a new box.";
 			osg::ref_ptr<osg::Box> boxData = new osg::Box();

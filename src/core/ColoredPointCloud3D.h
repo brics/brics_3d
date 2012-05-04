@@ -42,6 +42,10 @@ namespace BRICS_3D {
 class ColoredPointCloud3D : public PointCloud3D {
 public:
 
+	typedef boost::shared_ptr<ColoredPointCloud3D> ColoredPointCloud3DPtr;
+	typedef boost::shared_ptr<ColoredPointCloud3D const> ColoredPointCloud3DConstPtr;
+
+
 	/**
 	 * @brief: Standard constructor
 	 */
