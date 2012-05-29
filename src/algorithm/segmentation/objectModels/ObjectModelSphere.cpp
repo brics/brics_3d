@@ -74,8 +74,8 @@ ObjectModelSphere:: getSamples (int &iterations, std::vector<int> &samples)
 
 	// Get the values at the two points
 	Eigen::Vector4f p0, p1, p2;
-	p1 = Eigen::Vector4f (this->points->data()[samples[1]].getX(), this->points->data()[samples[1]].getY(), this->points->data()[samples[1]].getZ(), 0);
-	p0 = Eigen::Vector4f (this->points->data()[samples[0]].getX(), this->points->data()[samples[0]].getY(), this->points->data()[samples[0]].getZ(), 0);
+	p1 = Eigen::Vector4f ((*inputPointCloud->getPointCloud())[samples[1]].getX(), (*inputPointCloud->getPointCloud())[samples[1]].getY(), (*inputPointCloud->getPointCloud())[samples[1]].getZ(), 0);
+	p0 = Eigen::Vector4f ((*inputPointCloud->getPointCloud())[samples[0]].getX(), (*inputPointCloud->getPointCloud())[samples[0]].getY(), (*inputPointCloud->getPointCloud())[samples[0]].getZ(), 0);
 
 	// Compute the segment values (in 3d) between p1 and p0
 	p1 -= p0;
@@ -94,7 +94,7 @@ ObjectModelSphere:: getSamples (int &iterations, std::vector<int> &samples)
 		iterations--;
 
 		// SSE friendly data check
-		p2 = Eigen::Vector4f (this->points->data()[samples[2]].getX(), this->points->data()[samples[2]].getY(), this->points->data()[samples[2]].getZ(), 0);
+		p2 = Eigen::Vector4f ((*inputPointCloud->getPointCloud())[samples[2]].getX(), (*inputPointCloud->getPointCloud())[samples[2]].getY(), (*inputPointCloud->getPointCloud())[samples[2]].getZ(), 0);
 
 		// Compute the segment values (in 3d) between p2 and p0
 		p2 -= p0;
@@ -135,9 +135,9 @@ ObjectModelSphere::computeModelCoefficients (const std::vector<int> &samples, Ei
 	Eigen::Matrix4f temp;
 	for (int i = 0; i < 4; i++)
 	{
-		temp (i, 0) = this->points->data()[samples[i]].getX();
-		temp (i, 1) = this->points->data()[samples[i]].getY();
-		temp (i, 2) = this->points->data()[samples[i]].getZ();
+		temp (i, 0) = (*inputPointCloud->getPointCloud())[samples[i]].getX();
+		temp (i, 1) = (*inputPointCloud->getPointCloud())[samples[i]].getY();
+		temp (i, 2) = (*inputPointCloud->getPointCloud())[samples[i]].getZ();
 		temp (i, 3) = 1;
 	}
 	float m11 = temp.determinant ();
@@ -145,31 +145,31 @@ ObjectModelSphere::computeModelCoefficients (const std::vector<int> &samples, Ei
 		return (false);             // the points don't define a sphere!
 
 	for (int i = 0; i < 4; ++i)
-		temp (i, 0) = (this->points->data()[samples[i]].getX()) * (this->points->data()[samples[i]].getX()) +
-		(this->points->data()[samples[i]].getY()) * (this->points->data()[samples[i]].getY()) +
-		(this->points->data()[samples[i]].getZ()) * (this->points->data()[samples[i]].getZ());
+		temp (i, 0) = ((*inputPointCloud->getPointCloud())[samples[i]].getX()) * ((*inputPointCloud->getPointCloud())[samples[i]].getX()) +
+		((*inputPointCloud->getPointCloud())[samples[i]].getY()) * ((*inputPointCloud->getPointCloud())[samples[i]].getY()) +
+		((*inputPointCloud->getPointCloud())[samples[i]].getZ()) * ((*inputPointCloud->getPointCloud())[samples[i]].getZ());
 	float m12 = temp.determinant ();
 
 	for (int i = 0; i < 4; ++i)
 	{
 		temp (i, 1) = temp (i, 0);
-		temp (i, 0) = this->points->data()[samples[i]].getX();
+		temp (i, 0) = (*inputPointCloud->getPointCloud())[samples[i]].getX();
 	}
 	float m13 = temp.determinant ();
 
 	for (int i = 0; i < 4; ++i)
 	{
 		temp (i, 2) = temp (i, 1);
-		temp (i, 1) = this->points->data()[samples[i]].getY();
+		temp (i, 1) = (*inputPointCloud->getPointCloud())[samples[i]].getY();
 	}
 	float m14 = temp.determinant ();
 
 	for (int i = 0; i < 4; ++i)
 	{
 		temp (i, 0) = temp (i, 2);
-		temp (i, 1) = this->points->data()[samples[i]].getX();
-		temp (i, 2) = this->points->data()[samples[i]].getY();
-		temp (i, 3) = this->points->data()[samples[i]].getZ();
+		temp (i, 1) = (*inputPointCloud->getPointCloud())[samples[i]].getX();
+		temp (i, 2) = (*inputPointCloud->getPointCloud())[samples[i]].getY();
+		temp (i, 3) = (*inputPointCloud->getPointCloud())[samples[i]].getZ();
 	}
 	float m15 = temp.determinant ();
 
@@ -201,14 +201,14 @@ ObjectModelSphere:: getDistancesToModel (const Eigen::VectorXd &model_coefficien
 		// Calculate the distance from the point to the sphere as the difference between
 		//dist(point,sphere_origin) and sphere_radius
 		distances[i] = fabs (sqrt (
-				( this->points->data()[i].getX() - model_coefficients[0] ) *
-				( this->points->data()[i].getX() - model_coefficients[0] ) +
+				( (*inputPointCloud->getPointCloud())[i].getX() - model_coefficients[0] ) *
+				( (*inputPointCloud->getPointCloud())[i].getX() - model_coefficients[0] ) +
 
-				( this->points->data()[i].getY() - model_coefficients[1] ) *
-				( this->points->data()[i].getY() - model_coefficients[1] ) +
+				( (*inputPointCloud->getPointCloud())[i].getY() - model_coefficients[1] ) *
+				( (*inputPointCloud->getPointCloud())[i].getY() - model_coefficients[1] ) +
 
-				( this->points->data()[i].getZ() - model_coefficients[2] ) *
-				( this->points->data()[i].getZ() - model_coefficients[2] )
+				( (*inputPointCloud->getPointCloud())[i].getZ() - model_coefficients[2] ) *
+				( (*inputPointCloud->getPointCloud())[i].getZ() - model_coefficients[2] )
 		) - model_coefficients[3]);
 }
 
@@ -226,14 +226,14 @@ ObjectModelSphere::getInlierDistance (std::vector<int> &inliers, const Eigen::Ve
 		// Calculate the distance from the point to the sphere as the difference between
 		//dist(point,sphere_origin) and sphere_radius
 		distances[i] = fabs (sqrt (
-				( this->points->data()[inliers[i]].getX() - model_coefficients[0] ) *
-				( this->points->data()[inliers[i]].getX() - model_coefficients[0] ) +
+				( (*inputPointCloud->getPointCloud())[inliers[i]].getX() - model_coefficients[0] ) *
+				( (*inputPointCloud->getPointCloud())[inliers[i]].getX() - model_coefficients[0] ) +
 
-				( this->points->data()[inliers[i]].getY() - model_coefficients[1] ) *
-				( this->points->data()[inliers[i]].getY() - model_coefficients[1] ) +
+				( (*inputPointCloud->getPointCloud())[inliers[i]].getY() - model_coefficients[1] ) *
+				( (*inputPointCloud->getPointCloud())[inliers[i]].getY() - model_coefficients[1] ) +
 
-				( this->points->data()[inliers[i]].getZ() - model_coefficients[2] ) *
-				( this->points->data()[inliers[i]].getZ() - model_coefficients[2] )
+				( (*inputPointCloud->getPointCloud())[inliers[i]].getZ() - model_coefficients[2] ) *
+				( (*inputPointCloud->getPointCloud())[inliers[i]].getZ() - model_coefficients[2] )
 		) - model_coefficients[3]);
 }
 
@@ -253,14 +253,14 @@ ObjectModelSphere::selectWithinDistance (const Eigen::VectorXd &model_coefficien
 		// Calculate the distance from the point to the sphere as the difference between
 		// dist(point,sphere_origin) and sphere_radius
 		if (fabs (sqrt (
-				( this->points->data()[i].getX() - model_coefficients[0] ) *
-				( this->points->data()[i].getX() - model_coefficients[0] ) +
+				( (*inputPointCloud->getPointCloud())[i].getX() - model_coefficients[0] ) *
+				( (*inputPointCloud->getPointCloud())[i].getX() - model_coefficients[0] ) +
 
-				( this->points->data()[i].getY() - model_coefficients[1] ) *
-				( this->points->data()[i].getY() - model_coefficients[1] ) +
+				( (*inputPointCloud->getPointCloud())[i].getY() - model_coefficients[1] ) *
+				( (*inputPointCloud->getPointCloud())[i].getY() - model_coefficients[1] ) +
 
-				( this->points->data()[i].getZ() - model_coefficients[2] ) *
-				( this->points->data()[i].getZ() - model_coefficients[2] )
+				( (*inputPointCloud->getPointCloud())[i].getZ() - model_coefficients[2] ) *
+				( (*inputPointCloud->getPointCloud())[i].getZ() - model_coefficients[2] )
 		) - model_coefficients[3]) < threshold)
 		{
 			// Returns the indices of the points whose distances are smaller than the threshold
@@ -284,12 +284,12 @@ ObjectModelSphere::doSamplesVerifyModel (const std::set<int> &indices, const Eig
 		// Calculate the distance from the point to the sphere as the difference between
 		//dist(point,sphere_origin) and sphere_radius
 		if (fabs (sqrt (
-				( this->points->data()[*it].getX() - model_coefficients[0] ) *
-				( this->points->data()[*it].getX() - model_coefficients[0] ) +
-				( this->points->data()[*it].getY() - model_coefficients[1] ) *
-				( this->points->data()[*it].getY() - model_coefficients[1] ) +
-				( this->points->data()[*it].getZ() - model_coefficients[2] ) *
-				( this->points->data()[*it].getZ() - model_coefficients[2] )
+				( (*inputPointCloud->getPointCloud())[*it].getX() - model_coefficients[0] ) *
+				( (*inputPointCloud->getPointCloud())[*it].getX() - model_coefficients[0] ) +
+				( (*inputPointCloud->getPointCloud())[*it].getY() - model_coefficients[1] ) *
+				( (*inputPointCloud->getPointCloud())[*it].getY() - model_coefficients[1] ) +
+				( (*inputPointCloud->getPointCloud())[*it].getZ() - model_coefficients[2] ) *
+				( (*inputPointCloud->getPointCloud())[*it].getZ() - model_coefficients[2] )
 		) - model_coefficients[3]) > threshold)
 			return (false);
 

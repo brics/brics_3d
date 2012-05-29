@@ -81,13 +81,13 @@ bool ObjectModelLine::computeModelCoefficients (const std::vector<int> &samples,
 	assert (samples.size () == 2);
 
 	model_coefficients.resize (6);
-	model_coefficients[0] = this->points->data()[samples[0]].getX();
-	model_coefficients[1] = this->points->data()[samples[0]].getY();
-	model_coefficients[2] = this->points->data()[samples[0]].getZ();
+	model_coefficients[0] = (*inputPointCloud->getPointCloud())[samples[0]].getX();
+	model_coefficients[1] = (*inputPointCloud->getPointCloud())[samples[0]].getY();
+	model_coefficients[2] = (*inputPointCloud->getPointCloud())[samples[0]].getZ();
 
-	model_coefficients[3] = this->points->data()[samples[1]].getX() - model_coefficients[0];
-	model_coefficients[4] = this->points->data()[samples[1]].getY() - model_coefficients[1];
-	model_coefficients[5] = this->points->data()[samples[1]].getZ() - model_coefficients[2];
+	model_coefficients[3] = (*inputPointCloud->getPointCloud())[samples[1]].getX() - model_coefficients[0];
+	model_coefficients[4] = (*inputPointCloud->getPointCloud())[samples[1]].getY() - model_coefficients[1];
+	model_coefficients[5] = (*inputPointCloud->getPointCloud())[samples[1]].getZ() - model_coefficients[2];
 
 #ifdef EIGEN3
 	model_coefficients.tail<3> ().normalize ();
@@ -153,8 +153,8 @@ void ObjectModelLine::getDistancesToModel (const Eigen::VectorXd &model_coeffici
 	{
 		// Calculate the distance from the point to the line
 		// D = ||(P2-P1) x (P1-P0)|| / ||P2-P1|| = norm (cross (p2-p1, p2-p0)) / norm(p2-p1)
-		Eigen::Vector4d pt (this->points->data()[i].getX(), this->points->data()[i].getY(),
-				this->points->data()[i].getZ(), 0);
+		Eigen::Vector4d pt ((*inputPointCloud->getPointCloud())[i].getX(), (*inputPointCloud->getPointCloud())[i].getY(),
+				(*inputPointCloud->getPointCloud())[i].getZ(), 0);
 		Eigen::Vector4d pp = line_p2 - pt;
 
 #ifdef EIGEN3
@@ -186,8 +186,8 @@ void ObjectModelLine::selectWithinDistance (const Eigen::VectorXd &model_coeffic
 	{
 		// Calculate the distance from the point to the line
 		// D = ||(P2-P1) x (P1-P0)|| / ||P2-P1|| = norm (cross (p2-p1, p2-p0)) / norm(p2-p1)
-		Eigen::Vector4d pt (this->points->data()[i].getX(),
-				this->points->data()[i].getY(), this->points->data()[i].getZ(), 0);
+		Eigen::Vector4d pt ((*inputPointCloud->getPointCloud())[i].getX(),
+				(*inputPointCloud->getPointCloud())[i].getY(), (*inputPointCloud->getPointCloud())[i].getZ(), 0);
 		Eigen::Vector4d pp = line_p2 - pt;
 
 #ifdef EIGEN3
@@ -226,8 +226,8 @@ void ObjectModelLine::getInlierDistance (std::vector<int> &inliers, const Eigen:
 	{
 		// Calculate the distance from the point to the line
 		// D = ||(P2-P1) x (P1-P0)|| / ||P2-P1|| = norm (cross (p2-p1, p2-p0)) / norm(p2-p1)
-		Eigen::Vector4d pt (this->points->data()[inliers[i]].getX(), this->points->data()[inliers[i]].getY(),
-				this->points->data()[inliers[i]].getZ(), 0);
+		Eigen::Vector4d pt ((*inputPointCloud->getPointCloud())[inliers[i]].getX(), (*inputPointCloud->getPointCloud())[inliers[i]].getY(),
+				(*inputPointCloud->getPointCloud())[inliers[i]].getZ(), 0);
 		Eigen::Vector4d pp = line_p2 - pt;
 
 #ifdef EIGEN3
@@ -254,17 +254,17 @@ void ObjectModelLine::projectPoints (const std::vector<int> &inliers, const Eige
 	// Iterate through the 3d points and calculate the distances from them to the line
 	for (size_t i = 0; i < inliers.size (); ++i)
 	{
-		Eigen::Vector4d pt (this->points->data()[inliers[i]].getX(), this->points->data()[inliers[i]].getY(),
-				this->points->data()[inliers[i]].getZ(), 0);
+		Eigen::Vector4d pt ((*inputPointCloud->getPointCloud())[inliers[i]].getX(), (*inputPointCloud->getPointCloud())[inliers[i]].getY(),
+				(*inputPointCloud->getPointCloud())[inliers[i]].getZ(), 0);
 		// double k = (DOT_PROD_3D (points[i], p21) - dotA_B) / dotB_B;
 		double k = (pt.dot (line_dir) - line_pt.dot (line_dir)) / line_dir.dot (line_dir);
 
 		Eigen::Vector4d pp = line_pt + k * line_dir;
 		// Calculate the projection of the point on the line (pointProj = A + k * B)
-		std::vector<Point3D> *projectedPoints = projectedPointCloud->getPointCloud();
-		projectedPoints->data()[i].setX(pp[0]);
-		projectedPoints->data()[i].setY(pp[1]);
-		projectedPoints->data()[i].setZ(pp[2]);
+//		std::vector<Point3D> *projectedPoints = projectedPointCloud->getPointCloud();
+		(*projectedPointCloud->getPointCloud())[i].setX(pp[0]);
+		(*projectedPointCloud->getPointCloud())[i].setY(pp[1]);
+		(*projectedPointCloud->getPointCloud())[i].setZ(pp[2]);
 	}
 
 }
@@ -286,8 +286,8 @@ bool ObjectModelLine::doSamplesVerifyModel (const std::set<int> &indices, const 
      {
        // Calculate the distance from the point to the line
        // D = ||(P2-P1) x (P1-P0)|| / ||P2-P1|| = norm (cross (p2-p1, p2-p0)) / norm(p2-p1)
-       Eigen::Vector4d pt (this->points->data()[*it].getX(), this->points->data()[*it].getY(),
-    		   this->points->data()[*it].getZ(), 0);
+       Eigen::Vector4d pt ((*inputPointCloud->getPointCloud())[*it].getX(), (*inputPointCloud->getPointCloud())[*it].getY(),
+    		   (*inputPointCloud->getPointCloud())[*it].getZ(), 0);
        Eigen::Vector4d pp = line_p2 - pt;
 
 #ifdef EIGEN3

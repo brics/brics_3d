@@ -29,7 +29,12 @@ using namespace std;
 namespace BRICS_3D {
 
 PointCloud3D::PointCloud3D() {
+
+#ifdef USE_POINTER_VECTOR
+	pointCloud = new boost::ptr_vector<Point3D>();
+#else
 	pointCloud = new vector<Point3D> ();
+#endif
 	pointCloud->clear();
 
 }
@@ -40,6 +45,26 @@ PointCloud3D::~PointCloud3D() {
 		delete pointCloud;
 	}
 }
+
+#ifdef USE_POINTER_VECTOR
+
+void PointCloud3D::addPoint(Point3D point) {
+	pointCloud->push_back(new Point3D(point));
+}
+
+boost::ptr_vector<Point3D> *PointCloud3D::getPointCloud() {
+	return pointCloud;
+}
+
+void PointCloud3D::setPointCloud(boost::ptr_vector<Point3D> *pointCloud) {
+	if (pointCloud != NULL) {
+		pointCloud->clear();
+		delete pointCloud;
+	}
+	this->pointCloud = pointCloud;
+}
+
+#else
 
 void PointCloud3D::addPoint(Point3D point) {
 	pointCloud->push_back(point);
@@ -56,6 +81,9 @@ void PointCloud3D::setPointCloud(std::vector<Point3D> *pointCloud) {
 	}
 	this->pointCloud = pointCloud;
 }
+
+
+#endif
 
 unsigned int PointCloud3D::getSize() {
 	return pointCloud->size();

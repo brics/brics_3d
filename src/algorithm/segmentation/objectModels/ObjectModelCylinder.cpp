@@ -84,11 +84,11 @@ bool ObjectModelCylinder::computeModelCoefficients (const std::vector<int> &samp
 		return (false);
 	}
 
-	Eigen::Vector4d p1 = Eigen::Vector4d (this->points->data()[samples[0]].getX(),
-			this->points->data()[samples[0]].getY(), this->points->data()[samples[0]].getZ(), 0);
+	Eigen::Vector4d p1 = Eigen::Vector4d ((*inputPointCloud->getPointCloud())[samples[0]].getX(),
+			(*inputPointCloud->getPointCloud())[samples[0]].getY(), (*inputPointCloud->getPointCloud())[samples[0]].getZ(), 0);
 
-	Eigen::Vector4d p2 = Eigen::Vector4d (this->points->data()[samples[1]].getX(),
-			this->points->data()[samples[1]].getY(), this->points->data()[samples[1]].getZ(), 0);
+	Eigen::Vector4d p2 = Eigen::Vector4d ((*inputPointCloud->getPointCloud())[samples[1]].getX(),
+			(*inputPointCloud->getPointCloud())[samples[1]].getY(), (*inputPointCloud->getPointCloud())[samples[1]].getZ(), 0);
 
 	Eigen::Vector4d n1 = Eigen::Vector4d (this->normals->getNormals()->data()[samples[0]].getX(),
 			this->normals->getNormals()->data()[samples[0]].getY(),
@@ -163,8 +163,8 @@ void ObjectModelCylinder::getDistancesToModel (const Eigen::VectorXd &model_coef
 		// Aproximate the distance from the point to the cylinder as the difference between
 		// dist(point,cylinder_axis) and cylinder radius
 		// Todo to be revised
-		Eigen::Vector4d pt = Eigen::Vector4d (this->points->data()[i].getX(),
-				this->points->data()[i].getY(), this->points->data()[i].getZ(), 0);
+		Eigen::Vector4d pt = Eigen::Vector4d ((*inputPointCloud->getPointCloud())[i].getX(),
+				(*inputPointCloud->getPointCloud())[i].getY(), (*inputPointCloud->getPointCloud())[i].getZ(), 0);
 
 		Eigen::Vector4d n = Eigen::Vector4d (this->normals->getNormals()->data()[i].getX(),
 				this->normals->getNormals()->data()[i].getY(),
@@ -204,9 +204,9 @@ void ObjectModelCylinder::selectWithinDistance (const Eigen::VectorXd &model_coe
 	{
 		// Aproximate the distance from the point to the cylinder as the difference between
 		// dist(point,cylinder_axis) and cylinder radius
-		Eigen::Vector4d pt = Eigen::Vector4d (this->points->data()[i].getX(),
-				this->points->data()[i].getY(),
-				this->points->data()[i].getZ(), 0);
+		Eigen::Vector4d pt = Eigen::Vector4d ((*inputPointCloud->getPointCloud())[i].getX(),
+				(*inputPointCloud->getPointCloud())[i].getY(),
+				(*inputPointCloud->getPointCloud())[i].getZ(), 0);
 
 		Eigen::Vector4d n = Eigen::Vector4d (this->normals->getNormals()->data()[i].getX(),
 				this->normals->getNormals()->data()[i].getY(),
@@ -252,8 +252,8 @@ void ObjectModelCylinder::getInlierDistance (std::vector<int> &inliers, const Ei
 		// Aproximate the distance from the point to the cylinder as the difference between
 		// dist(point,cylinder_axis) and cylinder radius
 		// @note need to revise this.
-		Eigen::Vector4d pt = Eigen::Vector4d (this->points->data()[inliers[i]].getX(),
-				this->points->data()[inliers[i]].getY(), this->points->data()[inliers[i]].getZ(), 0);
+		Eigen::Vector4d pt = Eigen::Vector4d ((*inputPointCloud->getPointCloud())[inliers[i]].getX(),
+				(*inputPointCloud->getPointCloud())[inliers[i]].getY(), (*inputPointCloud->getPointCloud())[inliers[i]].getZ(), 0);
 
 		Eigen::Vector4d n = Eigen::Vector4d (this->normals->getNormals()->data()[inliers[i]].getX(),
 				this->normals->getNormals()->data()[inliers[i]].getY(),
@@ -289,8 +289,8 @@ bool ObjectModelCylinder::doSamplesVerifyModel (const std::set<int> &indices, co
       // Aproximate the distance from the point to the cylinder as the difference between
       // dist(point,cylinder_axis) and cylinder radius
       // @note need to revise this.
-      pt = Eigen::Vector4d (this->points->data()[*it].getX(), this->points->data()[*it].getY(),
-    		  this->points->data()[*it].getZ(), 0);
+      pt = Eigen::Vector4d ((*inputPointCloud->getPointCloud())[*it].getX(), (*inputPointCloud->getPointCloud())[*it].getY(),
+    		  (*inputPointCloud->getPointCloud())[*it].getZ(), 0);
       if (fabs (pointToLineDistance (pt, model_coefficients) - model_coefficients[6]) > threshold)
         return (false);
     }

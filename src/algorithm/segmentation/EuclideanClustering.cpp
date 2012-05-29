@@ -63,7 +63,7 @@ void EuclideanClustering::extractClusters(BRICS_3D::PointCloud3D *inCloud){
 
 			// Search for sq_idx
 			neighborIndices.clear();
-			querryPoint3D = inCloud->getPointCloud()->data()[sq_idx];
+			querryPoint3D = (*inCloud->getPointCloud())[sq_idx];
 			nearestneighborSearch.findNearestNeighbors(&querryPoint3D, &neighborIndices, k);
 
 			//if (!tree->radiusSearch (seed_queue[sq_idx], tolerance, nn_indices, nn_distances))
@@ -96,9 +96,9 @@ void EuclideanClustering::extractClusters(BRICS_3D::PointCloud3D *inCloud){
 
 			for (size_t j = 0; j < seed_queue.size (); ++j) {
 
-				BRICS_3D::Point3D *tempPoint =  new BRICS_3D::Point3D(inCloud->getPointCloud()->data()[seed_queue[j]].getX(),
-						inCloud->getPointCloud()->data()[seed_queue[j]].getY(),
-						inCloud->getPointCloud()->data()[seed_queue[j]].getZ());
+				BRICS_3D::Point3D *tempPoint =  new BRICS_3D::Point3D((*inCloud->getPointCloud())[seed_queue[j]].getX(),
+						(*inCloud->getPointCloud())[seed_queue[j]].getY(),
+						(*inCloud->getPointCloud())[seed_queue[j]].getZ());
 				tempPointCloud->addPoint(tempPoint);
 
 

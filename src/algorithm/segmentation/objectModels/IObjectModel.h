@@ -57,7 +57,7 @@ protected:
 	const static int MAX_ITERATIONS_COLLINEAR = 1000;
 
 	/** @brief Pointer to the vector of points in the pointcloud**/
-	std::vector<Point3D> *points;
+//	std::vector<Point3D> *points;
 
 
 public:
@@ -120,7 +120,7 @@ public:
 	setInputCloud (PointCloud3D* cloud)
 	{
 		this->inputPointCloud = cloud;
-		this->points = inputPointCloud->getPointCloud();
+//		this->points = inputPointCloud->getPointCloud();
 	}
 
 	/** @brief Get a pointer to the input point cloud dataset. */

@@ -52,7 +52,7 @@ void ObjectModelPlaneFromLines::getSamples (int &iterations, std::vector<int> &s
 
 	assert(this->inputPointCloud!=NULL);
 
-	points = inputPointCloud->getPointCloud();
+	//points = inputPointCloud->getPointCloud();
 
 	samples.resize (4);
 	double trand = inputPointCloud->getSize() / (RAND_MAX + 1.0);
@@ -73,8 +73,8 @@ void ObjectModelPlaneFromLines::getSamples (int &iterations, std::vector<int> &s
 	// Get the values at the two points
 	Eigen::Vector4f p0, p1, p2;
 	// SSE friendly data check
-	p1 = Eigen::Vector4f (this->points->data()[samples[1]].getX(), this->points->data()[samples[1]].getY(), this->points->data()[samples[1]].getZ(), 0);
-	p0 = Eigen::Vector4f (this->points->data()[samples[0]].getX(), this->points->data()[samples[0]].getY(), this->points->data()[samples[0]].getZ(), 0);
+	p1 = Eigen::Vector4f ((*inputPointCloud->getPointCloud())[samples[1]].getX(), (*inputPointCloud->getPointCloud())[samples[1]].getY(), (*inputPointCloud->getPointCloud())[samples[1]].getZ(), 0);
+	p0 = Eigen::Vector4f ((*inputPointCloud->getPointCloud())[samples[0]].getX(), (*inputPointCloud->getPointCloud())[samples[0]].getY(), (*inputPointCloud->getPointCloud())[samples[0]].getZ(), 0);
 
 	// Compute the segment values (in 3d) between p1 and p0
 	p1 -= p0;
@@ -93,7 +93,7 @@ void ObjectModelPlaneFromLines::getSamples (int &iterations, std::vector<int> &s
 		iterations--;
 
 		// SSE friendly data check
-		p2 = Eigen::Vector4f (this->points->data()[samples[2]].getX(), this->points->data()[samples[2]].getY(), this->points->data()[samples[2]].getZ(), 0);
+		p2 = Eigen::Vector4f ((*inputPointCloud->getPointCloud())[samples[2]].getX(), (*inputPointCloud->getPointCloud())[samples[2]].getY(), (*inputPointCloud->getPointCloud())[samples[2]].getZ(), 0);
 
 		// Compute the segment values (in 3d) between p2 and p0
 		p2 -= p0;
@@ -141,18 +141,18 @@ ObjectModelPlaneFromLines::computeModelCoefficients (const std::vector<int> &sam
 	line line1,line2;
 
 	//Create line1 from sample[0] and sample[1]
-	line1.pbase = this->points->data()[sample[0]];
+	line1.pbase = (*inputPointCloud->getPointCloud())[sample[0]];
 	line1.director.resize(3);
-	line1.director[0]=this->points->data()[sample[1]].getX() - this->points->data()[sample[0]].getX();
-	line1.director[1]=this->points->data()[sample[1]].getY() - this->points->data()[sample[0]].getY();
-	line1.director[2]=this->points->data()[sample[1]].getZ() - this->points->data()[sample[0]].getZ();
+	line1.director[0]=(*inputPointCloud->getPointCloud())[sample[1]].getX() - (*inputPointCloud->getPointCloud())[sample[0]].getX();
+	line1.director[1]=(*inputPointCloud->getPointCloud())[sample[1]].getY() - (*inputPointCloud->getPointCloud())[sample[0]].getY();
+	line1.director[2]=(*inputPointCloud->getPointCloud())[sample[1]].getZ() - (*inputPointCloud->getPointCloud())[sample[0]].getZ();
 
 	//Create line1 from sample[2] and sample[3]
-	line2.pbase = this->points->data()[sample[2]];
+	line2.pbase = (*inputPointCloud->getPointCloud())[sample[2]];
 	line2.director.resize(3);
-	line2.director[0]=this->points->data()[sample[3]].getX() - this->points->data()[sample[2]].getX();
-	line2.director[1]=this->points->data()[sample[3]].getY() - this->points->data()[sample[2]].getY();
-	line2.director[2]=this->points->data()[sample[3]].getZ() - this->points->data()[sample[2]].getZ();
+	line2.director[0]=(*inputPointCloud->getPointCloud())[sample[3]].getX() - (*inputPointCloud->getPointCloud())[sample[2]].getX();
+	line2.director[1]=(*inputPointCloud->getPointCloud())[sample[3]].getY() - (*inputPointCloud->getPointCloud())[sample[2]].getY();
+	line2.director[2]=(*inputPointCloud->getPointCloud())[sample[3]].getZ() - (*inputPointCloud->getPointCloud())[sample[2]].getZ();
 
 
 

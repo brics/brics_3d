@@ -40,9 +40,12 @@ Eigen::Vector3d Centroid3D::computeCentroid(BRICS_3D::PointCloud3D *inCloud){
 	centroid[2]=0;
 
 	for (int i = 0; i<inCloud->getSize(); i++){
-		tempX = inCloud->getPointCloud()->data()[i].getX();
-		tempY = inCloud->getPointCloud()->data()[i].getY();
-		tempZ = inCloud->getPointCloud()->data()[i].getZ();
+		tempX = (*inCloud->getPointCloud())[i].getX();
+		tempY = (*inCloud->getPointCloud())[i].getY();
+		tempZ = (*inCloud->getPointCloud())[i].getZ();
+//		tempX = inCloud->getPointCloud()->data()[i].getX();
+//		tempY = inCloud->getPointCloud()->data()[i].getY();
+//		tempZ = inCloud->getPointCloud()->data()[i].getZ();
 
 		if(!isnan(tempX) && !isinf(tempX) && !isnan(tempY) && !isinf(tempY) &&
 				!isnan(tempZ) && !isinf(tempZ) ) {

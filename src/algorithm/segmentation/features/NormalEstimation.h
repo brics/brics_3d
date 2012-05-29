@@ -116,11 +116,11 @@ public:
 		for (size_t i = 0; i < cloud->getSize(); ++i)
 		{
 			// Check if the point is invalid
-			if (isnan (cloud->getPointCloud()->data()[i].getX()) || isnan (cloud->getPointCloud()->data()[i].getY())
-					|| isnan (cloud->getPointCloud()->data()[i].getZ()))
+			if (isnan ((*cloud->getPointCloud())[i].getX()) || isnan ((*cloud->getPointCloud())[i].getY())
+					|| isnan ((*cloud->getPointCloud())[i].getZ()))
 				continue;
 
-			double x = cloud->getPointCloud()->data()[i].getX();
+			double x = (*cloud->getPointCloud())[i].getX();
 			centroid += Eigen::Vector4d::MapAligned (&x);
 			cp++;
 		}
@@ -171,8 +171,8 @@ public:
 		// Iterating over the entire index vector
 		nnSearchMethod->setData(this->inputPointCloud);
 
-		std::vector<Point3D>* points;
-		points = inputPointCloud->getPointCloud();
+//		std::vector<Point3D>* points;
+//		points = inputPointCloud->getPointCloud();
 
 		for (size_t idx = 0; idx < this->inputPointCloud->getSize(); ++idx)
 		{
@@ -198,7 +198,7 @@ public:
 			tempNormal.setZ(nz);
 
 			normalSet->addNormal(tempNormal);
-			flipNormalTowardsViewpoint (this->inputPointCloud->getPointCloud()->data()[idx], vpx, vpy, vpz,
+			flipNormalTowardsViewpoint ((*this->inputPointCloud->getPointCloud())[idx], vpx, vpy, vpz,
 					normalSet->getNormals()->data()[idx]);
 
 		}

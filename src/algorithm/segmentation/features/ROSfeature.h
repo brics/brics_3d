@@ -56,7 +56,7 @@ inline void
                        Eigen::Vector4d &centroid)
   {
 
-	std::vector<Point3D> *points = cloud->getPointCloud();
+	//std::vector<Point3D> *points = cloud->getPointCloud();
     // Initialize to 0
     centroid.setZero ();
     if (indices.size () == 0) 
@@ -66,12 +66,12 @@ inline void
     for (size_t i = 0; i < indices.size (); ++i)
     {
       // Check if the point is invalid
-      if (isnan ( isnan(points->data()[indices[i]].getX())) || isnan (points->data()[indices[i]].getY()) || isnan (points->data()[indices[i]].getZ()))
+      if ( isnan( (*cloud->getPointCloud())[indices[i]].getX() ) || isnan( (*cloud->getPointCloud())[indices[i]].getY() ) || isnan( (*cloud->getPointCloud())[indices[i]].getZ() ))
         continue;
 
-      centroid[0] += points->data()[indices[i]].getX();
-      centroid[1] += points->data()[indices[i]].getY();
-      centroid[2] += points->data()[indices[i]].getZ();
+      centroid[0] += (*cloud->getPointCloud())[indices[i]].getX();
+      centroid[1] += (*cloud->getPointCloud())[indices[i]].getY();
+      centroid[2] += (*cloud->getPointCloud())[indices[i]].getZ();
       cp++;
     }
     centroid /= cp;
@@ -84,7 +84,7 @@ inline void
  inline void
     compute3DCentroid (PointCloud3D* cloud, Eigen::Vector4d &centroid)
   {
-	  std::vector<Point3D> *points = cloud->getPointCloud();
+	  //std::vector<Point3D> *points = cloud->getPointCloud();
 	  // Initialize to 0
     centroid.setZero ();
     if (cloud->getSize() == 0)
@@ -94,13 +94,13 @@ inline void
     for (size_t i = 0; i < cloud->getSize (); ++i)
     {
       // Check if the point is invalid
-      if (isnan (points->data()[i].getX()) || isnan (points->data()[i].getY()) || isnan (points->data()[i].getZ()))
-        continue;
+        if ( isnan( (*cloud->getPointCloud())[i].getX() ) || isnan( (*cloud->getPointCloud())[i].getY() ) || isnan( (*cloud->getPointCloud())[i].getZ() ))
+          continue;
 
-      centroid[0] += points->data()[i].getX();
-      centroid[1] += points->data()[i].getY();
-      centroid[2] += points->data()[i].getZ();
-      cp++;
+        centroid[0] += (*cloud->getPointCloud())[i].getX();
+        centroid[1] += (*cloud->getPointCloud())[i].getY();
+        centroid[2] += (*cloud->getPointCloud())[i].getZ();
+        cp++;
     }
     centroid /= cp;
   }
@@ -115,7 +115,7 @@ inline void
     computeCovarianceMatrix (PointCloud3D* cloud,
                              const Eigen::Vector4d &centroid, Eigen::Matrix3d &covariance_matrix)
   {
-	  std::vector<Point3D> *points = cloud->getPointCloud();
+	  //std::vector<Point3D> *points = cloud->getPointCloud();
 	  // Initialize to 0
     covariance_matrix.setZero ();
 
@@ -125,13 +125,13 @@ inline void
     for (size_t i = 0; i < cloud->getSize(); ++i)
     {
       // Check if the point is invalid
-      if (isnan (points->data()[i].getX()) || isnan (points->data()[i].getY()) || isnan (points->data()[i].getZ()))
-        continue;
+        if ( isnan( (*cloud->getPointCloud())[i].getX() ) || isnan( (*cloud->getPointCloud())[i].getY() ) || isnan( (*cloud->getPointCloud())[i].getZ() ))
+          continue;
 
       Point3D p;
-      p.setX(points->data()[i].getX() - centroid[0]);
-      p.setY(points->data()[i].getY() - centroid[1]);
-      p.setZ(points->data()[i].getZ() - centroid[2]);
+      p.setX( (*cloud->getPointCloud())[i].getX() - centroid[0]);
+      p.setY( (*cloud->getPointCloud())[i].getY() - centroid[1]);
+      p.setZ( (*cloud->getPointCloud())[i].getZ() - centroid[2]);
 
       double demean_xy = p.getX() * p.getY();
       double demean_xz = p.getX() * p.getZ();
@@ -161,7 +161,7 @@ inline void
     computeCovarianceMatrix (PointCloud3D* cloud, const std::vector<int> &indices,
                              const Eigen::Vector4d &centroid, Eigen::Matrix3d &covariance_matrix)
   {
-	  std::vector<Point3D> *points = cloud->getPointCloud();
+	//  std::vector<Point3D> *points = cloud->getPointCloud();
     // Initialize to 0
     covariance_matrix.setZero ();
 
@@ -171,13 +171,13 @@ inline void
     for (size_t i = 0; i < indices.size (); ++i)
     {
       // Check if the point is invalid
-      if (isnan (points->data()[indices[i]].getX()) || isnan (points->data()[indices[i]].getY()) || isnan (points->data()[indices[i]].getZ()))
-        continue;
+        if ( isnan( (*cloud->getPointCloud())[indices[i]].getX() ) || isnan( (*cloud->getPointCloud())[indices[i]].getY() ) || isnan( (*cloud->getPointCloud())[indices[i]].getZ() ))
+          continue;
 
       Point3D p;
-      p.setX(points->data()[indices[i]].getX() - centroid[0]);
-      p.setY(points->data()[indices[i]].getY() - centroid[1]);
-      p.setZ(points->data()[indices[i]].getZ() - centroid[2]);
+      p.setX( (*cloud->getPointCloud())[indices[i]].getX() - centroid[0]);
+      p.setY( (*cloud->getPointCloud())[indices[i]].getY() - centroid[1]);
+      p.setZ( (*cloud->getPointCloud())[indices[i]].getZ() - centroid[2]);
 
       double demean_xy = p.getX() * p.getY();
       double demean_xz = p.getX() * p.getZ();

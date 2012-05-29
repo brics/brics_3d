@@ -73,11 +73,11 @@ ObjectModelCircle::getSamples (int &iterations, std::vector<int> &samples)
 	} while (samples[1] == samples[0]);
 	iterations--;
 
-	this->points = inputPointCloud->getPointCloud();
+//	this->points = inputPointCloud->getPointCloud();
 
 	// Get the values at the two points
-	Eigen::Vector2d p0 = Eigen::Vector2d (this->points->data()[samples[0]].getX(), this->points->data()[samples[0]].getY());
-	Eigen::Vector2d p1 = Eigen::Vector2d (this->points->data()[samples[1]].getX(), this->points->data()[samples[1]].getY());
+	Eigen::Vector2d p0 = Eigen::Vector2d ((*inputPointCloud->getPointCloud())[samples[0]].getX(), (*inputPointCloud->getPointCloud())[samples[0]].getY());
+	Eigen::Vector2d p1 = Eigen::Vector2d ((*inputPointCloud->getPointCloud())[samples[1]].getX(), (*inputPointCloud->getPointCloud())[samples[1]].getY());
 
 	// Compute the segment values (in 2d) between p1 and p0
 	p1 -= p0;
@@ -95,7 +95,7 @@ ObjectModelCircle::getSamples (int &iterations, std::vector<int> &samples)
 		} while ( (samples[2] == samples[1]) || (samples[2] == samples[0]) );
 		iterations--;
 
-		Eigen::Vector2d p2 = Eigen::Vector2d (this->points->data()[samples[2]].getX(), this->points->data()[samples[2]].getY());
+		Eigen::Vector2d p2 = Eigen::Vector2d ((*inputPointCloud->getPointCloud())[samples[2]].getX(), (*inputPointCloud->getPointCloud())[samples[2]].getY());
 
 		// Compute the segment values (in 2d) between p2 and p0
 		p2 -= p0;
@@ -126,9 +126,9 @@ ObjectModelCircle::computeModelCoefficients (const std::vector<int> &samples, Ei
 
 	model_coefficients.resize (3);
 
-	Eigen::Vector2d p0 (this->points->data()[samples[0]].getX(), this->points->data()[samples[0]].getY());
-	Eigen::Vector2d p1 (this->points->data()[samples[1]].getX(), this->points->data()[samples[1]].getY());
-	Eigen::Vector2d p2 (this->points->data()[samples[2]].getX(), this->points->data()[samples[2]].getY());
+	Eigen::Vector2d p0 ((*inputPointCloud->getPointCloud())[samples[0]].getX(), (*inputPointCloud->getPointCloud())[samples[0]].getY());
+	Eigen::Vector2d p1 ((*inputPointCloud->getPointCloud())[samples[1]].getX(), (*inputPointCloud->getPointCloud())[samples[1]].getY());
+	Eigen::Vector2d p2 ((*inputPointCloud->getPointCloud())[samples[2]].getX(), (*inputPointCloud->getPointCloud())[samples[2]].getY());
 
 	Eigen::Vector2d u = (p0 + p1) / 2.0;
 	Eigen::Vector2d v = (p1 + p2) / 2.0;
@@ -165,11 +165,11 @@ ObjectModelCircle:: getDistancesToModel (const Eigen::VectorXd &model_coefficien
 		// Calculate the distance from the point to the circle as the difference between
 		// dist(point,circle_origin) and circle_radius
 		distances[i] = fabs (sqrt (
-				( this->points->data()[i].getX() - model_coefficients[0] ) *
-				( this->points->data()[i].getX() - model_coefficients[0] ) +
+				( (*inputPointCloud->getPointCloud())[i].getX() - model_coefficients[0] ) *
+				( (*inputPointCloud->getPointCloud())[i].getX() - model_coefficients[0] ) +
 
-				( this->points->data()[i].getY() - model_coefficients[1] ) *
-				( this->points->data()[i].getY() - model_coefficients[1] )
+				( (*inputPointCloud->getPointCloud())[i].getY() - model_coefficients[1] ) *
+				( (*inputPointCloud->getPointCloud())[i].getY() - model_coefficients[1] )
 		) - model_coefficients[2]);
 }
 
@@ -187,11 +187,11 @@ ObjectModelCircle::getInlierDistance (std::vector<int> &inliers, const Eigen::Ve
 		// Calculate the distance from the point to the circle as the difference between
 		// dist(point,circle_origin) and circle_radius
 		distances[i]=fabs (sqrt (
-				( this->points->data()[inliers[i]].getX() - model_coefficients[0] ) *
-				( this->points->data()[inliers[i]].getX() - model_coefficients[0] ) +
+				( (*inputPointCloud->getPointCloud())[inliers[i]].getX() - model_coefficients[0] ) *
+				( (*inputPointCloud->getPointCloud())[inliers[i]].getX() - model_coefficients[0] ) +
 
-				( this->points->data()[inliers[i]].getY() - model_coefficients[1] ) *
-				( this->points->data()[inliers[i]].getY() - model_coefficients[1] )
+				( (*inputPointCloud->getPointCloud())[inliers[i]].getY() - model_coefficients[1] ) *
+				( (*inputPointCloud->getPointCloud())[inliers[i]].getY() - model_coefficients[1] )
 		) - model_coefficients[2]);
 	}
 }
@@ -211,11 +211,11 @@ ObjectModelCircle::selectWithinDistance (const Eigen::VectorXd &model_coefficien
 		// Calculate the distance from the point to the sphere as the difference between
 		// dist(point,sphere_origin) and sphere_radius
 		float distance = fabs (sqrt (
-				( this->points->data()[i].getX() - model_coefficients[0] ) *
-				( this->points->data()[i].getX() - model_coefficients[0] ) +
+				( (*inputPointCloud->getPointCloud())[i].getX() - model_coefficients[0] ) *
+				( (*inputPointCloud->getPointCloud())[i].getX() - model_coefficients[0] ) +
 
-				( this->points->data()[i].getY() - model_coefficients[1] ) *
-				( this->points->data()[i].getY() - model_coefficients[1] )
+				( (*inputPointCloud->getPointCloud())[i].getY() - model_coefficients[1] ) *
+				( (*inputPointCloud->getPointCloud())[i].getY() - model_coefficients[1] )
 		) - model_coefficients[2]);
 		if (distance < threshold)
 		{
@@ -236,10 +236,10 @@ ObjectModelCircle:: doSamplesVerifyModel (const std::set<int> &indices, const Ei
 		// Calculate the distance from the point to the sphere as the difference between
 		//dist(point,sphere_origin) and sphere_radius
 		if (fabs (sqrt (
-				( this->points->data()[*it].getX() - model_coefficients[0] ) *
-				( this->points->data()[*it].getX() - model_coefficients[0] ) +
-				( this->points->data()[*it].getY() - model_coefficients[1] ) *
-				( this->points->data()[*it].getY() - model_coefficients[1] )
+				( (*inputPointCloud->getPointCloud())[*it].getX() - model_coefficients[0] ) *
+				( (*inputPointCloud->getPointCloud())[*it].getX() - model_coefficients[0] ) +
+				( (*inputPointCloud->getPointCloud())[*it].getY() - model_coefficients[1] ) *
+				( (*inputPointCloud->getPointCloud())[*it].getY() - model_coefficients[1] )
 		) - model_coefficients[2]) > threshold)
 			return (false);
 

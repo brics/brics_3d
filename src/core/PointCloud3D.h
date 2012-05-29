@@ -22,8 +22,11 @@
 
 #include <vector>
 #include <string>
+#include <boost/ptr_container/ptr_vector.hpp>
 
 #include "core/Point3D.h"
+
+#define USE_POINTER_VECTOR
 
 namespace BRICS_3D {
 
@@ -52,17 +55,23 @@ public:
 	 */
 	void addPoint(Point3D point);
 
+#ifdef USE_POINTER_VECTOR
 	/**
 	 * @brief Get the pointer to the point cloud
 	 * @return Pointer to point cloud
 	 */
-    std::vector<Point3D>* getPointCloud();
+    boost::ptr_vector<Point3D>* getPointCloud();
 
 	/**
 	 * @brief Set the pointer to the point cloud
 	 * @param pointCloud Pointer to new point cloud
 	 */
+    void setPointCloud(boost::ptr_vector<Point3D>* pointCloud);
+
+#else
+    std::vector<Point3D>* getPointCloud();
     void setPointCloud(std::vector<Point3D>* pointCloud);
+#endif
 
     /**
      * @brief Get the number of points in the point cloud
@@ -119,8 +128,15 @@ public:
 
 protected:
 
+#ifdef USE_POINTER_VECTOR
+
 	///Pointer to vector which represents a Cartesian point cloud
+	boost::ptr_vector<Point3D>* pointCloud;
+
+#else
 	std::vector<Point3D>* pointCloud;
+#endif
+
 };
 
 }

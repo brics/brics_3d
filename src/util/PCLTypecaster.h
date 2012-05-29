@@ -48,9 +48,9 @@ public:
 			pclCloudPtr->points.resize( pclCloudPtr->width * pclCloudPtr->height );
 
 			for (unsigned int i =0 ; i<pointCloud3DPtr->getSize() ; i++){
-				pclCloudPtr->points[i].x = pointCloud3DPtr->getPointCloud()->data()[i].getX();
-				pclCloudPtr->points[i].y = pointCloud3DPtr->getPointCloud()->data()[i].getY();
-				pclCloudPtr->points[i].z = pointCloud3DPtr->getPointCloud()->data()[i].getZ();
+				pclCloudPtr->points[i].x = (*pointCloud3DPtr->getPointCloud())[i].getX();
+				pclCloudPtr->points[i].y = (*pointCloud3DPtr->getPointCloud())[i].getY();
+				pclCloudPtr->points[i].z = (*pointCloud3DPtr->getPointCloud())[i].getZ();
 			}
 		}
 
@@ -68,9 +68,9 @@ public:
 					!std::isnan(pclCloudPtr->points[i].y) && !std::isinf(pclCloudPtr->points[i].y) &&
 					!std::isnan(pclCloudPtr->points[i].z) && !std::isinf(pclCloudPtr->points[i].z) ) {
 
-			pointCloud3DPtr->getPointCloud()->data()[i].setX(pclCloudPtr->points[i].x);
-			pointCloud3DPtr->getPointCloud()->data()[i].setY(pclCloudPtr->points[i].y);
-			pointCloud3DPtr->getPointCloud()->data()[i].setZ(pclCloudPtr->points[i].z);
+			(*pointCloud3DPtr->getPointCloud())[i].setX(pclCloudPtr->points[i].x);
+			(*pointCloud3DPtr->getPointCloud())[i].setY(pclCloudPtr->points[i].y);
+			(*pointCloud3DPtr->getPointCloud())[i].setZ(pclCloudPtr->points[i].z);
 			//		pointCloud3DPtr->addPoint(new Point3D(pclCloudPtr->points[i].x,
 			//							pclCloudPtr->points[i].y, pclCloudPtr->points[i].z));
 
@@ -96,9 +96,9 @@ public:
 					!std::isnan(pclCloudPtr->points[i].y) && !std::isinf(pclCloudPtr->points[i].y) &&
 					!std::isnan(pclCloudPtr->points[i].z) && !std::isinf(pclCloudPtr->points[i].z) ) {
 
-			pointCloud3DPtr->getPointCloud()->data()[i].setX(pclCloudPtr->points[i].x);
-			pointCloud3DPtr->getPointCloud()->data()[i].setY(pclCloudPtr->points[i].y);
-			pointCloud3DPtr->getPointCloud()->data()[i].setZ(pclCloudPtr->points[i].z);
+			(*pointCloud3DPtr->getPointCloud())[i].setX(pclCloudPtr->points[i].x);
+			(*pointCloud3DPtr->getPointCloud())[i].setY(pclCloudPtr->points[i].y);
+			(*pointCloud3DPtr->getPointCloud())[i].setZ(pclCloudPtr->points[i].z);
 
 			//		pointCloud3DPtr->addPoint(new Point3D(pclCloudPtr->points[i].x,
 			//							pclCloudPtr->points[i].y, pclCloudPtr->points[i].z));

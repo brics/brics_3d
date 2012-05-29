@@ -151,14 +151,14 @@ void SACMethodMLESAC::computeMedian (PointCloud3D *cloud, Eigen::Vector4f &media
 	std::vector<Coordinate> y(cloud->getSize());
 	std::vector<Coordinate> z(cloud->getSize());
 
-	std::vector<Point3D> *points;
-	points= cloud->getPointCloud();
+//	std::vector<Point3D> *points;
+//	points= cloud->getPointCloud();
 
 	for (size_t i = 0; i < cloud->getSize(); ++i)
 	{
-		x[i] = points->data()[i].getX();
-		y[i] = points->data()[i].getY();;
-		z[i] = points->data()[i].getZ();;
+		x[i] = (*cloud->getPointCloud())[i].getX();
+		y[i] = (*cloud->getPointCloud())[i].getY();;
+		z[i] = (*cloud->getPointCloud())[i].getZ();;
 	}
 
 	std::sort (x.begin (), x.end ());
@@ -189,13 +189,13 @@ double SACMethodMLESAC::computeMedianAbsoluteDeviation (PointCloud3D *cloud,doub
 	// median (dist (x - median (x)))
 	computeMedian (cloud, median);
 
-	std::vector<Point3D> *points = cloud->getPointCloud();
+//	std::vector<Point3D> *points = cloud->getPointCloud();
 
 	Eigen::Vector4f pt, ptdiff;
 	{
 		for (size_t i = 0; i < cloud->getSize(); ++i)
 		{
-			pt = Eigen::Vector4f (points->data()[i].getX(), points->data()[i].getY(), points->data()[i].getZ(), 0);
+			pt = Eigen::Vector4f ((*cloud->getPointCloud())[i].getX(), (*cloud->getPointCloud())[i].getY(), (*cloud->getPointCloud())[i].getZ(), 0);
 			pt -= median;
 			distances[i] = pt.dot (pt);
 		}
@@ -218,17 +218,17 @@ void SACMethodMLESAC::getMinMax (PointCloud3D *cloud, Eigen::Vector4d &minP, Eig
 	maxP.setConstant (-DBL_MAX);
 	minP[3] = maxP[3] = 0;
 
-	std::vector<Point3D> *points = cloud->getPointCloud();
+//	std::vector<Point3D> *points = cloud->getPointCloud();
 
 	for (size_t i = 0; i < cloud->getSize(); ++i)
 	{
-		if (points->data()[i].getX() < minP[0]) minP[0] = points->data()[i].getX();
-		if (points->data()[i].getY() < minP[1]) minP[1] = points->data()[i].getY();
-		if (points->data()[i].getZ() < minP[2]) minP[2] = points->data()[i].getZ();
+		if ((*cloud->getPointCloud())[i].getX() < minP[0]) minP[0] = (*cloud->getPointCloud())[i].getX();
+		if ((*cloud->getPointCloud())[i].getY() < minP[1]) minP[1] = (*cloud->getPointCloud())[i].getY();
+		if ((*cloud->getPointCloud())[i].getZ() < minP[2]) minP[2] = (*cloud->getPointCloud())[i].getZ();
 
-		if (points->data()[i].getX() > maxP[0]) maxP[0] = points->data()[i].getX();
-		if (points->data()[i].getY() > maxP[1]) maxP[1] = points->data()[i].getY();
-		if (points->data()[i].getZ() > maxP[2]) maxP[2] = points->data()[i].getZ();
+		if ((*cloud->getPointCloud())[i].getX() > maxP[0]) maxP[0] = (*cloud->getPointCloud())[i].getX();
+		if ((*cloud->getPointCloud())[i].getY() > maxP[1]) maxP[1] = (*cloud->getPointCloud())[i].getY();
+		if ((*cloud->getPointCloud())[i].getZ() > maxP[2]) maxP[2] = (*cloud->getPointCloud())[i].getZ();
 	}
 
 }
