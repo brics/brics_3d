@@ -22,6 +22,7 @@
 
 #include "IFiltering.h"
 #include "core/IHomogeneousMatrix44.h"
+#include "core/ColoredPointCloud3D.h"
 
 namespace BRICS_3D {
 
@@ -38,6 +39,9 @@ public:
 
 
 	void filter(PointCloud3D* originalPointCloud, PointCloud3D* resultPointCloud);
+
+	void filter(ColoredPointCloud3D* originalPointCloud, ColoredPointCloud3D* resultPointCloud); //FIXME
+
 
     Coordinate getSizeX() const
     {
@@ -86,6 +90,7 @@ private:
     Coordinate sizeZ;
 
     IHomogeneousMatrix44::IHomogeneousMatrix44Ptr boxOrigin;
+
 };
 
 }  // namespace BRICS_3D
