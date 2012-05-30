@@ -52,6 +52,10 @@ void PointCloud3D::addPoint(Point3D point) {
 	pointCloud->push_back(new Point3D(point));
 }
 
+void PointCloud3D::addPointPtr(Point3D* point) {
+	pointCloud->push_back(point);
+}
+
 boost::ptr_vector<Point3D> *PointCloud3D::getPointCloud() {
 	return pointCloud;
 }
@@ -68,6 +72,11 @@ void PointCloud3D::setPointCloud(boost::ptr_vector<Point3D> *pointCloud) {
 
 void PointCloud3D::addPoint(Point3D point) {
 	pointCloud->push_back(point);
+}
+
+void PointCloud3D::addPointPtr(Point3D* point) {
+	pointCloud->push_back(new Point3D(point));
+	delete point;
 }
 
 std::vector<Point3D> *PointCloud3D::getPointCloud() {

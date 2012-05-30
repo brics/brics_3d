@@ -365,6 +365,57 @@ void ColoredPointCloud3DTest::testMassiveData() {
 	}
 }
 
+void ColoredPointCloud3DTest::testPolymorphPointCloud() {
+	pointCloud = new PointCloud3D();
+	Point3D* testPoint = new ColoredPoint3D(point110);
+	pointCloud->addPointPtr(testPoint);
+	pointCloud->addPointPtr(new Point3D(4,5,6)); //without decoration
+
+	Point3D* result;
+	result = &(*pointCloud->getPointCloud())[0]; // be cereful -> assignment can still cause slicing...
+//	cout << "Polymorph point = "  << *result << endl;
+
+	Point3D referencePoint = Point3D(1,1,0);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(referencePoint.getX(), result->getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(referencePoint.getY(), result->getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(referencePoint.getZ(), result->getZ(), maxTolerance);
+
+	ColoredPoint3D* castedPoint;
+	castedPoint = dynamic_cast<ColoredPoint3D*>(testPoint);
+	CPPUNIT_ASSERT(castedPoint != 0);
+
+	castedPoint = dynamic_cast<ColoredPoint3D*>(result);
+	CPPUNIT_ASSERT(castedPoint != 0);
+	CPPUNIT_ASSERT_EQUAL(point110->getR(), castedPoint->getR());
+	CPPUNIT_ASSERT_EQUAL(point110->getG(), castedPoint->getG());
+	CPPUNIT_ASSERT_EQUAL(point110->getB(), castedPoint->getB());
+
+//	cout << "Casted polymorph point = "  << *castedPoint << endl;
+
+//	Point3D* introspectionPoint;
+//	introspectionPoint = testPoint->asDecoration<Point3D>();
+//	CPPUNIT_ASSERT(introspectionPoint == 0);
+
+	ColoredPoint3D* introspectionPoint;
+	introspectionPoint = testPoint->asColoredPoint3D();
+	CPPUNIT_ASSERT(introspectionPoint != 0);
+	CPPUNIT_ASSERT_EQUAL(point110->getR(), introspectionPoint->getR());
+	CPPUNIT_ASSERT_EQUAL(point110->getG(), introspectionPoint->getG());
+	CPPUNIT_ASSERT_EQUAL(point110->getB(), introspectionPoint->getB());
+
+	introspectionPoint = (*pointCloud->getPointCloud())[0].asColoredPoint3D();
+	CPPUNIT_ASSERT(introspectionPoint != 0);
+	CPPUNIT_ASSERT_EQUAL(point110->getR(), introspectionPoint->getR());
+	CPPUNIT_ASSERT_EQUAL(point110->getG(), introspectionPoint->getG());
+	CPPUNIT_ASSERT_EQUAL(point110->getB(), introspectionPoint->getB());
+
+	introspectionPoint = (*pointCloud->getPointCloud())[1].asColoredPoint3D();
+	CPPUNIT_ASSERT(introspectionPoint == 0);
+
+	delete pointCloud;
+
+}
+
 }
 
 

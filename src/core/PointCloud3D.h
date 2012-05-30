@@ -55,6 +55,13 @@ public:
 	 */
 	void addPoint(Point3D point);
 
+	/**
+	 * @brief Add a point to the point cloud with reference semantics.
+	 * Take this function to add complex/decorated point types.
+	 * @param point Pointer to the point. The point cloud will take over ownership for the pointer and take care about automatic deletion.
+	 */
+	void addPointPtr(Point3D* point);
+
 #ifdef USE_POINTER_VECTOR
 	/**
 	 * @brief Get the pointer to the point cloud

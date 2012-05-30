@@ -94,6 +94,11 @@ public:
 	 */
 	friend ostream& operator<<(ostream &outStream, const ColoredPoint3D &point);
 
+
+    ColoredPoint3D* asColoredPoint3D(){
+    	return this;
+    }
+
 	/**
 	 * @brief Sets the red-value for the point
 	 * @param red	the new red-value
@@ -155,6 +160,18 @@ public:
 	unsigned char blue;
 
 };
+
+//template<>
+//inline ColoredPoint3D* Point3D::asDecoration<ColoredPoint3D>() {
+//	std::cout << "colorCast"  << std::endl;
+//	return new ColoredPoint3D();
+//};
+//
+//template<>
+//inline ColoredPoint3D* ColoredPoint3D::asDecoration<ColoredPoint3D>() {
+//	std::cout << "realColorCast"  << std::endl;
+//	return new ColoredPoint3D();
+//};
 
 }
 

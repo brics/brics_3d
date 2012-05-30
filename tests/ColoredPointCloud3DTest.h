@@ -30,6 +30,7 @@ class ColoredPointCloud3DTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testStreaming );
 	CPPUNIT_TEST( testTransformation );
 	CPPUNIT_TEST( testMassiveData );
+	CPPUNIT_TEST( testPolymorphPointCloud );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -42,11 +43,13 @@ public:
 	  void testStreaming();
 	  void testTransformation();
 	  void testMassiveData();
+	  void testPolymorphPointCloud();
 
 	  EIGEN_MAKE_ALIGNED_OPERATOR_NEW //Required by Eigen2
 
 private:
 
+	  PointCloud3D* pointCloud;
 	  ColoredPointCloud3D* pointCloudCube;
 	  ColoredPointCloud3D* pointCloudCubeCopy;
 

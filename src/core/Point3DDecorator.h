@@ -111,6 +111,10 @@ public:
      */
     Point3D* getPoint();
 
+    ColoredPoint3D* asColoredPoint3D(){
+    	return point->asColoredPoint3D();
+    }
+
 protected:
 
     ///Pointer to the next inner skin of decoration layer. Can be either another decoration or a (real) Point3D.

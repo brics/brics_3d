@@ -41,6 +41,8 @@ namespace BRICS_3D {
 typedef double	Coordinate;				// coordinate data type
 //typedef float	Coordinate;				// coordinate data type
 
+class ColoredPoint3D;
+
 /**
  * @brief A class to represent a point in the Cartesian space
  *
@@ -181,6 +183,15 @@ public:
 	 */
 	friend ostream& operator<<(ostream &outStream, const Point3D &point);
 
+//    template<class DecorationT>
+//    inline DecorationT* asDecoration() {
+//    	return 0;
+//    };
+
+    virtual ColoredPoint3D* asColoredPoint3D(){ //TODO: some templated version?
+    	return 0;
+    }
+
 private:
 
 	/// X coordinate in Cartesian system
@@ -192,6 +203,7 @@ private:
 	/// Z coordinate in Cartesian system (height)
 	Coordinate z;
 };
+
 
 }
 
