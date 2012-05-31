@@ -71,6 +71,7 @@ SET (CORE_LIBRARY_SOURCES
 	./core/TriangleMeshImplicit
     ./core/Logger
     ./core/ColorSpaceConvertor
+    ./core/Version
 )
 
 SET (ALGORITHM_LIBRARY_SOURCES
