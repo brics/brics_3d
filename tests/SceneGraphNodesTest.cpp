@@ -933,7 +933,8 @@ void SceneGraphNodesTest::testSimpleVisitor() {
 	Group::GroupPtr group2(new Group());
 	group2->setId(group2Id);
 
-	Node::NodePtr node3(new Node());
+//	Node::NodePtr node3(new Node());
+	CustomNode::CustomNodePtr node3(new CustomNode()); //should be handeled polymorph as a regular node
 	node3->setId(node3Id);
 	Node::NodePtr node4(new Node());
 	node4->setId(node4Id);
@@ -952,6 +953,7 @@ void SceneGraphNodesTest::testSimpleVisitor() {
 	group2->addChild(node4);
 
 	IdCollector* idCollector = new IdCollector();
+	cout << "testSimpleVisitor:" << endl;
 
 	/* traverse from root */
 	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(idCollector->collectedIDs.size()));
@@ -2659,7 +2661,7 @@ void SceneGraphNodesTest::testDotGraphGenerator() {
 	string resultString;
 	resultString = dotGraphGenerator.getDotGraph();
 
-	cout << "Dot graph: " << endl << resultString << endl;
+//	cout << "Dot graph: " << endl << resultString << endl;
 
 	int expectedStringSizeForEmptyGraph = 14;
 	CPPUNIT_ASSERT_EQUAL(resultString.compare(""), expectedStringSizeForEmptyGraph);
@@ -2667,7 +2669,7 @@ void SceneGraphNodesTest::testDotGraphGenerator() {
 	scene.executeGraphTraverser(&dotGraphGenerator);
 	resultString = dotGraphGenerator.getDotGraph();
 
-	cout << "Dot graph: " << endl << resultString << endl;
+//	cout << "Dot graph: " << endl << resultString << endl;
 	CPPUNIT_ASSERT(resultString.compare("") != expectedStringSizeForEmptyGraph);
 
 }

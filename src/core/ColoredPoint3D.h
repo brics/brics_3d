@@ -20,7 +20,6 @@
 #ifndef COLOREDPOINT3D_H_
 #define COLOREDPOINT3D_H_
 
-//#include "PointCloud3D.h"
 #include "Point3DDecorator.h"
 
 namespace BRICS_3D {
@@ -28,7 +27,6 @@ namespace BRICS_3D {
 /**
  * @brief A class to represent a point in the Cartesian space that carries color information (RGB)
  */
-//class ColoredPoint3D : public Point3D {
 class ColoredPoint3D : public Point3DDecorator {
 public:
 
@@ -94,10 +92,9 @@ public:
 	 */
 	friend ostream& operator<<(ostream &outStream, const ColoredPoint3D &point);
 
+	virtual Point3D* clone() const;
 
-    ColoredPoint3D* asColoredPoint3D(){
-    	return this;
-    }
+    ColoredPoint3D* asColoredPoint3D();
 
 	/**
 	 * @brief Sets the red-value for the point
@@ -160,18 +157,6 @@ public:
 	unsigned char blue;
 
 };
-
-//template<>
-//inline ColoredPoint3D* Point3D::asDecoration<ColoredPoint3D>() {
-//	std::cout << "colorCast"  << std::endl;
-//	return new ColoredPoint3D();
-//};
-//
-//template<>
-//inline ColoredPoint3D* ColoredPoint3D::asDecoration<ColoredPoint3D>() {
-//	std::cout << "realColorCast"  << std::endl;
-//	return new ColoredPoint3D();
-//};
 
 }
 

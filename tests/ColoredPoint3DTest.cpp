@@ -39,11 +39,11 @@ void ColoredPoint3DTest::setUp() {
 }
 
 void ColoredPoint3DTest::tearDown() {
-	delete point000;
-	delete point111;
-	delete pointMinus123;
-	delete pointMax;
-	delete pointMin;
+//	delete point000;
+//	delete point111;
+//	delete pointMinus123;
+//	delete pointMax;
+//	delete pointMin;
 }
 
 void ColoredPoint3DTest::testConstructor() {
@@ -124,7 +124,7 @@ void ColoredPoint3DTest::testConstructor() {
 	CPPUNIT_ASSERT(newPoint2->red == 1);
 	CPPUNIT_ASSERT(newPoint2->green == 1);
 	CPPUNIT_ASSERT(newPoint2->blue == 1);
-	delete newPoint2;
+//	delete newPoint2;
 	ColoredPoint3D newPoint3(point111);
 
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint3.getX(), maxTolerance);

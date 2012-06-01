@@ -14,6 +14,7 @@
 
 #include "core/Point3DDecorator.h"
 #include "core/ColoredPoint3D.h"
+#include "core/Point3DIntensity.h"
 
 #include <Eigen/Geometry>
 #include "core/Point3D.h"
@@ -39,6 +40,7 @@ class Point3DDecoratorTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testTransfomration );
 	CPPUNIT_TEST( testStreaming );
 	CPPUNIT_TEST( testRawAccess );
+	CPPUNIT_TEST( testClone );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -54,6 +56,7 @@ public:
 	void testTransfomration();
 	void testStreaming();
 	void testRawAccess();
+	void testClone();
 
 
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW //Required by Eigen2

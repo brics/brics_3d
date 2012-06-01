@@ -14,6 +14,7 @@
 
 #include "core/ColoredPointCloud3D.h"
 #include "core/HomogeneousMatrix44.h"
+#include "core/Point3DIntensity.h"
 
 using namespace std;
 using namespace BRICS_3D;

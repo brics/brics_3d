@@ -27,13 +27,13 @@ Point3DDecorator::Point3DDecorator() {
 
 Point3DDecorator::Point3DDecorator(Point3D* point) :
 			Point3D (point) {
-//	this->decorate(point);
-	this->point = new Point3D(point);
+	this->decorate(point);
+//	this->point = new Point3D(point);
 }
 
 Point3DDecorator::Point3DDecorator(Point3DDecorator* point) {
-	this->point = new Point3D(point);
-//	this->decorate(new Point3D(point));
+//	this->point = new Point3D(point);
+	this->decorate(point->getPoint()); //?
 }
 
 Point3DDecorator::Point3DDecorator(const Point3DDecorator &point) {
@@ -113,6 +113,9 @@ Point3D* Point3DDecorator::getPoint() {
 	return point;
 }
 
+ColoredPoint3D* Point3DDecorator::asColoredPoint3D(){
+	return point->asColoredPoint3D();
+}
 
 } // namespace BRICS_3D
 

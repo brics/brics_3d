@@ -183,14 +183,17 @@ public:
 	 */
 	friend ostream& operator<<(ostream &outStream, const Point3D &point);
 
-//    template<class DecorationT>
-//    inline DecorationT* asDecoration() {
-//    	return 0;
-//    };
+	/**
+	 * @brief Creates a clone of the point and all potential decoration layers.
+	 * @return Pointer to cloned object
+	 */
+	virtual Point3D* clone() const;
 
-    virtual ColoredPoint3D* asColoredPoint3D(){ //TODO: some templated version?
-    	return 0;
-    }
+	/**
+	 * @brief Convenience function to deduce if this point is decorated with color information.
+	 * @return Pointer to color object or null if there is no such decoration
+	 */
+    virtual ColoredPoint3D* asColoredPoint3D();
 
 private:
 

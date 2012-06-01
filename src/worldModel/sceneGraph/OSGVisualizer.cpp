@@ -244,8 +244,8 @@ bool OSGVisualizer::addGeometricNode(unsigned int parentId, unsigned int& assign
 
 		RSG::PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr pointCloud(new RSG::PointCloud<BRICS_3D::PointCloud3D>());
 		pointCloud = boost::dynamic_pointer_cast<PointCloud<BRICS_3D::PointCloud3D> >(shape);
-		RSG::PointCloud<BRICS_3D::ColoredPointCloud3D>::PointCloudPtr coloredPointCloud(new RSG::PointCloud<BRICS_3D::ColoredPointCloud3D>());
-		coloredPointCloud = boost::dynamic_pointer_cast<PointCloud<BRICS_3D::ColoredPointCloud3D> >(shape);
+//		RSG::PointCloud<BRICS_3D::ColoredPointCloud3D>::PointCloudPtr coloredPointCloud(new RSG::PointCloud<BRICS_3D::ColoredPointCloud3D>());
+//		coloredPointCloud = boost::dynamic_pointer_cast<PointCloud<BRICS_3D::ColoredPointCloud3D> >(shape);
 		RSG::Mesh<BRICS_3D::ITriangleMesh>::MeshPtr mesh(new RSG::Mesh<BRICS_3D::ITriangleMesh>());
 		mesh = boost::dynamic_pointer_cast<RSG::Mesh<BRICS_3D::ITriangleMesh> >(shape);
 		RSG::Box::BoxPtr box(new RSG::Box());
@@ -253,18 +253,30 @@ bool OSGVisualizer::addGeometricNode(unsigned int parentId, unsigned int& assign
 		RSG::Cylinder::CylinderPtr cylinder(new RSG::Cylinder());
 		cylinder =  boost::dynamic_pointer_cast<RSG::Cylinder>(shape);
 
-		if (coloredPointCloud !=0) {
-			LOG(DEBUG) << "                 -> Adding a new colored point cloud.";
-			osg::ref_ptr<osg::Node> pointCloudNode = OSGPointCloudVisualizer::createColoredPointCloudNode(coloredPointCloud->data.get());
-			pointCloudNode->getOrCreateStateSet()->setRenderingHint(osg::StateSet::DEFAULT_BIN );
-			viewer.addUpdateOperation(new OSGOperationAdd(this, pointCloudNode, parentGroup));
-			idLookUpTable.insert(std::make_pair(assignedId, pointCloudNode));
-			return true;
-		} else if(pointCloud !=0) {
-			LOG(DEBUG) << "                 -> Adding a new point cloud.";
-			osg::ref_ptr<osg::Node> pointCloudNode = OSGPointCloudVisualizer::createPointCloudNode(pointCloud->data.get(), red, green, blue, alpha);
-			viewer.addUpdateOperation(new OSGOperationAdd(this, pointCloudNode, parentGroup));
-			idLookUpTable.insert(std::make_pair(assignedId, pointCloudNode));
+//		if (coloredPointCloud !=0) {
+//			LOG(DEBUG) << "                 -> Adding a new colored point cloud.";
+//			osg::ref_ptr<osg::Node> pointCloudNode = OSGPointCloudVisualizer::createColoredPointCloudNode(coloredPointCloud->data.get());
+//			pointCloudNode->getOrCreateStateSet()->setRenderingHint(osg::StateSet::DEFAULT_BIN );
+//			viewer.addUpdateOperation(new OSGOperationAdd(this, pointCloudNode, parentGroup));
+//			idLookUpTable.insert(std::make_pair(assignedId, pointCloudNode));
+//			return true;
+//		} else if(pointCloud !=0) {
+		if (pointCloud !=0) {
+
+			/* check if there is some color information in the cloud */
+			if ( (pointCloud->data->getSize() > 0) && ((*pointCloud->data->getPointCloud())[0].asColoredPoint3D() != 0) ) {
+				LOG(DEBUG) << "                 -> Adding a new colored point cloud.";
+				osg::ref_ptr<osg::Node> pointCloudNode = OSGPointCloudVisualizer::createColoredPointCloudNode(pointCloud->data.get());
+				pointCloudNode->getOrCreateStateSet()->setRenderingHint(osg::StateSet::DEFAULT_BIN );
+				viewer.addUpdateOperation(new OSGOperationAdd(this, pointCloudNode, parentGroup));
+				idLookUpTable.insert(std::make_pair(assignedId, pointCloudNode));
+			} else { // nope no color information
+				LOG(DEBUG) << "                 -> Adding a new point cloud.";
+				osg::ref_ptr<osg::Node> pointCloudNode = OSGPointCloudVisualizer::createPointCloudNode(pointCloud->data.get(), red, green, blue, alpha);
+				viewer.addUpdateOperation(new OSGOperationAdd(this, pointCloudNode, parentGroup));
+				idLookUpTable.insert(std::make_pair(assignedId, pointCloudNode));
+			}
+
 			return true;
 
 		} else if (box !=0) {

@@ -40,8 +40,6 @@ public:
 
 	void filter(PointCloud3D* originalPointCloud, PointCloud3D* resultPointCloud);
 
-	void filter(ColoredPointCloud3D* originalPointCloud, ColoredPointCloud3D* resultPointCloud); //FIXME
-
 
     Coordinate getSizeX() const
     {

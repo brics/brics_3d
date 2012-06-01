@@ -42,11 +42,12 @@ BoxROIExtractor::~BoxROIExtractor() {
 void BoxROIExtractor::filter(PointCloud3D* originalPointCloud, PointCloud3D* resultPointCloud) {
 	if (boxOrigin == 0 || boxOrigin->isIdentity()) { //lazy evaluation...
 		for (unsigned int i = 0; i < originalPointCloud->getSize(); ++i) {
-			Point3D tmpPoint = (*originalPointCloud->getPointCloud())[i]; //TODO: prevent slicing
+			Point3D tmpPoint = (*originalPointCloud->getPointCloud())[i];
 			if (tmpPoint.getX() >= -sizeX/2 && tmpPoint.getX() <= sizeX/2 &&
 					tmpPoint.getY() >= -sizeY/2 && tmpPoint.getY() <= sizeY/2 &&
 					tmpPoint.getZ() >= -sizeZ/2 && tmpPoint.getZ() <= sizeZ/2) {
-				resultPointCloud->addPoint(tmpPoint);
+//				resultPointCloud->addPoint(tmpPoint);
+				resultPointCloud->addPointPtr((*originalPointCloud->getPointCloud())[i].clone());
 			}
 		}
 	} else {
@@ -54,39 +55,13 @@ void BoxROIExtractor::filter(PointCloud3D* originalPointCloud, PointCloud3D* res
 		*inverseOrigin = *(boxOrigin.get());
 		inverseOrigin->inverse();
 		for (unsigned int i = 0; i < originalPointCloud->getSize(); ++i) {
-			Point3D tmpPoint = (*originalPointCloud->getPointCloud())[i]; //TODO: prevent slicing
+			Point3D tmpPoint = (*originalPointCloud->getPointCloud())[i];
 			tmpPoint.homogeneousTransformation(inverseOrigin); // move all points to the origin and then compare
 			if (tmpPoint.getX() >= -sizeX/2 && tmpPoint.getX() <= sizeX/2 &&
 					tmpPoint.getY() >= -sizeY/2 && tmpPoint.getY() <= sizeY/2 &&
 					tmpPoint.getZ() >= -sizeZ/2 && tmpPoint.getZ() <= sizeZ/2) {
-				resultPointCloud->addPoint((*originalPointCloud->getPointCloud())[i]);
-			}
-		}
-		delete inverseOrigin;
-	}
-}
-
-void BoxROIExtractor::filter(ColoredPointCloud3D* originalPointCloud, ColoredPointCloud3D* resultPointCloud) {
-	if (boxOrigin == 0 || boxOrigin->isIdentity()) { //lazy evaluation...
-		for (unsigned int i = 0; i < originalPointCloud->getSize(); ++i) {
-			ColoredPoint3D tmpPoint = (*originalPointCloud->getPointCloud())[i];
-			if (tmpPoint.getX() >= -sizeX/2 && tmpPoint.getX() <= sizeX/2 &&
-					tmpPoint.getY() >= -sizeY/2 && tmpPoint.getY() <= sizeY/2 &&
-					tmpPoint.getZ() >= -sizeZ/2 && tmpPoint.getZ() <= sizeZ/2) {
-				resultPointCloud->addPoint(tmpPoint);
-			}
-		}
-	} else {
-		HomogeneousMatrix44* inverseOrigin = new HomogeneousMatrix44();
-		*inverseOrigin = *(boxOrigin.get());
-		inverseOrigin->inverse();
-		for (unsigned int i = 0; i < originalPointCloud->getSize(); ++i) {
-			ColoredPoint3D tmpPoint = (*originalPointCloud->getPointCloud())[i];
-			tmpPoint.homogeneousTransformation(inverseOrigin);
-			if (tmpPoint.getX() >= -sizeX/2 && tmpPoint.getX() <= sizeX/2 &&
-					tmpPoint.getY() >= -sizeY/2 && tmpPoint.getY() <= sizeY/2 &&
-					tmpPoint.getZ() >= -sizeZ/2 && tmpPoint.getZ() <= sizeZ/2) {
-				resultPointCloud->addPoint((*originalPointCloud->getPointCloud())[i]);
+//				resultPointCloud->addPoint((*originalPointCloud->getPointCloud())[i]);
+				resultPointCloud->addPointPtr((*originalPointCloud->getPointCloud())[i].clone());
 			}
 		}
 		delete inverseOrigin;

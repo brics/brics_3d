@@ -111,15 +111,32 @@ public:
      */
     Point3D* getPoint();
 
-    ColoredPoint3D* asColoredPoint3D(){
-    	return point->asColoredPoint3D();
-    }
+    virtual ColoredPoint3D* asColoredPoint3D();
 
 protected:
 
     ///Pointer to the next inner skin of decoration layer. Can be either another decoration or a (real) Point3D.
 	Point3D* point;
 
+};
+
+/**
+ * @brief Deduce if a point has a certain layer of decoration.
+ * This is rather generic way to intospect the decorated points. For some decoration layers ther are some
+ * (faster and) convenient functions like BRICS_3D::Point3D::asColoredPoint3D()
+ *
+ * @param queryPoint Point of intrest that shall be investigated if it has a certain decoration.
+ * @return Pointer to type as specified by DecorationT or null if the point does not have such a decoration layer.
+ */
+template<class DecorationT>
+inline DecorationT* getPointType(Point3D* queryPoint) {
+	if (dynamic_cast<DecorationT*>(queryPoint) != 0) {
+		return dynamic_cast<DecorationT*>(queryPoint); //found
+	} else if (dynamic_cast<Point3DDecorator*>(queryPoint) != 0) {
+		return getPointType<DecorationT>( dynamic_cast<Point3DDecorator*>(queryPoint)->getPoint() ); //feed forward
+	} else {
+		return 0; //not found
+	}
 };
 
 }

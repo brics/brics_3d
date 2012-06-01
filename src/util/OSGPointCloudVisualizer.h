@@ -83,7 +83,7 @@ public:
 	 */
 	void addColoredPointCloud(ColoredPointCloud3D* pointCloud, float alpha=1.0f); /// @deprecated
 
-	//void addColoredPointCloud(PointCloud3D* coloredPointCloud, float alpha=1.0f);
+	void addColoredPointCloud(PointCloud3D* coloredPointCloud, float alpha=1.0f);
 
 	/**
 	 * @brief Visualizes a point cloud within the OSG framework
@@ -140,7 +140,7 @@ public:
 	 */
 	static osg::ref_ptr<osg::Node> createColoredPointCloudNode(ColoredPointCloud3D* pointCloud, float alpha=1.0f);
 
-	osg::Node* createColoredPointCloudNode(PointCloud3D* coloredPointCloud, float alpha=1.0f);
+	static osg::ref_ptr<osg::Node> createColoredPointCloudNode(PointCloud3D* coloredPointCloud, float alpha=1.0f);
 
 private:
 

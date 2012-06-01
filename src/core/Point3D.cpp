@@ -200,6 +200,13 @@ ostream& operator<<(ostream &outStream, const Point3D &point) {
 	return outStream;
 }
 
+Point3D* Point3D::clone() const {
+	return new Point3D(*this);
+}
+
+ColoredPoint3D* Point3D::asColoredPoint3D() {
+	return 0;
+}
 
 }
 

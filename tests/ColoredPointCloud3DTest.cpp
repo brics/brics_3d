@@ -41,14 +41,14 @@ void ColoredPointCloud3DTest::setUp() {
 }
 
 void ColoredPointCloud3DTest::tearDown() {
-	delete point000;
-	delete point001;
-	delete point011;
-	delete point010;
-	delete point100;
-	delete point101;
-	delete point111;
-	delete point110;
+//	delete point000;
+//	delete point001;
+//	delete point011;
+//	delete point010;
+//	delete point100;
+//	delete point101;
+//	delete point111;
+//	delete point110;
 
 	delete pointCloudCube;
 //	delete pointCloudCubeCopy;
@@ -356,9 +356,9 @@ void ColoredPointCloud3DTest::testMassiveData() {
 		sensorData2 = new ColoredPointCloud3D();
 
 		for (int i = 0; i < maxCount; i++) {
-//			sensorData2->addPoint(ColoredPoint3D(new Point3D(1,2,3), 128, 255, 128)); //this will create a memory leak
+			sensorData2->addPoint(ColoredPoint3D(new Point3D(1,2,3), 128, 255, 128)); //this will create a memory leak
 			Point3D tmpPoint(1,2,3);
-			sensorData2->addPoint(ColoredPoint3D(&tmpPoint, 128, 255, 128)); //this will not create a memory leak
+//			sensorData2->addPoint(ColoredPoint3D(&tmpPoint, 128, 255, 128)); //this will not create a memory leak
 		}
 		CPPUNIT_ASSERT_EQUAL(maxCount, static_cast<int>(sensorData2->getPointCloud()->size()));
 		delete	sensorData2;
@@ -367,10 +367,13 @@ void ColoredPointCloud3DTest::testMassiveData() {
 
 void ColoredPointCloud3DTest::testPolymorphPointCloud() {
 	pointCloud = new PointCloud3D();
-	Point3D* testPoint = new ColoredPoint3D(point110);
+	point110 = new ColoredPoint3D(new Point3D(1,1,0),1,1,1);
+	Point3D* testPoint = new ColoredPoint3D(point110); //point110 seems to be undefined?
+//	Point3D* testPoint = new ColoredPoint3D(new Point3D(1,1,0));
 	pointCloud->addPointPtr(testPoint);
-	pointCloud->addPointPtr(new Point3D(4,5,6)); //without decoration
-
+	pointCloud->addPointPtr(new Point3D(4.1,5,6)); //without decoration
+	pointCloud->addPointPtr(new ColoredPoint3D(new Point3DIntensity(new Point3D(7,8,9), 50.9), 1,1,1));
+	pointCloud->addPointPtr(new Point3DIntensity(new ColoredPoint3D(new Point3D(10,11,12), 1,1,1) , 50.9));
 	Point3D* result;
 	result = &(*pointCloud->getPointCloud())[0]; // be cereful -> assignment can still cause slicing...
 //	cout << "Polymorph point = "  << *result << endl;
@@ -403,6 +406,18 @@ void ColoredPointCloud3DTest::testPolymorphPointCloud() {
 	CPPUNIT_ASSERT_EQUAL(point110->getG(), introspectionPoint->getG());
 	CPPUNIT_ASSERT_EQUAL(point110->getB(), introspectionPoint->getB());
 
+	/* manual introsprection */
+	cout << "double decorated point " <<(*pointCloud->getPointCloud())[2] << endl;
+	cout << "double decorated point " <<(*pointCloud->getPointCloud())[3] << endl;
+	Point3DDecorator* manuelIntrospectionPoint1;
+	manuelIntrospectionPoint1 = dynamic_cast<Point3DDecorator*>(&(*pointCloud->getPointCloud())[2]);
+	CPPUNIT_ASSERT(manuelIntrospectionPoint1 != 0);
+
+	Point3DDecorator* manuelIntrospectionPoint2;
+	manuelIntrospectionPoint2 = dynamic_cast<Point3DDecorator*>(manuelIntrospectionPoint1->getPoint());
+	CPPUNIT_ASSERT(manuelIntrospectionPoint2 != 0);
+
+	/* scecific introspection */
 	introspectionPoint = (*pointCloud->getPointCloud())[0].asColoredPoint3D();
 	CPPUNIT_ASSERT(introspectionPoint != 0);
 	CPPUNIT_ASSERT_EQUAL(point110->getR(), introspectionPoint->getR());
@@ -411,6 +426,51 @@ void ColoredPointCloud3DTest::testPolymorphPointCloud() {
 
 	introspectionPoint = (*pointCloud->getPointCloud())[1].asColoredPoint3D();
 	CPPUNIT_ASSERT(introspectionPoint == 0);
+
+	introspectionPoint = (*pointCloud->getPointCloud())[2].asColoredPoint3D();
+	CPPUNIT_ASSERT(introspectionPoint != 0);
+	CPPUNIT_ASSERT_EQUAL(point110->getR(), introspectionPoint->getR()); //here: we know point110 has 1 1 1 colors...
+	CPPUNIT_ASSERT_EQUAL(point110->getG(), introspectionPoint->getG());
+	CPPUNIT_ASSERT_EQUAL(point110->getB(), introspectionPoint->getB());
+
+	introspectionPoint = (*pointCloud->getPointCloud())[3].asColoredPoint3D();
+	CPPUNIT_ASSERT(introspectionPoint != 0);
+	CPPUNIT_ASSERT_EQUAL(point110->getR(), introspectionPoint->getR()); //here: we know point110 has 1 1 1 colors...
+	CPPUNIT_ASSERT_EQUAL(point110->getG(), introspectionPoint->getG());
+	CPPUNIT_ASSERT_EQUAL(point110->getB(), introspectionPoint->getB());
+
+	/* generic introspection */
+	introspectionPoint = getPointType<ColoredPoint3D>(&(*pointCloud->getPointCloud())[0]);
+	CPPUNIT_ASSERT(introspectionPoint != 0);
+	CPPUNIT_ASSERT_EQUAL(point110->getR(), introspectionPoint->getR());
+	CPPUNIT_ASSERT_EQUAL(point110->getG(), introspectionPoint->getG());
+	CPPUNIT_ASSERT_EQUAL(point110->getB(), introspectionPoint->getB());
+
+	introspectionPoint = getPointType<ColoredPoint3D>(&(*pointCloud->getPointCloud())[1]);
+	CPPUNIT_ASSERT(introspectionPoint == 0);
+
+	introspectionPoint = getPointType<ColoredPoint3D>(&(*pointCloud->getPointCloud())[2]);
+	CPPUNIT_ASSERT(introspectionPoint != 0);
+	CPPUNIT_ASSERT_EQUAL(point110->getR(), introspectionPoint->getR()); //here: we know point110 has 1 1 1 colors...
+	CPPUNIT_ASSERT_EQUAL(point110->getG(), introspectionPoint->getG());
+	CPPUNIT_ASSERT_EQUAL(point110->getB(), introspectionPoint->getB());
+
+	introspectionPoint = getPointType<ColoredPoint3D>(&(*pointCloud->getPointCloud())[3]);
+	CPPUNIT_ASSERT(introspectionPoint != 0);
+	CPPUNIT_ASSERT_EQUAL(point110->getR(), introspectionPoint->getR()); //here: we know point110 has 1 1 1 colors...
+	CPPUNIT_ASSERT_EQUAL(point110->getG(), introspectionPoint->getG());
+	CPPUNIT_ASSERT_EQUAL(point110->getB(), introspectionPoint->getB());
+
+	/* check introspection for Point3DIntensity */
+	Point3DIntensity* introspectionPoint2;
+	introspectionPoint2 = getPointType<Point3DIntensity>(&(*pointCloud->getPointCloud())[0]);
+	CPPUNIT_ASSERT(introspectionPoint2 == 0);
+	introspectionPoint2 = getPointType<Point3DIntensity>(&(*pointCloud->getPointCloud())[1]);
+	CPPUNIT_ASSERT(introspectionPoint2 == 0);
+	introspectionPoint2 = getPointType<Point3DIntensity>(&(*pointCloud->getPointCloud())[2]);
+	CPPUNIT_ASSERT(introspectionPoint2 != 0);
+	introspectionPoint2 = getPointType<Point3DIntensity>(&(*pointCloud->getPointCloud())[3]);
+	CPPUNIT_ASSERT(introspectionPoint2 != 0);
 
 	delete pointCloud;
 

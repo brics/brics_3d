@@ -24,7 +24,6 @@
 
 // BRICS_3D includes
 #include <core/PointCloud3D.h>
-#include <core/ColoredPointCloud3D.h>
 #include <core/Logger.h>
 #include <util/PCLTypecaster.h>
 #include <util/OSGPointCloudVisualizer.h>
@@ -53,15 +52,14 @@ public:
 	{
 //		if (count > 2) {
 		if (viewer.done()) {
-			std::cout << "done" << std::endl;
+			LOG(INFO) <<  "Done.";
 			interface->stop();
 			return;
 		}
 
-		LOG(INFO) <<  "Receiving new point cloud";
-//		BRICS_3D::PointCloud3D* viewerCloud = new BRICS_3D::PointCloud3D();
-		BRICS_3D::ColoredPointCloud3D* viewerCloud = new BRICS_3D::ColoredPointCloud3D();
-		converter.convertToBRICS3DDataType(cloud, viewerCloud);
+		LOG(INFO) <<  "Receiving new point cloud.";
+		BRICS_3D::PointCloud3D* viewerCloud = new BRICS_3D::PointCloud3D();
+		converter.convertToBRICS3DDataType(cloud, viewerCloud, true); // the bool toggles if color information will be copoied over to BRICS_3D type or not
 //		std::string name = "kinect_pointcloud.txt";
 //		viewerCloud->storeToTxtFile(name);
 //		viewer.addPointCloud(viewerCloud);

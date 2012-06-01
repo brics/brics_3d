@@ -86,25 +86,44 @@ public:
 	 * @param pointCloud3DPtr	point cloud datda in BRICS_3D format
 	 */
 	inline void convertToBRICS3DDataType(pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr pclCloudPtr,
-			BRICS_3D::PointCloud3D* pointCloud3DPtr ){
+			BRICS_3D::PointCloud3D* pointCloud3DPtr, bool copyColorData=true ){
 
-
-		pointCloud3DPtr->getPointCloud()->resize(pclCloudPtr->size());
+		uint8_t r, g, b;
+		BRICS_3D::ColorSpaceConvertor colorSpaceConvertor;
+		uint32_t rgbVal;
+		unsigned char red, green, blue;
+		float rgbVal24Bit;
+//		pointCloud3DPtr->getPointCloud()->resize(pclCloudPtr->size());
 
 		for (unsigned int i =0 ; i < pclCloudPtr->size()  ; i++){
 			if(!std::isnan(pclCloudPtr->points[i].x) && !std::isinf(pclCloudPtr->points[i].x) &&
 					!std::isnan(pclCloudPtr->points[i].y) && !std::isinf(pclCloudPtr->points[i].y) &&
 					!std::isnan(pclCloudPtr->points[i].z) && !std::isinf(pclCloudPtr->points[i].z) ) {
 
-			(*pointCloud3DPtr->getPointCloud())[i].setX(pclCloudPtr->points[i].x);
-			(*pointCloud3DPtr->getPointCloud())[i].setY(pclCloudPtr->points[i].y);
-			(*pointCloud3DPtr->getPointCloud())[i].setZ(pclCloudPtr->points[i].z);
+				Point3D* tmpPoint =  new Point3D(pclCloudPtr->points[i].x, pclCloudPtr->points[i].y, pclCloudPtr->points[i].z);
 
-			//		pointCloud3DPtr->addPoint(new Point3D(pclCloudPtr->points[i].x,
-			//							pclCloudPtr->points[i].y, pclCloudPtr->points[i].z));
+				if(copyColorData) {
+					rgbVal24Bit = pclCloudPtr->points[i].rgb;
+					rgbVal= *reinterpret_cast<int*>(&rgbVal24Bit);
+					colorSpaceConvertor.rgb24bitToRGB(rgbVal, &r, &g, &b);
+					red= *reinterpret_cast<unsigned char*>(&r);
+					green= *reinterpret_cast<unsigned char*>(&g);
+					blue= *reinterpret_cast<unsigned char*>(&b);
+
+					ColoredPoint3D* tmpColoredPoint = new ColoredPoint3D(tmpPoint, red, green, blue);
+					pointCloud3DPtr->addPointPtr(tmpColoredPoint);
+				} else {
+					pointCloud3DPtr->addPointPtr(tmpPoint);
+				}
+
+				//			(*pointCloud3DPtr->getPointCloud())[i].setX(pclCloudPtr->points[i].x);
+				//			(*pointCloud3DPtr->getPointCloud())[i].setY(pclCloudPtr->points[i].y);
+				//			(*pointCloud3DPtr->getPointCloud())[i].setZ(pclCloudPtr->points[i].z);
+
 
 			}
 		}
+
 	}
 
 
@@ -190,7 +209,7 @@ public:
 				Point3D* tmpPoint =  new Point3D(pclCloudPtr->points[i].x, pclCloudPtr->points[i].y, pclCloudPtr->points[i].z);
 				ColoredPoint3D* tmpColoredPoint = new ColoredPoint3D(tmpPoint, red, green, blue);
 				pointCloud3DPtr->addPoint(tmpColoredPoint);
-				delete tmpPoint;
+//				delete tmpPoint;
 				delete tmpColoredPoint;
 				//		pointCloud3DPtr->getPointCloud()->data()[i].setX(pclCloudPtr->points[i].x);
 				//		pointCloud3DPtr->getPointCloud()->data()[i].setY(pclCloudPtr->points[i].y);

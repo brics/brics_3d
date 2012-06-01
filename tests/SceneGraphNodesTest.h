@@ -42,6 +42,28 @@ using std::cout;
 using std::endl;
 
 /*
+ * Example how to implement custom nodes.
+ */
+class CustomNode : public Node {
+
+public:
+	typedef boost::shared_ptr<CustomNode> CustomNodePtr;
+	typedef boost::shared_ptr<CustomNode const> CustomNodeConstPtr;
+
+	int someValue;
+
+	void accept(INodeVisitor* visitor) { //optionally
+		visitor->visit(this);
+		if (visitor->getDirection() == INodeVisitor::upwards) {
+			for(unsigned i = 0; i < getNumberOfParents(); ++i) // recursively go up the graph structure
+			{
+				getParent(i)->accept(visitor);
+			}
+		}
+	}
+};
+
+/*
  * Example how to implement custom visitors.
  */
 class IdCollector : public INodeVisitor {

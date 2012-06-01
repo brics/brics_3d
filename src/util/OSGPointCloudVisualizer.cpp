@@ -71,7 +71,7 @@ public:
 	}
 
 	void operator()(osg::Object*) {
-		std::cout << "Number of children before clearance = " << obj->rootGeode->getNumChildren() << std::endl;
+//		std::cout << "Number of children before clearance = " << obj->rootGeode->getNumChildren() << std::endl;
 		if(obj->rootGeode->getNumChildren() <= 1) { //complete clear
 			//leave node as it is
 		} else { //leave the first node
@@ -139,9 +139,9 @@ void OSGPointCloudVisualizer::addColoredPointCloud(ColoredPointCloud3D* pointClo
 	viewer.addUpdateOperation(new OSGOperationAdd(this, createColoredPointCloudNode(pointCloud, alpha)));
 }
 
-//void OSGPointCloudVisualizer::addColoredPointCloud(PointCloud3D* coloredPointCloud, float alpha) {
-//	rootGeode->addChild(createColoredPointCloudNode(coloredPointCloud, alpha));
-//}
+void OSGPointCloudVisualizer::addColoredPointCloud(PointCloud3D* coloredPointCloud, float alpha) {
+	viewer.addUpdateOperation(new OSGOperationAdd(this, createColoredPointCloudNode(coloredPointCloud, alpha)));
+}
 
 void OSGPointCloudVisualizer::visualizePointCloud(PointCloud3D *pointCloud, float red, float green, float blue, float alpha)
 {
@@ -346,19 +346,19 @@ osg::ref_ptr<osg::Node> OSGPointCloudVisualizer::createColoredPointCloudNode(Col
 	return group;
 }
 
-osg::Node* OSGPointCloudVisualizer::createColoredPointCloudNode(PointCloud3D* coloredPointCloud, float alpha) {
+osg::ref_ptr<osg::Node> OSGPointCloudVisualizer::createColoredPointCloudNode(PointCloud3D* coloredPointCloud, float alpha) {
 	float red = 0.0;
 	float green = 0.0;
 	float blue = 0.0;
 
 	unsigned int targetNumVertices = 10000; //maximal points per geode
 
-	osg::Geode* geode = new osg::Geode;
-	osg::Geometry* geometry = new osg::Geometry;
+	osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+	osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
 
-	osg::Vec3Array* vertices = new osg::Vec3Array;
+	osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
 	//osg::Vec3Array* normals = new osg::Vec3Array;
-	osg::Vec4ubArray* colours = new osg::Vec4ubArray; //every point has color
+	osg::ref_ptr<osg::Vec4ubArray> colours = new osg::Vec4ubArray; //every point has color
 //	osg::Vec4Array* colours = new osg::Vec4Array(1); //all point have same color
 //	(*colours)[0].set(red, green, blue, alpha); //set colours (r,g,b,a)
 
@@ -384,30 +384,13 @@ osg::Node* OSGPointCloudVisualizer::createColoredPointCloudNode(PointCloud3D* co
 		green = 1.0;
 		blue = 1.0;
 
-		/* find the uttermost decoration layer that contains color information */
-		Point3D* currentPoint = &((*coloredPointCloud->getPointCloud())[i]);
-		Point3DDecorator* currentPointDecorationLayer;
-
-		std::cout << "Result of cast to Point3DDecorator: " << dynamic_cast<Point3DDecorator*>(currentPoint) << std::endl;
-		std::cout << "Result of cast to ColoredPoint3D: " << dynamic_cast<ColoredPoint3D*>(currentPoint) << std::endl;
-		while (dynamic_cast<Point3DDecorator*>(currentPoint) != 0) { // is of type "Point3DDecorator*"
-			currentPointDecorationLayer = dynamic_cast<Point3DDecorator*>(currentPoint);
-			if (dynamic_cast<ColoredPoint3D*>(currentPoint) != 0) {
-				ColoredPoint3D* tmpColorLayerHandle = dynamic_cast<ColoredPoint3D*>(currentPoint);
-				red = tmpColorLayerHandle->red;
-				green = tmpColorLayerHandle->green;
-				blue = tmpColorLayerHandle->blue;
-				std::cout << "€" << std::endl;
-				break; //finish at first found layer -> uttermost color layer is taken
-
-			}
-		}
-
 		/**** TODO continue here **************/
 
-//		red = (*pointCloud->getPointCloud())[i].red;
-//		green = (*pointCloud->getPointCloud())[i].green;
-//		blue = (*pointCloud->getPointCloud())[i].blue;
+		if ((*coloredPointCloud->getPointCloud())[i].asColoredPoint3D() != 0) { //go for default colors in case no color informatin is attached
+			red = (*coloredPointCloud->getPointCloud())[i].asColoredPoint3D()->getR();
+			green = (*coloredPointCloud->getPointCloud())[i].asColoredPoint3D()->getG();
+			blue = (*coloredPointCloud->getPointCloud())[i].asColoredPoint3D()->getB();
+		}
 
 		tmpColor.set(red, green, blue, alpha);
 		colours->push_back(tmpColor);
@@ -455,7 +438,7 @@ osg::Node* OSGPointCloudVisualizer::createColoredPointCloudNode(PointCloud3D* co
 	geode->addDrawable(geometry);
 	geode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
 
-	osg::Group* group = new osg::Group;
+	osg::ref_ptr<osg::Group> group = new osg::Group;
 	group->addChild(geode);
 
 	return group;
