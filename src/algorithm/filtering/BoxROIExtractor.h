@@ -22,7 +22,6 @@
 
 #include "IFiltering.h"
 #include "core/IHomogeneousMatrix44.h"
-#include "core/ColoredPointCloud3D.h"
 
 namespace BRICS_3D {
 

@@ -66,12 +66,12 @@ private:
 	unsigned int minClusterSize;
 	unsigned int maxClusterSize;
 
-	std::vector<BRICS_3D::ColoredPointCloud3D*> extractedClusters;
+	std::vector<BRICS_3D::PointCloud3D*> extractedClusters;
 
 public:
 	RGBColorBasedEuclideanClustering();
 	virtual ~RGBColorBasedEuclideanClustering();
-	void extractClusters(BRICS_3D::ColoredPointCloud3D *inCloud);
+	void extractClusters(BRICS_3D::PointCloud3D *inCloud);
 	int segment();
 
     int getMaxClusterSize() const;
@@ -83,7 +83,7 @@ public:
     void setToleranceEuclideanDistance(double toleranceEuclideanDistance);
     void setToleranceRgbSpace(double toleranceRgbSpace);
 
-	void getExtractedClusters(std::vector<BRICS_3D::ColoredPointCloud3D*> &extractedClusters){
+	void getExtractedClusters(std::vector<BRICS_3D::PointCloud3D*> &extractedClusters){
 		extractedClusters = this->extractedClusters;
 	}
 

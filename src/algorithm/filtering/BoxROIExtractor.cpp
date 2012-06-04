@@ -19,7 +19,6 @@
 
 #include "BoxROIExtractor.h"
 #include "core/HomogeneousMatrix44.h"
-#include "core/ColoredPointCloud3D.h"
 
 namespace BRICS_3D {
 
@@ -46,7 +45,6 @@ void BoxROIExtractor::filter(PointCloud3D* originalPointCloud, PointCloud3D* res
 			if (tmpPoint.getX() >= -sizeX/2 && tmpPoint.getX() <= sizeX/2 &&
 					tmpPoint.getY() >= -sizeY/2 && tmpPoint.getY() <= sizeY/2 &&
 					tmpPoint.getZ() >= -sizeZ/2 && tmpPoint.getZ() <= sizeZ/2) {
-//				resultPointCloud->addPoint(tmpPoint);
 				resultPointCloud->addPointPtr((*originalPointCloud->getPointCloud())[i].clone());
 			}
 		}
@@ -60,7 +58,6 @@ void BoxROIExtractor::filter(PointCloud3D* originalPointCloud, PointCloud3D* res
 			if (tmpPoint.getX() >= -sizeX/2 && tmpPoint.getX() <= sizeX/2 &&
 					tmpPoint.getY() >= -sizeY/2 && tmpPoint.getY() <= sizeY/2 &&
 					tmpPoint.getZ() >= -sizeZ/2 && tmpPoint.getZ() <= sizeZ/2) {
-//				resultPointCloud->addPoint((*originalPointCloud->getPointCloud())[i]);
 				resultPointCloud->addPointPtr((*originalPointCloud->getPointCloud())[i].clone());
 			}
 		}

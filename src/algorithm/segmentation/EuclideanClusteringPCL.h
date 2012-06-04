@@ -18,7 +18,6 @@
 ******************************************************************************/
 
 #include "core/PointCloud3D.h"
-#include "core/ColoredPointCloud3D.h"
 #include "algorithm/segmentation/ISegmentation.h"
 #include "core/ColorSpaceConvertor.h"
 
@@ -29,6 +28,8 @@ namespace BRICS_3D {
 
 /**
  * The class provides a wrapper for ONLY simple KDTree based Euclidean Cluster Extraction in PCL
+ * Note that the decoration information (if any) will be lost while converting to the native
+ * data-types.
  * @ingroup segmentation
  */
 class EuclideanClusteringPCL : public ISegmentation {
@@ -55,23 +56,12 @@ private:
 
 	std::vector<BRICS_3D::PointCloud3D*> extractedClusters;
 
-	std::vector<BRICS_3D::ColoredPointCloud3D*> extractedClustersColored;
-
-
 	/**
 	 * Takes a pointcloud and returns an array of pointcloud that make up the clusters.
 	 * The clusters are defined by the parameters being set
 	 * @param inCloud	Input point cloud
 	 */
 	void extractClusters(BRICS_3D::PointCloud3D *inCloud);
-
-
-	/**
-	 * Takes a pointcloud and returns an array of pointcloud that make up the clusters.
-	 * The clusters are defined by the parameters being set
-	 * @param inCloud	Input point cloud
-	 */
-	void extractClusters(BRICS_3D::ColoredPointCloud3D *inCloud);
 
 
 public:
@@ -81,15 +71,7 @@ public:
 
 
 	void getExtractedClusters(std::vector<BRICS_3D::PointCloud3D*> &extractedClusters){
-		if(!isColoredInput) {
-			extractedClusters = this->extractedClusters;
-		}
-	}
-
-	void getExtractedClusters(std::vector<BRICS_3D::ColoredPointCloud3D*> &extractedClusters){
-		if(isColoredInput) {
-			extractedClusters = this->extractedClustersColored;
-		}
+		extractedClusters = this->extractedClusters;
 	}
 
 

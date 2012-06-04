@@ -21,7 +21,6 @@
 #define IPADATASETLOADER_H_
 
 #include "core/PointCloud3D.h"
-#include "core/ColoredPointCloud3D.h"
 #include "core/Logger.h"
 
 #ifdef WIN32
@@ -108,9 +107,9 @@ public:
 	PointCloud3D* getPointCloud();
 
 	/**
-	 * @brief Get a <code>ColoredPointCloud3D</code> representation of the data.
+	 * @brief Get a <code>PointCloud3D</code> representation of the data including attached/decorated RGB information.
 	 */
-	ColoredPointCloud3D* getColoredPointCloud();
+	PointCloud3D* getColoredPointCloud();
 
 private:
 

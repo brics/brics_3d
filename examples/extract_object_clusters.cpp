@@ -19,7 +19,6 @@
 
 #include "util/OSGPointCloudVisualizer.h"
 #include "core/PointCloud3D.h"
-#include "core/ColoredPointCloud3D.h"
 
 #include "util/PCLTypecaster.h"
 #include "algorithm/segmentation/EuclideanClustering.h"
@@ -66,8 +65,8 @@ public:
 			cout << "[CHEAT] Recieved Kinect Cloud Size " << cloud->size() << endl;
 
 			//Converting from PCL to BRICS_3D datatype
-			BRICS_3D::ColoredPointCloud3D *inCloud = new BRICS_3D::ColoredPointCloud3D();
-			BRICS_3D::PointCloud3D *inCloudVis = new BRICS_3D::ColoredPointCloud3D();
+			BRICS_3D::PointCloud3D *inCloud = new BRICS_3D::PointCloud3D();
+			BRICS_3D::PointCloud3D *inCloudVis = new BRICS_3D::PointCloud3D();
 			pclTypecaster.convertToBRICS3DDataType(cloud,inCloudVis);
 
 
@@ -84,21 +83,21 @@ public:
 			//Extracting the HSV based Region of Interest
 			BRICS_3D::PointCloud3D *extractedRoiHSV = new BRICS_3D::PointCloud3D();
 			startTime = clock();
-			roiExtractor.extractColorBasedROI(inCloud,extractedRoiHSV);
+			roiExtractor.filter(inCloud,extractedRoiHSV);
 			cout << "[CHEAT] ROI Extracted Cloud Size " << extractedRoiHSV->getSize() << "\t\tExectution Time "
 					<< double( clock() - startTime ) / (double)CLOCKS_PER_SEC<< " seconds." <<endl;
 
 
 
 			//Extracting the HSV based Region of Interest
-			BRICS_3D::ColoredPointCloud3D *extractedRoiHSVColored = new BRICS_3D::ColoredPointCloud3D();
-			roiExtractor.extractColorBasedROI(inCloud,extractedRoiHSVColored);
+			BRICS_3D::PointCloud3D *extractedRoiHSVColored = new BRICS_3D::PointCloud3D();
+			roiExtractor.filter(inCloud,extractedRoiHSVColored);
 			cout << "[CHEAT] ROI Extracted Colored-Cloud Size " << extractedRoiHSVColored->getSize() << "\t\tExectution Time "
 								<< double( clock() - startTime ) / (double)CLOCKS_PER_SEC<< " seconds." <<endl;
 
 
 			//Extracting Color based regions
-			vector<BRICS_3D::ColoredPointCloud3D*> colorBasedClusters;
+			vector<BRICS_3D::PointCloud3D*> colorBasedClusters;
 			startTime = clock();
 			rgbColorBasedClusterExtractor.setPointCloud(extractedRoiHSVColored);
 			rgbColorBasedClusterExtractor.setMinClusterSize(100);

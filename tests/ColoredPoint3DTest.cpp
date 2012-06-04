@@ -124,8 +124,9 @@ void ColoredPoint3DTest::testConstructor() {
 	CPPUNIT_ASSERT(newPoint2->red == 1);
 	CPPUNIT_ASSERT(newPoint2->green == 1);
 	CPPUNIT_ASSERT(newPoint2->blue == 1);
-//	delete newPoint2;
+
 	ColoredPoint3D newPoint3(point111);
+//	delete newPoint2;
 
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint3.getX(), maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, newPoint3.getY(), maxTolerance);

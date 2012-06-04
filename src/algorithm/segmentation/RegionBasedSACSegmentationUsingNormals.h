@@ -318,41 +318,35 @@ public:
 	int
 	segment ()
 	{
-		assert(this->inputPointCloud != NULL);
+		assert(this->inputPointCloud != 0);
 
-		if(this->isColoredInput){
-			cout<<"[SAC Segmentation] Error : Does not support colored point cloud segmentation"<<endl;
+		// Initialize the Sample Consensus model and set its parameters
+		if (!initSACModel (modelType))
+		{
+			cout<<"[SAC Segmentation] Error initializing the SAC model!"<<endl;
 			return 0;
-		} else {
-
-
-			// Initialize the Sample Consensus model and set its parameters
-			if (!initSACModel (modelType))
-			{
-				cout<<"[SAC Segmentation] Error initializing the SAC model!"<<endl;
-				return 0;
-			}
-
-			// Initialize the Sample Consensus method and set its parameters
-			initSACMethod(SACMethodType);
-
-			//Compute the model
-
-			if (!sacMethod->computeModel())
-			{
-				cout<<"[SAC Segmentation] Error segmenting the model! No solution found"<<endl;
-			}
-
-
-			// Get the model inliers
-			sacMethod->getInliers(inliers);
-
-
-			// Get the model coefficients
-			sacMethod->getModelCoefficients (this->modelCoefficients);
 		}
-	return 1;
-	}
+
+		// Initialize the Sample Consensus method and set its parameters
+		initSACMethod(SACMethodType);
+
+		//Compute the model
+
+		if (!sacMethod->computeModel())
+		{
+			cout<<"[SAC Segmentation] Error segmenting the model! No solution found"<<endl;
+		}
+
+
+		// Get the model inliers
+		sacMethod->getInliers(inliers);
+
+
+		// Get the model coefficients
+		sacMethod->getModelCoefficients (this->modelCoefficients);
+
+		return 1;
+}
 
 };
 

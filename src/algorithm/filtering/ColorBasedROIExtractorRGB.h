@@ -8,7 +8,7 @@
 #ifndef COLORBASEDROIEXTRACTORRGB_H_
 #define COLORBASEDROIEXTRACTORRGB_H_
 
-#include "IColorBasedROIExtractor.h"
+#include "IFiltering.h"
 #include <stdlib.h>
 #include <cmath>
 #include <iostream>
@@ -21,7 +21,7 @@ namespace BRICS_3D {
  * @brief Extracts subset of input point cloud based on color-properties in RGB color space
  * @ingroup filtering
  */
-class ColorBasedROIExtractorRGB : public IColorBasedROIExtractor  {
+class ColorBasedROIExtractorRGB : public IFiltering  {
 
 	int red;
 	int green;
@@ -31,8 +31,9 @@ class ColorBasedROIExtractorRGB : public IColorBasedROIExtractor  {
 public:
 	ColorBasedROIExtractorRGB();
 	virtual ~ColorBasedROIExtractorRGB();
-    void extractColorBasedROI(BRICS_3D::ColoredPointCloud3D *in_cloud, BRICS_3D::ColoredPointCloud3D *out_cloud);
-    void extractColorBasedROI(BRICS_3D::ColoredPointCloud3D *in_cloud, BRICS_3D::PointCloud3D *out_cloud);
+	void filter(PointCloud3D* originalPointCloud, PointCloud3D* resultPointCloud);
+//    void extractColorBasedROI(BRICS_3D::ColoredPointCloud3D *in_cloud, BRICS_3D::ColoredPointCloud3D *out_cloud);
+//    void extractColorBasedROI(BRICS_3D::ColoredPointCloud3D *in_cloud, BRICS_3D::PointCloud3D *out_cloud);
 
     int getBlue() const
     {

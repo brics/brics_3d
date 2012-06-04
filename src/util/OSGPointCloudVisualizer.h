@@ -32,7 +32,6 @@
 #include "boost/thread.hpp"
 
 #include "core/PointCloud3D.h"
-#include "core/ColoredPointCloud3D.h"
 
 
 namespace BRICS_3D {
@@ -81,8 +80,6 @@ public:
 	 * @param[in] pointCloud Pointer to colored point cloud that will be added to scene graph.
 	 * @param alpha Specifies the amount of the alpha channel of the point cloud. Range is 0.0f to 1.0f
 	 */
-	void addColoredPointCloud(ColoredPointCloud3D* pointCloud, float alpha=1.0f); /// @deprecated
-
 	void addColoredPointCloud(PointCloud3D* coloredPointCloud, float alpha=1.0f);
 
 	/**
@@ -106,7 +103,7 @@ public:
 	 * @param[in] pointCloud Pointer to colored point cloud that will be visualized
 	 * @param alpha Specifies the amount of the alpha channel of the point cloud. Range is 0.0f to 1.0f
 	 */
-	void visualizeColoredPointCloud(ColoredPointCloud3D *pointCloud, float alpha=1.0f);
+	void visualizeColoredPointCloud(PointCloud3D *pointCloud, float alpha=1.0f);
 
 	/**
 	 * @brief Clears all displayed data.
@@ -138,8 +135,6 @@ public:
 	 * @param[in] pointCloud Pointer to colored point cloud that will be transformed into an OSG geode
 	 * @param alpha Specifies the amount of the alpha channel of the point cloud. Range is 0.0f to 1.0f
 	 */
-	static osg::ref_ptr<osg::Node> createColoredPointCloudNode(ColoredPointCloud3D* pointCloud, float alpha=1.0f);
-
 	static osg::ref_ptr<osg::Node> createColoredPointCloudNode(PointCloud3D* coloredPointCloud, float alpha=1.0f);
 
 private:

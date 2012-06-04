@@ -195,6 +195,13 @@ public:
 	 */
     virtual ColoredPoint3D* asColoredPoint3D();
 
+    //
+    // make  clonable for boost;
+    Point3D* new_clone( const Point3D& point)
+    {
+        return point.clone();
+    }
+
 private:
 
 	/// X coordinate in Cartesian system

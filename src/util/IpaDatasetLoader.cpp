@@ -18,6 +18,7 @@
 ******************************************************************************/
 
 #include "IpaDatasetLoader.h"
+#include "core/ColoredPoint3D.h"
 
 namespace BRICS_3D {
 
@@ -144,9 +145,9 @@ PointCloud3D* IpaDatasetLoader::getPointCloud() {
 	return pointCloud;
 }
 
-ColoredPointCloud3D* IpaDatasetLoader::getColoredPointCloud() {
+PointCloud3D* IpaDatasetLoader::getColoredPointCloud() {
 
-	ColoredPointCloud3D* pointCloud = new ColoredPointCloud3D();
+	PointCloud3D* pointCloud = new PointCloud3D();
 
 	double x = 0.0;
 	double y = 0.0;
@@ -162,7 +163,7 @@ ColoredPointCloud3D* IpaDatasetLoader::getColoredPointCloud() {
 			this->getData(row, col, x, y, z, red, green, blue);
 
 			if (!((red == 0) && (green == 0) && (blue == 0))) { //discard "black" points as they don't belong to the object itself
-				pointCloud->addPoint(ColoredPoint3D(new Point3D(x, y, z), red, green, blue));
+				pointCloud->addPointPtr(new ColoredPoint3D(new Point3D(x, y, z), red, green, blue));
 			}
 		}
 	}

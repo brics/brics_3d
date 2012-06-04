@@ -20,7 +20,7 @@
 #ifndef COLORBASEDROIEXTRACTORHSV_H_
 #define COLORBASEDROIEXTRACTORHSV_H_
 
-#include "IColorBasedROIExtractor.h"
+#include "IFiltering.h"
 
 namespace BRICS_3D {
 
@@ -28,7 +28,7 @@ namespace BRICS_3D {
  * @brief Extracts subset of input point cloud based on color-properties in HSV color space
  * @ingroup filtering
  */
-class ColorBasedROIExtractorHSV : public IColorBasedROIExtractor {
+class ColorBasedROIExtractorHSV : public IFiltering {
 
 private:
 	/**
@@ -65,16 +65,7 @@ public:
 	 * @param in_cloud Input pointcloud (Colored)
 	 * @param out_cloud Extracted Subset (Color Information Discarded)
 	 */
-	void extractColorBasedROI(BRICS_3D::ColoredPointCloud3D *in_cloud, BRICS_3D::ColoredPointCloud3D *out_cloud);
-
-
-	/**
-	 * Extracts subset of input point cloud based on color-properties
-	 * @param in_cloud Input pointcloud (Colored)
-	 * @param out_cloud Extracted Subset (Color Information Discarded)
-	 */
-	void extractColorBasedROI(BRICS_3D::ColoredPointCloud3D *in_cloud,
-			BRICS_3D::PointCloud3D *out_cloud);
+	virtual void filter(PointCloud3D* originalPointCloud, PointCloud3D* resultPointCloud);
 
 	/**
 	 *

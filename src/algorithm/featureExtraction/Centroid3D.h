@@ -21,7 +21,6 @@
 #define CENTROID3DESTIMATION_H_
 
 #include "core/PointCloud3D.h"
-#include "core/ColoredPointCloud3D.h"
 
 #include <Eigen/Dense>
 namespace BRICS_3D {
@@ -36,8 +35,6 @@ public:
 	virtual ~Centroid3D();
 
 	Eigen::Vector3d computeCentroid(BRICS_3D::PointCloud3D *inCloud);
-
-	Eigen::Vector3d computeCentroid(BRICS_3D::ColoredPointCloud3D *inCloud);
 
 };
 

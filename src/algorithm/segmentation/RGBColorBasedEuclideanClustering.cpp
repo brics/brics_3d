@@ -18,6 +18,7 @@
  ******************************************************************************/
 #include "util/PCLTypecaster.h"
 #include "core/ColorSpaceConvertor.h"
+#include "core/Logger.h"
 
 #include <pcl/segmentation/extract_clusters.h>
 #include <pcl/point_types.h>
@@ -81,17 +82,17 @@ int RGBColorBasedEuclideanClustering::getMaxClusterSize() const
 
     int RGBColorBasedEuclideanClustering::segment()
     {
-        assert (this->inputPointCloud!=NULL || this->inputPointCloudColored!=NULL);
-        if(!isColoredInput){
+        assert (this->inputPointCloud != 0);
+    	if( (inputPointCloud->getSize() > 0)  && ((*inputPointCloud->getPointCloud())[0].asColoredPoint3D() == 0) ) {
+    		LOG(ERROR) << "Point clous does not seem to contain color data.";
             return 0;
         }else{
-            extractClusters(this->inputPointCloudColored);
-
+            extractClusters(this->inputPointCloud);
             return 1;
         }
     }
 
-    void RGBColorBasedEuclideanClustering::extractClusters(BRICS_3D::ColoredPointCloud3D *inCloud)
+    void RGBColorBasedEuclideanClustering::extractClusters(BRICS_3D::PointCloud3D *inCloud)
     {
     	this->extractedClusters.clear();
         BRICS_3D::PCLTypecaster pclTypecaster;
@@ -164,23 +165,24 @@ int RGBColorBasedEuclideanClustering::getMaxClusterSize() const
 
 //	        std::cout << "ChekPOINT!! : " << inCloud->getSize() << std::endl;
 
-			BRICS_3D::ColoredPointCloud3D *tempPointCloud =  new BRICS_3D::ColoredPointCloud3D();
+			BRICS_3D::PointCloud3D *tempPointCloud =  new BRICS_3D::PointCloud3D();
 
 			for (size_t j = 0; j < seed_queue.size (); ++j) {
 
 				BRICS_3D::ColoredPoint3D *tempPoint =  new BRICS_3D::ColoredPoint3D(
-						new BRICS_3D::Point3D(inCloud->getPointCloud()->data()[seed_queue[j]].getX(),
-						inCloud->getPointCloud()->data()[seed_queue[j]].getY(),
-						inCloud->getPointCloud()->data()[seed_queue[j]].getZ()),
-						inCloud->getPointCloud()->data()[seed_queue[j]].red,
-						inCloud->getPointCloud()->data()[seed_queue[j]].blue,
-						inCloud->getPointCloud()->data()[seed_queue[j]].green);
-				tempPointCloud->addPoint(tempPoint);
+						new BRICS_3D::Point3D(
+								(*inputPointCloud->getPointCloud())[seed_queue[j]].getX(),
+								(*inputPointCloud->getPointCloud())[seed_queue[j]].getY(),
+								(*inputPointCloud->getPointCloud())[seed_queue[j]].getZ()),
+								(*inputPointCloud->getPointCloud())[seed_queue[j]].asColoredPoint3D()->getR(),
+								(*inputPointCloud->getPointCloud())[seed_queue[j]].asColoredPoint3D()->getG(),
+								(*inputPointCloud->getPointCloud())[seed_queue[j]].asColoredPoint3D()->getB());
+				tempPointCloud->addPointPtr(tempPoint);
 
-				delete tempPoint;
+				//				delete tempPoint;
 			}
 			extractedClusters.push_back(tempPointCloud);
-			delete tempPointCloud;
+//			delete tempPointCloud; //?
 		}
 
 	}

@@ -21,7 +21,6 @@
 #define EUCLIDEANCLUSTERING3D_H_
 
 #include "core/PointCloud3D.h"
-#include "core/ColoredPointCloud3D.h"
 #include "algorithm/nearestNeighbor/NearestNeighborANN.h"
 #include "algorithm/nearestNeighbor/NearestNeighborFLANN.h"
 #include "algorithm/segmentation/ISegmentation.h"
@@ -65,18 +64,7 @@ private:
 	void extractClusters(BRICS_3D::PointCloud3D *inCloud);
 
 
-	/**
-	 * Takes a pointcloud and returns an array of pointcloud that make up the clusters.
-	 * The clusters are defined by the parameters being set
-	 * @param inCloud	Input point cloud
-	 * @param extractedClusters Vector of pointcluds containing the extracted clusters
-	 */
-	void extractClusters(BRICS_3D::ColoredPointCloud3D *inCloud);
-
-
 	std::vector<BRICS_3D::PointCloud3D*> extractedClusters;
-
-	std::vector<BRICS_3D::ColoredPointCloud3D*> extractedClustersColored;
 
 
 public:
@@ -144,13 +132,7 @@ public:
 
 
 	void getExtractedClusters(std::vector<BRICS_3D::PointCloud3D*> &extractedClusters){
-		if(!isColoredInput)
 		extractedClusters = this->extractedClusters;
-	}
-
-	void getExtractedClusters(std::vector<BRICS_3D::ColoredPointCloud3D*> &extractedClusters){
-		if(isColoredInput)
-		extractedClusters = this->extractedClustersColored;
 	}
 
 	int segment();

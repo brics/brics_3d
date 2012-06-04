@@ -12,8 +12,9 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "core/ColoredPointCloud3D.h"
+#include "core/PointCloud3D.h"
 #include "core/HomogeneousMatrix44.h"
+#include "core/ColoredPoint3D.h"
 #include "core/Point3DIntensity.h"
 
 using namespace std;
@@ -51,8 +52,8 @@ public:
 private:
 
 	  PointCloud3D* pointCloud;
-	  ColoredPointCloud3D* pointCloudCube;
-	  ColoredPointCloud3D* pointCloudCubeCopy;
+	  PointCloud3D* pointCloudCube;
+	  PointCloud3D* pointCloudCubeCopy;
 
 	  /* points of a simple cube */
 	  ColoredPoint3D* point000;

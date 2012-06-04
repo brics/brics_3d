@@ -21,7 +21,6 @@
 #define ISEGMENTATION_H_
 
 #include "core/PointCloud3D.h"
-#include "core/ColoredPointCloud3D.h"
 #include <iostream>
 
 namespace BRICS_3D{
@@ -39,12 +38,6 @@ protected:
 	PointCloud3D* inputPointCloud;
 
 
-	/** @brief The input point-cloud to be processed*/
-	ColoredPointCloud3D* inputPointCloudColored;
-
-	/**@brief Indicates if the input is colored or not*/
-	bool isColoredInput;
-
 public:
 
 	//	 virtual ISegmentation();
@@ -57,19 +50,18 @@ public:
 	setPointCloud (PointCloud3D* inputPointCloud)
 	{
 		this->inputPointCloud = inputPointCloud;
-		isColoredInput = false;
 	}
 
 
-	/** @brief Set the pointcloud to be used
-	 *  @param pointer to the input pointcloud
-	 */
-	inline void
-	setPointCloud (ColoredPointCloud3D* inputPointCloudColored)
-	{
-		this->inputPointCloudColored = inputPointCloudColored;
-		isColoredInput = true;
-	}
+//	/** @brief Set the pointcloud to be used
+//	 *  @param pointer to the input pointcloud
+//	 */
+//	inline void
+//	setPointCloud (ColoredPointCloud3D* inputPointCloudColored)
+//	{
+//		this->inputPointCloudColored = inputPointCloudColored;
+//		isColoredInput = true;
+//	}
 
 
 	/** @brief Get the pointcloud being used
@@ -82,14 +74,14 @@ public:
 	}
 
 
-	/** @brief Get the pointcloud being used
-	 *  @param pointer to the pointcloud being used
-	 */
-	inline void
-	getPointCloud (ColoredPointCloud3D* pointCloudColored)
-	{
-		pointCloudColored = this->inputPointCloudColored;
-	}
+//	/** @brief Get the pointcloud being used
+//	 *  @param pointer to the pointcloud being used
+//	 */
+//	inline void
+//	getPointCloud (ColoredPointCloud3D* pointCloudColored)
+//	{
+//		pointCloudColored = this->inputPointCloudColored;
+//	}
 
 
 	/**
