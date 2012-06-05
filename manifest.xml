@@ -1,7 +1,13 @@
 <package>
   <description brief="brics_3d">
 
-	BRICS_3D - 3D Perception and Modeling Library  
+	BRICS_3D is the BRICS library for 3D perception and modeling. It offers perception
+	algorithms to create a processing chain for object recognition or environment reconstruction 
+	(e.g. triangle representation) via data from 3D sensors. 
+	
+	Beside the algorithms for perception the BRICS_3D library implements a novel scene graph based
+	world modeling approach to maintain the processed 3D data over a longer period of time.	 
+	This library is biased towards 3D perception and modeling for mobile manipulation applications.
 
   </description>
   <author>Sebastian Blumenthal/blumenthal@gps-stuttgart.de</author>
