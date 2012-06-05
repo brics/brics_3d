@@ -3,6 +3,7 @@
 #
 #  BRICS_3D_FOUND - if BRICS_3D was found
 #  BRICS_3D_INCLUDE_DIRS - the BRICS_3D include directory (-I)
+#  BRICS_3D_EXTERNAL_INCLUDE_DIRS - the BRICS_3D include directory containing the external headers (-I)
 #  BRICS_3D_LINK_DIRECTORIES - the BRICS_3D linker directories (-L)
 #  BRICS_3D_LIBRARIES - BRICS_3D libraries
 #
@@ -20,6 +21,19 @@ FIND_PATH(BRICS_3D_INCLUDE_DIRS NAMES core/Point3D.h
   /usr/include/brics3d
   /usr/local/include/brics3d
   /opt/local/include/brics3d
+  NO_DEFAULT_PATH
+)
+
+FIND_PATH(BRICS_3D_EXTERNAL_INCLUDE_DIRS NAMES ann/include/ANN/ANN.h
+  PATHS
+  $ENV{BRICS_3D_DIR}/include/brics3d/external
+  $ENV{BRICS_3D_DIR}/include/external
+  $ENV{BRICS_3D_DIR}/external  
+  $ENV{ROBOTPKG_BASE}/include/brics3d/external
+  ENV CPATH
+  /usr/include/brics3d/external
+  /usr/local/include/brics3d/external
+  /opt/local/include/brics3d/external
   NO_DEFAULT_PATH
 )
 
@@ -110,10 +124,10 @@ include(FindPackageHandleStandardArgs)
 # handle the QUIETLY and REQUIRED arguments and set BRICS_3D_FOUND to TRUE
 # if all listed variables are TRUE
 find_package_handle_standard_args(BRICS_3D  DEFAULT_MSG
-                                  BRICS_3D_INCLUDE_DIRS BRICS_3D_LINK_DIRECTORIES BRICS_3D_LIBRARIES)
+                                  BRICS_3D_INCLUDE_DIRS BRICS_3D_EXTERNAL_INCLUDE_DIRS BRICS_3D_LINK_DIRECTORIES BRICS_3D_LIBRARIES)
 
 # show the BRICS_3D_INCLUDE_DIRS and BRICS_3D_LIBRARIES variables only in the advanced view
 IF(BRICS_3D_FOUND)
-  MARK_AS_ADVANCED(BRICS_3D_INCLUDE_DIRS BRICS_3D_LINK_DIRECTORIES BRICS_3D_LIBRARIES)
+  MARK_AS_ADVANCED(BRICS_3D_INCLUDE_DIRS BRICS_3D_EXTERNAL_INCLUDE_DIRS BRICS_3D_LINK_DIRECTORIES BRICS_3D_LIBRARIES)
 ENDIF(BRICS_3D_FOUND)
 

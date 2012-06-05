@@ -35,11 +35,17 @@ public:
 
 	void extractNonIndexedPointCloud(BRICS_3D::PointCloud3D* inputPoinCloud, std::vector<int> inliers, BRICS_3D::PointCloud3D* outputPointCloud);
 
-	void setMast(std::vector<int>* mask);
+	void setMask(std::vector<int>* mask);
+
+	void setUseInvertedMask(bool useInvertedMask);
+
+	bool getUseInvertedMask();
 
 private:
 
 	std::vector<int>* mask;
+
+	bool useInvertedMask;
 
 };
 

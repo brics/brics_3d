@@ -24,18 +24,23 @@ namespace BRICS_3D {
 
 MaskROIExtractor::MaskROIExtractor() {
 	mask = 0;
+	useInvertedMask = false;
 }
 
 MaskROIExtractor::~MaskROIExtractor() {
 	if (mask) {
-		delete mask;
+		//delete mask;
 		mask = 0;
 	}
 }
 
 void MaskROIExtractor::filter(PointCloud3D* originalPointCloud, PointCloud3D* resultPointCloud) {
 	assert (mask != 0);
-	extractIndexedPointCloud(originalPointCloud, *mask, resultPointCloud);
+	if(useInvertedMask) {
+		extractNonIndexedPointCloud(originalPointCloud, *mask, resultPointCloud);
+	} else {
+		extractIndexedPointCloud(originalPointCloud, *mask, resultPointCloud);
+	}
 }
 
 void MaskROIExtractor::extractIndexedPointCloud(BRICS_3D::PointCloud3D* inputPoinCloud, std::vector<int> inliers, BRICS_3D::PointCloud3D* outputPointCloud) {
@@ -79,9 +84,17 @@ void MaskROIExtractor::extractNonIndexedPointCloud(BRICS_3D::PointCloud3D* input
 	extractIndexedPointCloud(inputPoinCloud, invertedInliers, outputPointCloud);
 }
 
-void MaskROIExtractor::setMast(std::vector<int>* mask) {
+void MaskROIExtractor::setMask(std::vector<int>* mask) {
 	assert(mask != 0);
 	this->mask = mask;
+}
+
+void MaskROIExtractor::setUseInvertedMask(bool useInvertedMask) {
+	this->useInvertedMask = useInvertedMask;
+}
+
+bool MaskROIExtractor::getUseInvertedMask() {
+	return this->useInvertedMask;
 }
 
 }
