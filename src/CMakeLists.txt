@@ -78,6 +78,7 @@ SET (ALGORITHM_LIBRARY_SOURCES
 	./algorithm/depthPerception/DepthImageToPointCloudTransformation
 	
 	./algorithm/featureExtraction/Centroid3D
+    ./algorithm/featureExtraction/BoundingBox3DExtractor
 	./algorithm/featureExtraction/INormalEstimation
 
     ./algorithm/filtering/IFiltering

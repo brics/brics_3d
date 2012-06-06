@@ -2,7 +2,7 @@
 * BRICS_3D - 3D Perception and Modeling Library
 * Copyright (c) 2011, GPS GmbH
 *
-* Author: Pinaki Sunil Banerjee
+* Author: Sebastian Blumenthal
 *
 *
 * This software is published under a dual-license: GNU Lesser General Public
@@ -17,33 +17,37 @@
 *
 ******************************************************************************/
 
-#ifndef CENTROID3DESTIMATION_H_
-#define CENTROID3DESTIMATION_H_
+#ifndef BOUNDINGBOX3D_H_
+#define BOUNDINGBOX3D_H_
 
 #include "core/PointCloud3D.h"
+#include "core/Vector3D.h"
 
-#include <Eigen/Dense>
 namespace BRICS_3D {
 
 /**
- * @brief Computes the centroid of a point cloud.
- * The arithmetic mean is used here  as centroid.
+ * @brief Calculate a bounding box for a point cloud.
  */
-class Centroid3D {
+class BoundingBox3DExtractor {
 public:
-	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-	Centroid3D();
-	virtual ~Centroid3D();
+	BoundingBox3DExtractor();
+	virtual ~BoundingBox3DExtractor();
 
 	/**
-	 *
-	 * @param[in] inCloud The point cloud whose centroid shall be computed.
-	 * @return 3D Verctor represeting the centroid.
+	 * @brief Compute an axis aligned bounding box.
+	 * @param[in] inputPointCloud The point cloud whose bounding box shall be computed.
+	 * @param[out] resultBoxCenter Point that represents the center of the buinding box
+	 * @param[out] resultBoxDimensions 3D vector the represents the dimensions centered around the resultBoxCenter
 	 */
-	Eigen::Vector3d computeCentroid(BRICS_3D::PointCloud3D *inCloud);
+	void computeBoundingBox(PointCloud3D* inputPointCloud, Point3D& resultBoxCenter, Vector3D& resultBoxDimensions);
 
+protected:
+	Point3D lowerBound;
+	Point3D upperBound;
 };
 
 }
 
-#endif /* CENTROID3DESTIMATION_H_ */
+#endif /* BOUNDINGBOX3D_H_ */
+
+/* EOF */

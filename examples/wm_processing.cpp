@@ -29,6 +29,7 @@
 #include <core/TriangleMeshExplicit.h>
 #include <algorithm/filtering/Octree.h>
 #include <algorithm/filtering/BoxROIExtractor.h>
+#include <algorithm/featureExtraction/BoundingBox3DExtractor.h>
 #include <algorithm/registration/IterativeClosestPointFactory.h>
 #include <algorithm/depthPerception/DepthImageToPointCloudTransformation.h>
 #include <algorithm/meshGeneration/DelaunayTriangulationOSG.h>
@@ -156,6 +157,32 @@ int main(int argc, char **argv) {
 	BRICS_3D::PointCloud3D::PointCloud3DPtr boxROIPointCloud(new BRICS_3D::PointCloud3D());
 	boxFilter.filter(pcResultContainer->data.get(), boxROIPointCloud.get());
 	LOG(INFO) <<  "ROI has " << boxROIPointCloud->getSize() << " points.";
+
+
+
+
+	/* get a bounding box */
+	BRICS_3D::BoundingBox3DExtractor* boundingBoxExtractor = new BRICS_3D::BoundingBox3DExtractor();
+	BRICS_3D::Point3D resultBoxCenter;
+	BRICS_3D::Vector3D resultBoxDimensions;
+	boundingBoxExtractor->computeBoundingBox(pcResultContainer->data.get(), resultBoxCenter, resultBoxDimensions);
+	BRICS_3D::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr clusterTransform(new BRICS_3D::HomogeneousMatrix44(1,0,0, 0,1,0, 0,0,1, resultBoxCenter.getX(),resultBoxCenter.getY(),resultBoxCenter.getZ()));
+	BRICS_3D::RSG::Box::BoxPtr clusterBoundingBox(new BRICS_3D::RSG::Box(resultBoxDimensions.getX(), resultBoxDimensions.getY(), resultBoxDimensions.getZ()));
+	LOG(INFO) << "BoundingBox: center = " << resultBoxCenter << " dimensions = " << resultBoxDimensions;
+
+	/* add TF + Box */
+	unsigned int tfBBoxId = 0;
+	tmpAttributes.clear();
+	tmpAttributes.push_back(Attribute("name","cluster_tf"));
+	wm->scene.addTransformNode(wm->scene.getRootId(), tfBBoxId, tmpAttributes, clusterTransform, BRICS_3D::RSG::TimeStamp(0.1));
+
+	unsigned int bBoxId = 0;
+	tmpAttributes.clear();
+	tmpAttributes.push_back(Attribute("name","cluster_bbox"));
+	tmpAttributes.push_back(Attribute("debugInfo","no_visualization"));
+	wm->scene.addGeometricNode(tfBBoxId, bBoxId, tmpAttributes, clusterBoundingBox, BRICS_3D::RSG::TimeStamp(0.1));
+
+
 
 	/* Add a transformation node to wm */
 //	HomogeneousMatrix44::IHomogeneousMatrix44Ptr offsetTransform(new HomogeneousMatrix44(1,0,0, 0,1,0, 0,0,1, 0,0.001,0));
