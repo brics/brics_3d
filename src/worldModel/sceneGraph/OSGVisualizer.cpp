@@ -201,6 +201,10 @@ bool OSGVisualizer::addGroup(unsigned int parentId, unsigned int& assignedId, ve
 bool OSGVisualizer::addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp) {
 	LOG(DEBUG) << "OSGVisualizer: adding transform node";
 
+	bool noVisualisation = false;
+	Attribute noVisualisationTag("debugInfo","no_visualization");
+	noVisualisation = attributeListContainsAttribute(attributes, noVisualisationTag);
+
 	osg::ref_ptr<osg::Node> node = findNodeRecerence(parentId);
 	osg::ref_ptr<osg::Group> parentGroup = 0;
 	if (node != 0) {
@@ -211,7 +215,11 @@ bool OSGVisualizer::addTransformNode(unsigned int parentId, unsigned int& assign
 		osg::Matrixd transformMatrix;
 		transformMatrix.set(transform->getRawData());
 		newTransformNode->setMatrix(transformMatrix);
-		newTransformNode->addChild(createFrameAxis(frameAxisVisualisationScale)); //optionally for visualization
+		if (noVisualisation) {
+			LOG(DEBUG) << "OSGVisualizer: transform has no_visualization debug tag. Skipping visualization.";
+		} else {
+			newTransformNode->addChild(createFrameAxis(frameAxisVisualisationScale)); //optionally for visualization
+		}
 		viewer.addUpdateOperation(new OSGOperationAdd(this, newTransformNode, parentGroup));
 		idLookUpTable.insert(std::make_pair(assignedId, newTransformNode));
 		return true;

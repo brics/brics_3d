@@ -80,6 +80,7 @@ SET (ALGORITHM_LIBRARY_SOURCES
 	./algorithm/featureExtraction/Centroid3D
     ./algorithm/featureExtraction/BoundingBox3DExtractor
 	./algorithm/featureExtraction/INormalEstimation
+	./algorithm/featureExtraction/PCA
 
     ./algorithm/filtering/IFiltering
 	./algorithm/filtering/IOctreeReductionFilter

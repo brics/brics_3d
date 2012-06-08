@@ -18,6 +18,7 @@
 ******************************************************************************/
 
 #include "Centroid3D.h"
+#include "core/Logger.h"
 
 namespace BRICS_3D {
 
@@ -55,9 +56,16 @@ Eigen::Vector3d Centroid3D::computeCentroid(BRICS_3D::PointCloud3D *inCloud){
 		}
 	}
 
-	centroid[0] = centroid[0] / count;
-	centroid[1] = centroid[1] / count;
-	centroid[2] = centroid[2] / count;
+	if (count == 0) {
+		centroid[0] = 0;
+		centroid[1] = 0;
+		centroid[2] = 0;
+		LOG(WARNING) << "Centroid3D: point cloud is empty. Returning (0,0,0).";
+	} else {
+		centroid[0] = centroid[0] / count;
+		centroid[1] = centroid[1] / count;
+		centroid[2] = centroid[2] / count;
+	}
 
 	return centroid;
 }

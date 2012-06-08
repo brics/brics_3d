@@ -25,7 +25,7 @@ class BoundingBox3DTest : public CPPUNIT_NS::TestFixture {
 
 	CPPUNIT_TEST_SUITE( BoundingBox3DTest );
 	CPPUNIT_TEST( testSimpleBoundingBox );
-
+	CPPUNIT_TEST( testSimpleOrientedBox );
 	CPPUNIT_TEST_SUITE_END();
 public:
 
@@ -33,6 +33,7 @@ public:
 	void tearDown();
 
 	void testSimpleBoundingBox();
+	void testSimpleOrientedBox();
 
 	/// Maximum deviation for equality check of double variables
 	static const double maxTolerance = 0.00001;

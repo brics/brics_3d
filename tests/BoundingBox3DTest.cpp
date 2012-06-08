@@ -165,6 +165,61 @@ void BoundingBox3DTest::testSimpleBoundingBox() {
 
 }
 
+void BoundingBox3DTest::testSimpleOrientedBox() {
+	BoundingBox3DExtractor boundingBoxExtractor;
+	BRICS_3D::Vector3D resultBoxDimensions;
+	HomogeneousMatrix44 resultTransform;
+
+	const double* matrixData;
+	matrixData = resultTransform.getRawData();
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixData[12], maxTolerance); //preconditions
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixData[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixData[14], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultBoxDimensions.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultBoxDimensions.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, resultBoxDimensions.getZ(), maxTolerance);
+
+	/* get bounding box */
+	boundingBoxExtractor.computeOrientedBoundingBox(testCloudUnitCube, &resultTransform, resultBoxDimensions);
+//	std::cout << "computeOrientedBoundingBox transform " << std::endl << resultTransform << std::endl;
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, matrixData[12], maxTolerance); //postconditions
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, matrixData[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, matrixData[14], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultBoxDimensions.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultBoxDimensions.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, resultBoxDimensions.getZ(), maxTolerance);
+
+
+
+	/* take the other point cloud */
+	BRICS_3D::Vector3D resultBoxDimensions2;
+	HomogeneousMatrix44 resultTransform2;
+	const double* matrixData2;
+	matrixData2 = resultTransform2.getRawData();
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixData2[12], maxTolerance); //preconditions
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixData2[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixData2[14], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0, resultBoxDimensions2.getX(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0, resultBoxDimensions2.getY(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0, resultBoxDimensions2.getZ(), maxTolerance);
+
+	boundingBoxExtractor.computeOrientedBoundingBox(testCloud, &resultTransform, resultBoxDimensions2);
+
+//	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, matrixData2[12], maxTolerance); //postconditions
+//	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, matrixData2[13], maxTolerance);
+//	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, matrixData2[14], maxTolerance);
+	CPPUNIT_ASSERT(resultBoxDimensions2.getX() < 10);
+	CPPUNIT_ASSERT(resultBoxDimensions2.getY() < 10);
+	CPPUNIT_ASSERT(resultBoxDimensions2.getZ() < 10);
+//	CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, resultBoxDimensions2.getX(), maxTolerance);
+//	CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, resultBoxDimensions2.getY(), maxTolerance);
+//	CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, resultBoxDimensions2.getZ(), maxTolerance);
+
+}
+
 }  // namespace unitTests
 
 /* EOF */

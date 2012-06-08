@@ -17,11 +17,13 @@
 *
 ******************************************************************************/
 
-#ifndef BOUNDINGBOX3D_H_
-#define BOUNDINGBOX3D_H_
+#ifndef BOUNDINGBOX3DEXTRACTOR_H_
+#define BOUNDINGBOX3DEXTRACTOR_H_
 
 #include "core/PointCloud3D.h"
 #include "core/Vector3D.h"
+#include "core/IHomogeneousMatrix44.h"
+#include "algorithm/featureExtraction/PCA.h"
 
 namespace BRICS_3D {
 
@@ -30,24 +32,50 @@ namespace BRICS_3D {
  */
 class BoundingBox3DExtractor {
 public:
+
+	/**
+	 * Standard constructor
+	 */
 	BoundingBox3DExtractor();
+
+	/**
+	 * Standard destructor.
+	 */
 	virtual ~BoundingBox3DExtractor();
 
 	/**
 	 * @brief Compute an axis aligned bounding box.
 	 * @param[in] inputPointCloud The point cloud whose bounding box shall be computed.
-	 * @param[out] resultBoxCenter Point that represents the center of the buinding box
-	 * @param[out] resultBoxDimensions 3D vector the represents the dimensions centered around the resultBoxCenter
+	 * @param[out] resultBoxCenter Point that represents the center of the bounding box.
+	 * @param[out] resultBoxDimensions 3D vector the represents the dimensions centered around the resultBoxCenter.
 	 */
 	void computeBoundingBox(PointCloud3D* inputPointCloud, Point3D& resultBoxCenter, Vector3D& resultBoxDimensions);
 
+	/**
+	 * Compute an oriented bounding box.
+	 * Internally a PCA will be performed to find the orientation.
+	 * @param[in] inputPointCloud The point cloud whose bounding box shall be computed.
+	 * @param[out] resultTransform Transform the contains the oriantation as well as the center of the bounding box.
+	 * @param[out] resultBoxDimensions 3D vector the represents the dimensions centered around the center.
+	 */
+	void computeOrientedBoundingBox(PointCloud3D* inputPointCloud, IHomogeneousMatrix44* resultTransform, Vector3D& resultBoxDimensions);
+
+
 protected:
+
+	///Lower bundariy used to find min values for x, y and z.
 	Point3D lowerBound;
+
+	///Upper bundariy used to find max values for x, y and z.
 	Point3D upperBound;
+
+	///PCA used for computing an oriented bounding box.
+	PCA pcaExtractor;
+
 };
 
 }
 
-#endif /* BOUNDINGBOX3D_H_ */
+#endif /* BOUNDINGBOX3DEXTRACTOR_H_ */
 
 /* EOF */
