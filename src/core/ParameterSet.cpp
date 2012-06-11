@@ -187,7 +187,7 @@ bool ParameterSet::unpack(const std::string& param) {
 
 	// use very simple state machine for counting paranthesis
 	enum { NEW, PAR1, PAR2, PAR3, PAR_END } state = NEW;
-	unsigned int offset = 0;
+	int offset = 0;
 	std::string name = "";
 	std::string value = "";
 

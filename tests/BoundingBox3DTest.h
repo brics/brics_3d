@@ -9,6 +9,8 @@
 #ifndef BOUNDINGBOX3DTEST_H_
 #define BOUNDINGBOX3DTEST_H_
 
+#include <Eigen/StdVector>
+
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 

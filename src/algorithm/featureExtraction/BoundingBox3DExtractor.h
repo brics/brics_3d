@@ -20,10 +20,11 @@
 #ifndef BOUNDINGBOX3DEXTRACTOR_H_
 #define BOUNDINGBOX3DEXTRACTOR_H_
 
+#include "algorithm/featureExtraction/PCA.h"
 #include "core/PointCloud3D.h"
 #include "core/Vector3D.h"
 #include "core/IHomogeneousMatrix44.h"
-#include "algorithm/featureExtraction/PCA.h"
+
 
 namespace BRICS_3D {
 

@@ -29,7 +29,6 @@
 #include <core/TriangleMeshExplicit.h>
 #include <algorithm/filtering/Octree.h>
 #include <algorithm/filtering/BoxROIExtractor.h>
-#include <algorithm/featureExtraction/BoundingBox3DExtractor.h>
 #include <algorithm/registration/IterativeClosestPointFactory.h>
 #include <algorithm/depthPerception/DepthImageToPointCloudTransformation.h>
 #include <algorithm/meshGeneration/DelaunayTriangulationOSG.h>
@@ -39,6 +38,10 @@
 #include <worldModel/sceneGraph/Box.h>
 #include <worldModel/sceneGraph/Cylinder.h>
 #include <worldModel/sceneGraph/DotGraphGenerator.h>
+
+#ifdef EIGEN3
+#include <algorithm/featureExtraction/BoundingBox3DExtractor.h>
+#endif /*EIGEN3*/
 
 /* general includes */
 #include <iostream>
@@ -162,6 +165,7 @@ int main(int argc, char **argv) {
 
 
 	/* get a bounding box */
+#ifdef EIGEN3
 	BRICS_3D::BoundingBox3DExtractor* boundingBoxExtractor = new BRICS_3D::BoundingBox3DExtractor();
 	BRICS_3D::Point3D resultBoxCenter;
 	BRICS_3D::Vector3D resultBoxDimensions;
@@ -181,7 +185,7 @@ int main(int argc, char **argv) {
 	tmpAttributes.push_back(Attribute("name","cluster_bbox"));
 	tmpAttributes.push_back(Attribute("debugInfo","no_visualization"));
 	wm->scene.addGeometricNode(tfBBoxId, bBoxId, tmpAttributes, clusterBoundingBox, BRICS_3D::RSG::TimeStamp(0.1));
-
+#endif
 
 
 	/* Add a transformation node to wm */
