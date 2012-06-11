@@ -72,6 +72,7 @@ SET (CORE_LIBRARY_SOURCES
     ./core/Logger
     ./core/ColorSpaceConvertor
     ./core/Version
+    ./core/ParameterSet
 )
 
 SET (ALGORITHM_LIBRARY_SOURCES
