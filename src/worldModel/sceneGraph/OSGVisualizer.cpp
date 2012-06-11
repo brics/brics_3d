@@ -108,7 +108,7 @@ OSGVisualizer::OSGVisualizer() {
 }
 
 OSGVisualizer::~OSGVisualizer() {
-
+	delete thread;
 }
 
 void OSGVisualizer::init() {

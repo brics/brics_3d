@@ -79,7 +79,7 @@ void EuclideanClusteringPCL::extractClusters(BRICS_3D::PointCloud3D *inCloud){
 
 		//extractedClusters.data()[index]->getPointCloud()->clear();
 		for (std::vector<int>::const_iterator pit = it->indices.begin (); pit != it->indices.end (); pit++){
-			extractedClusters.data()[index]->addPoint(new Point3D(	inCloudPclPtr->points[*pit].x,
+			extractedClusters.data()[index]->addPointPtr(new Point3D(	inCloudPclPtr->points[*pit].x,
 					inCloudPclPtr->points[*pit].y,
 					inCloudPclPtr->points[*pit].z) );
 		}

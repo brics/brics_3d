@@ -17,6 +17,9 @@
 *
 ******************************************************************************/
 
+#ifndef EUCLEDIANCLUSTERINGPCL_H_
+#define EUCLEDIANCLUSTERINGPCL_H_
+
 #include "core/PointCloud3D.h"
 #include "algorithm/segmentation/ISegmentation.h"
 #include "core/ColorSpaceConvertor.h"
@@ -138,4 +141,7 @@ public:
 
 }
 
+#endif /* EUCLEDIANCLUSTERINGPCL_H_ */
+
+/* EOF */
 
