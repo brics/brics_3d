@@ -40,6 +40,10 @@ void Octree::filter(PointCloud3D* originalPointCloud, PointCloud3D* resultPointC
 
 	resultPointCloud->getPointCloud()->clear();
 
+	if(originalPointCloud->getSize() == 0) {
+		return; //Nothing to do here..
+	}
+
 	if (voxelSize <=0) {
 		for (int i = 0; i < static_cast<int>(originalPointCloud->getSize()); ++i) { //just copy data
 			resultPointCloud->addPoint((*originalPointCloud->getPointCloud())[i]);
@@ -75,7 +79,7 @@ void Octree::filter(PointCloud3D* originalPointCloud, PointCloud3D* resultPointC
 
 	/* some plausibility checks */
 	assert (resultPointCloud->getSize() == center.size());
-	assert (resultPointCloud->getSize() <= originalPointCloud->getSize());
+//	assert (resultPointCloud->getSize() <= originalPointCloud->getSize());
 
 	/* clean up */
 	delete octree;

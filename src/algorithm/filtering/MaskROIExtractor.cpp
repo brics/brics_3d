@@ -59,6 +59,12 @@ void MaskROIExtractor::extractNonIndexedPointCloud(BRICS_3D::PointCloud3D* input
 	assert(outputPointCloud !=0);
 	std::vector<int> invertedInliers;
 
+	outputPointCloud->getPointCloud()->clear();
+
+	if(inliers.size() == inputPoinCloud->getSize()) {
+		return; //Nothing to do...
+	}
+
 	int indliersIndex = 0;
 	int invertedIndliersIndex = 0;
 	std::sort(inliers.begin(), inliers.end());

@@ -65,7 +65,7 @@ void DotGraphGenerator::visit(GeometricNode* node){
 
 void DotGraphGenerator::doHandleNode(Node* node) {
 	assert (node !=0);
-	LOG(DEBUG) << "Adding node " << node->getId() << " to dot graph.";
+//	LOG(DEBUG) << "Adding node " << node->getId() << " to dot graph.";
 
 	//Each node should add a line like this: 2 [label = "ID [2]\n(name = point_cloud_1)\n"];
 
