@@ -24,6 +24,7 @@ namespace BRICS_3D {
 
 /**
  * @brief Coordination interface to trigger the internal perception processing functionalities.
+ * @ingroup sceneGraph
  */
 class IWorldModelCoordination {
   public:

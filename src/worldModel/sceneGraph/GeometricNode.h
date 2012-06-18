@@ -35,6 +35,8 @@ namespace RSG {
  * The geometric node is a rather general container for <b>any</b> kind of 3D data. 
  * Possible data ranges from rather primitive shapes like boxes and cylinders to point clouds and meshes. 
  * 3D features like spin images etc. would be placed in to a geometric node too.
+ *
+ * @ingroup sceneGraph
  */
 class GeometricNode : public Node {
 

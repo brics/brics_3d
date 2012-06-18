@@ -30,6 +30,7 @@ namespace BRICS_3D {
 
 /**
  * @brief Calculate a bounding box for a point cloud.
+ * @ingroup featureExtraction
  */
 class BoundingBox3DExtractor {
 public:

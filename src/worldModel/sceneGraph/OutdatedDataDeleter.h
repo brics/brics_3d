@@ -40,6 +40,7 @@ namespace RSG {
  * preserved. Thus the doDeleteNode is the one and only one primitive operation that
  * might be overriden by another conrete implementation.
  *
+ * @ingroup sceneGraph
  */
 class OutdatedDataDeleter : public INodeVisitor {
 public:

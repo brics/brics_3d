@@ -32,6 +32,7 @@ namespace BRICS_3D {
 
 /**
  * @brief <b>The</b> handle for a 3D world model.
+ * @ingroup sceneGraph
  */
 class WorldModel : public IWorldModelQuery, public IWorldModelUpdate, public IWorldModelCoordination {
 

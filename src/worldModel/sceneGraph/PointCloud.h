@@ -28,6 +28,7 @@ namespace RSG {
 
 /**
  * Abstract interface for point cloud data in the scenegraph.
+ * @ingroup sceneGraph
  *
  * @TODO rename to PointCloudNode, otherwise too many point cloud types will be involved...
  */

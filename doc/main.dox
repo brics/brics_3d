@@ -12,6 +12,7 @@
 @section toc Table of Contents
 
 - @ref introduction
+- @ref worldmodel
 - @ref installation
 - @ref quickstart
 - @ref examples
@@ -24,7 +25,7 @@
   - @ref transformation_tutorial
   - @ref triangle_mesh_tutorial
   - @ref visualizer_tutorial
-- @ref Algorithms
+- @ref Algorithms for perception
  - @ref depth_perception
  - @ref filtering
  - @ref registration
@@ -32,6 +33,7 @@
  - @ref nearestNeighbor
  - @ref mesh_generation
  - @ref visualization
+- @ref sceneGraph world model implementation 
 - @ref license
 - @ref references 
 
@@ -81,7 +83,12 @@ If you want to cite the BRICS_3D library you can use the following reference. Am
  
 	For example the Octree based size reduction filter can be found here.
  
-  
+
+@defgroup featureExtraction Feature Extraction
+	@brief This module contains algorithms for feature extraction from point clouds. 
+	
+	An introduction can be found in the @ref feature_extraction_def section.
+ 
 
 @defgroup registration Registration
 	@brief This module contains algorithms for registration of point clouds.
@@ -114,7 +121,11 @@ If you want to cite the BRICS_3D library you can use the following reference. Am
 
     An introduction can be found in the @ref classification_def section.
     
-    
+
+@defgroup sceneGraph Scenegraph
+	@brief This module contains the implementation of the scenegraph based world model. 
+
+    A detailed descussion can be found in @ref worldmodel.    
     
  */
   

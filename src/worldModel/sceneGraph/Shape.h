@@ -30,6 +30,7 @@ namespace RSG {
 
 /**
  * @brief A generic shape that can by carried by a GeometricNode.
+ * @ingroup sceneGraph
  *
  * For basic shapes like boxes etc. the origin is assumed to be in the center of the shape.
  */

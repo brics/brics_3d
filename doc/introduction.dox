@@ -56,6 +56,8 @@ compute a normal vector for each point in a point cloud. The normal represents t
 vector of an underlying patch of the surface. Many algorithms requires point clouds with normals
 to further process the data.  
 
+Further information on the implemented algorithms can be found in the @ref featureExtraction section.
+ 
  
 @subsection registration_def Registration
 Registration, also sometimes referred as <i>matching</i>, is the process of merging captures from

@@ -29,6 +29,7 @@ namespace RSG {
 
 /**
  * @brief Simple model of a 3D box.
+ * @ingroup sceneGraph
  *
  * The origin is considered in the center of each size value.
  */

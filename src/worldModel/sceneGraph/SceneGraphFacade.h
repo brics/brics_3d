@@ -49,6 +49,7 @@ namespace RSG {
  * The SceneGraphFacade takes care (maintains consistency) of mapping between IDs and internal pointers.
  * The implemented interfaces allow to create and maintain a scengraph bases on the node IDs only.
  *
+ * @ingroup sceneGraph
  */
 class SceneGraphFacade : public ISceneGraphQuery, public ISceneGraphUpdate {
 

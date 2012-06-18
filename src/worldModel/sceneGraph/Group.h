@@ -30,6 +30,7 @@ namespace RSG {
 
 /**
  *  @brief The group allows for the <b>graph</b> relations, as it extends a node to have further children nodes.
+ *  @ingroup sceneGraph
  */
 class Group : public Node {
 

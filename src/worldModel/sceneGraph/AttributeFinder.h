@@ -35,6 +35,7 @@ namespace RSG {
 
 /**
  * Special graph traversal to find those nodes that contain a certain subset of Attributes.
+ * @ingroup sceneGraph
  */
 class AttributeFinder: public INodeVisitor {
 public:

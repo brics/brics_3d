@@ -34,6 +34,7 @@ namespace RSG {
 
 /**
  * @brief Abstract interface for all scenegraph related update functions.
+ * @ingroup sceneGraph
  */
 class ISceneGraphUpdate {
   public:

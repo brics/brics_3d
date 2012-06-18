@@ -34,6 +34,7 @@ namespace BRICS_3D {
 
 /**
  * @brief Interface to get access to elements in the 3D model.
+ * @ingroup sceneGraph
  */
 class IWorldModelQuery {
   public:

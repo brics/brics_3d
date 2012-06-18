@@ -30,6 +30,10 @@ namespace BRICS_3D { namespace RSG { class Attribute; }  }
 
 namespace BRICS_3D {
 
+/**
+ * @brief Representation of a high "level object".
+ * @ingroup sceneGraph
+ */
 class SceneObject {
 
   public:

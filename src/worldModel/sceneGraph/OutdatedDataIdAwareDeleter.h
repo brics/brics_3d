@@ -33,6 +33,8 @@ namespace RSG {
  * This class behaves essentially the same as OutdatedDataDeleter, except that it will
  * make use of the deleteNode function in the facade. Thus the IDs managed by the facade
  * will be in sync.
+ *
+ * @ingroup sceneGraph
  */
 class OutdatedDataIdAwareDeleter : public OutdatedDataDeleter {
 public:

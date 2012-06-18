@@ -37,6 +37,7 @@ typedef vector< pair<IHomogeneousMatrix44::IHomogeneousMatrix44Ptr, TimeStamp> >
  * @brief Determine the accumulated transform along a path of nodes.
  * @param nodePath A path of nodes from root descending.
  * @return Shared pointer to the accumulated transform.
+ * @ingroup sceneGraph
  */
 extern IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransformAlongPath(Node::NodePath nodePath);
 
@@ -47,11 +48,13 @@ extern IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransformAlongPath
  * In case the node has multiple paths to root node, the first found path will be taken!
  * @param node The node to where the transform from root will calculated.
  * @return Shared pointer to the accumulated transform.
+ * @ingroup sceneGraph
  */
 extern IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransform(Node::NodePtr node);
 
 /**
  * @brief A node that expresses a geometric transformation between its parents and children.
+ * @ingroup sceneGraph
  *
  * The transform node can cache transform data over a certain period of time. Typically one
  * wants to get the most recent transform. This can be done with the getLatestTransform()

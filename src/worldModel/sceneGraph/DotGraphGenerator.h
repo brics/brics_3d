@@ -34,6 +34,7 @@ namespace RSG {
 
 /**
  * @brief Node visitor that generates a "dot" representation.
+ * @ingroup sceneGraph
  */
 class DotGraphGenerator : public INodeVisitor {
 public:

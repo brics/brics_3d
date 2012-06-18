@@ -28,6 +28,7 @@ namespace RSG {
 
 /**
  * @brief Implementation for IIdGenerator based on a running number.
+ * @ingroup sceneGraph
  */
 class SimpleIdGenerator : public IIdGenerator {
 

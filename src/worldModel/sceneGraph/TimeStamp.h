@@ -26,6 +26,7 @@ namespace RSG {
 
 /**
  * Simple container for time data.
+ * @ingroup sceneGraph
  */
 class TimeStamp {
   public:

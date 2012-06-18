@@ -28,7 +28,8 @@
 namespace BRICS_3D {
 
 /**
- * @brief Principle Component Analysis for point clouds
+ * @brief Principle Component Analysis for point clouds.
+ * @ingroup featureExtraction
  */
 class PCA {
 public:

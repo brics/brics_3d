@@ -41,6 +41,7 @@ namespace RSG {
 
 /**
  * @brief Displays a robot scene graph via OSG
+ * @ingroup sceneGraph
  * @ingroup visualization
  */
 class OSGVisualizer : public ISceneGraphUpdateObserver {

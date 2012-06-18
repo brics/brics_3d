@@ -26,6 +26,10 @@ namespace BRICS_3D {
 
 namespace RSG {
 
+/**
+ * @brief Interface to observe any updates to the scenegraph
+ * @ingroup sceneGraph
+ */
 class ISceneGraphUpdateObserver : public ISceneGraphUpdate {
 
 

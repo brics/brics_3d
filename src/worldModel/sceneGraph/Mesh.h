@@ -28,6 +28,7 @@ namespace RSG {
 
 /**
  * Abstract interface for mesh data in the scenegraph.
+ * @ingroup sceneGraph
  */
 template<typename MeshT>
 class Mesh : public Shape {

@@ -44,6 +44,8 @@ namespace RSG {
  *
  *   - "shapeType": {"Box"}
  *   - "color": {"red", "green", "yellow"}
+ *
+ * @ingroup sceneGraph
  */
 class Attribute {
   public:

@@ -36,6 +36,7 @@ namespace RSG {
  * Computes the collected paths from a certain node (where the accept is called) to the root node.
  * The node from where the traversal is initiated will excluded from the paths.
  *
+ * @ingroup sceneGraph
  */
 class PathCollector : public INodeVisitor {
 public:

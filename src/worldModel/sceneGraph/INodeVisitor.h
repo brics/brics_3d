@@ -31,6 +31,7 @@ class GeometricNode;
 
 /**
  * @brief Abstract interface for visitors of the scene graph (Visitor pattern).
+ * @ingroup sceneGraph
  */
 class INodeVisitor {
 public:

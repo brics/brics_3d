@@ -34,6 +34,7 @@ namespace RSG {
 
 /**
  * @brief Abstract interface for all scenegraph related query functions.
+ * @ingroup sceneGraph
  */
 class ISceneGraphQuery {
   public:

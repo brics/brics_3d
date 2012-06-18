@@ -28,6 +28,7 @@ namespace BRICS_3D {
 
 /**
  * @brief Interface to get update elements in the 3D model.
+ * @ingroup sceneGraph
  */
 class IWorldModelUpdate {
   public:

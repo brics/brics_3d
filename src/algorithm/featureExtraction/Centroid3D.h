@@ -27,6 +27,7 @@ namespace BRICS_3D {
 
 /**
  * @brief Computes the centroid of a point cloud.
+ * @ingroup featureExtraction
  * The arithmetic mean is used here  as centroid.
  */
 class Centroid3D {

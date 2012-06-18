@@ -32,6 +32,7 @@ namespace BRICS_3D {
 
 /**
  * @brief RobotSceneGraph
+ * @ingroup sceneGraph
  *
  * A scene graph for robot 3D perception and modeling.
  *

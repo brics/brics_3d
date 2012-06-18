@@ -27,6 +27,7 @@ namespace BRICS_3D {
 
 /**
  * @brief Abstract interface for normal estimation algorithms for point clouds
+ * @ingroup featureExtraction
  */
 class INormalEstimation {
 public:
