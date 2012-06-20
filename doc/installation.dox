@@ -2,11 +2,22 @@
 
 @page installation Installation
 
+- @ref latest_version
+- @ref external_libraries
+- @ref install_preperation
+- @ref install_external_libraries
+- @ref install_optional_birearies
+- @ref brics_3d_compilation
+- @ref brics_3d_ros_compilation
+- @ref doxygen_generation
+
+
 @section latest_version The Latest Version
 
 The latest version can be found on the project page under 
 https://svn.best-of-robotics.org/brics/BROCRE/BRICS_3D/trunk
 
+In case you are asked for a SVN login take \e svnuser as username and \e svnuser as password to retrive the latest read-only copy.
 
 @section external_libraries External libraries 
 
@@ -131,14 +142,37 @@ visualization (e.g. BRICS_3D_Demo) In that case configure it with
  $ cmake .. -DUSE_OSG
 @endcode 
 
+
+@section brics_3d_ros_compilation Alternative compilation of BRICS_3D with the ROS build system
+
+As an alternative to the above described method you can  also use the ROS build system. 
+However this method will not include any \e optional libraries. 
+
+First make sure the folder of BRICS_3D is located somewhere in the ROS_PACKAGE_PATH. 
+You can check this i.e. if \e roscd \e brics_3d goes to the correct folder. 
+
+@code
+ $ rosmake brics_3d --rosdep-install
+@endcode 
+
+If you want to install BRICS_3D as a system wide library you can type:
+
+@code
+ $ roscd brics_3d/build
+ $ sudo make install
+@endcode
+
 @section doxygen_generation Generating the latest documentation with Doxygen
 
 To generate the latest version of the accompanied documentation go the BRICS_3D folder and
-use the doxygen tool. Then open the html files with your favorite web browser. 
+use the doxygen tool. Then open the html files with your favorite web browser. Then type:
 
 @code
  $ doxygen BRICS_3D.doxyfile
  $ firefox ./doc/html/index.htm
 @endcode
+
+
+After sucesfully installing the BRICS_3D library you can continue with @ref quickstart.
 
 */
