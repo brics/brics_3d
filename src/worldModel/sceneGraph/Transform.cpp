@@ -65,6 +65,24 @@ IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransform(Node::NodePtr n
 	return result;
 }
 
+IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getTransformBetweenNodes(Node::NodePtr node, Node::NodePtr referenceNode) {
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr result(new HomogeneousMatrix44()); //identity matrix
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr rootToNodeTransform = getGlobalTransform(node);
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr rootToReferenceNodeTransform = getGlobalTransform(referenceNode);
+
+//	std::cout << "rootToNodeTransform :" << std::endl << *rootToNodeTransform << std::endl;
+//	std::cout << "rootToReferenceNodeTransform :" << std::endl << *rootToReferenceNodeTransform << std::endl;
+
+	rootToReferenceNodeTransform->inverse();
+//	std::cout << "rootToReferenceNodeTransform inversed :" << std::endl << *rootToReferenceNodeTransform << std::endl;
+
+	*result = *( (*rootToNodeTransform) * (*rootToReferenceNodeTransform) );
+//	std::cout << "result :" << std::endl << *result << std::endl;
+
+	return result;
+}
+
+
 Transform::Transform() : maxHistoryDuration(dafaultMaxHistoryDuration), updateCount(0) {
 #ifdef STATIC_TRANSFORM
 	history.resize(1);

@@ -2226,6 +2226,169 @@ void SceneGraphNodesTest::testSceneGraphFacade(){
 
 }
 
+void SceneGraphNodesTest::testSceneGraphFacadeTransforms() {
+	/* Graph structure: (remember: nodes can only serve as are leaves)
+	 *            root
+	 *              |
+	 *        ------+-----
+	 *        |          |
+	 *       tf1        tf2
+	 *        |          |
+	 *       tf3        group4
+	 *        |          |
+	 *        +----  ----+
+	 *            |  |
+	 *            node5
+	 */
+	unsigned int tf1Id = 0;
+	unsigned int tf2Id = 0;
+	unsigned int tf3Id = 0;
+	unsigned int group4Id = 0;
+	unsigned int node5Id = 0;
+
+	const double* desiredMatrixData;
+	const double* resultMatrixData;
+
+	TimeStamp dummyTime(1.0);
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform001(new HomogeneousMatrix44(1,0,0,  	//Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             0,0,-1));
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform123(new HomogeneousMatrix44(1,0,0,  	//Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             1,2,3)); 						//Translation coefficients
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform654(new HomogeneousMatrix44(1,0,0,  	//Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             6,5,4)); 						//Translation coefficients
+
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform789(new HomogeneousMatrix44(1,0,0,  	//Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             7,8,9)); 						//Translation coefficients
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr resultTransform;
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr expectedTransform(new HomogeneousMatrix44());
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr identity(new HomogeneousMatrix44());
+
+	SceneGraphFacade scene;
+	vector<Attribute> tmpAttributes;
+
+	CPPUNIT_ASSERT(scene.addTransformNode(scene.getRootId(), tf1Id, tmpAttributes, transform001, dummyTime));
+	CPPUNIT_ASSERT(scene.addTransformNode(scene.getRootId(), tf2Id, tmpAttributes, transform123, dummyTime));
+	CPPUNIT_ASSERT(scene.addTransformNode(tf1Id, tf3Id, tmpAttributes, transform654, dummyTime));
+	CPPUNIT_ASSERT(scene.addGroup(tf2Id, group4Id, tmpAttributes));
+	CPPUNIT_ASSERT(scene.addNode(tf3Id, node5Id, tmpAttributes));
+	CPPUNIT_ASSERT(scene.addParent(node5Id, group4Id));
+
+//	BRICS_3D::RSG::DotGraphGenerator dotGraphGenerator; //Debug
+//	scene.executeGraphTraverser(&dotGraphGenerator);
+//	cout << "testSceneGraphFacadeTransforms" << endl;
+//	cout << dotGraphGenerator.getDotGraph();
+
+
+	/*check root to tf1*/
+	CPPUNIT_ASSERT(scene.getTransformForNode(tf1Id, scene.getRootId(), dummyTime, resultTransform));
+	resultMatrixData = resultTransform->getRawData();
+	desiredMatrixData = transform001->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[12], resultMatrixData[12], maxTolerance); //check (just) translation
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[13], resultMatrixData[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[14], resultMatrixData[14], maxTolerance);
+
+	/*check root to tf3*/
+	CPPUNIT_ASSERT(scene.getTransformForNode(tf3Id, scene.getRootId(), dummyTime, resultTransform));
+	*expectedTransform = *identity;
+	*expectedTransform = *( (*expectedTransform) * (*transform001) );
+	*expectedTransform = *( (*expectedTransform) * (*transform654) );
+
+	resultMatrixData = resultTransform->getRawData();
+	desiredMatrixData = expectedTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[12], resultMatrixData[12], maxTolerance); //check (just) translation
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[13], resultMatrixData[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[14], resultMatrixData[14], maxTolerance);
+
+	/*check root to node5 */
+	CPPUNIT_ASSERT(scene.getTransformForNode(node5Id, scene.getRootId(), dummyTime, resultTransform));
+	*expectedTransform = *identity;
+	*expectedTransform = *( (*expectedTransform) * (*transform001) );
+	*expectedTransform = *( (*expectedTransform) * (*transform654) );
+
+	resultMatrixData = resultTransform->getRawData();
+	desiredMatrixData = expectedTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[12], resultMatrixData[12], maxTolerance); //check (just) translation
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[13], resultMatrixData[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[14], resultMatrixData[14], maxTolerance);
+
+	/*check root to tf2 */
+	CPPUNIT_ASSERT(scene.getTransformForNode(tf2Id, scene.getRootId(), dummyTime, resultTransform));
+	*expectedTransform = *identity;
+	*expectedTransform = *( (*expectedTransform) * (*transform123) );
+
+	resultMatrixData = resultTransform->getRawData();
+	desiredMatrixData = expectedTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[12], resultMatrixData[12], maxTolerance); //check (just) translation
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[13], resultMatrixData[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[14], resultMatrixData[14], maxTolerance);
+
+	/*check root to group4 */
+	CPPUNIT_ASSERT(scene.getTransformForNode(group4Id, scene.getRootId(), dummyTime, resultTransform));
+	*expectedTransform = *identity;
+	*expectedTransform = *( (*expectedTransform) * (*transform123) );
+
+	resultMatrixData = resultTransform->getRawData();
+	desiredMatrixData = expectedTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[12], resultMatrixData[12], maxTolerance); //check (just) translation
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[13], resultMatrixData[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[14], resultMatrixData[14], maxTolerance);
+
+	/* tf1 to tf3 (tf3 expressed in tf1) */
+	CPPUNIT_ASSERT(scene.getTransformForNode(tf3Id, tf1Id, dummyTime, resultTransform));
+	*expectedTransform = *transform654;
+
+	resultMatrixData = resultTransform->getRawData();
+	desiredMatrixData = expectedTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[12], resultMatrixData[12], maxTolerance); //check (just) translation
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[13], resultMatrixData[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[14], resultMatrixData[14], maxTolerance);
+
+	/* tf3 to tf1  (tf1 expressed in tf3) */
+	CPPUNIT_ASSERT(scene.getTransformForNode(tf1Id, tf3Id, dummyTime, resultTransform));
+	*expectedTransform = *transform654;
+	expectedTransform->inverse();
+
+	resultMatrixData = resultTransform->getRawData();
+	desiredMatrixData = expectedTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[12], resultMatrixData[12], maxTolerance); //check (just) translation
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[13], resultMatrixData[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[14], resultMatrixData[14], maxTolerance);
+
+	/* tf1 expressed in tf 2 */
+	CPPUNIT_ASSERT(scene.getTransformForNode(tf1Id, tf2Id, dummyTime, resultTransform));
+	*expectedTransform = *transform123;
+	expectedTransform->inverse();
+	*expectedTransform = *( (*expectedTransform) * (*transform001) );
+
+	resultMatrixData = resultTransform->getRawData();
+	desiredMatrixData = expectedTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[12], resultMatrixData[12], maxTolerance); //check (just) translation
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[13], resultMatrixData[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[14], resultMatrixData[14], maxTolerance);
+
+	/* tf2 expressed in tf1 */
+	CPPUNIT_ASSERT(scene.getTransformForNode(tf2Id, tf1Id, dummyTime, resultTransform));
+	*expectedTransform = *transform001;
+	expectedTransform->inverse();
+	*expectedTransform = *( (*expectedTransform) * (*transform123) );
+
+	resultMatrixData = resultTransform->getRawData();
+	desiredMatrixData = expectedTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[12], resultMatrixData[12], maxTolerance); //check (just) translation
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[13], resultMatrixData[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[14], resultMatrixData[14], maxTolerance);
+
+
+}
+
 void SceneGraphNodesTest::testPointCloud() {
 	/* Graph structure: (remember: nodes can only serve as are leaves)
 	 *                 root

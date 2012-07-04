@@ -130,7 +130,7 @@ public:
 		assert(resultBox != 0);
 
 		BRICS_3D::HomogeneousMatrix44::IHomogeneousMatrix44Ptr transform(new BRICS_3D::HomogeneousMatrix44());
-		wm->scene.getTransformForNode(boxResultId, BRICS_3D::RSG::TimeStamp(timer.getCurrentTime()), transform); // get transform data to that node
+		wm->scene.getTransformForNode(boxResultId, wm->scene.getRootId(), BRICS_3D::RSG::TimeStamp(timer.getCurrentTime()), transform); // get transform data to that node
 
 		/* Create a point cloud based on a previously stored box ROI */
 		BRICS_3D::BoxROIExtractor boxFilter(resultBox->getSizeX(),resultBox->getSizeY(),resultBox->getSizeZ()); // NOTE: each value describes range [origin-value/2, origin+value/2]

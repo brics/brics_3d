@@ -52,6 +52,9 @@ extern IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransformAlongPath
  */
 extern IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransform(Node::NodePtr node);
 
+extern IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getTransformBetweenNodes(Node::NodePtr node, Node::NodePtr referenceNode);
+
+
 /**
  * @brief A node that expresses a geometric transformation between its parents and children.
  * @ingroup sceneGraph
