@@ -1829,6 +1829,7 @@ void SceneGraphNodesTest::testOutdatedDataDeleter() {
 	CPPUNIT_ASSERT_EQUAL(0u, tf4->getNumberOfParents());
 	CPPUNIT_ASSERT_EQUAL(0u, tf4->getNumberOfChildren());
 
+	delete deleter;
 }
 
 void SceneGraphNodesTest::testIdGenerator(){
@@ -2835,6 +2836,122 @@ void SceneGraphNodesTest::testDotGraphGenerator() {
 //	cout << "Dot graph: " << endl << resultString << endl;
 	CPPUNIT_ASSERT(resultString.compare("") != expectedStringSizeForEmptyGraph);
 
+}
+
+void SceneGraphNodesTest::testPointIterator() {
+	PointCloud3D* cloud1 = new PointCloud3D();
+	PointCloud3D* cloud2 = new PointCloud3D();
+	PointCloud3D* cloud3 = new PointCloud3D();
+	PointCloud3D* cloudAggregated = new PointCloud3D();
+	cloud1->addPoint(Point3D(1,2,3));
+	cloud1->addPoint(Point3D(4,5,6));
+	cloud1->addPoint(Point3D(7,8,9));
+
+	cloud2->addPoint(Point3D(10,11,12));
+	cloud2->addPoint(Point3D(13,14,15));
+
+	cloud3->addPoint(Point3D(20,21,22));
+	cloud3->addPoint(Point3D(23,24,25));
+	cloud3->addPoint(Point3D(26,27,28));
+
+
+	cloudAggregated->addPoint(Point3D(1,2,3));
+	cloudAggregated->addPoint(Point3D(4,5,6));
+	cloudAggregated->addPoint(Point3D(7,8,9));
+
+	cloudAggregated->addPoint(Point3D(110,111,112));
+	cloudAggregated->addPoint(Point3D(113,114,115));
+
+	cloudAggregated->addPoint(Point3D(2020,2021,2022));
+	cloudAggregated->addPoint(Point3D(2023,2024,2025));
+	cloudAggregated->addPoint(Point3D(2026,2027,2028));
+
+	HomogeneousMatrix44 shift100(1,0,0, 0,1,0, 0,0,1, 100, 100, 100);
+	HomogeneousMatrix44 shift2000(1,0,0, 0,1,0, 0,0,1, 2000, 2000, 2000);
+
+	int count=0;
+
+	CPPUNIT_ASSERT_EQUAL(3u, cloud1->getSize());
+	CPPUNIT_ASSERT_EQUAL(2u, cloud2->getSize());
+	CPPUNIT_ASSERT_EQUAL(3u, cloud3->getSize());
+
+	PointCloud3DIterator* it = new PointCloud3DIterator();
+	HomogeneousMatrix44 identity;
+	it->insert(cloud1, &identity);
+
+	count = 0;
+	for (it->begin(); !it->end(); it->next()){
+		it->getX();
+		it->getY();
+		it->getZ();
+		Point3D* tmpPoint = it->getRawData();
+		std::cout << "transformed: ("<< it->getX() << "," << it->getY() << "," << it->getZ() << ")" << std::endl;
+		std::cout << "RAW        : ("<< tmpPoint->getX() << "," << tmpPoint->getY() << "," << tmpPoint->getZ() << ")" << std::endl;
+
+
+		Point3D resultPoint = (*cloudAggregated->getPointCloud())[count];
+		CPPUNIT_ASSERT_DOUBLES_EQUAL(resultPoint.getX(), it->getX(), maxTolerance);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL(resultPoint.getY(), it->getY(), maxTolerance);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL(resultPoint.getZ(), it->getZ(), maxTolerance);
+
+
+		count++;
+	}
+	CPPUNIT_ASSERT_EQUAL(3, count);
+
+
+	it->insert(cloud2, &shift100);
+
+	count = 0;
+	std::cout << "Iterator data:" << std::endl;
+	for (it->begin(); !it->end(); it->next()){
+		it->getX();
+		it->getY();
+		it->getZ();
+		Point3D* tmpPoint = it->getRawData();
+		std::cout << "transformed: ("<< it->getX() << "," << it->getY() << "," << it->getZ() << ")" << std::endl;
+		std::cout << "RAW        : ("<< tmpPoint->getX() << "," << tmpPoint->getY() << "," << tmpPoint->getZ() << ")" << std::endl;
+
+		Point3D resultPoint = (*cloudAggregated->getPointCloud())[count];
+//		CPPUNIT_ASSERT_DOUBLES_EQUAL(resultPoint.getX(), it->getX(), maxTolerance); // hard to test as there is no dereministic order in the map iteration
+//		CPPUNIT_ASSERT_DOUBLES_EQUAL(resultPoint.getY(), it->getY(), maxTolerance);
+//		CPPUNIT_ASSERT_DOUBLES_EQUAL(resultPoint.getZ(), it->getZ(), maxTolerance);
+
+		count++;
+	}
+	CPPUNIT_ASSERT_EQUAL(5, count);
+
+	it->insert(cloud3, &shift2000);
+
+	count = 0;
+	std::cout << "Iterator data:" << std::endl;
+	for (it->begin(); !it->end(); it->next()) {
+		it->getX();
+		it->getY();
+		it->getZ();
+		Point3D* tmpPoint = it->getRawData();
+		std::cout << "transformed: ("<< it->getX() << "," << it->getY() << "," << it->getZ() << ")" << std::endl;
+		std::cout << "RAW        : ("<< tmpPoint->getX() << "," << tmpPoint->getY() << "," << tmpPoint->getZ() << ")" << std::endl;
+
+		Point3D resultPoint = (*cloudAggregated->getPointCloud())[count];
+//		CPPUNIT_ASSERT_DOUBLES_EQUAL(resultPoint.getX(), it->getX(), maxTolerance);
+//		CPPUNIT_ASSERT_DOUBLES_EQUAL(resultPoint.getY(), it->getY(), maxTolerance);
+//		CPPUNIT_ASSERT_DOUBLES_EQUAL(resultPoint.getZ(), it->getZ(), maxTolerance);
+
+		count++;
+	}
+	CPPUNIT_ASSERT_EQUAL(8, count);
+
+	delete it;
+
+	CPPUNIT_ASSERT_EQUAL(3u, cloud1->getSize());
+	CPPUNIT_ASSERT_EQUAL(2u, cloud2->getSize());
+	CPPUNIT_ASSERT_EQUAL(3u, cloud3->getSize());
+
+	delete cloud1;
+	delete cloud2;
+	delete cloud3;
+	delete cloudAggregated;
 }
 
 }  // namespace unitTests

@@ -56,6 +56,7 @@ SET (CORE_LIBRARY_SOURCES
     ./core/IHomogeneousMatrix44
     ./core/HomogeneousMatrix44
 	./core/PointCloud3D
+	./core/PointCloud3DIterator
     ./core/Vector3D
     ./core/Normal3D
     ./core/NormalSet3D

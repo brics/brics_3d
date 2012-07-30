@@ -29,6 +29,7 @@
 #include "worldModel/sceneGraph/OutdatedDataDeleter.h"
 #include "worldModel/sceneGraph/PointCloud.h"
 #include "core/PointCloud3D.h"
+#include "core/PointCloud3DIterator.h"
 
 #include "util/Timer.h"
 
@@ -89,7 +90,7 @@ public:
 };
 
 /*
- * Example hot to implement a custom observer
+ * Example how to implement a custom observer
  */
 class MyObserver : public ISceneGraphUpdateObserver {
 
@@ -179,6 +180,7 @@ class SceneGraphNodesTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testPointCloud );
 	CPPUNIT_TEST( testUpdateObserver );
 	CPPUNIT_TEST( testDotGraphGenerator );
+	CPPUNIT_TEST( testPointIterator );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -205,6 +207,7 @@ public:
 	void testPointCloud();
 	void testUpdateObserver();
 	void testDotGraphGenerator();
+	void testPointIterator();
 
 private:
 	  /// Maximum deviation for equality check of double variables
