@@ -30,21 +30,21 @@
 namespace BRICS_3D {
 
 /**
- * @brief Point iterator impementation for BRICS_3D::PointCloud3D
+ * @brief Point iterator implementation for BRICS_3D::PointCloud3D
  *
  * The PointCloud3DIterator can hold a list of point clouds with associated rigid transforms.
  * While iterating and invocing getX(), getY() or getZ() the points will be multiplied with this is respective transforms.
  * The raw data in the point clouds remains unmodified and could be accessed via the getRawData function.
  *
  *  @code
- *	PointCloud3D* cloud1 = new PointCloud3D();
+ *	PointCloud3D::PointCloud3DPtr cloud1(new PointCloud3D());
  *	cloud1->addPoint(Point3D(1,2,3));
  *	cloud1->addPoint(Point3D(4,5,6));
  *	cloud1->addPoint(Point3D(7,8,9));
 
  *	PointCloud3DIterator* it = new PointCloud3DIterator();
- *	HomogeneousMatrix44 shift100(1,0,0, 0,1,0, 0,0,1, 100, 100, 100);
- *	it->insert(cloud1, &shift100);
+ *	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr shift100 (new HomogeneousMatrix44 (1,0,0, 0,1,0, 0,0,1, 100, 100, 100));
+ *	it->insert(cloud1, shift100);
  *
  *	for (it->begin(); !it->end(); it->next()){
  *		it->getX(); //transformed data (by "shift100")
@@ -55,7 +55,6 @@ namespace BRICS_3D {
  *		tmpPoint->getY(); // original data
  *		tmpPoint->getZ(); // original data
  *	}
- *	delete cloud1;
  *	delete it;
  *	@endcode
  */
@@ -87,7 +86,9 @@ public:
 	 * @param pointCloud The pont cloud to be added.
 	 * @param associatedTransform Transform theat will be automatically applied to all points od that point cloud when calling getX(), getY() or getZ().
 	 */
-	void insert(PointCloud3D* pointCloud, IHomogeneousMatrix44* associatedTransform);
+//	void insert(PointCloud3D* pointCloud, IHomogeneousMatrix44* associatedTransform);
+	void insert(PointCloud3D::PointCloud3DPtr pointCloud, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr associatedTransform);
+
 
 protected:
 
@@ -95,10 +96,14 @@ protected:
 	 * The stored pointers to the point clouds with associated transforms.
 	 * Destruction of the iterator will not delete the pointers.
 	 */
-	std::map<PointCloud3D*, IHomogeneousMatrix44*> pointCloudsWithTransforms;
+//	std::map<PointCloud3D*, IHomogeneousMatrix44*> pointCloudsWithTransforms;
+	std::map<PointCloud3D::PointCloud3DPtr, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr> pointCloudsWithTransforms;
+
 
 	/// Internal outer iteration handle.
-	std::map<PointCloud3D*, IHomogeneousMatrix44*>::iterator pointCloudsIterator;
+//	std::map<PointCloud3D*, IHomogeneousMatrix44*>::iterator pointCloudsIterator;
+	std::map<PointCloud3D::PointCloud3DPtr, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr>::iterator pointCloudsIterator;
+
 
 	/// Internal inner iteration handle.
 	unsigned int index;

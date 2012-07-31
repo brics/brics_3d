@@ -43,7 +43,7 @@ void PointCloud3DIterator::begin() {
 
 		/* cache the a transformed copy */
 		currentTransformedPoint = (*pointCloudsIterator->first->getPointCloud())[index].clone();
-		currentTransformedPoint->homogeneousTransformation(pointCloudsIterator->second);
+		currentTransformedPoint->homogeneousTransformation(pointCloudsIterator->second.get());
 	}
 }
 
@@ -68,7 +68,7 @@ void PointCloud3DIterator::next() {
 
 				/* cache the a transformed copy */
 				currentTransformedPoint = (*pointCloudsIterator->first->getPointCloud())[index].clone();
-				currentTransformedPoint->homogeneousTransformation(pointCloudsIterator->second);
+				currentTransformedPoint->homogeneousTransformation(pointCloudsIterator->second.get());
 			}
 		}
 	} else {
@@ -99,8 +99,8 @@ Point3D* PointCloud3DIterator::getRawData() {
 	return &(*pointCloudsIterator->first->getPointCloud())[index];
 }
 
-//void PointCloud3DIterator::insert(PointCloud3D::PointCloud3DPtr pointCloud, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr associatedTransform) {
-void PointCloud3DIterator::insert(PointCloud3D* pointCloud, IHomogeneousMatrix44* associatedTransform) {
+void PointCloud3DIterator::insert(PointCloud3D::PointCloud3DPtr pointCloud, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr associatedTransform) {
+//void PointCloud3DIterator::insert(PointCloud3D* pointCloud, IHomogeneousMatrix44* associatedTransform) {
 
 	pointCloudsWithTransforms.insert(std::make_pair(pointCloud, associatedTransform));
 }

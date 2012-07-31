@@ -2839,10 +2839,10 @@ void SceneGraphNodesTest::testDotGraphGenerator() {
 }
 
 void SceneGraphNodesTest::testPointIterator() {
-	PointCloud3D* cloud1 = new PointCloud3D();
-	PointCloud3D* cloud2 = new PointCloud3D();
-	PointCloud3D* cloud3 = new PointCloud3D();
-	PointCloud3D* cloudAggregated = new PointCloud3D();
+	PointCloud3D::PointCloud3DPtr cloud1(new PointCloud3D());
+	PointCloud3D::PointCloud3DPtr cloud2(new PointCloud3D());
+	PointCloud3D::PointCloud3DPtr cloud3(new PointCloud3D());
+	PointCloud3D::PointCloud3DPtr cloudAggregated (new PointCloud3D());
 	cloud1->addPoint(Point3D(1,2,3));
 	cloud1->addPoint(Point3D(4,5,6));
 	cloud1->addPoint(Point3D(7,8,9));
@@ -2866,8 +2866,8 @@ void SceneGraphNodesTest::testPointIterator() {
 	cloudAggregated->addPoint(Point3D(2023,2024,2025));
 	cloudAggregated->addPoint(Point3D(2026,2027,2028));
 
-	HomogeneousMatrix44 shift100(1,0,0, 0,1,0, 0,0,1, 100, 100, 100);
-	HomogeneousMatrix44 shift2000(1,0,0, 0,1,0, 0,0,1, 2000, 2000, 2000);
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr shift100 (new HomogeneousMatrix44 (1,0,0, 0,1,0, 0,0,1, 100, 100, 100));
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr shift2000(new HomogeneousMatrix44 (1,0,0, 0,1,0, 0,0,1, 2000, 2000, 2000));
 
 	int count=0;
 
@@ -2876,8 +2876,8 @@ void SceneGraphNodesTest::testPointIterator() {
 	CPPUNIT_ASSERT_EQUAL(3u, cloud3->getSize());
 
 	PointCloud3DIterator* it = new PointCloud3DIterator();
-	HomogeneousMatrix44 identity;
-	it->insert(cloud1, &identity);
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr identity(new HomogeneousMatrix44());
+	it->insert(cloud1, identity);
 
 	count = 0;
 	for (it->begin(); !it->end(); it->next()){
@@ -2885,8 +2885,8 @@ void SceneGraphNodesTest::testPointIterator() {
 		it->getY();
 		it->getZ();
 		Point3D* tmpPoint = it->getRawData();
-		std::cout << "transformed: ("<< it->getX() << "," << it->getY() << "," << it->getZ() << ")" << std::endl;
-		std::cout << "RAW        : ("<< tmpPoint->getX() << "," << tmpPoint->getY() << "," << tmpPoint->getZ() << ")" << std::endl;
+//		std::cout << "transformed: ("<< it->getX() << "," << it->getY() << "," << it->getZ() << ")" << std::endl;
+//		std::cout << "RAW        : ("<< tmpPoint->getX() << "," << tmpPoint->getY() << "," << tmpPoint->getZ() << ")" << std::endl;
 
 
 		Point3D resultPoint = (*cloudAggregated->getPointCloud())[count];
@@ -2900,17 +2900,17 @@ void SceneGraphNodesTest::testPointIterator() {
 	CPPUNIT_ASSERT_EQUAL(3, count);
 
 
-	it->insert(cloud2, &shift100);
+	it->insert(cloud2, shift100);
 
 	count = 0;
-	std::cout << "Iterator data:" << std::endl;
+//	std::cout << "Iterator data:" << std::endl;
 	for (it->begin(); !it->end(); it->next()){
 		it->getX();
 		it->getY();
 		it->getZ();
 		Point3D* tmpPoint = it->getRawData();
-		std::cout << "transformed: ("<< it->getX() << "," << it->getY() << "," << it->getZ() << ")" << std::endl;
-		std::cout << "RAW        : ("<< tmpPoint->getX() << "," << tmpPoint->getY() << "," << tmpPoint->getZ() << ")" << std::endl;
+//		std::cout << "transformed: ("<< it->getX() << "," << it->getY() << "," << it->getZ() << ")" << std::endl;
+//		std::cout << "RAW        : ("<< tmpPoint->getX() << "," << tmpPoint->getY() << "," << tmpPoint->getZ() << ")" << std::endl;
 
 		Point3D resultPoint = (*cloudAggregated->getPointCloud())[count];
 //		CPPUNIT_ASSERT_DOUBLES_EQUAL(resultPoint.getX(), it->getX(), maxTolerance); // hard to test as there is no dereministic order in the map iteration
@@ -2921,17 +2921,17 @@ void SceneGraphNodesTest::testPointIterator() {
 	}
 	CPPUNIT_ASSERT_EQUAL(5, count);
 
-	it->insert(cloud3, &shift2000);
+	it->insert(cloud3, shift2000);
 
 	count = 0;
-	std::cout << "Iterator data:" << std::endl;
+//	std::cout << "Iterator data:" << std::endl;
 	for (it->begin(); !it->end(); it->next()) {
 		it->getX();
 		it->getY();
 		it->getZ();
 		Point3D* tmpPoint = it->getRawData();
-		std::cout << "transformed: ("<< it->getX() << "," << it->getY() << "," << it->getZ() << ")" << std::endl;
-		std::cout << "RAW        : ("<< tmpPoint->getX() << "," << tmpPoint->getY() << "," << tmpPoint->getZ() << ")" << std::endl;
+//		std::cout << "transformed: ("<< it->getX() << "," << it->getY() << "," << it->getZ() << ")" << std::endl;
+//		std::cout << "RAW        : ("<< tmpPoint->getX() << "," << tmpPoint->getY() << "," << tmpPoint->getZ() << ")" << std::endl;
 
 		Point3D resultPoint = (*cloudAggregated->getPointCloud())[count];
 //		CPPUNIT_ASSERT_DOUBLES_EQUAL(resultPoint.getX(), it->getX(), maxTolerance);
@@ -2947,11 +2947,81 @@ void SceneGraphNodesTest::testPointIterator() {
 	CPPUNIT_ASSERT_EQUAL(3u, cloud1->getSize());
 	CPPUNIT_ASSERT_EQUAL(2u, cloud2->getSize());
 	CPPUNIT_ASSERT_EQUAL(3u, cloud3->getSize());
+}
 
-	delete cloud1;
-	delete cloud2;
-	delete cloud3;
-	delete cloudAggregated;
+void SceneGraphNodesTest::testScenePointIterator() {
+	/* Graph structure: (remember: nodes can only serve as are leaves)
+	 *                 root
+	 *                   |
+	 *        -----------+----------
+	 *        |                    |
+	 *       pc1                  tf2
+	 *                             |
+	 *                            pc3
+	 *
+	 */
+	unsigned int rootId = 0;
+	unsigned int pc1Id = 1;
+	unsigned int tf2Id = 2;
+	unsigned int pc3Id = 3;
+
+	Group::GroupPtr root(new Group());
+	root->setId(rootId);
+
+	BRICS_3D::PointCloud3D::PointCloud3DPtr pc1_data(new BRICS_3D::PointCloud3D());
+	BRICS_3D::PointCloud3D::PointCloud3DPtr pc3_data(new BRICS_3D::PointCloud3D());
+	PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr pc1_container(new RSG::PointCloud<BRICS_3D::PointCloud3D>());
+	PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr pc3_container(new RSG::PointCloud<BRICS_3D::PointCloud3D>());
+	pc1_container->data = pc1_data;
+	pc3_container->data = pc3_data;
+
+	pc1_container->data->addPoint(Point3D(1,2,3));
+	pc1_container->data->addPoint(Point3D(4,5,6));
+	pc1_container->data->addPoint(Point3D(7,8,9));
+
+	pc3_container->data->addPoint(Point3D(10,11,12));
+	pc3_container->data->addPoint(Point3D(13,14,15));
+
+	GeometricNode::GeometricNodePtr pc1(new GeometricNode());
+	pc1->setId(pc1Id);
+	GeometricNode::GeometricNodePtr pc3(new GeometricNode());
+	pc3->setId(pc3Id);
+
+	pc1->setShape(pc1_container);
+	pc3->setShape(pc3_container);
+
+	RSG::Transform::TransformPtr tf2(new RSG::Transform());
+	tf2->setId(tf2Id);
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr someTransform(new HomogeneousMatrix44(1,0,0,  	//Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             100,100,100)); 						//Translation coefficients
+	tf2->insertTransform(someTransform, TimeStamp(0.0));
+
+	/*
+	 * finally construct some scenegraph
+	 */
+	root->addChild(pc1);
+	root->addChild(tf2);
+	tf2->addChild(pc3);
+
+	PointCloudAccumulator* pcAccumulator = new PointCloudAccumulator(root);
+	root->accept(pcAccumulator);
+
+	IPoint3DIterator* it = pcAccumulator->getAccumulatedPointClouds();
+//	std::cout << "Scene graph iterator data:" << std::endl;
+	int count = 0;
+	for (it->begin(); !it->end(); it->next()){
+		it->getX();
+		it->getY();
+		it->getZ();
+		Point3D* tmpPoint = it->getRawData();
+//		std::cout << "transformed: ("<< it->getX() << "," << it->getY() << "," << it->getZ() << ")" << std::endl;
+//		std::cout << "RAW        : ("<< tmpPoint->getX() << "," << tmpPoint->getY() << "," << tmpPoint->getZ() << ")" << std::endl;
+		count++;
+	}
+	CPPUNIT_ASSERT_EQUAL(5, count);
+
 }
 
 }  // namespace unitTests

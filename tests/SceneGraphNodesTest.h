@@ -27,6 +27,7 @@
 #include "worldModel/sceneGraph/SimpleIdGenerator.h"
 #include "worldModel/sceneGraph/SceneGraphFacade.h"
 #include "worldModel/sceneGraph/OutdatedDataDeleter.h"
+#include "worldModel/sceneGraph/PointCloudAccumulator.h"
 #include "worldModel/sceneGraph/PointCloud.h"
 #include "core/PointCloud3D.h"
 #include "core/PointCloud3DIterator.h"
@@ -181,6 +182,7 @@ class SceneGraphNodesTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testUpdateObserver );
 	CPPUNIT_TEST( testDotGraphGenerator );
 	CPPUNIT_TEST( testPointIterator );
+	CPPUNIT_TEST( testScenePointIterator );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -208,6 +210,7 @@ public:
 	void testUpdateObserver();
 	void testDotGraphGenerator();
 	void testPointIterator();
+	void testScenePointIterator();
 
 private:
 	  /// Maximum deviation for equality check of double variables

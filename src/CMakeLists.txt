@@ -182,6 +182,7 @@ SET (WORLD_MODEL_LIBRARY_SOURCES
     ./worldModel/sceneGraph/DotGraphGenerator    
     ./worldModel/sceneGraph/OutdatedDataDeleter
     ./worldModel/sceneGraph/OutdatedDataIdAwareDeleter
+    ./worldModel/sceneGraph/PointCloudAccumulator
 )
 
 #optional sources
