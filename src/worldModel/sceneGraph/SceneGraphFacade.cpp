@@ -426,12 +426,21 @@ bool SceneGraphFacade::detachUpdateObserver(ISceneGraphUpdateObserver* observer)
 	return false;
 }
 
-bool SceneGraphFacade::executeGraphTraverser(INodeVisitor* visitor) {
-	if (rootNode == 0) {
-		return false;
+bool SceneGraphFacade::executeGraphTraverser(INodeVisitor* visitor, unsigned int subgraphId) {
+//	if (rootNode == 0) {
+//		return false;
+//	}
+//	rootNode->accept(visitor);
+//	return true;
+
+	Node::NodeWeakPtr tmpNode = findNodeRecerence(subgraphId);
+	Node::NodePtr node = tmpNode.lock();
+	if (node != 0) {
+		node->accept(visitor);
+		return true;
 	}
-	rootNode->accept(visitor);
-	return true;
+	return false;
+
 }
 
 Node::NodeWeakPtr SceneGraphFacade::findNodeRecerence(unsigned int id) {

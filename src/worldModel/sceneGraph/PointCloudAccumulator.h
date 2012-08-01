@@ -32,9 +32,27 @@ namespace BRICS_3D {
 
 namespace RSG {
 
+/**
+ * @brief Scenegraph visitor that collects all point clouds in a sub-graph and returns a point iterator BRICS_3D::IPoint3DIterator.
+ *
+ * This visitor will add every found point cloud visited while traversing a sub-graph (where accept() is called).
+ * Each point cloud will be interpreted ralative to the frame that is valid for the scenegraph node specified by referenceNode.
+ * The resulting iterator will handle this interpretation intrinsically as long you use the getters like BRICS_3D::IPoint3DIterator::getX().
+ *
+ * @ingroup sceneGraph
+ */
 class PointCloudAccumulator : public INodeVisitor {
 public:
+
+	/**
+	 * @brief Constructor with reference frame defined by the node.
+	 * @param referenceNode The Cartesian frame that is valid for the node will be used as reference to interpret the 3D points.
+	 */
 	PointCloudAccumulator(Node::NodePtr referenceNode);
+
+	/**
+	 * @brief Default destructor.
+	 */
 	virtual ~PointCloudAccumulator();
 
 	virtual void visit(Node* node);
@@ -42,11 +60,27 @@ public:
 	virtual void visit(Transform* node);
 	virtual void visit(GeometricNode* node);
 
+	/**
+	 * @brief Reinitialize the internal iterator. Invoke this before travasing more then once. Otherwise data will be appended.
+	 */
 	virtual void reset();
 
+	/**
+	 * @brief Get the iterator that contains all point cloud in the subraph after a traversal.
+	 *
+	 * A traversal is triggered by calling BRICS_3D::RSG::Node::accept().
+	 *
+	 * @return The iterator handle.
+	 */
 	IPoint3DIterator* getAccumulatedPointClouds () {
 		return accumulatedPointClouds;
 	}
+
+	/**
+	 * @brief Overridable "template method" (for example for an ID aware version) for for resolving the transfrom between the reference frame and the fame valid in the currently visited GeometricNode.
+	 * @param node The currently visited GeometricNode.
+	 */
+	virtual IHomogeneousMatrix44::IHomogeneousMatrix44Ptr doGetTransformFromReferenceToPointCloud(GeometricNode* node);
 
 protected:
 

@@ -2830,7 +2830,7 @@ void SceneGraphNodesTest::testDotGraphGenerator() {
 	int expectedStringSizeForEmptyGraph = 14;
 	CPPUNIT_ASSERT_EQUAL(resultString.compare(""), expectedStringSizeForEmptyGraph);
 
-	scene.executeGraphTraverser(&dotGraphGenerator);
+	scene.executeGraphTraverser(&dotGraphGenerator, scene.getRootId());
 	resultString = dotGraphGenerator.getDotGraph();
 
 //	cout << "Dot graph: " << endl << resultString << endl;
@@ -3022,6 +3022,7 @@ void SceneGraphNodesTest::testScenePointIterator() {
 	}
 	CPPUNIT_ASSERT_EQUAL(5, count);
 
+	delete pcAccumulator;
 }
 
 }  // namespace unitTests

@@ -38,6 +38,7 @@
 #include <worldModel/sceneGraph/Box.h>
 #include <worldModel/sceneGraph/Cylinder.h>
 #include <worldModel/sceneGraph/DotGraphGenerator.h>
+#include <worldModel/sceneGraph/PointCloudAccumulatorIdAware.h>
 
 #ifdef EIGEN3
 #include <algorithm/featureExtraction/BoundingBox3DExtractor.h>
@@ -88,8 +89,10 @@ int main(int argc, char **argv) {
 	unsigned int pc1Id;
 	unsigned int pc2Id;
 	unsigned int pcReducedId;
+	unsigned int groupReducedClouds;
 	unsigned int pcBoxROIId;
 	unsigned int pcResultId;
+	unsigned int tmpId;
 	vector<RSG::Attribute> tmpAttributes;
 
 	WorldModel* wm = new WorldModel();
@@ -116,9 +119,13 @@ int main(int argc, char **argv) {
 	LOG(INFO) << "assigend ID for second point cloud: " << pc2Id;
 
 	/* reduce point cloud with Octree filter */
+	tmpAttributes.clear();
+	tmpAttributes.push_back(Attribute("name","reduced_clouds"));
+	wm->scene.addGroup(wm->scene.getRootId(), groupReducedClouds, tmpAttributes);
 	Octree* octreeFilter = new Octree();
 	octreeFilter->setVoxelSize(0.002); 	//value deduced from roughly knowing the data in advance...
 	BRICS_3D::PointCloud3D::PointCloud3DPtr reducedPointCloud(new BRICS_3D::PointCloud3D());
+	BRICS_3D::PointCloud3D::PointCloud3DPtr reducedPointCloud2(new BRICS_3D::PointCloud3D());
 
 	/* query world model for relevant data */
 	vector<unsigned int> resultIds;
@@ -138,13 +145,35 @@ int main(int argc, char **argv) {
 //	octreeFilter->filter(pointCloud1.get(), reducedPointCloud);
 	octreeFilter->filter(pcResultContainer->data.get(), reducedPointCloud.get());
 
-	/* Add subsampled point cloud to wm */
+	tmpAttributes.clear();
+	tmpAttributes.push_back(Attribute("name","point_cloud_2"));
+	wm->scene.getNodes(tmpAttributes, resultIds);
+	assert(resultIds.size() == 1);
+	pcResultId = resultIds[0];
+	LOG(INFO) <<  "Found ID for label point_cloud_2: " << pcResultId;
+	wm->scene.getGeometry(pcResultId, resultShape, resultTime);
+	pcResultContainer = boost::dynamic_pointer_cast<PointCloud<BRICS_3D::PointCloud3D> >(resultShape);
+	assert(pcResultContainer != 0);
+
+	octreeFilter->filter(pcResultContainer->data.get(), reducedPointCloud2.get());
+
+
+	/* Add subsampled point clouds to wm */
 	PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr pcReducedContainer(new RSG::PointCloud<BRICS_3D::PointCloud3D>());
 	pcReducedContainer->data = reducedPointCloud;
+	PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr pcReducedContainer2(new RSG::PointCloud<BRICS_3D::PointCloud3D>());
+	pcReducedContainer2->data = reducedPointCloud2;
+
 	tmpAttributes.clear();
 	tmpAttributes.push_back(Attribute("name","point_cloud_reduced"));
 	tmpAttributes.push_back(Attribute("filterType","octree"));
-	wm->scene.addGeometricNode(wm->getRootNodeId(), pcReducedId, tmpAttributes, pcReducedContainer, TimeStamp(0.1));
+	wm->scene.addGeometricNode(groupReducedClouds, pcReducedId, tmpAttributes, pcReducedContainer, TimeStamp(0.1));
+
+	tmpAttributes.clear();
+	tmpAttributes.push_back(Attribute("name","point_cloud_reduced2"));
+	tmpAttributes.push_back(Attribute("filterType","octree"));
+	wm->scene.addGeometricNode(groupReducedClouds, pcReducedId, tmpAttributes, pcReducedContainer2, TimeStamp(0.1));
+
 
 	/* Create a point cloud based on a box ROI */
 	BoxROIExtractor boxFilter(0.2,0.015,0.2); // NOTE: each value describes range [origin-value/2, origin+value/2]
@@ -257,6 +286,19 @@ int main(int argc, char **argv) {
 	/* update transform data */
 //	wm->scene.setTransform(tfId, transform, dummyTime);
 
+	/* get an  aggregated point cloud based on the filtered point clouds */
+	BRICS_3D::PointCloud3D::PointCloud3DPtr aggregatedPointCloud(new BRICS_3D::PointCloud3D());
+	PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr aggregatedPointCloudContainer(new RSG::PointCloud<BRICS_3D::PointCloud3D>());
+	aggregatedPointCloudContainer->data = aggregatedPointCloud;
+
+	PointCloudAccumulatorIdAware* pcAccumulator = new PointCloudAccumulatorIdAware(&wm->scene, wm->scene.getRootId());
+	wm->scene.executeGraphTraverser(pcAccumulator, groupReducedClouds);
+
+
+	IPoint3DIterator* it = pcAccumulator->getAccumulatedPointClouds();
+	for (it->begin(); !it->end(); it->next()) {
+		aggregatedPointCloudContainer->data->addPoint(Point3D(it->getX(), it->getY(), it->getZ())); //we ignore potential decoration layers.
+	}
 
 	/* create some mesh */
 	BRICS_3D::ITriangleMesh::ITriangleMeshPtr newMesh(new BRICS_3D::TriangleMeshExplicit());
@@ -265,14 +307,17 @@ int main(int argc, char **argv) {
 
 	DelaunayTriangulationOSG* meshGenerator = new DelaunayTriangulationOSG();
 //	meshGenerator->triangulate(pcReducedContainer->data.get(), newMeshContainer->data.get());
-	meshGenerator->triangulate(pc1Container->data.get(), newMeshContainer->data.get());
+//	meshGenerator->triangulate(pc1Container->data.get(), newMeshContainer->data.get());
+	meshGenerator->triangulate(aggregatedPointCloudContainer->data.get(), newMeshContainer->data.get());
 	LOG(INFO) << "Number of generated triangles: " << newMeshContainer->data->getSize();
 	tmpAttributes.clear();
 	tmpAttributes.push_back(Attribute("name","mesh_1"));
 	wm->scene.addGeometricNode(wm->scene.getRootId(), dummyId, tmpAttributes, newMeshContainer, dummyTime);
 
+
+
 	BRICS_3D::RSG::DotGraphGenerator dotGraphTraverser;
-	wm->scene.executeGraphTraverser(&dotGraphTraverser);
+	wm->scene.executeGraphTraverser(&dotGraphTraverser, wm->scene.getRootId());
 	cout << "GRAPH: "<< endl << dotGraphTraverser.getDotGraph() << endl;
 
 	/* clean up */

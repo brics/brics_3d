@@ -56,16 +56,35 @@ void PointCloudAccumulator::visit(Transform* node){
 
 void PointCloudAccumulator::visit(GeometricNode* node){
 	assert (node != 0);
-	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transformReferenceToPointCloud;
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transformFromReferenceToPointCloud = doGetTransformFromReferenceToPointCloud(node);
 
-	/* we have to find the _shared_ pointer of node - unless it is the root it will be one or the parents childs */
+	/* check if geometry is a point cloud */
+	Shape::ShapePtr resultShape;
+	resultShape = node->getShape();
+	RSG::PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr pcResultContainer(new RSG::PointCloud<BRICS_3D::PointCloud3D>());
+	pcResultContainer = boost::dynamic_pointer_cast<PointCloud<BRICS_3D::PointCloud3D> >(resultShape);
+	if(pcResultContainer != 0) {
+//		LOG(DEBUG) << "Adding point cloud to iterator with:";
+//		LOG(DEBUG) << *pcResultContainer->data;
+//		LOG(DEBUG) << *transformFromReferenceToPointCloud;
+		accumulatedPointClouds->insert(pcResultContainer->data, transformFromReferenceToPointCloud);
+	} else {
+//		LOG(DEBUG) << " Geometric node, but no PointCloud3D";
+	}
+}
+
+IHomogeneousMatrix44::IHomogeneousMatrix44Ptr PointCloudAccumulator::doGetTransformFromReferenceToPointCloud(GeometricNode* node) {
+	assert (node != 0);
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transformFromReferenceToPointCloud;
+
+	/* we have to find the _shared_ pointer of the node - unless it is the root it will be one of the parents childs */
 	if (node->getNumberOfParents() == 0) {
 		LOG(WARNING) << "PointCloudAccumulator: Are you sure your root node is a GeometricNode (which is a leaf)?";
 
 		/* so we take the identity */
 		IHomogeneousMatrix44::IHomogeneousMatrix44Ptr identity(new HomogeneousMatrix44());
 
-		transformReferenceToPointCloud = identity;
+		transformFromReferenceToPointCloud = identity;
 
 	} else {
 		unsigned int childIndex = 0;
@@ -76,22 +95,10 @@ void PointCloudAccumulator::visit(GeometricNode* node){
 		childIndex = parentGroup->getChildIndex(node);
 		Node::NodePtr nodeAsSharedPtr = parentGroup->getChild(childIndex);
 
-		transformReferenceToPointCloud = getTransformBetweenNodes(nodeAsSharedPtr, referenceNode);
+		transformFromReferenceToPointCloud = getTransformBetweenNodes(nodeAsSharedPtr, referenceNode);
 	}
 
-	/* check if geometry is a point cloud */
-	Shape::ShapePtr resultShape;
-	resultShape = node->getShape();
-	RSG::PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr pcResultContainer(new RSG::PointCloud<BRICS_3D::PointCloud3D>());
-	pcResultContainer = boost::dynamic_pointer_cast<PointCloud<BRICS_3D::PointCloud3D> >(resultShape);
-	if(pcResultContainer != 0) {
-		LOG(DEBUG) << "Adding point cloud to iterator with:";
-		LOG(DEBUG) << *pcResultContainer->data;
-		LOG(DEBUG) << *transformReferenceToPointCloud;
-		accumulatedPointClouds->insert(pcResultContainer->data, transformReferenceToPointCloud);
-	} else {
-		LOG(DEBUG) << " Geometric node, but no PointCloud3D";
-	}
+	return transformFromReferenceToPointCloud;
 }
 
 

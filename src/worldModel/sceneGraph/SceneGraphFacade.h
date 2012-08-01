@@ -89,7 +89,7 @@ class SceneGraphFacade : public ISceneGraphQuery, public ISceneGraphUpdate {
     bool detachUpdateObserver(ISceneGraphUpdateObserver* observer);
 
     /* Coordination methods */
-	bool executeGraphTraverser(INodeVisitor* visitor);
+	bool executeGraphTraverser(INodeVisitor* visitor, unsigned int subgraphId);
 
   private:
 
