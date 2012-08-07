@@ -34,7 +34,9 @@ DotGraphGenerator::~DotGraphGenerator() {
 
 void DotGraphGenerator::reset() {
 	alreadyVisitedNodes.clear();
-	nodes.clear();
+	nodes.str("");
+	edges.str("");
+	dotGraph.str("");
 }
 
 void DotGraphGenerator::visit(Node* node){
@@ -124,6 +126,7 @@ std::string DotGraphGenerator::getDotGraph() {
 	 *	}
 	 */
 
+	dotGraph.str(""); //reset
 	dotGraph << "digraph {" << std::endl;
 	dotGraph << nodes.str();
 	dotGraph << std::endl;
