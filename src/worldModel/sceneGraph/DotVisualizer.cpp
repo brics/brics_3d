@@ -27,7 +27,8 @@ namespace BRICS_3D {
 namespace RSG {
 
 DotVisualizer::DotVisualizer(BRICS_3D::RSG::SceneGraphFacade* scene) : scene(scene)  {
-
+	keepHistory = false;
+	counter = 0;
 }
 
 DotVisualizer::~DotVisualizer() {
@@ -88,7 +89,15 @@ void DotVisualizer::printGraph(){
 	output.close();
 	system("dot current_graph.gv -Tsvg -o current_graph.gv.svg"); //e.g. with gthumb you con observe changes...
 
+	if(keepHistory) {
+		std::stringstream command;
+		command.str("");
+		command << "cp current_graph.gv.svg graph_" << counter << ".gv.svg";
+		system(command.str().c_str());
+	}
+
 	graphPrinter.reset();
+	counter++;
 }
 
 

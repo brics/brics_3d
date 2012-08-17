@@ -51,6 +51,16 @@ public:
 	bool deleteNode(unsigned int id);
 	bool addParent(unsigned int id, unsigned int parentId);
 
+    bool getKeepHistory() const
+    {
+        return keepHistory;
+    }
+
+    void setKeepHistory(bool keepHistory)
+    {
+        this->keepHistory = keepHistory;
+    }
+
 private:
 	///Handle the to the scene to be observed
 	BRICS_3D::RSG::SceneGraphFacade* scene;
@@ -65,6 +75,10 @@ private:
 	 */
 	void printGraph();
 
+	/// If true all printaout will be saved to disk with a running number as part of the file name.
+	bool keepHistory;
+
+	unsigned int counter;
 };
 
 }
