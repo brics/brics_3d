@@ -118,7 +118,7 @@ void OSGVisualizer::init() {
 	blendFunc->setFunction( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	osg::StateSet* stateset = rootGeode->getOrCreateStateSet();
 //	stateset->setAttributeAndModes( blendFunc );  //FIXME colored point clouds are hardly visible with this
-	rootGeode->getOrCreateStateSet()->setRenderingHint(osg::StateSet::TRANSPARENT_BIN ); // this one igth be computaionally expensive as it causes reordering of the scene
+//	rootGeode->getOrCreateStateSet()->setRenderingHint(osg::StateSet::TRANSPARENT_BIN ); // this one igth be computaionally expensive as it causes reordering of the scene
 
 	/* optionally add some fram indication */
 	rootGeode->addChild(createFrameAxis(frameAxisVisualisationScale));
@@ -297,6 +297,18 @@ bool OSGVisualizer::addGeometricNode(unsigned int parentId, unsigned int& assign
 			geometry->setColor(osg::Vec4(red, green, blue, alpha/2.0));
 			geode->addDrawable(geometry);
 			geode->getOrCreateStateSet()->setRenderingHint(osg::StateSet::TRANSPARENT_BIN ); // might comp. expensive
+
+			/* wire frame */
+			osg::StateSet *state = geode->getOrCreateStateSet();
+			osg::PolygonMode *polyModeObj;
+			polyModeObj = dynamic_cast< osg::PolygonMode* > ( state->getAttribute( osg::StateAttribute::POLYGONMODE ));
+			if ( !polyModeObj ) {
+				polyModeObj = new osg::PolygonMode;
+				state->setAttribute( polyModeObj );
+			}
+			//  Now we can set the state to WIREFRAME
+			polyModeObj->setMode(  osg::PolygonMode::FRONT_AND_BACK, osg::PolygonMode::LINE );
+
 
 			viewer.addUpdateOperation(new OSGOperationAdd(this, geode, parentGroup));
 
