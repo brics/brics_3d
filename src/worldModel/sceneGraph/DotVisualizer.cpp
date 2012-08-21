@@ -77,9 +77,9 @@ bool DotVisualizer::addParent(unsigned int id, unsigned int parentId) {
 }
 
 void DotVisualizer::printGraph(){
-	LOG(DEBUG) << "Printing praph";
+	LOG(DEBUG) << "DotVisualizer: Printing graph to file.";
 	scene->executeGraphTraverser(&graphPrinter, scene->getRootId());
-	std::cout << graphPrinter.getDotGraph() << std::endl << std::endl;
+//	std::cout << graphPrinter.getDotGraph() << std::endl << std::endl;
 
 	/* Save a svg file as snapshopt */
 	std::string fileName = "current_graph.gv";
@@ -87,13 +87,15 @@ void DotVisualizer::printGraph(){
 	output << graphPrinter.getDotGraph();
 	output.flush();
 	output.close();
-	system("dot current_graph.gv -Tsvg -o current_graph.gv.svg"); //e.g. with gthumb you con observe changes...
+	system("dot current_graph.gv -Tsvg -o current_graph.gv.svg"); //e.g. with gthumb you can observe changes...
 
 	if(keepHistory) {
 		std::stringstream command;
 		command.str("");
+
 		command << "cp current_graph.gv.svg graph_" << counter << ".gv.svg";
 		system(command.str().c_str());
+		LOG(DEBUG) << "DotVisualizer:	File name is: graph_" << counter << ".gv.svg";
 	}
 
 	graphPrinter.reset();

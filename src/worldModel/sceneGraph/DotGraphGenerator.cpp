@@ -58,7 +58,18 @@ void DotGraphGenerator::visit(Group* node){
 }
 
 void DotGraphGenerator::visit(Transform* node){
-	this->visit(dynamic_cast<Group*>(node)); //feed forward to be handled as group TODO a diffrent handling?
+	//this->visit(dynamic_cast<Group*>(node)); //feed forward to be handled as group TODO a diffrent handling?
+
+	assert (node != 0);
+	doHandleEdges(node);
+
+	vector<Node*>::iterator visitedNodes;
+	visitedNodes = find (alreadyVisitedNodes.begin(), alreadyVisitedNodes.end(), node);
+
+	if (visitedNodes == alreadyVisitedNodes.end()) { // if not in list: insert and handle node
+		doHandleTransform(node);
+		alreadyVisitedNodes.push_back(node);
+	}
 }
 
 void DotGraphGenerator::visit(GeometricNode* node){
@@ -84,6 +95,38 @@ void DotGraphGenerator::doHandleNode(Node* node) {
     nodes << "ID [" << node->getId() << "]\\n";
     nodes << aggregatedAttributes.str();
     nodes << "\"]";
+	nodes << ";" << std::endl;
+}
+
+void DotGraphGenerator::doHandleTransform(Transform* node) {
+	assert (node !=0);
+	std::stringstream aggregatedAttributes;
+	vector<Attribute> attributeList = node->getAttributes();
+	for (unsigned int i = 0; i < static_cast<unsigned int>(attributeList.size()); ++i) {
+		aggregatedAttributes << attributeList[i];
+		aggregatedAttributes << "\\n";
+	}
+	node->getUpdateCount();
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr currentTransform;
+	currentTransform = node->getLatestTransform();
+	const double* matrixPtr = currentTransform->getRawData();
+	double x = matrixPtr[12];
+	double y = matrixPtr[13];
+	double z = matrixPtr[14];
+
+
+//	nodes << node->getId() << ";" << std::endl;
+	nodes << node->getId();
+    nodes << " [label = \"";
+    nodes << "ID [" << node->getId() << "]\\n";
+    nodes << "T = (" << x << ", " << y <<", " << z << ")\\n";
+    nodes << "Updates: " << node->getUpdateCount() << "\\n";
+    nodes << aggregatedAttributes.str();
+    nodes << "\"";
+//    nodes << "style=\"rounded,filled\", shape=diamond";
+//    nodes << "shape=circle";
+    nodes << "style=\"filled\"";
+    nodes <<"]";
 	nodes << ";" << std::endl;
 }
 

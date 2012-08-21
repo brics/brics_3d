@@ -39,9 +39,15 @@ public:
 	virtual ~IFunctionBlock(){};
 
 	virtual void configure(BRICS_3D::ParameterSet parameters) = 0;
-	virtual void setData(std::vector<unsigned int>& inputDataIds) = 0;
+
+	virtual void setData(std::vector<unsigned int>& inputDataIds) {
+		this->inputDataIds = inputDataIds;
+	}
 	virtual void execute() = 0;
-	virtual void getData(std::vector<unsigned int>& newDataIds) = 0;
+
+	virtual void getData(std::vector<unsigned int>& newDataIds) {
+		newDataIds = this->outputDataIds;
+	}
 
 
 protected:

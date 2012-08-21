@@ -76,7 +76,7 @@ IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getTransformBetweenNodes(Node::Nod
 	rootToReferenceNodeTransform->inverse();
 //	std::cout << "rootToReferenceNodeTransform inversed :" << std::endl << *rootToReferenceNodeTransform << std::endl;
 
-	*result = *( (*rootToNodeTransform) * (*rootToReferenceNodeTransform) );
+	*result = *( (*rootToReferenceNodeTransform) * (*rootToNodeTransform) ); //cf. Craig p39
 //	std::cout << "result :" << std::endl << *result << std::endl;
 
 	return result;
