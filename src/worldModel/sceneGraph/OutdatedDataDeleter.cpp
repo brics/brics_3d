@@ -44,14 +44,20 @@ void OutdatedDataDeleter::visit(Group* node){
 
 void OutdatedDataDeleter::visit(Transform* node){
 
-	if (performAutomaticHistoryUpdates) {
-		/* optionally update history/cache */
-		node->deleteOutdatedTransforms(TimeStamp(timer.getCurrentTime()));
-	}
+	bool isStaticTransform = false;
+	Attribute staticTransformTag("transformType","static");
+	isStaticTransform = attributeListContainsAttribute(node->getAttributes(), staticTransformTag);
 
-	/* check if node is outdated */
-	if (node->getCurrentHistoryLenght() < minHistoryLength) {
-		doDeleteNode(node);
+	if(!isStaticTransform) {
+		if (performAutomaticHistoryUpdates) {
+			/* optionally update history/cache */
+			node->deleteOutdatedTransforms(TimeStamp(timer.getCurrentTime()));
+		}
+
+		/* check if node is outdated */
+		if (node->getCurrentHistoryLenght() < minHistoryLength) {
+			doDeleteNode(node);
+		}
 	}
 
 }
