@@ -3025,6 +3025,138 @@ void SceneGraphNodesTest::testScenePointIterator() {
 	delete pcAccumulator;
 }
 
+void SceneGraphNodesTest::testSubGraphChecker() {
+	/* Graph structure: (remember: nodes can only serve as are leaves)
+	 *             root
+	 *              |
+	 *        ------+-------
+	 *        |             |
+	 *      group1        group2
+	 *        |             |
+	 *    ----+----  -------+-------
+	 *    |       |  |      |      |
+	 *   node3    node4  node5   group6
+	 */
+
+	unsigned const int rootId = 0;
+	unsigned const int group1Id = 1;
+	unsigned const int group2Id = 2;
+	unsigned const int node3Id = 3;
+	unsigned const int node4Id = 4;
+	unsigned const int node5Id = 5;
+	unsigned const int group6Id = 6;
+
+	Group::GroupPtr root(new Group());
+	root->setId(rootId);
+	Group::GroupPtr group1(new Group());
+	group1->setId(group1Id);
+	Group::GroupPtr group2(new Group());
+	group2->setId(group2Id);
+
+	Node::NodePtr node3(new Node());
+	node3->setId(node3Id);
+	Node::NodePtr node4(new Node());
+	node4->setId(node4Id);
+	Node::NodePtr node5(new Node());
+	node5->setId(node5Id);
+
+	Group::GroupPtr group6(new Group());
+	group6->setId(group6Id);
+
+	CPPUNIT_ASSERT_EQUAL(rootId, root->getId()); // preconditions:
+	CPPUNIT_ASSERT_EQUAL(group1Id, group1->getId());
+	CPPUNIT_ASSERT_EQUAL(group2Id, group2->getId());
+	CPPUNIT_ASSERT_EQUAL(node3Id, node3->getId());
+	CPPUNIT_ASSERT_EQUAL(node4Id, node4->getId());
+	CPPUNIT_ASSERT_EQUAL(node5Id, node5->getId());
+	CPPUNIT_ASSERT_EQUAL(group6Id, group6->getId());
+
+	/* set up graph */
+	root->addChild(group1);
+	root->addChild(group2);
+
+	group1->addChild(node3);
+	group1->addChild(node4);
+
+	group2->addChild(node4);
+	group2->addChild(node5);
+	group2->addChild(group6);
+
+	/* root chould be in all ...*/
+	SubGraphChecker checker(rootId);
+	CPPUNIT_ASSERT(!checker.nodeIsInSubGraph());
+	CPPUNIT_ASSERT_EQUAL(0u, checker.getPathCount());
+	root->accept(&checker);
+	CPPUNIT_ASSERT(checker.nodeIsInSubGraph());
+	CPPUNIT_ASSERT_EQUAL(1u, checker.getPathCount()); //itself => 1
+
+	checker.reset(rootId);
+	group1->accept(&checker);
+	CPPUNIT_ASSERT(checker.nodeIsInSubGraph());
+	CPPUNIT_ASSERT_EQUAL(1u, checker.getPathCount());
+
+	checker.reset(rootId);
+	group2->accept(&checker);
+	CPPUNIT_ASSERT(checker.nodeIsInSubGraph());
+	CPPUNIT_ASSERT_EQUAL(1u, checker.getPathCount());
+
+	checker.reset(rootId);
+	node3->accept(&checker);
+	CPPUNIT_ASSERT(checker.nodeIsInSubGraph());
+	CPPUNIT_ASSERT_EQUAL(1u, checker.getPathCount());
+
+	checker.reset(rootId);
+	node4->accept(&checker);
+	CPPUNIT_ASSERT(checker.nodeIsInSubGraph());
+	CPPUNIT_ASSERT_EQUAL(2u, checker.getPathCount());
+
+	checker.reset(rootId);
+	node5->accept(&checker);
+	CPPUNIT_ASSERT(checker.nodeIsInSubGraph());
+	CPPUNIT_ASSERT_EQUAL(1u, checker.getPathCount());
+
+	checker.reset(rootId);
+	group6->accept(&checker);
+	CPPUNIT_ASSERT(checker.nodeIsInSubGraph());
+	CPPUNIT_ASSERT_EQUAL(1u, checker.getPathCount());
+
+	/* who can see group 1...*/
+	checker.reset(group1Id);
+	root->accept(&checker);
+	CPPUNIT_ASSERT(!checker.nodeIsInSubGraph());
+	CPPUNIT_ASSERT_EQUAL(0u, checker.getPathCount());
+
+	checker.reset(group1Id);
+	group1->accept(&checker);
+	CPPUNIT_ASSERT(checker.nodeIsInSubGraph());
+	CPPUNIT_ASSERT_EQUAL(1u, checker.getPathCount());
+
+	checker.reset(group1Id);
+	group2->accept(&checker);
+	CPPUNIT_ASSERT(!checker.nodeIsInSubGraph());
+	CPPUNIT_ASSERT_EQUAL(0u, checker.getPathCount());
+
+	checker.reset(group1Id);
+	node3->accept(&checker);
+	CPPUNIT_ASSERT(checker.nodeIsInSubGraph());
+	CPPUNIT_ASSERT_EQUAL(1u, checker.getPathCount());
+
+	checker.reset(group1Id);
+	node4->accept(&checker);
+	CPPUNIT_ASSERT(checker.nodeIsInSubGraph());
+	CPPUNIT_ASSERT_EQUAL(1u, checker.getPathCount());
+
+	checker.reset(group1Id);
+	node5->accept(&checker);
+	CPPUNIT_ASSERT(!checker.nodeIsInSubGraph());
+	CPPUNIT_ASSERT_EQUAL(0u, checker.getPathCount());
+
+	checker.reset(group1Id);
+	group6->accept(&checker);
+	CPPUNIT_ASSERT(!checker.nodeIsInSubGraph());
+	CPPUNIT_ASSERT_EQUAL(0u, checker.getPathCount());
+}
+
 }  // namespace unitTests
 
 /* EOF */

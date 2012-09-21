@@ -29,6 +29,7 @@
 #include "worldModel/sceneGraph/OutdatedDataDeleter.h"
 #include "worldModel/sceneGraph/PointCloudAccumulator.h"
 #include "worldModel/sceneGraph/PointCloud.h"
+#include "worldModel/sceneGraph/SubGraphChecker.h"
 #include "core/PointCloud3D.h"
 #include "core/PointCloud3DIterator.h"
 
@@ -183,6 +184,7 @@ class SceneGraphNodesTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testDotGraphGenerator );
 	CPPUNIT_TEST( testPointIterator );
 	CPPUNIT_TEST( testScenePointIterator );
+	CPPUNIT_TEST( testSubGraphChecker );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -211,6 +213,7 @@ public:
 	void testDotGraphGenerator();
 	void testPointIterator();
 	void testScenePointIterator();
+	void testSubGraphChecker();
 
 private:
 	  /// Maximum deviation for equality check of double variables
