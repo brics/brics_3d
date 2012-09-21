@@ -95,6 +95,9 @@ void DotVisualizer::printGraph(){
 
 		command << "cp current_graph.gv.svg graph_" << counter << ".gv.svg";
 		system(command.str().c_str());
+		command.str("");
+		command << "cp current_graph.gv graph_" << counter << ".gv";
+		system(command.str().c_str());
 		LOG(DEBUG) << "DotVisualizer:	File name is: graph_" << counter << ".gv.svg";
 	}
 
