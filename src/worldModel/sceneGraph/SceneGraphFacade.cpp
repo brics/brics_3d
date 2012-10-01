@@ -26,13 +26,6 @@ namespace BRICS_3D {
 
 namespace RSG {
 
-void SceneGraphFacade::findSceneNodes(const Attribute & attributes, Node & nodeReferences) {
-  // Bouml preserved body begin 00022703
-  // Bouml preserved body end 00022703
-}
-
-
-
 SceneGraphFacade::SceneGraphFacade() {
 	this->idGenerator = new SimpleIdGenerator();
 	initialize();
@@ -163,14 +156,32 @@ bool SceneGraphFacade::getTransformForNode (unsigned int id, unsigned int idRefe
 }
 
 
-bool SceneGraphFacade::addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes) {
+bool SceneGraphFacade::addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, bool forcedId) {
 	bool operationSucceeded = false;
+	bool idIsOk = false;
+	unsigned int id;
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(parentId);
 	Node::NodePtr node = tmpNode.lock();
 	Group::GroupPtr parentGroup = boost::dynamic_pointer_cast<Group>(node);
-	if (parentGroup != 0) {
+
+	if (forcedId) {
+//				Node::NodeWeakPtr tmpNodeAlreadyExists = findNodeRecerence(assignedId); //check if id alredy exists in local LookUpTable
+//				Node::NodePtr nodeAlreadyExists = tmpNodeAlreadyExists.lock();
+				if( (!doesIdExist(assignedId)) && (idGenerator->removeIdFromPool(assignedId)) ) {
+					id = assignedId;
+					idIsOk = true;
+				} else {
+					LOG(WARNING) << "Forced ID " << assignedId << " cannot be assigend. Probably another object with that ID exists already!";
+					idIsOk = false;
+				}
+	} else {
+		id = idGenerator->getNextValidId();
+		idIsOk = true;
+	}
+
+	if ((parentGroup != 0) && (idIsOk)) {
 		Node::NodePtr newNode(new Node());
-		newNode->setId(idGenerator->getNextValidId());
+		newNode->setId(id);
 		newNode->setAttributes(attributes);
 		parentGroup->addChild(newNode);
 		assignedId = newNode->getId();
@@ -188,19 +199,40 @@ bool SceneGraphFacade::addNode(unsigned int parentId, unsigned int& assignedId, 
 	if (operationSucceeded) {
 		return true;
 	} else {
-		LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new node as a child of it.";
+		if (idIsOk) { //If ID was OK but operation did not succeeded, then it is because of the parent...
+			LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new node as a child of it.";
+		}
 		return false;
 	}
 }
 
-bool SceneGraphFacade::addGroup(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes) {
+bool SceneGraphFacade::addGroup(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, bool forcedId) {
 	bool operationSucceeded = false;
+	bool idIsOk = false;
+	unsigned int id;
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(parentId);
 	Node::NodePtr node = tmpNode.lock();
 	Group::GroupPtr parentGroup = boost::dynamic_pointer_cast<Group>(node);
-	if (parentGroup != 0) {
+
+	if (forcedId) {
+//				Node::NodeWeakPtr tmpNodeAlreadyExists = findNodeRecerence(assignedId); //check if id alredy exists in local LookUpTable
+//				Node::NodePtr nodeAlreadyExists = tmpNodeAlreadyExists.lock();
+				if( (!doesIdExist(assignedId)) && (idGenerator->removeIdFromPool(assignedId)) ) {
+					id = assignedId;
+					idIsOk = true;
+				} else {
+					LOG(WARNING) << "Forced ID " << assignedId << " cannot be assigend. Probably another object with that ID exists already!";
+					idIsOk = false;
+				}
+	} else {
+		id = idGenerator->getNextValidId();
+		idIsOk = true;
+	}
+
+
+	if ((parentGroup != 0) && (idIsOk)) {
 		Group::GroupPtr newGroup(new Group());
-		newGroup->setId(idGenerator->getNextValidId());
+		newGroup->setId(id);
 		newGroup->setAttributes(attributes);
 		parentGroup->addChild(newGroup);
 		assignedId = newGroup->getId();
@@ -212,26 +244,46 @@ bool SceneGraphFacade::addGroup(unsigned int parentId, unsigned int& assignedId,
 	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
 	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
 		unsigned int assignedIdcopy = assignedId; // prevent that observer might change this....
-		(*observerIterator)->addGroup(parentId, assignedIdcopy, attributes);
+		(*observerIterator)->addGroup(parentId, assignedIdcopy, attributes, forcedId);
 	}
 
 	if (operationSucceeded) {
 		return true;
 	} else {
-		LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new group as a child of it.";
+		if (idIsOk) { //If ID was OK but operation did not succeeded, then it is because of the parent...
+			LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new group as a child of it.";
+		}
 		return false;
 	}
 }
 
-bool SceneGraphFacade::addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp) {
+bool SceneGraphFacade::addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp, bool forcedId) {
 	bool operationSucceeded = false;
+	bool idIsOk = false;
+	unsigned int id;
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(parentId);
 	Node::NodePtr node = tmpNode.lock();
-	//	Group* parentGroup = dynamic_cast<Group*>(node);
-		Group::GroupPtr parentGroup = boost::dynamic_pointer_cast<Group>(node);
-	if (parentGroup != 0) {
+
+	Group::GroupPtr parentGroup = boost::dynamic_pointer_cast<Group>(node);
+
+	if (forcedId) {
+//		Node::NodeWeakPtr tmpNodeAlreadyExists = findNodeRecerence(assignedId); //check if id alredy exists in local LookUpTable
+//		Node::NodePtr nodeAlreadyExists = tmpNodeAlreadyExists.lock();
+		if( (!doesIdExist(assignedId)) && (idGenerator->removeIdFromPool(assignedId)) ) {
+			id = assignedId;
+			idIsOk = true;
+		} else {
+			LOG(WARNING) << "Forced ID " << assignedId << " cannot be assigend. Probably another object with that ID exists already!";
+			idIsOk = false;
+		}
+	} else {
+		id = idGenerator->getNextValidId();
+		idIsOk = true;
+	}
+
+	if ((parentGroup != 0) && (idIsOk)) {
 		RSG::Transform::TransformPtr newTransform(new Transform());
-		newTransform->setId(idGenerator->getNextValidId());
+		newTransform->setId(id);
 		newTransform->setAttributes(attributes);
 		newTransform->insertTransform(transform, timeStamp);
 		parentGroup->addChild(newTransform);
@@ -250,20 +302,39 @@ bool SceneGraphFacade::addTransformNode(unsigned int parentId, unsigned int& ass
 	if(operationSucceeded) {
 		return true;
 	} else {
-		LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new transform as a child of it.";
+		if (idIsOk) { //If ID was OK but operation did not succeeded, then it is because of the parent...
+			LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new transform as a child of it.";
+		}
 		return false;
 	}
 }
 
-bool SceneGraphFacade::addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp) {
+bool SceneGraphFacade::addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp, bool forcedId) {
 	bool operationSucceeded = false;
+	bool idIsOk = false;
+	unsigned int id;
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(parentId);
 	Node::NodePtr node = tmpNode.lock();
-	//	Group* parentGroup = dynamic_cast<Group*>(node);
 	Group::GroupPtr parentGroup = boost::dynamic_pointer_cast<Group>(node);
-	if (parentGroup != 0) {
+
+	if (forcedId) {
+//		Node::NodeWeakPtr tmpNodeAlreadyExists = findNodeRecerence(assignedId); //check if id alredy exists in local LookUpTable
+//		Node::NodePtr nodeAlreadyExists = tmpNodeAlreadyExists.lock();
+		if( (!doesIdExist(assignedId)) && (idGenerator->removeIdFromPool(assignedId)) ) {
+			id = assignedId;
+			idIsOk = true;
+		} else {
+			LOG(WARNING) << "Forced ID " << assignedId << " cannot be assigend. Probably another object with that ID exists already!";
+			idIsOk = false;
+		}
+	} else {
+		id = idGenerator->getNextValidId();
+		idIsOk = true;
+	}
+
+	if ((parentGroup != 0) && (idIsOk)) {
 		GeometricNode::GeometricNodePtr newGeometricNode(new GeometricNode());
-		newGeometricNode->setId(idGenerator->getNextValidId());
+		newGeometricNode->setId(id);
 		newGeometricNode->setAttributes(attributes);
 		newGeometricNode->setShape(shape);
 		newGeometricNode->setTimeStamp(timeStamp);
@@ -283,7 +354,9 @@ bool SceneGraphFacade::addGeometricNode(unsigned int parentId, unsigned int& ass
 	if(operationSucceeded) {
 		return true;
 	} else {
-		LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new geometric node as a child of it.";
+		if (idIsOk) { //If ID was OK but operation did not succeeded, then it is because of the parent...
+			LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new geometric node as a child of it.";
+		}
 		return false;
 	}
 }
@@ -427,12 +500,6 @@ bool SceneGraphFacade::detachUpdateObserver(ISceneGraphUpdateObserver* observer)
 }
 
 bool SceneGraphFacade::executeGraphTraverser(INodeVisitor* visitor, unsigned int subgraphId) {
-//	if (rootNode == 0) {
-//		return false;
-//	}
-//	rootNode->accept(visitor);
-//	return true;
-
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(subgraphId);
 	Node::NodePtr node = tmpNode.lock();
 	if (node != 0) {
@@ -440,7 +507,6 @@ bool SceneGraphFacade::executeGraphTraverser(INodeVisitor* visitor, unsigned int
 		return true;
 	}
 	return false;
-
 }
 
 Node::NodeWeakPtr SceneGraphFacade::findNodeRecerence(unsigned int id) {
@@ -455,6 +521,14 @@ Node::NodeWeakPtr SceneGraphFacade::findNodeRecerence(unsigned int id) {
 	}
 	LOG(WARNING) << "Scene graph does not contain a node with ID " << id;
 	return Node::NodeWeakPtr(); // should be kind of null...
+}
+
+bool SceneGraphFacade::doesIdExist(unsigned int id) {
+	nodeIterator = idLookUpTable.find(id);
+	if (nodeIterator != idLookUpTable.end()) {
+		return true;
+	}
+	return false;
 }
 
 } // namespace BRICS_3D::RSG

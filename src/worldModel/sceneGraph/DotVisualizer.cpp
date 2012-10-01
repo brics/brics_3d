@@ -36,22 +36,22 @@ DotVisualizer::~DotVisualizer() {
 }
 
 
-bool DotVisualizer::addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes) {
+bool DotVisualizer::addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, bool forcedId) {
 	printGraph();
 	return true;
 }
 
-bool DotVisualizer::addGroup(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes) {
+bool DotVisualizer::addGroup(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, bool forcedId) {
 	printGraph();
 	return true;
 }
 
-bool DotVisualizer::addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, BRICS_3D::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, BRICS_3D::RSG::TimeStamp timeStamp) {
+bool DotVisualizer::addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, BRICS_3D::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, BRICS_3D::RSG::TimeStamp timeStamp, bool forcedId) {
 	printGraph();
 	return true;
 }
 
-bool DotVisualizer::addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp) {
+bool DotVisualizer::addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp, bool forcedId) {
 	printGraph();
 	return true;
 }

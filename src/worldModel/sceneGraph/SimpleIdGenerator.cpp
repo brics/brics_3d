@@ -40,6 +40,14 @@ unsigned int SimpleIdGenerator::getRootId(){
 	return rootId;
 }
 
+bool SimpleIdGenerator::removeIdFromPool(unsigned int id) {
+	if (id < runningNumber) {
+		return false;
+	}
+	runningNumber = id + 1; //Generated IDs might not be continous, but that does not really matters...
+	return true;
+}
+
 } // namespace BRICS_3D::RSG
 
 } // namespace BRICS_3D

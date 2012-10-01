@@ -108,22 +108,22 @@ public:
 		addParentCounter = 0;
 	}
 
-	bool addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes) {
+	bool addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, bool forceId = false) {
 		addNodeCounter++;
 		return true;
 	}
 
-	bool addGroup(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes) {
+	bool addGroup(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, bool forceId = false) {
 		addGroupCounter++;
 		return true;
 	}
 
-	bool addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp) {
+	bool addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp, bool forceId = false) {
 		addTransformCounter++;
 		return true;
 	}
 
-	bool addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp) {
+	bool addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp, bool forceId = false) {
 		addGeometricNodeCounter++;
 		return true;
 	}
@@ -185,6 +185,7 @@ class SceneGraphNodesTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testPointIterator );
 	CPPUNIT_TEST( testScenePointIterator );
 	CPPUNIT_TEST( testSubGraphChecker );
+	CPPUNIT_TEST( testForcedIds );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -214,6 +215,7 @@ public:
 	void testPointIterator();
 	void testScenePointIterator();
 	void testSubGraphChecker();
+	void testForcedIds();
 
 private:
 	  /// Maximum deviation for equality check of double variables

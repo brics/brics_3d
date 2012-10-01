@@ -1843,6 +1843,23 @@ void SceneGraphNodesTest::testIdGenerator(){
 	CPPUNIT_ASSERT_EQUAL(5u, idGenerator->getNextValidId());
 	CPPUNIT_ASSERT_EQUAL(6u, idGenerator->getNextValidId());
 
+	CPPUNIT_ASSERT(!idGenerator->removeIdFromPool(1u));
+	CPPUNIT_ASSERT(!idGenerator->removeIdFromPool(2u));
+	CPPUNIT_ASSERT(!idGenerator->removeIdFromPool(3u));
+	CPPUNIT_ASSERT(!idGenerator->removeIdFromPool(4u));
+	CPPUNIT_ASSERT(!idGenerator->removeIdFromPool(5u));
+	CPPUNIT_ASSERT(!idGenerator->removeIdFromPool(6u));
+
+	CPPUNIT_ASSERT_EQUAL(7u, idGenerator->getNextValidId());
+
+	CPPUNIT_ASSERT(!idGenerator->removeIdFromPool(7u));
+	CPPUNIT_ASSERT(idGenerator->removeIdFromPool(8u)); // this should work
+
+	CPPUNIT_ASSERT_EQUAL(9u, idGenerator->getNextValidId());
+	CPPUNIT_ASSERT(!idGenerator->removeIdFromPool(9u));
+
+	CPPUNIT_ASSERT(idGenerator->removeIdFromPool(123u)); // this should work too
+
 	delete idGenerator;
 }
 
@@ -3155,6 +3172,101 @@ void SceneGraphNodesTest::testSubGraphChecker() {
 	group6->accept(&checker);
 	CPPUNIT_ASSERT(!checker.nodeIsInSubGraph());
 	CPPUNIT_ASSERT_EQUAL(0u, checker.getPathCount());
+}
+
+void SceneGraphNodesTest::testForcedIds() {
+	/* Graph structure: (remember: nodes can only serve as are leaves)
+	 *                 root
+	 *                   |
+	 *        -----------+------------------
+	 *        |          |         |        |
+	 *       tf1        group2    node3     geode4
+	 *
+	 */
+
+
+	/* will be assigned later */
+	unsigned int rootId = 0;
+	unsigned int tf1Id = 0;
+	unsigned int tf1IdForced = 0;
+	unsigned int group2Id = 0;
+	unsigned int group2IdForced = 0;
+	unsigned int node3Id = 0;
+	unsigned int node3IdForced = 0;
+	unsigned int geode4Id = 0;
+	unsigned int geode4IdForced = 0;
+	const unsigned int invalidId = 1000001;
+
+	SceneGraphFacade scene; //assumes SimpleIdGenerator
+	vector<Attribute> attributes;
+	TimeStamp dummyTime;
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr dummyTransform(new HomogeneousMatrix44());
+	Box::BoxPtr dummyBox(new Box());
+
+	tf1IdForced = 0;
+	CPPUNIT_ASSERT(!scene.addTransformNode(scene.getRootId(), tf1IdForced, attributes, dummyTransform, dummyTime, true));
+	tf1IdForced = 1;
+	CPPUNIT_ASSERT(!scene.addTransformNode(scene.getRootId(), tf1IdForced, attributes, dummyTransform, dummyTime, true)); //this would override root
+	tf1IdForced = 2;
+	CPPUNIT_ASSERT(scene.addTransformNode(scene.getRootId(), tf1IdForced, attributes, dummyTransform, dummyTime, true));
+	CPPUNIT_ASSERT_EQUAL(2u, tf1IdForced);
+	CPPUNIT_ASSERT(scene.addTransformNode(scene.getRootId(), tf1Id, attributes, dummyTransform, dummyTime, false));
+	CPPUNIT_ASSERT_EQUAL(3u, tf1Id);
+	tf1IdForced = 4; // ok, but invalid parent:
+	CPPUNIT_ASSERT(!scene.addTransformNode(invalidId, tf1IdForced, attributes, dummyTransform, dummyTime, true)); //does not work but wastes an ID
+	CPPUNIT_ASSERT_EQUAL(4u, tf1IdForced);
+	CPPUNIT_ASSERT(!scene.addTransformNode(invalidId, tf1Id, attributes, dummyTransform, dummyTime, false)); //does not work but wastes an ID
+	CPPUNIT_ASSERT_EQUAL(3u, tf1Id);
+
+	group2IdForced = 0;
+	CPPUNIT_ASSERT(!scene.addGroup(scene.getRootId(), group2IdForced, attributes, true)); //this would override root
+	group2IdForced = 1;
+	CPPUNIT_ASSERT(!scene.addGroup(scene.getRootId(), group2IdForced, attributes, true));
+	group2IdForced = 2;
+	CPPUNIT_ASSERT(!scene.addGroup(scene.getRootId(), group2IdForced, attributes, true));
+	group2IdForced = 3;
+	CPPUNIT_ASSERT(!scene.addGroup(scene.getRootId(), group2IdForced, attributes, true));
+	group2IdForced = 4;
+	CPPUNIT_ASSERT(!scene.addGroup(scene.getRootId(), group2IdForced, attributes, true));
+	group2IdForced = 5;
+	CPPUNIT_ASSERT(!scene.addGroup(scene.getRootId(), group2IdForced, attributes, true));
+	group2IdForced = 6;
+	CPPUNIT_ASSERT(scene.addGroup(scene.getRootId(), group2IdForced, attributes, true));
+	CPPUNIT_ASSERT_EQUAL(6u, group2IdForced);
+	CPPUNIT_ASSERT(scene.addGroup(scene.getRootId(), group2Id, attributes, false)); // automatic generated
+	CPPUNIT_ASSERT_EQUAL(7u, group2Id);
+	group2IdForced = 8; // ok, but invalid parent:
+	CPPUNIT_ASSERT(!scene.addGroup(invalidId, group2IdForced, attributes, true)); //does not work but wastes an ID
+	CPPUNIT_ASSERT_EQUAL(8u, group2IdForced);
+	CPPUNIT_ASSERT(!scene.addGroup(invalidId, group2Id, attributes, false)); //does not work but wastes an ID
+	CPPUNIT_ASSERT_EQUAL(7u, group2Id);
+
+	node3IdForced = 1;
+	CPPUNIT_ASSERT(!scene.addNode(scene.getRootId(), node3IdForced, attributes, true));
+	node3IdForced = 10;
+	CPPUNIT_ASSERT(scene.addNode(scene.getRootId(), node3IdForced, attributes, true));
+	CPPUNIT_ASSERT_EQUAL(10u, node3IdForced);
+	CPPUNIT_ASSERT(scene.addNode(scene.getRootId(), node3Id, attributes, false));
+	CPPUNIT_ASSERT_EQUAL(11u, node3Id);
+	node3IdForced = 12;  // ok, but invalid parent:
+	CPPUNIT_ASSERT(!scene.addNode(invalidId, node3IdForced, attributes, true));
+	CPPUNIT_ASSERT_EQUAL(12u, node3IdForced);
+	CPPUNIT_ASSERT(!scene.addNode(invalidId, node3Id, attributes, false));
+	CPPUNIT_ASSERT_EQUAL(11u, node3Id);
+
+	geode4IdForced = 1;
+	CPPUNIT_ASSERT(!scene.addGeometricNode(scene.getRootId(), geode4IdForced, attributes, dummyBox, dummyTime, true));
+	geode4IdForced = 14;
+	CPPUNIT_ASSERT(scene.addGeometricNode(scene.getRootId(), geode4IdForced, attributes, dummyBox, dummyTime, true));
+	CPPUNIT_ASSERT_EQUAL(14u, geode4IdForced);
+	CPPUNIT_ASSERT(scene.addGeometricNode(scene.getRootId(), geode4Id, attributes, dummyBox, dummyTime, false));
+	CPPUNIT_ASSERT_EQUAL(15u, geode4Id);
+	geode4IdForced = 16; // ok, but invalid parent:
+	CPPUNIT_ASSERT(!scene.addGeometricNode(invalidId, geode4IdForced, attributes, dummyBox, dummyTime, true));
+	CPPUNIT_ASSERT_EQUAL(16u, geode4IdForced);
+	CPPUNIT_ASSERT(!scene.addGeometricNode(invalidId, geode4IdForced, attributes, dummyBox, dummyTime, false));
+	CPPUNIT_ASSERT_EQUAL(15u, geode4Id);
+
 }
 
 }  // namespace unitTests

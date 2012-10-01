@@ -38,6 +38,7 @@ public:
 
 	unsigned int getNextValidId();
 	unsigned int getRootId();
+    bool removeIdFromPool(unsigned int id);
 
 private:
 	unsigned int runningNumber;

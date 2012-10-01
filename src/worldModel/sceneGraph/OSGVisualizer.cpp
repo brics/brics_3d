@@ -163,7 +163,7 @@ struct DrawCallback: public osg::Drawable::DrawCallback {
 	mutable osg::Matrix _previousModelViewMatrix;
 };
 
-bool OSGVisualizer::addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes) {
+bool OSGVisualizer::addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, bool forcedId) {
 	LOG(DEBUG) << "OSGVisualizer: adding node";
 	osg::ref_ptr<osg::Node> node = findNodeRecerence(parentId);
 	osg::ref_ptr<osg::Group> parentGroup = 0;
@@ -180,7 +180,7 @@ bool OSGVisualizer::addNode(unsigned int parentId, unsigned int& assignedId, vec
 	return false;
 }
 
-bool OSGVisualizer::addGroup(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes) {
+bool OSGVisualizer::addGroup(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, bool forcedId) {
 	LOG(DEBUG) << "OSGVisualizer: adding group";
 
 	osg::ref_ptr<osg::Node> node = findNodeRecerence(parentId);
@@ -198,7 +198,7 @@ bool OSGVisualizer::addGroup(unsigned int parentId, unsigned int& assignedId, ve
 	return false;
 }
 
-bool OSGVisualizer::addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp) {
+bool OSGVisualizer::addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp, bool forcedId) {
 	LOG(DEBUG) << "OSGVisualizer: adding transform node";
 
 	bool noVisualisation = false;
@@ -228,7 +228,7 @@ bool OSGVisualizer::addTransformNode(unsigned int parentId, unsigned int& assign
 	return false;
 }
 
-bool OSGVisualizer::addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp) {
+bool OSGVisualizer::addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp, bool forcedId) {
 	LOG(DEBUG) << "OSGVisualizer: adding geode";
 
 	osg::ref_ptr<osg::Node> node = findNodeRecerence(parentId);

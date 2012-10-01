@@ -74,17 +74,16 @@ class SceneGraphFacade : public ISceneGraphQuery, public ISceneGraphUpdate {
     bool getTransformForNode (unsigned int id, unsigned int idReferenceNode, TimeStamp timeStamp, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform);
 
     /* Implemented update interfaces */
-    bool addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes);
-    bool addGroup(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes);
-    bool addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp);
-    bool addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp);
+    bool addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, bool forcedId = false);
+    bool addGroup(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, bool forcedId = false);
+    bool addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp, bool forcedId = false);
+    bool addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp, bool forcedId = false);
     bool setNodeAttributes(unsigned int id, vector<Attribute> newAttributes);
     bool setTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp);
 	bool deleteNode(unsigned int id);
     bool addParent(unsigned int id, unsigned int parentId);
 
     /* Configuration */
-//    bool setGraphTraverser(INodeVisitor* visitor);
     bool attachUpdateObserver(ISceneGraphUpdateObserver* observer);
     bool detachUpdateObserver(ISceneGraphUpdateObserver* observer);
 
@@ -93,20 +92,36 @@ class SceneGraphFacade : public ISceneGraphQuery, public ISceneGraphUpdate {
 
   private:
 
+	/// Internal initiaization.
     void initialize();
 
+    /**
+     * @brief Resolved IDs to references.
+     * @param id The ID.
+     * @return The reference. Will be NULL in case no reference could be found.
+     */
     Node::NodeWeakPtr findNodeRecerence(unsigned int id);
 
-    void findSceneNodes(const Attribute & attributes, Node & nodeReferences);
+    /**
+     * @brief Test if an ID is in the idLookUpTable.
+     * @param id The ID.
+     * @return True if ID is in table, otherwise false.
+     */
+    bool doesIdExist(unsigned int id);
 
+    /// The root of all evil...
+    Group::GroupPtr rootNode;
 
-    Group::GroupPtr rootNode; // root of all evil...
-
+    /// Table that maps IDs to references.
     map<unsigned int, Node::NodeWeakPtr > idLookUpTable;
+
+    /// Iterator for idLookUpTable
     map<unsigned int, Node::NodeWeakPtr >::const_iterator nodeIterator;
 
+    /// Handle to ID generator. Can be optionally specified at creation.
     IIdGenerator* idGenerator;
 
+    /// Set of observers that will be notified when the update function will be called.
     std::vector<ISceneGraphUpdateObserver*> updateObservers;
 
 
