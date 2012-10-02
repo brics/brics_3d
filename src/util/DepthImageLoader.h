@@ -28,9 +28,9 @@
 using namespace std;
 
 /**
- * @namespace BRICS_3D
+ * @namespace brics_3d
  */
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @class DepthImageLoader

@@ -20,13 +20,13 @@
 #include "DotVisualizer.h"
 #include "core/Logger.h"
 
-using BRICS_3D::Logger;
+using brics_3d::Logger;
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
-DotVisualizer::DotVisualizer(BRICS_3D::RSG::SceneGraphFacade* scene) : scene(scene)  {
+DotVisualizer::DotVisualizer(brics_3d::rsg::SceneGraphFacade* scene) : scene(scene)  {
 	keepHistory = false;
 	counter = 0;
 }
@@ -46,7 +46,7 @@ bool DotVisualizer::addGroup(unsigned int parentId, unsigned int& assignedId, ve
 	return true;
 }
 
-bool DotVisualizer::addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, BRICS_3D::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, BRICS_3D::RSG::TimeStamp timeStamp, bool forcedId) {
+bool DotVisualizer::addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, brics_3d::rsg::TimeStamp timeStamp, bool forcedId) {
 	printGraph();
 	return true;
 }
@@ -61,7 +61,7 @@ bool DotVisualizer::setNodeAttributes(unsigned int id, vector<Attribute> newAttr
 	return true;
 }
 
-bool DotVisualizer::setTransform(unsigned int id, BRICS_3D::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform,  BRICS_3D::RSG::TimeStamp timeStamp) {
+bool DotVisualizer::setTransform(unsigned int id, brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform,  brics_3d::rsg::TimeStamp timeStamp) {
 	printGraph();
 	return true;
 }

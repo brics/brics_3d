@@ -64,7 +64,7 @@ If you want to cite the BRICS_3D library you can use the following reference. Am
 /*!  
  
 
-@namespace BRICS_3D 
+@namespace brics_3d 
 	@brief The BRICS 3D perception and modeling library.
  
  

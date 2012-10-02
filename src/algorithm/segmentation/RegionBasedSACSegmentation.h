@@ -45,7 +45,7 @@
 #include "algorithm/segmentation/SACMethods/SACMethodLMeDS.h"
 #include "algorithm/segmentation/SACMethods/SACMethodMLESAC.h"
 
-namespace BRICS_3D{
+namespace brics_3d{
 
 /**
  * @brief Adapter class for initialization of sample consensus based segmentation method.

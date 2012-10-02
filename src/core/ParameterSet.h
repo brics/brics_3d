@@ -24,7 +24,7 @@
 #include <string>
 #include <vector>
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 //! A parameter has a name and a value, represented by std::string.
 typedef std::pair<std::string, std::string> Parameter;
@@ -106,6 +106,6 @@ std::vector<std::string> getNamesFromString(std::string aCSVParameterString, uns
 //! Skip spaces in front of string s.
 std::string skipBlank(std::string s);
 
-} // namespace BRICS_3D
+} // namespace brics_3d
 
 #endif // PARAMETERSET_H_

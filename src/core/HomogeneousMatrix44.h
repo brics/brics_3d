@@ -33,14 +33,14 @@
 #endif
 
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief Simple implementation of IHomogeneousMatrix44 interface.
  *
  * Matrix can be set up either via manual rotation and translation coefficients or an Eigen2 transformation.
  */
-class HomogeneousMatrix44: public BRICS_3D::IHomogeneousMatrix44 {
+class HomogeneousMatrix44: public brics_3d::IHomogeneousMatrix44 {
 public:
 
 	/**

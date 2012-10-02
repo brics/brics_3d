@@ -23,9 +23,9 @@
 #include "core/Vector3D.h"
 
 /**
- * @namespace BRICS_3D
+ * @namespace brics_3d
  */
-namespace BRICS_3D {
+namespace brics_3d {
 
 class Normal3D : public Vector3D {
 public:

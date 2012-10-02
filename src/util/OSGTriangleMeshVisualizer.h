@@ -29,7 +29,7 @@
 
 #include "core/ITriangleMesh.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief Displays triangle meshes in an Open Scene Graph (OSG) viewer.

@@ -27,7 +27,7 @@
 #include <boost/algorithm/string.hpp>
 #include <stdlib.h>
 using namespace std;
-namespace BRICS_3D{
+namespace brics_3d{
 
 class Evaluator {
 private:

@@ -24,9 +24,9 @@
 #include <vector>
 using std::vector;
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 /**
  *  @brief The group allows for the <b>graph</b> relations, as it extends a node to have further children nodes.
@@ -60,9 +60,9 @@ public:
 
 };
 
-} // namespace BRICS_3D::RSG
+} // namespace brics_3d::RSG
 
-} // namespace BRICS_3D
+} // namespace brics_3d
 #endif
 
 /* EOF */

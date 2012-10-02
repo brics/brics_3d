@@ -20,9 +20,9 @@
 #include "OutdatedDataIdAwareDeleter.h"
 #include <assert.h>
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 OutdatedDataIdAwareDeleter::OutdatedDataIdAwareDeleter(SceneGraphFacade* facadeHandle) {
 	assert(facadeHandle != 0);

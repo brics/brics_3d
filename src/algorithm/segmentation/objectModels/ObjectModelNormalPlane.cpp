@@ -19,7 +19,7 @@
 
 #include "ObjectModelNormalPlane.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 void ObjectModelNormalPlane::computeRandomModel (int &iterations, Eigen::VectorXd &model_coefficients, bool &isDegenerate,
 		bool &modelFound){

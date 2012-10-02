@@ -19,7 +19,7 @@
 
 #include "DepthImageLoader.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 DepthImageLoader::DepthImageLoader() {
 	image = NULL;

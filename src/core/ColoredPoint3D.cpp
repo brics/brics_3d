@@ -23,7 +23,7 @@
 
 using std::runtime_error;
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 
 ColoredPoint3D::ColoredPoint3D() :

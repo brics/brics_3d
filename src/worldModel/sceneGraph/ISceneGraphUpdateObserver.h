@@ -22,9 +22,9 @@
 
 #include "ISceneGraphUpdate.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 /**
  * @brief Interface to observe any updates to the scenegraph

@@ -24,7 +24,7 @@
 #include "algorithm/segmentation/objectModels/IObjectModelUsingNormals.h"
 
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @note The implementation is reusing the object model implementation in ROS:PCl

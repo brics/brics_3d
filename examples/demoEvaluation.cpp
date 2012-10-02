@@ -46,10 +46,10 @@ int main(){
 //ToDo Complete the description
 
 	//Create the necessary objects
-	BRICS_3D::Evaluator evaluator;
-	BRICS_3D::MetricCalculator metricCalculator;
-	BRICS_3D::FileWriter fileWriter;
-	BRICS_3D::FileReader fileReader;
+	brics_3d::Evaluator evaluator;
+	brics_3d::MetricCalculator metricCalculator;
+	brics_3d::FileWriter fileWriter;
+	brics_3d::FileReader fileReader;
 
 	//Evaluator Initialization
 	//ToDo set the ground truth file path properly

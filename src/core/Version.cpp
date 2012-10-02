@@ -20,7 +20,7 @@
 #include "Version.h"
 #include <stdlib.h>
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 Version::Version() {
 

@@ -26,9 +26,9 @@
 
 //#define STATIC_TRANSFORM
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransformAlongPath(Node::NodePath nodePath){
 	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr result(new HomogeneousMatrix44()); //identity matrix
@@ -258,9 +258,9 @@ void Transform::accept(INodeVisitor* visitor){
 	}
 }
 
-} // namespace BRICS_3D::RSG
+} // namespace brics_3d::RSG
 
-} // namespace BRICS_3D
+} // namespace brics_3d
 
 /* EOF */
 

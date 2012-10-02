@@ -22,9 +22,9 @@
 
 #include "IIdGenerator.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 /**
  * @brief Implementation for IIdGenerator based on a running number.
@@ -46,9 +46,9 @@ private:
 
 };
 
-} // namespace BRICS_3D::RSG
+} // namespace brics_3d::RSG
 
-} // namespace BRICS_3D
+} // namespace brics_3d
 #endif
 
 /* EOF */

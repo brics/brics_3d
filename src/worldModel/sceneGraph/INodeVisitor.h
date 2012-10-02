@@ -20,9 +20,9 @@
 #ifndef INODEVISITOR_H_
 #define INODEVISITOR_H_
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 class Node;
 class Group;

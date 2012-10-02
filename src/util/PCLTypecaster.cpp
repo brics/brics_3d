@@ -19,7 +19,7 @@
 
 #include "PCLTypecaster.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 //PCLTypecaster::PCLTypecaster() {}
 //
@@ -27,7 +27,7 @@ namespace BRICS_3D {
 
 
 //void PCLTypecaster::convertToPCLDataType(pcl::PointCloud<pcl::PointXYZ>::Ptr pclCloudPtr,
-//		BRICS_3D::PointCloud3D* pointCloud3DPtr ){
+//		brics_3d::PointCloud3D* pointCloud3DPtr ){
 //	pclCloudPtr->width = pointCloud3DPtr->getSize();
 //	pclCloudPtr->height = 1;
 //	pclCloudPtr->points.resize( pclCloudPtr->width * pclCloudPtr->height );
@@ -44,7 +44,7 @@ namespace BRICS_3D {
 
 
 //void PCLTypecaster::convertToBRICS3DDataType(pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr pclCloudPtr,
-//		BRICS_3D::PointCloud3D* pointCloud3DPtr ){
+//		brics_3d::PointCloud3D* pointCloud3DPtr ){
 //
 //
 //	pointCloud3DPtr->getPointCloud()->resize(pclCloudPtr->size());
@@ -68,7 +68,7 @@ namespace BRICS_3D {
 
 
 //void PCLTypecaster::convertToBRICS3DDataType(pcl::PointCloud<pcl::PointXYZ>::ConstPtr pclCloudPtr,
-//		BRICS_3D::PointCloud3D* pointCloud3DPtr ){
+//		brics_3d::PointCloud3D* pointCloud3DPtr ){
 //	pointCloud3DPtr->getPointCloud()->resize(pclCloudPtr->size());
 //
 //	for (unsigned int i =0 ; i < pclCloudPtr->size()  ; i++){
@@ -89,9 +89,9 @@ namespace BRICS_3D {
 
 
 //void PCLTypecaster::convertToPCLDataType(pcl::PointCloud<pcl::PointXYZRGB>::Ptr pclCloudPtr,
-//		BRICS_3D::ColoredPointCloud3D* pointCloud3DPtr ){
+//		brics_3d::ColoredPointCloud3D* pointCloud3DPtr ){
 //
-//	BRICS_3D::ColorSpaceConvertor colorSpaceConvertor;
+//	brics_3d::ColorSpaceConvertor colorSpaceConvertor;
 //
 //	pclCloudPtr->width = pointCloud3DPtr->getSize();
 //	pclCloudPtr->height = 1;
@@ -113,7 +113,7 @@ namespace BRICS_3D {
 
 
 //void PCLTypecaster::convertToPCLDataType(pcl::PointCloud<pcl::PointXYZ>::Ptr pclCloudPtr,
-//		BRICS_3D::ColoredPointCloud3D* pointCloud3DPtr ){
+//		brics_3d::ColoredPointCloud3D* pointCloud3DPtr ){
 //
 //	pclCloudPtr->width = pointCloud3DPtr->getSize();
 //	pclCloudPtr->height = 1;
@@ -128,10 +128,10 @@ namespace BRICS_3D {
 
 
 //void PCLTypecaster::convertToBRICS3DDataType(pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr pclCloudPtr,
-//		BRICS_3D::ColoredPointCloud3D* pointCloud3DPtr ){
+//		brics_3d::ColoredPointCloud3D* pointCloud3DPtr ){
 //
 //	uint8_t r, g, b;
-//	BRICS_3D::ColorSpaceConvertor colorSpaceConvertor;
+//	brics_3d::ColorSpaceConvertor colorSpaceConvertor;
 //	uint32_t rgbVal;
 //	unsigned char red, green, blue;
 //	float rgbVal24Bit;

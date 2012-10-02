@@ -28,16 +28,16 @@
 
 #include "core/PointCloud3DIterator.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 /**
- * @brief Scenegraph visitor that collects all point clouds in a sub-graph and returns a point iterator BRICS_3D::IPoint3DIterator.
+ * @brief Scenegraph visitor that collects all point clouds in a sub-graph and returns a point iterator brics_3d::IPoint3DIterator.
  *
  * This visitor will add every found point cloud visited while traversing a sub-graph (where accept() is called).
  * Each point cloud will be interpreted ralative to the frame that is valid for the scenegraph node specified by referenceNode.
- * The resulting iterator will handle this interpretation intrinsically as long you use the getters like BRICS_3D::IPoint3DIterator::getX().
+ * The resulting iterator will handle this interpretation intrinsically as long you use the getters like brics_3d::IPoint3DIterator::getX().
  *
  * @ingroup sceneGraph
  */
@@ -68,7 +68,7 @@ public:
 	/**
 	 * @brief Get the iterator that contains all point cloud in the subraph after a traversal.
 	 *
-	 * A traversal is triggered by calling BRICS_3D::RSG::Node::accept().
+	 * A traversal is triggered by calling brics_3d::rsg::Node::accept().
 	 *
 	 * @return The iterator handle.
 	 */

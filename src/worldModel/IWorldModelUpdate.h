@@ -22,9 +22,9 @@
 
 #include "SceneObject.h"
 
-namespace BRICS_3D { namespace RSG { class GeometricNode; }  } 
+namespace brics_3d { namespace rsg { class GeometricNode; }  } 
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief Interface to get update elements in the 3D model.
@@ -39,7 +39,7 @@ class IWorldModelUpdate {
 
 };
 
-} // namespace BRICS_3D
+} // namespace brics_3d
 #endif
 
 /* EOF */

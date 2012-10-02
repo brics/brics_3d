@@ -25,7 +25,7 @@
 
 using std::vector;
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @ingroup nearestNeighbor
@@ -85,7 +85,7 @@ public:
 
 };
 
-}  // namespace BRICS_3D
+}  // namespace brics_3d
 
 #endif /* INEARESTNEIGHBOR_H_ */
 

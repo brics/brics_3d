@@ -24,7 +24,7 @@
 
 using std::runtime_error;
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 Octree::Octree() {
 	this->voxelSize = 0;

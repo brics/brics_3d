@@ -21,7 +21,7 @@
 #define ISIMPLEPOINTCLOUDGENERATOR_H_
 #include "core/PointCloud3D.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 class ISimplePointCloudGenerator {
 public:
@@ -31,7 +31,7 @@ public:
 	 * Generates a 3D model of a simple shape
 	 * @param generatedPointCloud Pointcloud representing the requested 3D model
 	 */
-	virtual void generatePointCloud(BRICS_3D::PointCloud3D *generatedPointCloud)=0;
+	virtual void generatePointCloud(brics_3d::PointCloud3D *generatedPointCloud)=0;
 
 };
 

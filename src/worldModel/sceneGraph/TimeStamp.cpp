@@ -19,9 +19,9 @@
 
 #include "TimeStamp.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 TimeStamp TimeStamp::operator-(const TimeStamp &rhs) const {
 	return (TimeStamp(timeStamp - rhs.timeStamp));
@@ -77,9 +77,9 @@ bool TimeStamp::operator<=(const TimeStamp &rhs) const {
 	return false;
 }
 
-} // namespace BRICS_3D::RSG
+} // namespace brics_3d::RSG
 
-} // namespace BRICS_3D
+} // namespace brics_3d
 
 /* EOF */
 

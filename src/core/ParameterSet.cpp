@@ -25,7 +25,7 @@
 #include "core/ParameterSet.h"
 #include "core/Logger.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 std::string skipBlank(std::string s) {
 	std::string::size_type spacesLeading = s.find_first_not_of(" ");
@@ -274,5 +274,5 @@ ParameterSet operator<<(ParameterSet pl, const std::string& name) {
 }
 
 
-} // namespace BRICS_3D
+} // namespace brics_3d
 

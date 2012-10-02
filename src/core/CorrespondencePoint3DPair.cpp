@@ -19,7 +19,7 @@
 
 #include "CorrespondencePoint3DPair.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 CorrespondencePoint3DPair::CorrespondencePoint3DPair() {
 

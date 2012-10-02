@@ -24,13 +24,11 @@
 #include <vector>
 using std::vector;
 
-namespace BRICS_3D { namespace RSG { class Attribute; }  } 
-namespace BRICS_3D { class SceneObject; } 
-namespace BRICS_3D { namespace RSG { class GeometricNode; }  } 
+namespace brics_3d { namespace rsg { class Attribute; }  } 
+namespace brics_3d { class SceneObject; } 
+namespace brics_3d { namespace rsg { class GeometricNode; }  } 
 
-using namespace BRICS_3D::RSG;
-
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief Interface to get access to elements in the 3D model.
@@ -38,13 +36,13 @@ namespace BRICS_3D {
  */
 class IWorldModelQuery {
   public:
-    virtual void getSceneObjects(vector<Attribute> attributes, vector<SceneObject>& results) = 0;
+    virtual void getSceneObjects(vector<rsg::Attribute> attributes, vector<SceneObject>& results) = 0;
 
     virtual void getCurrentTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform)= 0;
 
 };
 
-} // namespace BRICS_3D
+} // namespace brics_3d
 #endif
 
 /* EOF */

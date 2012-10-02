@@ -20,7 +20,7 @@
 #include "MaskROIExtractor.h"
 #include "core/Logger.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 MaskROIExtractor::MaskROIExtractor() {
 	mask = 0;
@@ -43,7 +43,7 @@ void MaskROIExtractor::filter(PointCloud3D* originalPointCloud, PointCloud3D* re
 	}
 }
 
-void MaskROIExtractor::extractIndexedPointCloud(BRICS_3D::PointCloud3D* inputPoinCloud, std::vector<int> inliers, BRICS_3D::PointCloud3D* outputPointCloud) {
+void MaskROIExtractor::extractIndexedPointCloud(brics_3d::PointCloud3D* inputPoinCloud, std::vector<int> inliers, brics_3d::PointCloud3D* outputPointCloud) {
 	assert(inputPoinCloud !=0);
 	assert(outputPointCloud !=0);
 
@@ -54,7 +54,7 @@ void MaskROIExtractor::extractIndexedPointCloud(BRICS_3D::PointCloud3D* inputPoi
 	}
 }
 
-void MaskROIExtractor::extractNonIndexedPointCloud(BRICS_3D::PointCloud3D* inputPoinCloud, std::vector<int> inliers, BRICS_3D::PointCloud3D* outputPointCloud) {
+void MaskROIExtractor::extractNonIndexedPointCloud(brics_3d::PointCloud3D* inputPoinCloud, std::vector<int> inliers, brics_3d::PointCloud3D* outputPointCloud) {
 	assert(inputPoinCloud !=0);
 	assert(outputPointCloud !=0);
 	std::vector<int> invertedInliers;

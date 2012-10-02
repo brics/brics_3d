@@ -24,7 +24,7 @@
 #include <sstream>
 #include <string>
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 //! Various defines for logging
 #define LOG(level) LOG_BRICS_ ## level
@@ -113,7 +113,7 @@ protected:
 
 };
 
-} //namespace BRICS_3D
+} //namespace brics_3d
 
 #endif // LOGGER_H_
 

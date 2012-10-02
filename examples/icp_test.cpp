@@ -41,7 +41,7 @@
 
 using namespace std;
 using namespace Eigen;
-using namespace BRICS_3D;
+using namespace brics_3d;
 
 
 int main(int argc, char **argv) {

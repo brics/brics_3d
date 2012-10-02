@@ -26,9 +26,9 @@
 #include "GeometricNode.h"
 #include "INodeVisitor.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 /**
  * @brief Node visitor that collects paths.

@@ -25,7 +25,7 @@
 
 using std::runtime_error;
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 NearestNeighborFLANN::NearestNeighborFLANN() {
 	this->dimension = -1;
@@ -134,10 +134,10 @@ void NearestNeighborFLANN::findNearestNeighbors(vector<double>* query, std::vect
 
 	flann_find_nearest_neighbors_index(index_id, queryData, tcount, result, dists, nn, parameters.checks, &parameters);
 
-	BRICS_3D::Coordinate resultDistance; //distance has same data-type as Coordinate, although the meaning is different TODO: global distance typedef?
+	brics_3d::Coordinate resultDistance; //distance has same data-type as Coordinate, although the meaning is different TODO: global distance typedef?
 	int resultIndex;
 	for (int i = 0; i < nn; i++) {
-		resultDistance = static_cast<BRICS_3D::Coordinate>(sqrt(dists[i])); //seems to return squared distance (although documentation does not suggest)
+		resultDistance = static_cast<brics_3d::Coordinate>(sqrt(dists[i])); //seems to return squared distance (although documentation does not suggest)
 		resultIndex = result[i];
 		if (resultDistance <= maxDistance || maxDistance < 0.0) { //if max distance is < 0 then the distance should have no influence
 			resultIndices->push_back(resultIndex);
@@ -171,10 +171,10 @@ void NearestNeighborFLANN::findNearestNeighbors(Point3D* query, std::vector<int>
 
 	flann_find_nearest_neighbors_index(index_id, queryData, tcount, result, dists, nn, parameters.checks, &parameters);
 
-	BRICS_3D::Coordinate resultDistance; //distance has same data-type as Coordinate, although the meaning is different TODO: global distance typedef?
+	brics_3d::Coordinate resultDistance; //distance has same data-type as Coordinate, although the meaning is different TODO: global distance typedef?
 	int resultIndex;
 	for (int i = 0; i < nn; i++) {
-		resultDistance = static_cast<BRICS_3D::Coordinate>(sqrt(dists[i])); //seems to return squared distance (although documentation does not suggest)
+		resultDistance = static_cast<brics_3d::Coordinate>(sqrt(dists[i])); //seems to return squared distance (although documentation does not suggest)
 		resultIndex = result[i];
 		if (resultDistance <= maxDistance || maxDistance < 0.0) { //if max distance is < 0 then the distance should have no influence
 			resultIndices->push_back(resultIndex);

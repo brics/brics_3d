@@ -53,7 +53,7 @@ int main(){
 	methodNames.push_back("ALMeDS");
 
 	//create a comparator object
-	BRICS_3D::Comparator comparatorObject;
+	brics_3d::Comparator comparatorObject;
 
 	//Initialize the coparator object. By default these lines are not required to be changed
 	//If the naming conventions are different for storing the evaluation metrics then it

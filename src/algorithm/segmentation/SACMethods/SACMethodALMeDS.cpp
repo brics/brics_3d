@@ -8,7 +8,7 @@
 
 #include "SACMethodALMeDS.h"
 #include <algorithm>
-namespace BRICS_3D {
+namespace brics_3d {
 
 SACMethodALMeDS::SACMethodALMeDS() {}
 

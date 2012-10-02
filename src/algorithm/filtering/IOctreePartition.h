@@ -23,7 +23,7 @@
 #include "core/PointCloud3D.h"
 #include <vector>
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief Abstract interface for spatial partition of point clouds.

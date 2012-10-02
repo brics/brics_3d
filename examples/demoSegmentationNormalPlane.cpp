@@ -29,13 +29,13 @@ int main(){
 //This is not a working copy. Will be updated once normal extraction is done.
 
 	//Create a pointcloud object
-	BRICS_3D::PointCloud3D cloud;
+	brics_3d::PointCloud3D cloud;
 
 	//Create the NormalSet for this cloud
-	BRICS_3D::NormalSet3D normalSet;
+	brics_3d::NormalSet3D normalSet;
 
 	//Create the NormalEstimator object
-	BRICS_3D::NormalEstimation normalEstimator;
+	brics_3d::NormalEstimation normalEstimator;
 
 	//read the points into the pointcloud
 	//Please modify the path if there is a file read error.
@@ -54,7 +54,7 @@ int main(){
 	//Extract the normals for this pointcloud
 
 	normalEstimator.setInputCloud(&cloud);
-	normalEstimator.setSearchMethod(new BRICS_3D::NearestNeighborANN());
+	normalEstimator.setSearchMethod(new brics_3d::NearestNeighborANN());
 	normalEstimator.setkneighbours(10);
 	normalEstimator.computeFeature(&normalSet);
 
@@ -64,7 +64,7 @@ int main(){
 	//Create the vector to hold the indexes of the model inliers
 	std::vector<int> inliers;
 	//Create the SACSegmentation Object
-	BRICS_3D::RegionBasedSACSegmentationUsingNormals sacSegmenterUsingNormals;
+	brics_3d::RegionBasedSACSegmentationUsingNormals sacSegmenterUsingNormals;
 
 	//Initialize the segmenter
 	sacSegmenterUsingNormals.setPointCloud(&cloud);

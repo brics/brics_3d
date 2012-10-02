@@ -19,7 +19,7 @@
 
 #include "CorrespondenceIndexPair.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 CorrespondenceIndexPair::CorrespondenceIndexPair() {
 

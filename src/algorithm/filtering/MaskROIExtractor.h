@@ -22,7 +22,7 @@
 
 #include "IFiltering.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 class MaskROIExtractor : public IFiltering {
 public:
@@ -31,9 +31,9 @@ public:
 
 	void filter(PointCloud3D* originalPointCloud, PointCloud3D* resultPointCloud);
 
-	void extractIndexedPointCloud(BRICS_3D::PointCloud3D* inputPoinCloud, std::vector<int> inliers, BRICS_3D::PointCloud3D* outputPointCloud);
+	void extractIndexedPointCloud(brics_3d::PointCloud3D* inputPoinCloud, std::vector<int> inliers, brics_3d::PointCloud3D* outputPointCloud);
 
-	void extractNonIndexedPointCloud(BRICS_3D::PointCloud3D* inputPoinCloud, std::vector<int> inliers, BRICS_3D::PointCloud3D* outputPointCloud);
+	void extractNonIndexedPointCloud(brics_3d::PointCloud3D* inputPoinCloud, std::vector<int> inliers, brics_3d::PointCloud3D* outputPointCloud);
 
 	void setMask(std::vector<int>* mask);
 

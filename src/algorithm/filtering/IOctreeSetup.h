@@ -23,7 +23,7 @@
 /*
  *
  */
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief Abstract setup interface for the octree component.

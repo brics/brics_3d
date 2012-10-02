@@ -27,7 +27,7 @@ using std::cout;
 using std::endl;
 using std::runtime_error;
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 IterativeClosestPoint::IterativeClosestPoint() {
 	this->assigner = 0;

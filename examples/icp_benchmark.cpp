@@ -45,7 +45,7 @@
 
 using namespace std;
 using namespace Eigen;
-using namespace BRICS_3D;
+using namespace brics_3d;
 
 //#include "Image/ImageProcessor.h"
 //#include "Image/ByteImage.h"

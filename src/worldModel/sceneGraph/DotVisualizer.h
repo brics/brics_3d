@@ -27,9 +27,9 @@
 #include "DotGraphGenerator.h"
 #include "SceneGraphFacade.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 /**
  * @brief Observer that will create a print out on every update.
@@ -38,7 +38,7 @@ namespace RSG {
  */
 class DotVisualizer : public ISceneGraphUpdateObserver {
 public:
-	DotVisualizer(BRICS_3D::RSG::SceneGraphFacade* scene);
+	DotVisualizer(brics_3d::rsg::SceneGraphFacade* scene);
 	virtual ~DotVisualizer();
 
 	/* implemetntations of observer interface */
@@ -63,10 +63,10 @@ public:
 
 private:
 	///Handle the to the scene to be observed
-	BRICS_3D::RSG::SceneGraphFacade* scene;
+	brics_3d::rsg::SceneGraphFacade* scene;
 
 	/// Traverser to produce a dot file
-	BRICS_3D::RSG::DotGraphGenerator graphPrinter;
+	brics_3d::rsg::DotGraphGenerator graphPrinter;
 
 	std::ofstream output;
 

@@ -29,9 +29,9 @@
 
 using std::vector;
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 /**
  * Special graph traversal to find those nodes that contain a certain subset of Attributes.

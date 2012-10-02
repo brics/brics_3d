@@ -33,7 +33,7 @@
 #include <highgui.h>
 
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief Helper class to load x, y, z and RGB data from IPA like data sets.

@@ -20,7 +20,7 @@
 #include "FileReader.h"
 #include <sstream>
 
-namespace BRICS_3D{
+namespace brics_3d{
 FileReader::FileReader() {}
 
 FileReader::~FileReader() {}

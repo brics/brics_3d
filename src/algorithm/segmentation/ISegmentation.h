@@ -23,7 +23,7 @@
 #include "core/PointCloud3D.h"
 #include <iostream>
 
-namespace BRICS_3D{
+namespace brics_3d{
 
 /**
  * @brief Abstract interface for segmentation methods.

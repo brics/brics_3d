@@ -25,7 +25,7 @@
 
 //ToDo Replace using concrete classes in algoritm/featureExtraction
 
-namespace BRICS_3D{
+namespace brics_3d{
 
 
 /** \brief Compute the Least-Squares plane fit for a given set of points, and return the estimated plane

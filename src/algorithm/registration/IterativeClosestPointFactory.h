@@ -28,7 +28,7 @@
 #include <boost/shared_ptr.hpp>
 
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 typedef boost::shared_ptr<IIterativeClosestPoint> IIterativeClosestPointPtr;
 typedef boost::shared_ptr<IIterativeClosestPointSetup> IIterativeClosestPointSetupPtr;

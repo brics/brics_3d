@@ -24,7 +24,7 @@ void Point3DTest::setUp() {
 
 	/* use absolute max/min of double value */
 //	maxCoordValue = std::numeric_limits<double>::max();
-	maxCoordValue = std::numeric_limits<BRICS_3D::Coordinate>::max();
+	maxCoordValue = std::numeric_limits<brics_3d::Coordinate>::max();
 	//minCoordValue = std::numeric_limits<double>::min();
 	minCoordValue = -maxCoordValue;
 

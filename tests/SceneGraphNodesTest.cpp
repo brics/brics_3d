@@ -126,7 +126,7 @@ void SceneGraphNodesTest::testGroup() {
 void SceneGraphNodesTest::testTransform() {
 
 	Group::GroupPtr root(new Group);
-	RSG::Transform::TransformPtr transform1 (new RSG::Transform);
+	rsg::Transform::TransformPtr transform1 (new rsg::Transform);
 
 	unsigned const int rootId = 1;
 	unsigned const int transform1Id = 2;
@@ -233,7 +233,7 @@ void SceneGraphNodesTest::testTransform() {
 
 void SceneGraphNodesTest::testTemporalTransform() {
 	Group::GroupPtr root(new Group);
-	RSG::Transform::TransformPtr transform1 (new RSG::Transform);
+	rsg::Transform::TransformPtr transform1 (new rsg::Transform);
 	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr resultTransform;
 
 	unsigned const int rootId = 1;
@@ -417,9 +417,9 @@ void SceneGraphNodesTest::testTemporalTransform() {
 
 void SceneGraphNodesTest::testTemporalTransformAccess() {
 	Group::GroupPtr root(new Group);
-	RSG::Transform::TransformPtr transform1 (new RSG::Transform);
-	RSG::Transform::TransformPtr transform2 (new RSG::Transform);
-	RSG::Transform::TransformPtr transform3 (new RSG::Transform);
+	rsg::Transform::TransformPtr transform1 (new rsg::Transform);
+	rsg::Transform::TransformPtr transform2 (new rsg::Transform);
+	rsg::Transform::TransformPtr transform3 (new rsg::Transform);
 	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr resultTransform;
 
 	unsigned const int rootId = 1;
@@ -638,7 +638,7 @@ void SceneGraphNodesTest::testGeometricNode() {
 	unsigned const int geode1Id = 1;
 
 
-	RSG::Transform::TransformPtr root(new RSG::Transform());
+	rsg::Transform::TransformPtr root(new rsg::Transform());
 	root->setId(rootId);
 	GeometricNode::GeometricNodePtr geode1(new GeometricNode());
 	geode1->setId(geode1Id);
@@ -1116,11 +1116,11 @@ void SceneGraphNodesTest::testTransformVisitor() {
 
 	Group::GroupPtr root(new Group());
 	root->setId(rootId);
-	RSG::Transform::TransformPtr tf1(new RSG::Transform());
+	rsg::Transform::TransformPtr tf1(new rsg::Transform());
 	tf1->setId(tf1Id);
-	RSG::Transform::TransformPtr tf2(new RSG::Transform());
+	rsg::Transform::TransformPtr tf2(new rsg::Transform());
 	tf2->setId(tf2Id);
-	RSG::Transform::TransformPtr tf3(new RSG::Transform());
+	rsg::Transform::TransformPtr tf3(new rsg::Transform());
 	tf3->setId(tf3Id);
 	Group::GroupPtr group4(new Group());
 	group4->setId(group4Id);
@@ -1358,13 +1358,13 @@ void SceneGraphNodesTest::testGlobalTransformCalculation() {
 	unsigned const int group4Id = 4;
 	unsigned const int node5Id = 5;
 
-	RSG::Transform::TransformPtr root(new RSG::Transform());
+	rsg::Transform::TransformPtr root(new rsg::Transform());
 	root->setId(rootId);
-	RSG::Transform::TransformPtr tf1(new RSG::Transform());
+	rsg::Transform::TransformPtr tf1(new rsg::Transform());
 	tf1->setId(tf1Id);
-	RSG::Transform::TransformPtr tf2(new RSG::Transform());
+	rsg::Transform::TransformPtr tf2(new rsg::Transform());
 	tf2->setId(tf2Id);
-	RSG::Transform::TransformPtr tf3(new RSG::Transform());
+	rsg::Transform::TransformPtr tf3(new rsg::Transform());
 	tf3->setId(tf3Id);
 	Group::GroupPtr group4(new Group());
 	group4->setId(group4Id);
@@ -1551,7 +1551,7 @@ void SceneGraphNodesTest::testAttributeFinder() {
 	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(root->getAttributes().size()));
 	CPPUNIT_ASSERT(root->getAttributes()[0] == Attribute("name","root"));
 
-	RSG::Transform::TransformPtr tf1(new RSG::Transform());
+	rsg::Transform::TransformPtr tf1(new rsg::Transform());
 	tf1->setId(tf1Id);
 	tmpAttributes.clear();
 	tmpAttributes.push_back(Attribute("frameID","base_link"));
@@ -1712,13 +1712,13 @@ void SceneGraphNodesTest::testOutdatedDataDeleter() {
 	Group::GroupPtr root(new Group());
 	root->setId(rootId);
 
-	RSG::Transform::TransformPtr tf1(new RSG::Transform());
+	rsg::Transform::TransformPtr tf1(new rsg::Transform());
 	tf1->setId(tf1Id);
-	RSG::Transform::TransformPtr tf2(new RSG::Transform());
+	rsg::Transform::TransformPtr tf2(new rsg::Transform());
 	tf2->setId(tf2Id);
-	RSG::Transform::TransformPtr tf3(new RSG::Transform());
+	rsg::Transform::TransformPtr tf3(new rsg::Transform());
 	tf3->setId(tf3Id);
-	RSG::Transform::TransformPtr tf4(new RSG::Transform());
+	rsg::Transform::TransformPtr tf4(new rsg::Transform());
 	tf4->setId(tf4Id);
 
 	root->addChild(tf1);
@@ -2299,7 +2299,7 @@ void SceneGraphNodesTest::testSceneGraphFacadeTransforms() {
 	CPPUNIT_ASSERT(scene.addNode(tf3Id, node5Id, tmpAttributes));
 	CPPUNIT_ASSERT(scene.addParent(node5Id, group4Id));
 
-//	BRICS_3D::RSG::DotGraphGenerator dotGraphGenerator; //Debug
+//	brics_3d::rsg::DotGraphGenerator dotGraphGenerator; //Debug
 //	scene.executeGraphTraverser(&dotGraphGenerator);
 //	cout << "testSceneGraphFacadeTransforms" << endl;
 //	cout << dotGraphGenerator.getDotGraph();
@@ -2429,22 +2429,22 @@ void SceneGraphNodesTest::testPointCloud() {
 	/*
 	 * the real data/ implementation
 	 */
-	BRICS_3D::PointCloud3D::PointCloud3DPtr pc1_data(new BRICS_3D::PointCloud3D());
-	BRICS_3D::PointCloud3D::PointCloud3DPtr pc3_data(new BRICS_3D::PointCloud3D());
+	brics_3d::PointCloud3D::PointCloud3DPtr pc1_data(new brics_3d::PointCloud3D());
+	brics_3d::PointCloud3D::PointCloud3DPtr pc3_data(new brics_3d::PointCloud3D());
 
 	/*SceneGraphNodesTest::testSceneGraphFacade
 	 * generic data containers
 	 */
 
 	// NODE with raw pointer
-//	BRICS_3D::PointCloud3D::PointCloud3DPtr pc1_test_data(new BRICS_3D::PointCloud3D());
-//	RSG::PointCloud<BRICS_3D::PointCloud3D>* pc1_test = new RSG::PointCloud<BRICS_3D::PointCloud3D>();
+//	brics_3d::PointCloud3D::PointCloud3DPtr pc1_test_data(new brics_3d::PointCloud3D());
+//	rsg::PointCloud<brics_3d::PointCloud3D>* pc1_test = new rsg::PointCloud<brics_3d::PointCloud3D>();
 //	pc1_test->data = pc1_test_data;
 //	pc1_test->data->addPoint(Point3D(1,2,3));
 	//std::cout << *(pc1_test->data);
 
 	// NODE with manual boost pointer
-	boost::shared_ptr<PointCloud<BRICS_3D::PointCloud3D> >  pc1(new RSG::PointCloud<BRICS_3D::PointCloud3D>());
+	boost::shared_ptr<PointCloud<brics_3d::PointCloud3D> >  pc1(new rsg::PointCloud<brics_3d::PointCloud3D>());
 	pc1->data = pc1_data;
 	pc1->data->addPoint(Point3D(1,1,1));
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, (*pc1->data->getPointCloud())[0].getX(), maxTolerance);
@@ -2453,7 +2453,7 @@ void SceneGraphNodesTest::testPointCloud() {
 //	std::cout << *(pc1->data);
 
 	// NODE with
-	PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr pc3(new RSG::PointCloud<BRICS_3D::PointCloud3D>());
+	PointCloud<brics_3d::PointCloud3D>::PointCloudPtr pc3(new rsg::PointCloud<brics_3d::PointCloud3D>());
 	pc3->data = pc3_data;
 	pc3->data->addPoint(Point3D(2,2,2));
 	pc3->data->addPoint(Point3D(3,3,3));
@@ -2476,7 +2476,7 @@ void SceneGraphNodesTest::testPointCloud() {
 	pcGeode1->setShape(pc1);
 	pcGeode3->setShape(pc3);
 
-	RSG::Transform::TransformPtr tf2(new RSG::Transform());
+	rsg::Transform::TransformPtr tf2(new rsg::Transform());
 	tf2->setId(tf2Id);
 	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr someTransform(new HomogeneousMatrix44(1,0,0,  	//Rotation coefficients
 	                                                             0,1,0,
@@ -2496,13 +2496,13 @@ void SceneGraphNodesTest::testPointCloud() {
 	//cout << *resultTransform;
 
 	Shape::ShapePtr resultShape;
-	PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr resultPointCloud;
+	PointCloud<brics_3d::PointCloud3D>::PointCloudPtr resultPointCloud;
 	resultShape = pcGeode3->getShape();
-	resultPointCloud = boost::dynamic_pointer_cast<RSG::PointCloud<BRICS_3D::PointCloud3D> >(resultShape);
+	resultPointCloud = boost::dynamic_pointer_cast<rsg::PointCloud<brics_3d::PointCloud3D> >(resultShape);
 	CPPUNIT_ASSERT(resultPointCloud != 0);
 	CPPUNIT_ASSERT_EQUAL(2u, resultPointCloud->data->getSize());
 	for (unsigned int index = 0; index < resultPointCloud->data->getSize(); ++index) {
-		BRICS_3D::Point3D resultPoint;
+		brics_3d::Point3D resultPoint;
 		resultPoint = (*resultPointCloud->data->getPointCloud())[index];
 		//cout << "raw Point value = " << resultPoint;
 		resultPoint.homogeneousTransformation(resultTransform.get());
@@ -2635,7 +2635,7 @@ void SceneGraphNodesTest::testUpdateObserver() {
 }
 
 void SceneGraphNodesTest::testDotGraphGenerator() {
-	BRICS_3D::RSG::SceneGraphFacade scene;			// The 3D world model handle
+	brics_3d::rsg::SceneGraphFacade scene;			// The 3D world model handle
 	vector<Attribute> attributes;	// with this one we can attach attibutes / tags to the nodes
 
 	/* Some node Ids we would like to remember */
@@ -2654,20 +2654,20 @@ void SceneGraphNodesTest::testDotGraphGenerator() {
 	unsigned int geometryId = 0;
 
 	/* Some (dummy) data to be use within the scenegraph */
-	BRICS_3D::RSG::TimeStamp dummyTime(0);
-	BRICS_3D::RSG::TimeStamp t1(1.0);
-	BRICS_3D::RSG::TimeStamp t2(2.0);
-	BRICS_3D::RSG::TimeStamp t3(3.0);
-	BRICS_3D::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform123(new BRICS_3D::HomogeneousMatrix44(1,0,0,  	// Rotation coefficients
+	brics_3d::rsg::TimeStamp dummyTime(0);
+	brics_3d::rsg::TimeStamp t1(1.0);
+	brics_3d::rsg::TimeStamp t2(2.0);
+	brics_3d::rsg::TimeStamp t3(3.0);
+	brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform123(new brics_3d::HomogeneousMatrix44(1,0,0,  	// Rotation coefficients
 	                                                             0,1,0,
 	                                                             0,0,1,
 	                                                             1,2,3)); 						// Translation coefficients
 
-	BRICS_3D::PointCloud3D::PointCloud3DPtr dummyPointCloud(new BRICS_3D::PointCloud3D());		// An empty BRICS_3D point cloud as dummy
-	BRICS_3D::RSG::PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr dummyPointCloudContainer(new BRICS_3D::RSG::PointCloud<BRICS_3D::PointCloud3D>()); // Containter used within scenegraph
+	brics_3d::PointCloud3D::PointCloud3DPtr dummyPointCloud(new brics_3d::PointCloud3D());		// An empty BRICS_3D point cloud as dummy
+	brics_3d::rsg::PointCloud<brics_3d::PointCloud3D>::PointCloudPtr dummyPointCloudContainer(new brics_3d::rsg::PointCloud<brics_3d::PointCloud3D>()); // Containter used within scenegraph
 	dummyPointCloudContainer->data=dummyPointCloud;		// Fill container with the point cloud data
 
-	BRICS_3D::RSG::Box::BoxPtr dummyBox(new BRICS_3D::RSG::Box());
+	brics_3d::rsg::Box::BoxPtr dummyBox(new brics_3d::rsg::Box());
 
 	/*
 	 * Set up the scenegraph
@@ -2838,7 +2838,7 @@ void SceneGraphNodesTest::testDotGraphGenerator() {
 	scene.addGroup(tfId, robotGroupId, attributes);
 
 	/* Visualize the structure */
-	BRICS_3D::RSG::DotGraphGenerator dotGraphGenerator;
+	brics_3d::rsg::DotGraphGenerator dotGraphGenerator;
 	string resultString;
 	resultString = dotGraphGenerator.getDotGraph();
 
@@ -2985,10 +2985,10 @@ void SceneGraphNodesTest::testScenePointIterator() {
 	Group::GroupPtr root(new Group());
 	root->setId(rootId);
 
-	BRICS_3D::PointCloud3D::PointCloud3DPtr pc1_data(new BRICS_3D::PointCloud3D());
-	BRICS_3D::PointCloud3D::PointCloud3DPtr pc3_data(new BRICS_3D::PointCloud3D());
-	PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr pc1_container(new RSG::PointCloud<BRICS_3D::PointCloud3D>());
-	PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr pc3_container(new RSG::PointCloud<BRICS_3D::PointCloud3D>());
+	brics_3d::PointCloud3D::PointCloud3DPtr pc1_data(new brics_3d::PointCloud3D());
+	brics_3d::PointCloud3D::PointCloud3DPtr pc3_data(new brics_3d::PointCloud3D());
+	PointCloud<brics_3d::PointCloud3D>::PointCloudPtr pc1_container(new rsg::PointCloud<brics_3d::PointCloud3D>());
+	PointCloud<brics_3d::PointCloud3D>::PointCloudPtr pc3_container(new rsg::PointCloud<brics_3d::PointCloud3D>());
 	pc1_container->data = pc1_data;
 	pc3_container->data = pc3_data;
 
@@ -3007,7 +3007,7 @@ void SceneGraphNodesTest::testScenePointIterator() {
 	pc1->setShape(pc1_container);
 	pc3->setShape(pc3_container);
 
-	RSG::Transform::TransformPtr tf2(new RSG::Transform());
+	rsg::Transform::TransformPtr tf2(new rsg::Transform());
 	tf2->setId(tf2Id);
 	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr someTransform(new HomogeneousMatrix44(1,0,0,  	//Rotation coefficients
 	                                                             0,1,0,

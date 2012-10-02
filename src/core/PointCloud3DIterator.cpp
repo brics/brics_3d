@@ -20,7 +20,7 @@
 
 #include "PointCloud3DIterator.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 PointCloud3DIterator::PointCloud3DIterator() {
 	currentTransformedPoint = 0;

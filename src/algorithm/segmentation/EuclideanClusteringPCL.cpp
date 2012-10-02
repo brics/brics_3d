@@ -26,7 +26,7 @@
 
 #include "EuclideanClusteringPCL.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 EuclideanClusteringPCL::EuclideanClusteringPCL() {
 	this-> minClusterSize =0;
@@ -44,9 +44,9 @@ int EuclideanClusteringPCL::segment(){
 	return 1;
 }
 
-void EuclideanClusteringPCL::extractClusters(BRICS_3D::PointCloud3D *inCloud){
+void EuclideanClusteringPCL::extractClusters(brics_3d::PointCloud3D *inCloud){
 
-	BRICS_3D::PCLTypecaster pclTypecaster;
+	brics_3d::PCLTypecaster pclTypecaster;
 	extractedClusters.clear();
 	//converting input cloud into PCL format
 	pcl::PointCloud<pcl::PointXYZ>::Ptr inCloudPclPtr(new pcl::PointCloud<pcl::PointXYZ> ());
@@ -75,7 +75,7 @@ void EuclideanClusteringPCL::extractClusters(BRICS_3D::PointCloud3D *inCloud){
 	int index =0;
 	for (std::vector<pcl::PointIndices>::const_iterator it = cluster_indices.begin (); it != cluster_indices.end (); ++it){
 
-		extractedClusters.push_back(new BRICS_3D::PointCloud3D());
+		extractedClusters.push_back(new brics_3d::PointCloud3D());
 
 		//extractedClusters.data()[index]->getPointCloud()->clear();
 		for (std::vector<int>::const_iterator pit = it->indices.begin (); pit != it->indices.end (); pit++){

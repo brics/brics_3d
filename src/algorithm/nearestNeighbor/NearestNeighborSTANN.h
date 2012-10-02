@@ -26,7 +26,7 @@
 #include "stann/include/sfcnn.hpp"
 
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief Dimension of generic k Nearest Neighbor search.
@@ -61,7 +61,7 @@ typedef reviver::dpoint<double, STANNDimension> STANNPoint;
  * <b>IMPORTANT NOTE: Currently this wrapper only supports dimensionality of 3 and the one defined by the STANNDimension constant!</b>
  *
  */
-class NearestNeighborSTANN: public BRICS_3D::INearestNeighbor, public INearestPoint3DNeighbor, public INearestNeighborSetup {
+class NearestNeighborSTANN: public brics_3d::INearestNeighbor, public INearestPoint3DNeighbor, public INearestNeighborSetup {
 public:
 
 	/**

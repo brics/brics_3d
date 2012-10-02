@@ -19,7 +19,7 @@
 
 #include "ObjectModelPlaneFromLineAndPoint.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 
 void ObjectModelPlaneFromLineAndPoint::computeRandomModel (int &iterations, Eigen::VectorXf &model_coefficients, bool &isDegenerate, bool &modelFound){

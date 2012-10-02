@@ -21,7 +21,7 @@
 #define FILEWRITER_H_
 #include "MetricCalculator.h"
 
-namespace BRICS_3D{
+namespace brics_3d{
 class FileWriter {
 public:
 	FileWriter();

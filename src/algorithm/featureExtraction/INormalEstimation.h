@@ -23,7 +23,7 @@
 #include "core/PointCloud3D.h"
 #include "core/NormalSet3D.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief Abstract interface for normal estimation algorithms for point clouds

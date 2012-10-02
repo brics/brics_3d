@@ -21,7 +21,7 @@
 #include "sceneGraph/GeometricNode.h"
 #include "sceneGraph/Attribute.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 SceneObject::SceneObject() {
   // Bouml preserved body begin 0002D283
@@ -71,7 +71,7 @@ SceneObject & SceneObject::operator=(const SceneObject & source) {
 }
 
 
-} // namespace BRICS_3D
+} // namespace brics_3d
 
 /* EOF */
 

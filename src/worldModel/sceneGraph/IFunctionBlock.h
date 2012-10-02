@@ -24,21 +24,21 @@
 #include <core/ParameterSet.h>
 #include <worldModel/WorldModel.h>
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 /**
  * A function block as it will be used for percetion algorithms within the world model.
  */
 class IFunctionBlock {
 public:
-	IFunctionBlock(BRICS_3D::WorldModel* wmHandle){
+	IFunctionBlock(brics_3d::WorldModel* wmHandle){
 		this->wm = wmHandle;
 	};
 	virtual ~IFunctionBlock(){};
 
-	virtual void configure(BRICS_3D::ParameterSet parameters) = 0;
+	virtual void configure(brics_3d::ParameterSet parameters) = 0;
 
 	virtual void setData(std::vector<unsigned int>& inputDataIds) {
 		this->inputDataIds = inputDataIds;
@@ -52,7 +52,7 @@ public:
 
 protected:
 	/// Handle to the world model that stores all 3D data.
-	BRICS_3D::WorldModel* wm;
+	brics_3d::WorldModel* wm;
 
 	std::vector<unsigned int> inputDataIds;
 	std::vector<unsigned int> outputDataIds;

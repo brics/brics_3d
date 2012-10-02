@@ -20,7 +20,7 @@
 #include "EuclideanClustering.h"
 #include <iostream>
 #include <algorithm>
-namespace BRICS_3D {
+namespace brics_3d {
 
 EuclideanClustering::EuclideanClustering() {
 	// TODO Auto-generated constructor stub
@@ -31,12 +31,12 @@ EuclideanClustering::~EuclideanClustering() {
 	// TODO Auto-generated destructor stub
 }
 
-void EuclideanClustering::extractClusters(BRICS_3D::PointCloud3D *inCloud){
+void EuclideanClustering::extractClusters(brics_3d::PointCloud3D *inCloud){
 
 
 	int k = inCloud->getSize();
-	BRICS_3D::NearestNeighborANN nearestneighborSearch;
-	BRICS_3D::Point3D querryPoint3D;
+	brics_3d::NearestNeighborANN nearestneighborSearch;
+	brics_3d::Point3D querryPoint3D;
 	vector<int> neighborIndices;
 
 	nearestneighborSearch.setData(inCloud);
@@ -92,7 +92,7 @@ void EuclideanClustering::extractClusters(BRICS_3D::PointCloud3D *inCloud){
 //			std::cout << "[CHEAT][EuclideanClustering3D] found one cluster, size="<< seed_queue.size() << std::endl;
 
 			seed_queue.erase(std::unique(seed_queue.begin(), seed_queue.end()),seed_queue.end());
-			BRICS_3D::PointCloud3D *tempPointCloud =  new BRICS_3D::PointCloud3D();
+			brics_3d::PointCloud3D *tempPointCloud =  new brics_3d::PointCloud3D();
 
 			for (size_t j = 0; j < seed_queue.size (); ++j) {
 

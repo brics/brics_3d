@@ -49,7 +49,8 @@
 #include <cstring>
 
 using namespace std;
-using namespace BRICS_3D;
+using namespace brics_3d;
+using namespace brics_3d::rsg;
 
 int main(int argc, char **argv) {
 
@@ -64,11 +65,11 @@ int main(int argc, char **argv) {
 	strcat(defaultFilename2, "/bunny045.txt\0");
 	filename2 = defaultFilename2;
 
-	BRICS_3D::Logger::setMinLoglevel(BRICS_3D::Logger::LOGDEBUG);
+	brics_3d::Logger::setMinLoglevel(brics_3d::Logger::LOGDEBUG);
 
 	/* create the point clouds */
-	BRICS_3D::PointCloud3D::PointCloud3DPtr pointCloud1(new BRICS_3D::PointCloud3D());
-	BRICS_3D::PointCloud3D::PointCloud3DPtr pointCloud2(new BRICS_3D::PointCloud3D());
+	brics_3d::PointCloud3D::PointCloud3DPtr pointCloud1(new brics_3d::PointCloud3D());
+	brics_3d::PointCloud3D::PointCloud3DPtr pointCloud2(new brics_3d::PointCloud3D());
 
 	/* load 3d data */
 	pointCloud1->readFromTxtFile(filename1);
@@ -93,14 +94,14 @@ int main(int argc, char **argv) {
 	unsigned int pcBoxROIId;
 	unsigned int pcResultId;
 	unsigned int tmpId;
-	vector<RSG::Attribute> tmpAttributes;
+	vector<rsg::Attribute> tmpAttributes;
 
 	WorldModel* wm = new WorldModel();
-	RSG::OSGVisualizer* wmObserver = new RSG::OSGVisualizer();
+	rsg::OSGVisualizer* wmObserver = new rsg::OSGVisualizer();
 	wm->scene.attachUpdateObserver(wmObserver); //enable visualization
 
 	/* Hook in the point clouds */
-	PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr pc1Container(new RSG::PointCloud<BRICS_3D::PointCloud3D>());
+	PointCloud<brics_3d::PointCloud3D>::PointCloudPtr pc1Container(new rsg::PointCloud<brics_3d::PointCloud3D>());
 	pc1Container->data = pointCloud1;
 	tmpAttributes.clear();
 	tmpAttributes.push_back(Attribute("name","point_cloud_1"));
@@ -111,7 +112,7 @@ int main(int argc, char **argv) {
 	unsigned int tfPc2Id = 0;
 	tmpAttributes.clear();
 	wm->scene.addTransformNode(wm->getRootNodeId(), tfPc2Id, tmpAttributes, tfPc2, TimeStamp(0.0));
-	PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr pc2Container(new RSG::PointCloud<BRICS_3D::PointCloud3D>());
+	PointCloud<brics_3d::PointCloud3D>::PointCloudPtr pc2Container(new rsg::PointCloud<brics_3d::PointCloud3D>());
 	pc2Container->data = pointCloud2;
 	tmpAttributes.clear();
 	tmpAttributes.push_back(Attribute("name","point_cloud_2"));
@@ -124,8 +125,8 @@ int main(int argc, char **argv) {
 	wm->scene.addGroup(wm->scene.getRootId(), groupReducedClouds, tmpAttributes);
 	Octree* octreeFilter = new Octree();
 	octreeFilter->setVoxelSize(0.002); 	//value deduced from roughly knowing the data in advance...
-	BRICS_3D::PointCloud3D::PointCloud3DPtr reducedPointCloud(new BRICS_3D::PointCloud3D());
-	BRICS_3D::PointCloud3D::PointCloud3DPtr reducedPointCloud2(new BRICS_3D::PointCloud3D());
+	brics_3d::PointCloud3D::PointCloud3DPtr reducedPointCloud(new brics_3d::PointCloud3D());
+	brics_3d::PointCloud3D::PointCloud3DPtr reducedPointCloud2(new brics_3d::PointCloud3D());
 
 	/* query world model for relevant data */
 	vector<unsigned int> resultIds;
@@ -138,8 +139,8 @@ int main(int argc, char **argv) {
 	Shape::ShapePtr resultShape;
 	TimeStamp resultTime;
 	wm->scene.getGeometry(pcResultId, resultShape, resultTime);
-	RSG::PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr pcResultContainer(new RSG::PointCloud<BRICS_3D::PointCloud3D>());
-	pcResultContainer = boost::dynamic_pointer_cast<PointCloud<BRICS_3D::PointCloud3D> >(resultShape);
+	rsg::PointCloud<brics_3d::PointCloud3D>::PointCloudPtr pcResultContainer(new rsg::PointCloud<brics_3d::PointCloud3D>());
+	pcResultContainer = boost::dynamic_pointer_cast<PointCloud<brics_3d::PointCloud3D> >(resultShape);
 	assert(pcResultContainer != 0);
 
 //	octreeFilter->filter(pointCloud1.get(), reducedPointCloud);
@@ -152,16 +153,16 @@ int main(int argc, char **argv) {
 	pcResultId = resultIds[0];
 	LOG(INFO) <<  "Found ID for label point_cloud_2: " << pcResultId;
 	wm->scene.getGeometry(pcResultId, resultShape, resultTime);
-	pcResultContainer = boost::dynamic_pointer_cast<PointCloud<BRICS_3D::PointCloud3D> >(resultShape);
+	pcResultContainer = boost::dynamic_pointer_cast<PointCloud<brics_3d::PointCloud3D> >(resultShape);
 	assert(pcResultContainer != 0);
 
 	octreeFilter->filter(pcResultContainer->data.get(), reducedPointCloud2.get());
 
 
 	/* Add subsampled point clouds to wm */
-	PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr pcReducedContainer(new RSG::PointCloud<BRICS_3D::PointCloud3D>());
+	PointCloud<brics_3d::PointCloud3D>::PointCloudPtr pcReducedContainer(new rsg::PointCloud<brics_3d::PointCloud3D>());
 	pcReducedContainer->data = reducedPointCloud;
-	PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr pcReducedContainer2(new RSG::PointCloud<BRICS_3D::PointCloud3D>());
+	PointCloud<brics_3d::PointCloud3D>::PointCloudPtr pcReducedContainer2(new rsg::PointCloud<brics_3d::PointCloud3D>());
 	pcReducedContainer2->data = reducedPointCloud2;
 
 	tmpAttributes.clear();
@@ -186,7 +187,7 @@ int main(int argc, char **argv) {
 	HomogeneousMatrix44::IHomogeneousMatrix44Ptr transform(new HomogeneousMatrix44(&transformation));
 
 	boxFilter.setBoxOrigin(transform);
-	BRICS_3D::PointCloud3D::PointCloud3DPtr boxROIPointCloud(new BRICS_3D::PointCloud3D());
+	brics_3d::PointCloud3D::PointCloud3DPtr boxROIPointCloud(new brics_3d::PointCloud3D());
 	boxFilter.filter(pcResultContainer->data.get(), boxROIPointCloud.get());
 	LOG(INFO) <<  "ROI has " << boxROIPointCloud->getSize() << " points.";
 
@@ -195,25 +196,25 @@ int main(int argc, char **argv) {
 
 	/* get a bounding box */
 #ifdef EIGEN3
-	BRICS_3D::BoundingBox3DExtractor* boundingBoxExtractor = new BRICS_3D::BoundingBox3DExtractor();
-	BRICS_3D::Point3D resultBoxCenter;
-	BRICS_3D::Vector3D resultBoxDimensions;
+	brics_3d::BoundingBox3DExtractor* boundingBoxExtractor = new brics_3d::BoundingBox3DExtractor();
+	brics_3d::Point3D resultBoxCenter;
+	brics_3d::Vector3D resultBoxDimensions;
 	boundingBoxExtractor->computeBoundingBox(pcResultContainer->data.get(), resultBoxCenter, resultBoxDimensions);
-	BRICS_3D::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr clusterTransform(new BRICS_3D::HomogeneousMatrix44(1,0,0, 0,1,0, 0,0,1, resultBoxCenter.getX(),resultBoxCenter.getY(),resultBoxCenter.getZ()));
-	BRICS_3D::RSG::Box::BoxPtr clusterBoundingBox(new BRICS_3D::RSG::Box(resultBoxDimensions.getX(), resultBoxDimensions.getY(), resultBoxDimensions.getZ()));
+	brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr clusterTransform(new brics_3d::HomogeneousMatrix44(1,0,0, 0,1,0, 0,0,1, resultBoxCenter.getX(),resultBoxCenter.getY(),resultBoxCenter.getZ()));
+	brics_3d::rsg::Box::BoxPtr clusterBoundingBox(new brics_3d::rsg::Box(resultBoxDimensions.getX(), resultBoxDimensions.getY(), resultBoxDimensions.getZ()));
 	LOG(INFO) << "BoundingBox: center = " << resultBoxCenter << " dimensions = " << resultBoxDimensions;
 
 	/* add TF + Box */
 	unsigned int tfBBoxId = 0;
 	tmpAttributes.clear();
 	tmpAttributes.push_back(Attribute("name","cluster_tf"));
-	wm->scene.addTransformNode(wm->scene.getRootId(), tfBBoxId, tmpAttributes, clusterTransform, BRICS_3D::RSG::TimeStamp(0.1));
+	wm->scene.addTransformNode(wm->scene.getRootId(), tfBBoxId, tmpAttributes, clusterTransform, brics_3d::rsg::TimeStamp(0.1));
 
 	unsigned int bBoxId = 0;
 	tmpAttributes.clear();
 	tmpAttributes.push_back(Attribute("name","cluster_bbox"));
 	tmpAttributes.push_back(Attribute("debugInfo","no_visualization"));
-	wm->scene.addGeometricNode(tfBBoxId, bBoxId, tmpAttributes, clusterBoundingBox, BRICS_3D::RSG::TimeStamp(0.1));
+	wm->scene.addGeometricNode(tfBBoxId, bBoxId, tmpAttributes, clusterBoundingBox, brics_3d::rsg::TimeStamp(0.1));
 #endif
 
 
@@ -225,7 +226,7 @@ int main(int argc, char **argv) {
 //	wm->scene.addTransformNode(wm->getRootNodeId(), tfId, tmpAttributes, offsetTransform, TimeStamp(0.2));
 
 	/* Add ROI point cloud to wm */
-	PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr pcBoxROINode(new RSG::PointCloud<BRICS_3D::PointCloud3D>());
+	PointCloud<brics_3d::PointCloud3D>::PointCloudPtr pcBoxROINode(new rsg::PointCloud<brics_3d::PointCloud3D>());
 	pcBoxROINode->data = boxROIPointCloud;
 	tmpAttributes.clear();
 	tmpAttributes.push_back(Attribute("name","point_cloud_box_roi"));
@@ -267,13 +268,13 @@ int main(int argc, char **argv) {
 	HomogeneousMatrix44::IHomogeneousMatrix44Ptr tf1(new HomogeneousMatrix44(1,0,0, 0,1,0, 0,0,1, 0.1,0.1,0));
 	unsigned int tfBox1Id = 0;
 	wm->scene.addTransformNode(groupId, tfBox1Id, tmpAttributes, transform, dummyTime);
-	RSG::Box::BoxPtr box1(new RSG::Box(0.2,0.015,0.2));
+	rsg::Box::BoxPtr box1(new rsg::Box(0.2,0.015,0.2));
 	wm->scene.addGeometricNode(tfBox1Id, dummyId, tmpAttributes, box1, dummyTime);
 
 //	HomogeneousMatrix44::IHomogeneousMatrix44Ptr tf2(new HomogeneousMatrix44(1,0,0, 0,1,0, 0,0,1, 0.1,0.05,0));
 //	unsigned int tfCylinder1Id = 0;
 //	wm->scene.addTransformNode(groupId, tfCylinder1Id, tmpAttributes, tf2, dummyTime);
-//	RSG::Cylinder::CylinderPtr cylinder1(new RSG::Cylinder(0.02,0.2));
+//	rsg::Cylinder::CylinderPtr cylinder1(new rsg::Cylinder(0.02,0.2));
 //	wm->scene.addGeometricNode(tfCylinder1Id, dummyId, tmpAttributes, cylinder1, dummyTime);
 
 
@@ -287,8 +288,8 @@ int main(int argc, char **argv) {
 //	wm->scene.setTransform(tfId, transform, dummyTime);
 
 	/* get an  aggregated point cloud based on the filtered point clouds */
-	BRICS_3D::PointCloud3D::PointCloud3DPtr aggregatedPointCloud(new BRICS_3D::PointCloud3D());
-	PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr aggregatedPointCloudContainer(new RSG::PointCloud<BRICS_3D::PointCloud3D>());
+	brics_3d::PointCloud3D::PointCloud3DPtr aggregatedPointCloud(new brics_3d::PointCloud3D());
+	PointCloud<brics_3d::PointCloud3D>::PointCloudPtr aggregatedPointCloudContainer(new rsg::PointCloud<brics_3d::PointCloud3D>());
 	aggregatedPointCloudContainer->data = aggregatedPointCloud;
 
 	PointCloudAccumulatorIdAware* pcAccumulator = new PointCloudAccumulatorIdAware(&wm->scene, wm->scene.getRootId());
@@ -301,8 +302,8 @@ int main(int argc, char **argv) {
 	}
 
 	/* create some mesh */
-	BRICS_3D::ITriangleMesh::ITriangleMeshPtr newMesh(new BRICS_3D::TriangleMeshExplicit());
-	BRICS_3D::RSG::Mesh<BRICS_3D::ITriangleMesh>::MeshPtr newMeshContainer(new BRICS_3D::RSG::Mesh<BRICS_3D::ITriangleMesh>());
+	brics_3d::ITriangleMesh::ITriangleMeshPtr newMesh(new brics_3d::TriangleMeshExplicit());
+	brics_3d::rsg::Mesh<brics_3d::ITriangleMesh>::MeshPtr newMeshContainer(new brics_3d::rsg::Mesh<brics_3d::ITriangleMesh>());
 	newMeshContainer->data = newMesh;
 
 	DelaunayTriangulationOSG* meshGenerator = new DelaunayTriangulationOSG();
@@ -316,7 +317,7 @@ int main(int argc, char **argv) {
 
 
 
-	BRICS_3D::RSG::DotGraphGenerator dotGraphTraverser;
+	brics_3d::rsg::DotGraphGenerator dotGraphTraverser;
 	wm->scene.executeGraphTraverser(&dotGraphTraverser, wm->scene.getRootId());
 	cout << "GRAPH: "<< endl << dotGraphTraverser.getDotGraph() << endl;
 

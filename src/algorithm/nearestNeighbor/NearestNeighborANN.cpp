@@ -23,7 +23,7 @@
 
 using std::runtime_error;
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 NearestNeighborANN::NearestNeighborANN() {
 	this->dimension = -1;
@@ -143,10 +143,10 @@ void NearestNeighborANN::findNearestNeighbors(vector<double>* query, std::vector
 			distances,						// distance (returned)
 			eps);							// error bound
 
-	BRICS_3D::Coordinate resultDistance; //distance has same data-type as Coordinate, although the meaning is different TODO: global distance typedef?
+	brics_3d::Coordinate resultDistance; //distance has same data-type as Coordinate, although the meaning is different TODO: global distance typedef?
 	int resultIndex;
 	for (int i = 0; i < this->k; i++) {
-		resultDistance = static_cast<BRICS_3D::Coordinate>(sqrt(distances[i]));	//unsquare distance
+		resultDistance = static_cast<brics_3d::Coordinate>(sqrt(distances[i]));	//unsquare distance
 		resultIndex = nnIndex[i];
 		if (resultDistance <= maxDistance || maxDistance < 0.0) { //if max distance is < 0 then the distance should have no influence
 			resultIndices->push_back(resultIndex);
@@ -192,10 +192,10 @@ void NearestNeighborANN::findNearestNeighbors(Point3D* query, std::vector<int>* 
 //		std::cout << "\t" << i << "\t" << nnIndex[i] << "\t" << distances[i] << "\n";
 //	}
 
-	BRICS_3D::Coordinate resultDistance; //distance has same data-type as Coordinate, although the meaning is different TODO: global distance typedef?
+	brics_3d::Coordinate resultDistance; //distance has same data-type as Coordinate, although the meaning is different TODO: global distance typedef?
 	int resultIndex;
 	for (int i = 0; i < this->k; i++) {
-		resultDistance = static_cast<BRICS_3D::Coordinate>(sqrt(distances[i]));	//unsquare distance
+		resultDistance = static_cast<brics_3d::Coordinate>(sqrt(distances[i]));	//unsquare distance
 		resultIndex = nnIndex[i];
 
 		if (resultDistance <= maxDistance || maxDistance < 0.0) { //if max distance is < 0 then the distance should have no influence

@@ -28,9 +28,9 @@
 
 #include <sstream>
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 /**
  * @brief Node visitor that generates a "dot" representation.

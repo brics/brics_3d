@@ -11,7 +11,7 @@
 #include "ISACMethods.h"
 
 
-namespace BRICS_3D {
+namespace brics_3d {
 //ToDo add reference to the method
 
 /**

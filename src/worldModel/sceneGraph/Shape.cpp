@@ -20,9 +20,9 @@
 #include "Shape.h"
 #include "GeometricNode.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 Shape::Shape() {
   // Bouml preserved body begin 0002D703
@@ -35,9 +35,9 @@ Shape::~Shape() {
 }
 
 
-} // namespace BRICS_3D::RSG
+} // namespace brics_3d::RSG
 
-} // namespace BRICS_3D
+} // namespace brics_3d
 
 /* EOF */
 

@@ -21,7 +21,7 @@
 #include <stdio.h>
 #include <stdint.h>
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 
 ColorSpaceConvertor::ColorSpaceConvertor() {

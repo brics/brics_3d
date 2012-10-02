@@ -29,7 +29,7 @@
 
 
 using namespace std;
-using namespace BRICS_3D;
+using namespace brics_3d;
 
 #define STD_POINT
 //#define RGB_POINT

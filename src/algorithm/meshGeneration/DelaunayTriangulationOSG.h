@@ -23,7 +23,7 @@
 #include "IDelaunayTriangulation.h"
 #include "IMeshGeneration.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief Implementation for 2.5D Delaunay triangulation method offered from OSG library.

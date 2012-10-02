@@ -28,9 +28,9 @@
 
 #include "util/Timer.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 /**
  * Visitor that traverses the graph and deletes transform nodes that are outdated.
@@ -67,7 +67,7 @@ private:
 
 	/**
 	 * Flag to toggle on automatic updates of the transform caches.
-	 * This essentially means to invoke BRICS_3D::RSG::Transform::deleteOutdatedTransforms() for each visited transform.
+	 * This essentially means to invoke brics_3d::rsg::Transform::deleteOutdatedTransforms() for each visited transform.
 	 *
 	 * The default is true.
 	 */

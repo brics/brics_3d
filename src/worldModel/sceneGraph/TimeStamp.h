@@ -20,9 +20,9 @@
 #ifndef TIMESTAMP_H
 #define TIMESTAMP_H
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 /**
  * Simple container for time data.
@@ -50,9 +50,9 @@ private:
 
 };
 
-} // namespace BRICS_3D::RSG
+} // namespace brics_3d::RSG
 
-} // namespace BRICS_3D
+} // namespace brics_3d
 #endif
 
 /* EOF */

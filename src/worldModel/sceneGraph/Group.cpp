@@ -21,9 +21,9 @@
 #include "core/Logger.h"
 #include <assert.h>
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 Group::Group() {
 	this->children.clear();
@@ -126,9 +126,9 @@ void Group::accept(INodeVisitor* visitor){
 	}
 }
 
-} // namespace BRICS_3D::RSG
+} // namespace brics_3d::RSG
 
-} // namespace BRICS_3D
+} // namespace brics_3d
 
 /* EOF */
 

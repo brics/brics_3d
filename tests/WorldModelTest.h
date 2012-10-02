@@ -22,10 +22,10 @@
 
 namespace unitTests {
 
-using namespace BRICS_3D;
+using namespace brics_3d;
 using namespace Eigen;
 using namespace std;
-using namespace BRICS_3D::RSG;
+using namespace brics_3d::rsg;
 using std::cout;
 using std::endl;
 

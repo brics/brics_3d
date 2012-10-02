@@ -22,7 +22,7 @@
 
 #include <string>
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /* Stringification helper macros */
 #define mkstr2(X) #X
@@ -57,7 +57,7 @@ public:
 	 *
 	 * This method could be used to assuere that a certain minimum version of BRICS_3D is used, e.g.
 	 * @code
-	 * 		assert(BRICS_3D::Version::getVersion() >= 0x010);  // at least 0.1.0
+	 * 		assert(brics_3d::Version::getVersion() >= 0x010);  // at least 0.1.0
 	 * @endcode
 	 */
 	static int getVersion();

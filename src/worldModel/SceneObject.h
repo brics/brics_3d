@@ -25,10 +25,10 @@
 #include <vector>
 using std::vector;
 
-namespace BRICS_3D { namespace RSG { class GeometricNode; }  } 
-namespace BRICS_3D { namespace RSG { class Attribute; }  } 
+namespace brics_3d { namespace rsg { class GeometricNode; }  } 
+namespace brics_3d { namespace rsg { class Attribute; }  } 
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief Representation of a high "level object".
@@ -59,13 +59,13 @@ class SceneObject {
 
     IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform;
 
-    RSG::Shape::ShapePtr shape;
+    rsg::Shape::ShapePtr shape;
 
-    vector<RSG::Attribute> attributes;
+    vector<rsg::Attribute> attributes;
 
 };
 
-} // namespace BRICS_3D
+} // namespace brics_3d
 #endif
 
 /* EOF */

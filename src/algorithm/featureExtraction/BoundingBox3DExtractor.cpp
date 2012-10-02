@@ -23,7 +23,7 @@
 #include "core/HomogeneousMatrix44.h"
 #include <limits>
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 BoundingBox3DExtractor::BoundingBox3DExtractor() {
 
@@ -34,12 +34,12 @@ BoundingBox3DExtractor::~BoundingBox3DExtractor() {
 }
 
 void BoundingBox3DExtractor::computeBoundingBox(PointCloud3D* inputPointCloud, Point3D& resultBoxCenter, Vector3D& resultBoxDimensions) {
-	lowerBound.setX(std::numeric_limits<BRICS_3D::Coordinate>::max());
-	lowerBound.setY(std::numeric_limits<BRICS_3D::Coordinate>::max());
-	lowerBound.setZ(std::numeric_limits<BRICS_3D::Coordinate>::max());
-	upperBound.setX(-std::numeric_limits<BRICS_3D::Coordinate>::max());
-	upperBound.setY(-std::numeric_limits<BRICS_3D::Coordinate>::max());
-	upperBound.setZ(-std::numeric_limits<BRICS_3D::Coordinate>::max());
+	lowerBound.setX(std::numeric_limits<brics_3d::Coordinate>::max());
+	lowerBound.setY(std::numeric_limits<brics_3d::Coordinate>::max());
+	lowerBound.setZ(std::numeric_limits<brics_3d::Coordinate>::max());
+	upperBound.setX(-std::numeric_limits<brics_3d::Coordinate>::max());
+	upperBound.setY(-std::numeric_limits<brics_3d::Coordinate>::max());
+	upperBound.setZ(-std::numeric_limits<brics_3d::Coordinate>::max());
 
 	/* get min/max */
 	for (unsigned int i = 0; i < inputPointCloud->getSize(); ++i) {
@@ -86,12 +86,12 @@ void BoundingBox3DExtractor::computeBoundingBox(PointCloud3D* inputPointCloud, P
 void BoundingBox3DExtractor::computeOrientedBoundingBox(PointCloud3D* inputPointCloud, IHomogeneousMatrix44* resultTransform, Vector3D& resultBoxDimensions) {
 	assert(resultTransform != 0);
 
-	lowerBound.setX(std::numeric_limits<BRICS_3D::Coordinate>::max());
-	lowerBound.setY(std::numeric_limits<BRICS_3D::Coordinate>::max());
-	lowerBound.setZ(std::numeric_limits<BRICS_3D::Coordinate>::max());
-	upperBound.setX(-std::numeric_limits<BRICS_3D::Coordinate>::max());
-	upperBound.setY(-std::numeric_limits<BRICS_3D::Coordinate>::max());
-	upperBound.setZ(-std::numeric_limits<BRICS_3D::Coordinate>::max());
+	lowerBound.setX(std::numeric_limits<brics_3d::Coordinate>::max());
+	lowerBound.setY(std::numeric_limits<brics_3d::Coordinate>::max());
+	lowerBound.setZ(std::numeric_limits<brics_3d::Coordinate>::max());
+	upperBound.setX(-std::numeric_limits<brics_3d::Coordinate>::max());
+	upperBound.setY(-std::numeric_limits<brics_3d::Coordinate>::max());
+	upperBound.setZ(-std::numeric_limits<brics_3d::Coordinate>::max());
 
 	Eigen::MatrixXd eigenvectors;
 	Eigen::VectorXd eigenvalues;

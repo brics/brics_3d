@@ -27,10 +27,10 @@
 #include "PointCloud3D.h"
 #include "IHomogeneousMatrix44.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
- * @brief Point iterator implementation for BRICS_3D::PointCloud3D
+ * @brief Point iterator implementation for brics_3d::PointCloud3D
  *
  * The PointCloud3DIterator can hold a list of point clouds with associated rigid transforms.
  * While iterating and invocing getX(), getY() or getZ() the points will be multiplied with this is respective transforms.

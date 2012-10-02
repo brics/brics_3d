@@ -22,7 +22,7 @@
 
 #include "IFiltering.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief Extracts subset of input point cloud based on color-properties in HSV color space

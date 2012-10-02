@@ -19,7 +19,7 @@
 
 #include "ObjectModelOrientedPlane.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 void ObjectModelOrientedPlane::selectWithinDistance(const Eigen::VectorXd &model_coefficients, double threshold,
 			std::vector<int> &inliers){

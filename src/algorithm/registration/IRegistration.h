@@ -23,7 +23,7 @@
 #include "core/PointCloud3D.h"
 #include "core/IHomogeneousMatrix44.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief Generic interface for a point cloud registration componennt.

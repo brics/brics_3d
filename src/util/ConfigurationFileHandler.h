@@ -34,7 +34,7 @@
 XERCES_CPP_NAMESPACE_USE
 #endif
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief Reads a XML configuration file to get parameters for an algorithm

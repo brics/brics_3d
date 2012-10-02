@@ -23,7 +23,7 @@
 #include "IFiltering.h"
 #include "core/IHomogeneousMatrix44.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * The origin of box is considered to be in the center of each size value.
@@ -90,7 +90,7 @@ private:
 
 };
 
-}  // namespace BRICS_3D
+}  // namespace brics_3d
 
 #endif /* CUBEROIEXTRACTOR_H_ */
 

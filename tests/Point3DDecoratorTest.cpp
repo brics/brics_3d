@@ -14,7 +14,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( Point3DDecoratorTest );
 
 void Point3DDecoratorTest::setUp() {
 
-	maxCoordValue = std::numeric_limits<BRICS_3D::Coordinate>::max();
+	maxCoordValue = std::numeric_limits<brics_3d::Coordinate>::max();
 	minCoordValue = -maxCoordValue;
 
 	point000 = new Point3D;

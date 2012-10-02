@@ -37,10 +37,10 @@
 
 namespace unitTests {
 
-using namespace BRICS_3D;
+using namespace brics_3d;
 using namespace Eigen;
 using namespace std;
-using namespace BRICS_3D::RSG;
+using namespace brics_3d::rsg;
 using std::cout;
 using std::endl;
 
@@ -79,11 +79,11 @@ public:
 		cout << "Group ID = " << node->getId() << endl;
 		collectedIDs.push_back(node->getId());
 	};
-	void visit(RSG::Transform* node){
+	void visit(rsg::Transform* node){
 		cout << "Transform ID = " << node->getId() << endl;
 		collectedIDs.push_back(node->getId());
 	};
-	void visit(RSG::GeometricNode* node){
+	void visit(rsg::GeometricNode* node){
 		cout << "GeometricNode ID = " << node->getId() << endl;
 		collectedIDs.push_back(node->getId());
 	};

@@ -21,7 +21,7 @@
 #include "assert.h"
 
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 TriangleMeshExplicit::TriangleMeshExplicit() {
 	triangles = new std::vector<Triangle> ();

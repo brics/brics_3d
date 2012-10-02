@@ -19,7 +19,7 @@
 
 #include "Normal3D.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 
 Normal3D::Normal3D() {

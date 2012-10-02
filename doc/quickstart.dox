@@ -35,12 +35,12 @@ Create a file with name hallo_world.cpp and add the following lines:
 #include <iostream>
 
 int main(int argc, char **argv) {
-	BRICS_3D::PointCloud3D* myPointCloud = new BRICS_3D::PointCloud3D();
+	brics_3d::PointCloud3D* myPointCloud = new brics_3d::PointCloud3D();
 
-	myPointCloud->addPoint(BRICS_3D::Point3D(0,0,0));
-	myPointCloud->addPoint(BRICS_3D::Point3D(1,0,0));
-	myPointCloud->addPoint(BRICS_3D::Point3D(0,1,0));
-	myPointCloud->addPoint(BRICS_3D::Point3D(0,0,1));
+	myPointCloud->addPoint(brics_3d::Point3D(0,0,0));
+	myPointCloud->addPoint(brics_3d::Point3D(1,0,0));
+	myPointCloud->addPoint(brics_3d::Point3D(0,1,0));
+	myPointCloud->addPoint(brics_3d::Point3D(0,0,1));
 
 	std::cout << *myPointCloud;
 
@@ -102,14 +102,14 @@ You should retrieve an output like this:
 @section fist_program_explanation Explanation of the first program
 
 The header @code #include <core/PointCloud3D.h> @endcode includes the point cloud representation used within BRICS_3D. 
-Then an empty point cloud is created by issuing @code BRICS_3D::PointCloud3D* myPointCloud = new BRICS_3D::PointCloud3D(); @endcode
+Then an empty point cloud is created by issuing @code brics_3d::PointCloud3D* myPointCloud = new brics_3d::PointCloud3D(); @endcode
 This is cloud is then filled with four Cartesian points:
 
 @code
-	myPointCloud->addPoint(BRICS_3D::Point3D(0,0,0));
-	myPointCloud->addPoint(BRICS_3D::Point3D(1,0,0));
-	myPointCloud->addPoint(BRICS_3D::Point3D(0,1,0));
-	myPointCloud->addPoint(BRICS_3D::Point3D(0,0,1));
+	myPointCloud->addPoint(brics_3d::Point3D(0,0,0));
+	myPointCloud->addPoint(brics_3d::Point3D(1,0,0));
+	myPointCloud->addPoint(brics_3d::Point3D(0,1,0));
+	myPointCloud->addPoint(brics_3d::Point3D(0,0,1));
 @endcode
 
 The point cloud can be then easily print out via streaming to cout:
@@ -127,7 +127,7 @@ one should be aware of the fact that BRICS_3D is partitioned into a chunk of sma
 Each of those libraries might have further dependencies e.g. the visualization class uses OpenSceneGraph (OSG) which in case you want to use the visualization you need to link to your application too.
 
 BRICS_3D consists of the following (sub)libraries:
-- \e brics3d_core The core library that has all the relevant data-types like BRICS_3D::PointCloud3D and all common code like the BRICS_3D::Logger for instance.
+- \e brics3d_core The core library that has all the relevant data-types like brics_3d::PointCloud3D and all common code like the brics_3d::Logger for instance.
 - \e brics3d_algorithm The library that contains 3D perception and modling algorithms as discussed in section in @ref introduction.
 - \e brics3d_util Utility library with e.g. @ref visualization and benchmarking facilities. 
 - \e brics3d_world_model The 3D world model implementation. 

@@ -22,7 +22,7 @@
 
 #include "core/Point3D.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief Class to represent a correspondence between two Point3D entities.

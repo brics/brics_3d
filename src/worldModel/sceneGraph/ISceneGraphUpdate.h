@@ -26,11 +26,11 @@ using std::vector;
 #include "TimeStamp.h"
 #include "Shape.h"
 
-namespace BRICS_3D { namespace RSG { class Attribute; }  } 
+namespace brics_3d { namespace rsg { class Attribute; }  } 
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 /**
  * @brief Abstract interface for all scene graph related update functions.
@@ -42,7 +42,7 @@ class ISceneGraphUpdate {
 	/**
 	 * @brief Add a new Node to the robot scene graph.
 	 *
-	 * @param[in] parentId ID of the parent node. To add more parents use the BRICS_3D::RSG::ISceneGraphUpdate::addParent() function.
+	 * @param[in] parentId ID of the parent node. To add more parents use the brics_3d::rsg::ISceneGraphUpdate::addParent() function.
 	 * @param[in,out] assignedId The ID that was assigned internally.
 	 *                           In case the forcedId flag has been set to true it will used instead of the internal ID assignment.
 	 *                           Use this functio with care. There are are some internal checks if the manually assigned is valid
@@ -59,7 +59,7 @@ class ISceneGraphUpdate {
      * 
      * The group allows to create the graph structure as it has children, in contrast to a simple node.
 	 *
-	 * @param[in] parentId ID of the parent node. To add more more parents use the BRICS_3D::RSG::ISceneGraphUpdate::addParent() function.
+	 * @param[in] parentId ID of the parent node. To add more more parents use the brics_3d::rsg::ISceneGraphUpdate::addParent() function.
 	 * @param[in,out] assignedId The ID that was assigned internally.
 	 *                           In case the forcedId flag has been set to true it will used instead of the internal ID assignment.
 	 *                           Use this functio with care. There are are some internal checks if the manually assigned is valid
@@ -74,15 +74,15 @@ class ISceneGraphUpdate {
     /**
      * @brief Add a new Transform node the the robot scene graph.
 	 *
-	 * Internally BRICS_3D::RSG::Transform is used that is able to maintain a temporal cache of the trnasform data.
+	 * Internally brics_3d::rsg::Transform is used that is able to maintain a temporal cache of the trnasform data.
 	 *
-	 * @param[in] parentId ID of the parent node. To add more more parents use the BRICS_3D::RSG::ISceneGraphUpdate::addParent() function.
+	 * @param[in] parentId ID of the parent node. To add more more parents use the brics_3d::rsg::ISceneGraphUpdate::addParent() function.
 	 * @param[in,out] assignedId The ID that was assigned internally.
 	 *                           In case the forcedId flag has been set to true it will used instead of the internal ID assignment.
 	 *                           Use this functio with care. There are are some internal checks if the manually assigned is valid
 	 *                           but do not rely on this in a distibuted setting.
 	 * @param[in] attributes A set of attributs that will be set for the node.
-	 * @param transform The actual transform data that will be (initially) inserted. You can later insert more with BRICS_3D::RSG::ISceneGraphUpdate::setTransform() .
+	 * @param transform The actual transform data that will be (initially) inserted. You can later insert more with brics_3d::rsg::ISceneGraphUpdate::setTransform() .
 	 * @param timeStamp Time stamp associated with the transform.
 	 * @param forcedId If set to true the ID defined in assignedId will be taken instead of an intanally generated one. This is
 	 *                     in particular useful if distibuted scene graphs propagate updates and ensures IDs are not re-created.
@@ -93,7 +93,7 @@ class ISceneGraphUpdate {
     /**
      * @brief Add a GeometricNode that contains 3D data to the robot scene graph.
 	 *
-	 * @param[in] parentId ID of the parent node. To add more more parents use the BRICS_3D::RSG::ISceneGraphUpdate::addParent() function.
+	 * @param[in] parentId ID of the parent node. To add more more parents use the brics_3d::rsg::ISceneGraphUpdate::addParent() function.
 	 * @param[in,out] assignedId The ID that was assigned internally.
 	 *                           In case the forcedId flag has been set to true it will used instead of the internal ID assignment.
 	 *                           Use this functio with care. There are are some internal checks if the manually assigned is valid
@@ -147,9 +147,9 @@ class ISceneGraphUpdate {
 
 };
 
-} // namespace BRICS_3D::RSG
+} // namespace brics_3d::RSG
 
-} // namespace BRICS_3D
+} // namespace brics_3d
 #endif
 
 /* EOF */

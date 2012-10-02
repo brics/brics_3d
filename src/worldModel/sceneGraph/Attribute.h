@@ -28,9 +28,9 @@ using std::istream;
 using std::string;
 using std::vector;
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 /**
  * Attribute lists store (string-based) key-value pairs. Each node has attached attributes.
@@ -89,9 +89,9 @@ class Attribute {
  */
 extern bool attributeListContainsAttribute(vector<Attribute> attributeList, Attribute queryAttribute);
 
-} // namespace BRICS_3D::RSG
+} // namespace brics_3d::RSG
 
-} // namespace BRICS_3D
+} // namespace brics_3d
 #endif
 
 /* EOF */

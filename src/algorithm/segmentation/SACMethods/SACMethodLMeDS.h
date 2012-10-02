@@ -10,7 +10,7 @@
 
 #include "ISACMethods.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief class implementing the MLESAC method.

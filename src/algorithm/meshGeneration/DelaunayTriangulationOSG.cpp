@@ -29,7 +29,7 @@
 
 #include <boost/foreach.hpp>
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 DelaunayTriangulationOSG::DelaunayTriangulationOSG() {
 

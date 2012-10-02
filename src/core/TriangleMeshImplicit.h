@@ -23,7 +23,7 @@
 #include "core/ITriangleMesh.h"
 #include <vector>
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief @e Implicit triangle mesh representation.

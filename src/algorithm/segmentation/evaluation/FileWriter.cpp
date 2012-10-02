@@ -19,7 +19,7 @@
 
 #include "FileWriter.h"
 #include "MetricCalculator.h"
-namespace BRICS_3D{
+namespace brics_3d{
 
 FileWriter::FileWriter() {}
 

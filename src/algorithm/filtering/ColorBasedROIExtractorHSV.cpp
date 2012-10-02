@@ -23,7 +23,7 @@
 #include "core/ColoredPoint3D.h"
 #include <stdio.h>
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 ColorBasedROIExtractorHSV::ColorBasedROIExtractorHSV() {
 	this->maxH = 255;
@@ -99,8 +99,8 @@ void ColorBasedROIExtractorHSV::setMinV(double minV)
 
 ColorBasedROIExtractorHSV::~ColorBasedROIExtractorHSV() {}
 
-void ColorBasedROIExtractorHSV::filter(BRICS_3D::PointCloud3D* originalPointCloud,
-		BRICS_3D::PointCloud3D* resultPointCloud){
+void ColorBasedROIExtractorHSV::filter(brics_3d::PointCloud3D* originalPointCloud,
+		brics_3d::PointCloud3D* resultPointCloud){
 
 	if(this->minS == 0 && this->minH == 0 && this->minV == 0 && this->maxH == 255 &&
 			this->maxS == 255 && this->maxV == 255) {
@@ -112,8 +112,8 @@ void ColorBasedROIExtractorHSV::filter(BRICS_3D::PointCloud3D* originalPointClou
 	int tempR, tempG, tempB;
 	uint8_t tempChar;
 	bool passed;
-	BRICS_3D::ColorSpaceConvertor colorConvertor;
-	BRICS_3D::Point3D tempPoint3D;
+	brics_3d::ColorSpaceConvertor colorConvertor;
+	brics_3d::Point3D tempPoint3D;
 	resultPointCloud->getPointCloud()->clear();
 
 	printf("Used H-S Limits for extraction: H:[%f %f] S:[%f %f]\n", minH, maxH, minS, maxS);

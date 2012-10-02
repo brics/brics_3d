@@ -20,7 +20,7 @@
 #include "Evaluator.h"
 #include "FileReader.h"
 #include <vector>
-namespace BRICS_3D{
+namespace brics_3d{
 
 
 Evaluator::Evaluator() {

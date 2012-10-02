@@ -22,9 +22,9 @@
 #include "core/Logger.h"
 #include "AttributeFinder.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 SceneGraphFacade::SceneGraphFacade() {
 	this->idGenerator = new SimpleIdGenerator();
@@ -120,7 +120,7 @@ bool SceneGraphFacade::getGroupChildren(unsigned int id, vector<unsigned int>& c
 bool SceneGraphFacade::getTransform(unsigned int id, TimeStamp timeStamp, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform) {
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();
-	RSG::Transform::TransformPtr transformNode = boost::dynamic_pointer_cast<RSG::Transform>(node);
+	rsg::Transform::TransformPtr transformNode = boost::dynamic_pointer_cast<rsg::Transform>(node);
 	if (transformNode != 0) {
 		transform = transformNode->getTransform(timeStamp);
 		return true;
@@ -282,7 +282,7 @@ bool SceneGraphFacade::addTransformNode(unsigned int parentId, unsigned int& ass
 	}
 
 	if ((parentGroup != 0) && (idIsOk)) {
-		RSG::Transform::TransformPtr newTransform(new Transform());
+		rsg::Transform::TransformPtr newTransform(new Transform());
 		newTransform->setId(id);
 		newTransform->setAttributes(attributes);
 		newTransform->insertTransform(transform, timeStamp);
@@ -389,7 +389,7 @@ bool SceneGraphFacade::setTransform(unsigned int id, IHomogeneousMatrix44::IHomo
 	bool operationSucceeded = false;
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();
-	RSG::Transform::TransformPtr transformNode = boost::dynamic_pointer_cast<RSG::Transform>(node);
+	rsg::Transform::TransformPtr transformNode = boost::dynamic_pointer_cast<rsg::Transform>(node);
 	if (transformNode != 0) {
 		transformNode->insertTransform(transform, timeStamp);
 		operationSucceeded = true;
@@ -427,7 +427,7 @@ bool SceneGraphFacade::deleteNode(unsigned int id) {
 			 */
 			while (node->getNumberOfParents() > 0) { //NOTE: node->getNumberOfParents() will decrease within every iteration...
 				unsigned int i = 0;
-				RSG::Node* parentNode;
+				rsg::Node* parentNode;
 				parentNode = node->getParent(i);
 				Group* parentGroup =  dynamic_cast<Group*>(parentNode);
 				if (parentGroup != 0 ) {
@@ -531,9 +531,9 @@ bool SceneGraphFacade::doesIdExist(unsigned int id) {
 	return false;
 }
 
-} // namespace BRICS_3D::RSG
+} // namespace brics_3d::RSG
 
-} // namespace BRICS_3D
+} // namespace brics_3d
 
 /* EOF */
 

@@ -23,13 +23,13 @@
 #include "IPointCorrespondence.h"
 #include "algorithm/nearestNeighbor/INearestPoint3DNeighbor.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @ingroup registration
  * @brief Implementation of correspondence problem for points using generic nearest neighbor search
  */
-class PointCorrespondenceGenericNN: public BRICS_3D::IPointCorrespondence {
+class PointCorrespondenceGenericNN: public brics_3d::IPointCorrespondence {
 public:
 
 	/**

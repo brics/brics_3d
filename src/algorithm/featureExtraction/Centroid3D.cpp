@@ -20,7 +20,7 @@
 #include "Centroid3D.h"
 #include "core/Logger.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 Centroid3D::Centroid3D() {
 
@@ -31,7 +31,7 @@ Centroid3D::~Centroid3D() {
 }
 
 
-Eigen::Vector3d Centroid3D::computeCentroid(BRICS_3D::PointCloud3D *inCloud){
+Eigen::Vector3d Centroid3D::computeCentroid(brics_3d::PointCloud3D *inCloud){
 	Eigen::Vector3d centroid;
 	double tempX;
 	double tempY;

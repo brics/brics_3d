@@ -19,9 +19,9 @@
 
 #include "SimpleIdGenerator.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 SimpleIdGenerator::SimpleIdGenerator() {
 	rootId = 1u; //just an arbitrary choice here
@@ -48,9 +48,9 @@ bool SimpleIdGenerator::removeIdFromPool(unsigned int id) {
 	return true;
 }
 
-} // namespace BRICS_3D::RSG
+} // namespace brics_3d::RSG
 
-} // namespace BRICS_3D
+} // namespace brics_3d
 
 /* EOF */
 

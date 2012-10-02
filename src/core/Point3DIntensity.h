@@ -22,7 +22,7 @@
 
 #include "Point3DDecorator.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * Decoration layer for a Point3D that carries intensety information.

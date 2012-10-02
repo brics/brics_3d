@@ -22,7 +22,7 @@
 
 #include "IRigidTransformationEstimation.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @ingroup registration
@@ -30,7 +30,7 @@ namespace BRICS_3D {
  *
  * This implementation bases on a singular value decomposition (SVD) for the ICP error function.
  */
-class RigidTransformationEstimationSVD: public BRICS_3D::IRigidTransformationEstimation {
+class RigidTransformationEstimationSVD: public brics_3d::IRigidTransformationEstimation {
 public:
 
 	/**

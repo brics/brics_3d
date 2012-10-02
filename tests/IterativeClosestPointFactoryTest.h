@@ -15,7 +15,7 @@
 #include "algorithm/registration/IterativeClosestPointFactory.h"
 
 using namespace std;
-using namespace BRICS_3D;
+using namespace brics_3d;
 
 namespace unitTests {
 

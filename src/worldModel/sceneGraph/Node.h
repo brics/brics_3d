@@ -28,13 +28,13 @@
 
 using std::vector;
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief RobotSceneGraph: A scene graph for robot 3D perception and modeling.
  * @ingroup sceneGraph
  */
-namespace RSG {
+namespace rsg {
 
 class Group;
 
@@ -80,7 +80,7 @@ private:
 
 	void addParent(Node* node);
 	void removeParent(Node* node);
-	friend class BRICS_3D::RSG::Group; //only this one will be allowed to add parent-child relations
+	friend class brics_3d::rsg::Group; //only this one will be allowed to add parent-child relations
 
 	/// Unique ID that will help to identify a certain node.
 	unsigned int id;
@@ -93,9 +93,9 @@ private:
 
 };
 
-} // namespace BRICS_3D::RSG
+} // namespace brics_3d::RSG
 
-} // namespace BRICS_3D
+} // namespace brics_3d
 #endif
 
 /* EOF */

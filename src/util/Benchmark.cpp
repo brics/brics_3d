@@ -32,7 +32,7 @@ using namespace std;
 	#include <sys/stat.h> //for mkdir
 #endif
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 std::string Benchmark::timeStamp = ""; // deduced from time-stamp
 std::string Benchmark::directoryName = ""; // deduced from time-stamp

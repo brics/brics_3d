@@ -25,7 +25,7 @@
 
 
 using namespace std;
-using namespace BRICS_3D;
+using namespace brics_3d;
 
 
 

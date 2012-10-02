@@ -23,9 +23,9 @@
 #include "core/IHomogeneousMatrix44.h"
 
 /**
- * @namespace BRICS_3D
+ * @namespace brics_3d
  */
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief Coordinate data type.

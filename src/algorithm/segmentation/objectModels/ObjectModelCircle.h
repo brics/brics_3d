@@ -22,7 +22,7 @@
 
 #include "algorithm/segmentation/objectModels/IObjectModel.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @ingroup segmentation

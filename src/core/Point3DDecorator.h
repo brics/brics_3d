@@ -22,7 +22,7 @@
 
 #include "core/Point3D.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief Abstract class that can extend or "decorate" a Point3D.
@@ -123,7 +123,7 @@ protected:
 /**
  * @brief Deduce if a point has a certain layer of decoration.
  * This is rather generic way to intospect the decorated points. For some decoration layers ther are some
- * (faster and) convenient functions like BRICS_3D::Point3D::asColoredPoint3D()
+ * (faster and) convenient functions like brics_3d::Point3D::asColoredPoint3D()
  *
  * @param queryPoint Point of intrest that shall be investigated if it has a certain decoration.
  * @return Pointer to type as specified by DecorationT or null if the point does not have such a decoration layer.

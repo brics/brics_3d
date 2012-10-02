@@ -20,7 +20,7 @@
 #include "Triangle.h"
 #include "assert.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 Triangle::Triangle() {
 	for (int i = 0; i <= 2; ++i) {

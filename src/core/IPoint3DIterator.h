@@ -23,7 +23,7 @@
 #include <boost/shared_ptr.hpp>
 #include "Point3D.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 //template <typename ScalarT, typename PointT> //TODO templated version?
 
@@ -98,7 +98,7 @@ public:
 
 	/**
 	 * @brief Get the unmodified data (including x,y,z) from the ith point in the iteration.
-	 * @return Pointer to the original point data. This will give acces to potential data in the decoration layers. cf. BRICS_3D::Point3DDecorator
+	 * @return Pointer to the original point data. This will give acces to potential data in the decoration layers. cf. brics_3d::Point3DDecorator
 	 */
 	virtual Point3D* getRawData() = 0; //not transformed, but might have additional data like color, etc.
 

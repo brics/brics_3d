@@ -19,7 +19,7 @@
 
 #include "Point3DDecorator.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 Point3DDecorator::Point3DDecorator() {
 	this->point = new Point3D(); //create default point (0,0,0)
@@ -117,7 +117,7 @@ ColoredPoint3D* Point3DDecorator::asColoredPoint3D(){
 	return point->asColoredPoint3D();
 }
 
-} // namespace BRICS_3D
+} // namespace brics_3d
 
 
 /* EOF */

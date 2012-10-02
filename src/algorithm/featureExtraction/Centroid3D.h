@@ -23,7 +23,7 @@
 #include "core/PointCloud3D.h"
 
 #include <Eigen/Dense>
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief Computes the centroid of a point cloud.
@@ -41,7 +41,7 @@ public:
 	 * @param[in] inCloud The point cloud whose centroid shall be computed.
 	 * @return 3D Verctor represeting the centroid.
 	 */
-	Eigen::Vector3d computeCentroid(BRICS_3D::PointCloud3D *inCloud);
+	Eigen::Vector3d computeCentroid(brics_3d::PointCloud3D *inCloud);
 
 };
 

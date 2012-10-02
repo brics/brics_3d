@@ -18,7 +18,7 @@
 #include "core/HomogeneousMatrix44.h"
 
 using namespace std;
-using namespace BRICS_3D;
+using namespace brics_3d;
 
 namespace unitTests {
 

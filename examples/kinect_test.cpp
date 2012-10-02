@@ -28,7 +28,7 @@
 #include <util/PCLTypecaster.h>
 #include <util/OSGPointCloudVisualizer.h>
 
-using BRICS_3D::Logger;
+using brics_3d::Logger;
 
 //typedef pcl::PointXYZ PointType;
 typedef pcl::PointXYZRGB PointType;
@@ -41,7 +41,7 @@ class KinectTest {
 public:
 	KinectTest(){
 		count = 0;
-		BRICS_3D::Logger::setMinLoglevel(BRICS_3D::Logger::LOGDEBUG);
+		brics_3d::Logger::setMinLoglevel(brics_3d::Logger::LOGDEBUG);
 	}
 
 	/**
@@ -58,7 +58,7 @@ public:
 		}
 
 		LOG(INFO) <<  "Receiving new point cloud.";
-		BRICS_3D::PointCloud3D* viewerCloud = new BRICS_3D::PointCloud3D();
+		brics_3d::PointCloud3D* viewerCloud = new brics_3d::PointCloud3D();
 		converter.convertToBRICS3DDataType(cloud, viewerCloud, true); // the bool toggles if color information will be copoied over to BRICS_3D type or not
 //		std::string name = "kinect_pointcloud.txt";
 //		viewerCloud->storeToTxtFile(name);
@@ -83,10 +83,10 @@ public:
 	pcl::Grabber* interface;
 
 	/// Helper tool to convert point clouds
-	BRICS_3D::PCLTypecaster converter;
+	brics_3d::PCLTypecaster converter;
 
 	/// A simple viwer
-	BRICS_3D::OSGPointCloudVisualizer viewer;
+	brics_3d::OSGPointCloudVisualizer viewer;
 
 	/// For stats & debugging
 	int count;

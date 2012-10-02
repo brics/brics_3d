@@ -26,7 +26,7 @@
 #include "algorithm/nearestNeighbor/INearestNeighborSetup.h"
 #include "ann/include/ANN/ANN.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @ingroup nearestNeighbor

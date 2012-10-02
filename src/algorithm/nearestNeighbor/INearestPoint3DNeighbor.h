@@ -25,7 +25,7 @@
 
 using std::vector;
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @ingroup nearestNeighbor
@@ -68,7 +68,7 @@ public:
 	virtual void findNearestNeighbors(Point3D* query, std::vector<int>* resultIndices, unsigned int k = 1) = 0; //TODO typo: findNearestNeighbors
 };
 
-}  // namespace BRICS_3D
+}  // namespace brics_3d
 
 #endif /* INEARESTPOINT3DNEIGHBOR_H_ */
 

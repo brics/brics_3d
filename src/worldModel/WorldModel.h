@@ -28,7 +28,7 @@
 #include "IWorldModelCoordination.h"
 #include "util/Timer.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief <b>The</b> handle for a 3D world model.
@@ -43,7 +43,7 @@ class WorldModel : public IWorldModelQuery, public IWorldModelUpdate, public IWo
 
     /* Implemented interfaces: */
 
-    void getSceneObjects(vector<Attribute> attributes, vector<SceneObject>& results);
+    void getSceneObjects(vector<rsg::Attribute> attributes, vector<SceneObject>& results);
 
     void getCurrentTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform);
 
@@ -62,14 +62,14 @@ class WorldModel : public IWorldModelQuery, public IWorldModelUpdate, public IWo
     /* Helper functions */
     unsigned int getRootNodeId();
 
-    BRICS_3D::RSG::SceneGraphFacade scene;
+    brics_3d::rsg::SceneGraphFacade scene;
 
   private:
 
     Timer timer; //TODO unfortunately here we introduce a dependency to the brics_3d_util lib...
 };
 
-} // namespace BRICS_3D
+} // namespace brics_3d
 #endif
 
 /* EOF */

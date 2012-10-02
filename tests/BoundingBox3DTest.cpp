@@ -71,8 +71,8 @@ void BoundingBox3DTest::tearDown() {
 void BoundingBox3DTest::testSimpleBoundingBox() {
 
 	BoundingBox3DExtractor boundingBoxExtractor;
-	BRICS_3D::Point3D resultBoxCenter;
-	BRICS_3D::Vector3D resultBoxDimensions;
+	brics_3d::Point3D resultBoxCenter;
+	brics_3d::Vector3D resultBoxDimensions;
 
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(0, resultBoxCenter.getX(), maxTolerance); //preconditions
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(0, resultBoxCenter.getY(), maxTolerance);
@@ -93,8 +93,8 @@ void BoundingBox3DTest::testSimpleBoundingBox() {
 
 
 	/* repeat (ther should be no side effects) */
-	BRICS_3D::Point3D resultBoxCenter2;
-	BRICS_3D::Vector3D resultBoxDimensions2;
+	brics_3d::Point3D resultBoxCenter2;
+	brics_3d::Vector3D resultBoxDimensions2;
 
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(0, resultBoxCenter2.getX(), maxTolerance); //preconditions
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(0, resultBoxCenter2.getY(), maxTolerance);
@@ -115,8 +115,8 @@ void BoundingBox3DTest::testSimpleBoundingBox() {
 
 
 	/* take the other point cloud */
-	BRICS_3D::Point3D resultBoxCenter3;
-	BRICS_3D::Vector3D resultBoxDimensions3;
+	brics_3d::Point3D resultBoxCenter3;
+	brics_3d::Vector3D resultBoxDimensions3;
 
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(0, resultBoxCenter3.getX(), maxTolerance); //preconditions
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(0, resultBoxCenter3.getY(), maxTolerance);
@@ -144,8 +144,8 @@ void BoundingBox3DTest::testSimpleBoundingBox() {
 	testCloudUnitCube->homogeneousTransformation(&transform);
 //	std::cout << *testCloudUnitCube;
 
-	BRICS_3D::Point3D resultBoxCenter4;
-	BRICS_3D::Vector3D resultBoxDimensions4;
+	brics_3d::Point3D resultBoxCenter4;
+	brics_3d::Vector3D resultBoxDimensions4;
 
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(0, resultBoxCenter4.getX(), maxTolerance); //preconditions
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(0, resultBoxCenter4.getY(), maxTolerance);
@@ -167,7 +167,7 @@ void BoundingBox3DTest::testSimpleBoundingBox() {
 
 void BoundingBox3DTest::testSimpleOrientedBox() {
 	BoundingBox3DExtractor boundingBoxExtractor;
-	BRICS_3D::Vector3D resultBoxDimensions;
+	brics_3d::Vector3D resultBoxDimensions;
 	HomogeneousMatrix44 resultTransform;
 
 	const double* matrixData;
@@ -194,7 +194,7 @@ void BoundingBox3DTest::testSimpleOrientedBox() {
 
 
 	/* take the other point cloud */
-	BRICS_3D::Vector3D resultBoxDimensions2;
+	brics_3d::Vector3D resultBoxDimensions2;
 	HomogeneousMatrix44 resultTransform2;
 	const double* matrixData2;
 	matrixData2 = resultTransform2.getRawData();

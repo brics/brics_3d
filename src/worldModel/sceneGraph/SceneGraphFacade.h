@@ -35,13 +35,13 @@
 using std::map;
 
 
-//namespace BRICS_3D { namespace RSG { class Attribute; }  }
-//namespace BRICS_3D { class WorldModel; }
-//namespace BRICS_3D { namespace RSG { class IIdGenerator; }  }
+//namespace brics_3d { namespace rsg { class Attribute; }  }
+//namespace brics_3d { class WorldModel; }
+//namespace brics_3d { namespace rsg { class IIdGenerator; }  }
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 /**
  * @brief The central handle to create and maintain a robot scenegraph. It holds the root node of the scene graph.
@@ -127,9 +127,9 @@ class SceneGraphFacade : public ISceneGraphQuery, public ISceneGraphUpdate {
 
 };
 
-} // namespace BRICS_3D::RSG
+} // namespace brics_3d::RSG
 
-} // namespace BRICS_3D
+} // namespace brics_3d
 #endif
 
 /* EOF */

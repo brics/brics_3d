@@ -27,9 +27,9 @@
 using std::vector;
 using std::pair;
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 typedef vector< pair<IHomogeneousMatrix44::IHomogeneousMatrix44Ptr, TimeStamp> >::iterator HistoryIterator;
 
@@ -68,8 +68,8 @@ class Transform : public Group {
 
   public:
 
-	typedef boost::shared_ptr<RSG::Transform> TransformPtr;
-	typedef boost::shared_ptr<RSG::Transform const> TransformConstPtr;
+	typedef boost::shared_ptr<rsg::Transform> TransformPtr;
+	typedef boost::shared_ptr<rsg::Transform const> TransformConstPtr;
 
     Transform();
 
@@ -157,16 +157,16 @@ class Transform : public Group {
     /// Maximum duration of storing the history of transforms.
     TimeStamp maxHistoryDuration; //TODO: should be of some Duration type not a time stamp...
 
-    /// 10s in [ms] in case that the BRICS_3D::Timer is used, otherwise this number has no real meaning and should just serve as @p a default.
+    /// 10s in [ms] in case that the brics_3d::Timer is used, otherwise this number has no real meaning and should just serve as @p a default.
     static const long double dafaultMaxHistoryDuration = 10000.0;
 
     /// Counter for how often this transform node has been updated via insertTransform.
     unsigned int updateCount;
 };
 
-} // namespace BRICS_3D::RSG
+} // namespace brics_3d::RSG
 
-} // namespace BRICS_3D
+} // namespace brics_3d
 #endif
 
 /* EOF */

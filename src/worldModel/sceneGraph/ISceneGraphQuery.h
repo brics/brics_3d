@@ -26,11 +26,11 @@ using std::vector;
 #include "TimeStamp.h"
 #include "Shape.h"
 
-namespace BRICS_3D { namespace RSG { class Attribute; }  } 
+namespace brics_3d { namespace rsg { class Attribute; }  } 
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 /**
  * @brief Abstract interface for all scenegraph related query functions.
@@ -70,9 +70,9 @@ class ISceneGraphQuery {
 
 };
 
-} // namespace BRICS_3D::RSG
+} // namespace brics_3d::RSG
 
-} // namespace BRICS_3D
+} // namespace brics_3d
 #endif
 
 /* EOF */

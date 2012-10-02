@@ -26,7 +26,7 @@
 #include "core/IHomogeneousMatrix44.h"
 
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief Calculate a bounding box for a point cloud.

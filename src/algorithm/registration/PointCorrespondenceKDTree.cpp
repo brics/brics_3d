@@ -29,7 +29,7 @@
 
 using std::cout;
 using std::endl;
-namespace BRICS_3D {
+namespace brics_3d {
 
 PointCorrespondenceKDTree::PointCorrespondenceKDTree() {
 

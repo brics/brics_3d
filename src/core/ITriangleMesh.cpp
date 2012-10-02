@@ -19,7 +19,7 @@
 
 #include "ITriangleMesh.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 istream& operator>>(istream &inStream, ITriangleMesh &mesh) {
 	mesh.read(inStream);
@@ -31,6 +31,6 @@ ostream& operator<<(ostream &outStream, ITriangleMesh &mesh) {
     return outStream;
 }
 
-}  // namespace BRICS_3D
+}  // namespace brics_3d
 
 /* EOF */

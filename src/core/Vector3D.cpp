@@ -31,7 +31,7 @@ using std::runtime_error;
 using std::isfinite;
 #endif
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 Vector3D::Vector3D() {
 	this->x = 0.0;

@@ -20,7 +20,7 @@
 #ifndef IWORLDMODELCOORDINATION_H
 #define IWORLDMODELCOORDINATION_H
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief Coordination interface to trigger the internal perception processing functionalities.
@@ -38,7 +38,7 @@ class IWorldModelCoordination {
 
 };
 
-} // namespace BRICS_3D
+} // namespace brics_3d
 #endif
 
 /* EOF */

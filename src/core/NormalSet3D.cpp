@@ -19,7 +19,7 @@
 
 #include "NormalSet3D.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 NormalSet3D::NormalSet3D() {
 	normals = new std::vector<Normal3D> ();

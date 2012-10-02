@@ -28,9 +28,9 @@
 #define MAX_DEPTHIMAGE_VALUE 255
 
 /**
- * @namespace BRICS_3D
+ * @namespace brics_3d
  */
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief Transforms a depth image into a point cloud.

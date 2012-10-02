@@ -28,7 +28,7 @@
 #include <vector>
 #include<stdio.h>
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief Segmentation based on Eucledian distance between point clusters.
@@ -61,10 +61,10 @@ private:
 	 * @param inCloud	Input point cloud
 	 * @param extractedClusters Vector of pointcluds containing the extracted clusters
 	 */
-	void extractClusters(BRICS_3D::PointCloud3D *inCloud);
+	void extractClusters(brics_3d::PointCloud3D *inCloud);
 
 
-	std::vector<BRICS_3D::PointCloud3D*> extractedClusters;
+	std::vector<brics_3d::PointCloud3D*> extractedClusters;
 
 
 public:
@@ -131,7 +131,7 @@ public:
 	}
 
 
-	void getExtractedClusters(std::vector<BRICS_3D::PointCloud3D*> &extractedClusters){
+	void getExtractedClusters(std::vector<brics_3d::PointCloud3D*> &extractedClusters){
 		extractedClusters = this->extractedClusters;
 	}
 

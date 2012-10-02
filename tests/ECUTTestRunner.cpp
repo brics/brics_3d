@@ -705,7 +705,7 @@ void PrintApplicationInfo() {
 int ECUT_MAIN(int n, char *args[]) {
 
 	// Configure logging output
-	BRICS_3D::Logger::setMinLoglevel(BRICS_3D::Logger::WARNING);
+	brics_3d::Logger::setMinLoglevel(brics_3d::Logger::WARNING);
 
 	ECUT::CommandLine commandLine;
 	commandLine.Parse(n, args);

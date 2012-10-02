@@ -21,7 +21,7 @@
 
 #include "core/PointCloud3D.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief Generic interface for a point cloud filtering component.

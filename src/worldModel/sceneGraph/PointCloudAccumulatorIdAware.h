@@ -24,14 +24,14 @@
 #include "PointCloudAccumulator.h"
 #include "SceneGraphFacade.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 /**
- * @brief A more specialized visitor version of BRICS_3D::RSG::PointCloudAccumulator to be used in conjunction with a SceneGraphFacade.
+ * @brief A more specialized visitor version of brics_3d::rsg::PointCloudAccumulator to be used in conjunction with a SceneGraphFacade.
  *
- * The visitor is essentially the same as BRICS_3D::RSG::PointCloudAccumulator except that it uses an ID do define the referene node.
+ * The visitor is essentially the same as brics_3d::rsg::PointCloudAccumulator except that it uses an ID do define the referene node.
  *
  * @ingroup sceneGraph
  */

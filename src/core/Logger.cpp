@@ -28,7 +28,7 @@
 
 using namespace std;
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 Logger::Loglevel Logger::minLoglevel = Logger::WARNING;
 bool Logger::useFilename = false;
@@ -124,4 +124,4 @@ void Logger::flush() {
 
 }
 
-} //namespace BRICS_3D
+} //namespace brics_3d

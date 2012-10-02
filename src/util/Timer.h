@@ -29,7 +29,7 @@
 #include <ctime>
 
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief Timer to measure elapsed time in [ms]

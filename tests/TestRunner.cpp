@@ -18,7 +18,7 @@
 int main(int argc, char* argv[]) {
 
 	// Configure logging output
-	BRICS_3D::Logger::setMinLoglevel(BRICS_3D::Logger::WARNING);
+	brics_3d::Logger::setMinLoglevel(brics_3d::Logger::WARNING);
 
 	/*see also: http://cppunit.sourceforge.net/doc/lastest/money_example.html#sec_running_test */
 	// Get the top level suite from the registry

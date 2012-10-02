@@ -333,7 +333,7 @@ void ColoredPointCloud3DTest::testMassiveData() {
 
 		(*sensorData->getPointCloud()).resize(maxCount);
 		for (int i = 0; i < static_cast<int>(sensorData->getPointCloud()->size()); i++) {
-			//			outputPointCloud->addPoint(BRICS_3D::Point3D (inputPointCloud->points[i].x, inputPointCloud->points[i].y, inputPointCloud->points[i].z));
+			//			outputPointCloud->addPoint(brics_3d::Point3D (inputPointCloud->points[i].x, inputPointCloud->points[i].y, inputPointCloud->points[i].z));
 			(*sensorData->getPointCloud()).replace(i, new ColoredPoint3D(new Point3D()));
 			(*sensorData->getPointCloud())[i].setX(1);
 			(*sensorData->getPointCloud())[i].setY(2);

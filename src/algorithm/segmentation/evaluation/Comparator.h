@@ -22,7 +22,7 @@
 #include<vector>
 #include<string>
 using namespace std;
-namespace BRICS_3D{
+namespace brics_3d{
 
 /**
  * @brief The class handles all the calculations and plotting related to comparing the algorithms

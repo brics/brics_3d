@@ -24,7 +24,7 @@
 #include <iostream>
 #include <fstream>
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief Simple benchmark suite

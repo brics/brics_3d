@@ -15,7 +15,7 @@
 #include <stdio.h>
 #include <stdint.h>
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief Extracts subset of input point cloud based on color-properties in RGB color space
@@ -32,8 +32,8 @@ public:
 	ColorBasedROIExtractorRGB();
 	virtual ~ColorBasedROIExtractorRGB();
 	void filter(PointCloud3D* originalPointCloud, PointCloud3D* resultPointCloud);
-//    void extractColorBasedROI(BRICS_3D::ColoredPointCloud3D *in_cloud, BRICS_3D::ColoredPointCloud3D *out_cloud);
-//    void extractColorBasedROI(BRICS_3D::ColoredPointCloud3D *in_cloud, BRICS_3D::PointCloud3D *out_cloud);
+//    void extractColorBasedROI(brics_3d::ColoredPointCloud3D *in_cloud, brics_3d::ColoredPointCloud3D *out_cloud);
+//    void extractColorBasedROI(brics_3d::ColoredPointCloud3D *in_cloud, brics_3d::PointCloud3D *out_cloud);
 
     int getBlue() const
     {

@@ -26,7 +26,7 @@
 
 #include <iostream>
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief Segmentation based on Eucledian distance and distance in RGB color-space.
@@ -66,12 +66,12 @@ private:
 	unsigned int minClusterSize;
 	unsigned int maxClusterSize;
 
-	std::vector<BRICS_3D::PointCloud3D*> extractedClusters;
+	std::vector<brics_3d::PointCloud3D*> extractedClusters;
 
 public:
 	RGBColorBasedEuclideanClustering();
 	virtual ~RGBColorBasedEuclideanClustering();
-	void extractClusters(BRICS_3D::PointCloud3D *inCloud);
+	void extractClusters(brics_3d::PointCloud3D *inCloud);
 	int segment();
 
     int getMaxClusterSize() const;
@@ -83,11 +83,11 @@ public:
     void setToleranceEuclideanDistance(double toleranceEuclideanDistance);
     void setToleranceRgbSpace(double toleranceRgbSpace);
 
-	void getExtractedClusters(std::vector<BRICS_3D::PointCloud3D*> &extractedClusters){
+	void getExtractedClusters(std::vector<brics_3d::PointCloud3D*> &extractedClusters){
 		extractedClusters = this->extractedClusters;
 	}
 
 };
 
-} /* namespace BRICS_3D */
+} /* namespace brics_3d */
 #endif /* RGBCOLORBASEDEUCLIDEANCLUSTERING_H_ */

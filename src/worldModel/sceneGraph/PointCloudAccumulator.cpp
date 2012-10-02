@@ -22,11 +22,11 @@
 #include "core/Logger.h"
 #include "core/HomogeneousMatrix44.h"
 
-using BRICS_3D::Logger;
+using brics_3d::Logger;
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 PointCloudAccumulator::PointCloudAccumulator(Node::NodePtr referenceNode) : INodeVisitor(downwards)  {
 	accumulatedPointClouds = 0;
@@ -61,8 +61,8 @@ void PointCloudAccumulator::visit(GeometricNode* node){
 	/* check if geometry is a point cloud */
 	Shape::ShapePtr resultShape;
 	resultShape = node->getShape();
-	RSG::PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr pcResultContainer(new RSG::PointCloud<BRICS_3D::PointCloud3D>());
-	pcResultContainer = boost::dynamic_pointer_cast<PointCloud<BRICS_3D::PointCloud3D> >(resultShape);
+	rsg::PointCloud<brics_3d::PointCloud3D>::PointCloudPtr pcResultContainer(new rsg::PointCloud<brics_3d::PointCloud3D>());
+	pcResultContainer = boost::dynamic_pointer_cast<PointCloud<brics_3d::PointCloud3D> >(resultShape);
 	if(pcResultContainer != 0) {
 //		LOG(DEBUG) << "Adding point cloud to iterator with:";
 //		LOG(DEBUG) << *pcResultContainer->data;
@@ -88,7 +88,7 @@ IHomogeneousMatrix44::IHomogeneousMatrix44Ptr PointCloudAccumulator::doGetTransf
 
 	} else {
 		unsigned int childIndex = 0;
-		RSG::Node* parentNode;
+		rsg::Node* parentNode;
 		parentNode = node->getParent(0); //all parents will have the _same_ shared pointer so we pick the first parent
 		Group* parentGroup =  dynamic_cast<Group*>(parentNode);
 		assert (parentGroup != 0); // otherwise st.h went really wrong.

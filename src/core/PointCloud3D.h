@@ -28,7 +28,7 @@
 
 #define USE_POINTER_VECTOR
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief Class to represent a Cartesian 3D point cloud

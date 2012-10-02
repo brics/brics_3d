@@ -23,7 +23,7 @@
 #include "core/PointCloud3D.h"
 #include "core/ITriangleMesh.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 enum axis {
 	x,

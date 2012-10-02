@@ -22,7 +22,7 @@
 
 #include "IRigidTransformationEstimation.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @ingroup registration
@@ -30,7 +30,7 @@ namespace BRICS_3D {
  *
  * This implementation uses a helix motion based error function for the ICP. Results might be inaccurate.
  */
-class RigidTransformationEstimationHELIX: public BRICS_3D::IRigidTransformationEstimation {
+class RigidTransformationEstimationHELIX: public brics_3d::IRigidTransformationEstimation {
 public:
 
 	/**

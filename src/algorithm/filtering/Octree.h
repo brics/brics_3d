@@ -24,7 +24,7 @@
 #include "algorithm/filtering/IOctreePartition.h"
 #include "algorithm/filtering/IOctreeSetup.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief Implementation of the Octree component.

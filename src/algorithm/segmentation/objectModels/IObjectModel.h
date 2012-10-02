@@ -31,7 +31,7 @@
 
 using namespace std;
 
-namespace BRICS_3D{
+namespace brics_3d{
 
 /**
  * @brief Base class for representing 3D shapes.

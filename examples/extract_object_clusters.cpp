@@ -43,18 +43,18 @@ class ExtractObjectClusters{
 private:
 	pcl::Grabber* interface;
 	int count;
-	BRICS_3D::PCLTypecaster pclTypecaster;
-	BRICS_3D::ColorBasedROIExtractorHSV roiExtractor;
-	BRICS_3D::EuclideanClustering clusterExtractor;
-	BRICS_3D::EuclideanClusteringPCL pclClusterExtractor;
-	BRICS_3D::RGBColorBasedEuclideanClustering rgbColorBasedClusterExtractor;
-	BRICS_3D::ColorSpaceConvertor colorSpaceConvertor;
-	BRICS_3D::Centroid3D centroid3DEstimator;
+	brics_3d::PCLTypecaster pclTypecaster;
+	brics_3d::ColorBasedROIExtractorHSV roiExtractor;
+	brics_3d::EuclideanClustering clusterExtractor;
+	brics_3d::EuclideanClusteringPCL pclClusterExtractor;
+	brics_3d::RGBColorBasedEuclideanClustering rgbColorBasedClusterExtractor;
+	brics_3d::ColorSpaceConvertor colorSpaceConvertor;
+	brics_3d::Centroid3D centroid3DEstimator;
 	Eigen::Vector3d centroid;
 	bool processingDone;
 public:
 
-	BRICS_3D::OSGPointCloudVisualizer viewer;
+	brics_3d::OSGPointCloudVisualizer viewer;
 
 	void processData(const pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr &cloud){
 		if(!processingDone){
@@ -65,8 +65,8 @@ public:
 			cout << "[CHEAT] Recieved Kinect Cloud Size " << cloud->size() << endl;
 
 			//Converting from PCL to BRICS_3D datatype
-			BRICS_3D::PointCloud3D *inCloud = new BRICS_3D::PointCloud3D();
-			BRICS_3D::PointCloud3D *inCloudVis = new BRICS_3D::PointCloud3D();
+			brics_3d::PointCloud3D *inCloud = new brics_3d::PointCloud3D();
+			brics_3d::PointCloud3D *inCloudVis = new brics_3d::PointCloud3D();
 			pclTypecaster.convertToBRICS3DDataType(cloud,inCloudVis);
 
 
@@ -81,7 +81,7 @@ public:
 
 
 			//Extracting the HSV based Region of Interest
-			BRICS_3D::PointCloud3D *extractedRoiHSV = new BRICS_3D::PointCloud3D();
+			brics_3d::PointCloud3D *extractedRoiHSV = new brics_3d::PointCloud3D();
 			startTime = clock();
 			roiExtractor.filter(inCloud,extractedRoiHSV);
 			cout << "[CHEAT] ROI Extracted Cloud Size " << extractedRoiHSV->getSize() << "\t\tExectution Time "
@@ -90,14 +90,14 @@ public:
 
 
 			//Extracting the HSV based Region of Interest
-			BRICS_3D::PointCloud3D *extractedRoiHSVColored = new BRICS_3D::PointCloud3D();
+			brics_3d::PointCloud3D *extractedRoiHSVColored = new brics_3d::PointCloud3D();
 			roiExtractor.filter(inCloud,extractedRoiHSVColored);
 			cout << "[CHEAT] ROI Extracted Colored-Cloud Size " << extractedRoiHSVColored->getSize() << "\t\tExectution Time "
 								<< double( clock() - startTime ) / (double)CLOCKS_PER_SEC<< " seconds." <<endl;
 
 
 			//Extracting Color based regions
-			vector<BRICS_3D::PointCloud3D*> colorBasedClusters;
+			vector<brics_3d::PointCloud3D*> colorBasedClusters;
 			startTime = clock();
 			rgbColorBasedClusterExtractor.setPointCloud(extractedRoiHSVColored);
 			rgbColorBasedClusterExtractor.setMinClusterSize(100);
@@ -113,7 +113,7 @@ public:
 
 
 			//Extracting the Object Clusters
-			vector<BRICS_3D::PointCloud3D*> pclExtractedClusters;
+			vector<brics_3d::PointCloud3D*> pclExtractedClusters;
 			startTime = clock();
 			pclClusterExtractor.setPointCloud(extractedRoiHSV);
 			pclClusterExtractor.segment();
@@ -124,7 +124,7 @@ public:
 
 
 			//Extracting the Object Clusters
-			//		vector<BRICS_3D::PointCloud3D*> extractedClusters;
+			//		vector<brics_3d::PointCloud3D*> extractedClusters;
 			//		startTime = clock();
 			//		clusterExtractor.extractClusters(extractedRoiHSV,&extractedClusters);
 			//		cout << "[CHEAT] No of clusters extracted : " << extractedClusters.size() << "\t\tExectution Time "

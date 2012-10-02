@@ -27,9 +27,9 @@
 #include "GeometricNode.h"
 #include "Attribute.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 /**
  * @brief A traverser to check if a certain node is in a subgaph of another node.
@@ -39,7 +39,7 @@ public:
 
 	/**
 	 * @brief Contuctor.
-	 * @param subGraphNodeId Same as in BRICS_3D::RSG::SubGraphChecker::subGraphNodeId
+	 * @param subGraphNodeId Same as in brics_3d::rsg::SubGraphChecker::subGraphNodeId
 	 */
 	SubGraphChecker(unsigned int subGraphNodeId);
 
@@ -56,7 +56,7 @@ public:
 
 	/**
 	 * @brief Resets the query.
-	 * @param subGraphNodeId Same as in BRICS_3D::RSG::SubGraphChecker::subGraphNodeId
+	 * @param subGraphNodeId Same as in brics_3d::rsg::SubGraphChecker::subGraphNodeId
 	 */
 	virtual void reset(unsigned int subGraphNodeId);
 

@@ -23,13 +23,13 @@
 
 #include "IPointCorrespondence.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @ingroup registration
  * @brief Implementation of correspondence problem for points using k-d trees.
  */
-class PointCorrespondenceKDTree: public BRICS_3D::IPointCorrespondence {
+class PointCorrespondenceKDTree: public brics_3d::IPointCorrespondence {
 public:
 
 	/**

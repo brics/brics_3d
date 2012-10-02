@@ -23,7 +23,7 @@
 #include "algorithm/segmentation/objectModels/IObjectModel.h"
 #include "core/NormalSet3D.h"
 //using namespace std;
-namespace BRICS_3D {
+namespace brics_3d {
 
 
 /**
@@ -75,7 +75,7 @@ public:
 
 
 	/** @brief Set the pointer to the normal-set for the corresponding input point cloud
-	 *  @param normalSet Pointer to BRICS_3D::NormalSet3D
+	 *  @param normalSet Pointer to brics_3d::NormalSet3D
 	 */
 	inline void
 	setInputNormals (NormalSet3D *normalSet)
@@ -84,8 +84,8 @@ public:
 	}
 
 
-	/** @brief Get a pointer to BRICS_3D::NOrmalSet3D for input point cloud being segmented
-	 *  @return Pointer to BRICS_3D::NormalSet3D
+	/** @brief Get a pointer to brics_3d::NOrmalSet3D for input point cloud being segmented
+	 *  @return Pointer to brics_3d::NormalSet3D
 	 * */
 	inline NormalSet3D*
 	getInputNormals ()

@@ -19,7 +19,7 @@
 
 #include "ObjectModelLine.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 void ObjectModelLine::computeRandomModel (int &iterations, Eigen::VectorXd &model_coefficients, bool &isDegenerate,
 		bool &modelFound){

@@ -22,7 +22,7 @@
 
 #include "IRigidTransformationEstimation.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @ingroup registration
@@ -30,7 +30,7 @@ namespace BRICS_3D {
  *
  * This implementation uses a ORTHO TODO based error function for the ICP.
  */
-class RigidTransformationEstimationORTHO: public BRICS_3D::IRigidTransformationEstimation {
+class RigidTransformationEstimationORTHO: public brics_3d::IRigidTransformationEstimation {
 public:
 
 	/**

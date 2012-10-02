@@ -19,9 +19,9 @@
 
 #include "PointCloud.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 #if 0
 template<typename PointCloudT>
@@ -37,9 +37,9 @@ PointCloud<PointCloudT>::~PointCloud() {
 }
 #endif
 
-} // namespace BRICS_3D::RSG
+} // namespace brics_3d::RSG
 
-} // namespace BRICS_3D
+} // namespace brics_3d
 
 /* EOF */
 

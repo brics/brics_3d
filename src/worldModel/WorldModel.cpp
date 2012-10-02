@@ -21,7 +21,9 @@
 #include "core/Logger.h"
 #include "core/HomogeneousMatrix44.h"
 
-namespace BRICS_3D {
+using namespace brics_3d::rsg;
+
+namespace brics_3d {
 
 WorldModel::WorldModel() {
 
@@ -31,7 +33,7 @@ WorldModel::~WorldModel() {
 
 }
 
-void WorldModel::getSceneObjects(vector<Attribute> attributes, vector<SceneObject>& results) {
+void WorldModel::getSceneObjects(vector<rsg::Attribute> attributes, vector<SceneObject>& results) {
 	TimeStamp currentTime(timer.getCurrentTime());
 	vector<unsigned int>resultIds;
 	results.clear();
@@ -68,7 +70,7 @@ void WorldModel::getSceneObjects(vector<Attribute> attributes, vector<SceneObjec
 		}
 
 
-		vector<RSG::Attribute> tmpAttributes;
+		vector<rsg::Attribute> tmpAttributes;
 		scene.getNodeAttributes(resultIds[i], tmpAttributes);
 		tmpSceneObject.attributes = tmpAttributes; //TODO combined attributes from multible nodes?
 
@@ -120,7 +122,7 @@ unsigned int WorldModel::getRootNodeId() {
 	return scene.getRootId();
 }
 
-} // namespace BRICS_3D
+} // namespace brics_3d
 
 /* EOF */
 

@@ -26,7 +26,7 @@
 
 #include "algorithm/nearestNeighbor/INearestPoint3DNeighbor.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 class NormalEstimation {
 

@@ -9,7 +9,7 @@
 #include "core/ColoredPoint3D.h"
 #include "core/Logger.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 ColorBasedROIExtractorRGB::ColorBasedROIExtractorRGB() {
 
@@ -34,7 +34,7 @@ void ColorBasedROIExtractorRGB::filter(PointCloud3D *originalPointCloud, PointCl
 	int tempR, tempG, tempB;
 	uint8_t tempChar;
 	bool passed;
-	BRICS_3D::Point3D tempPoint3D;
+	brics_3d::Point3D tempPoint3D;
 	resultPointCloud->getPointCloud()->clear();
 
 
@@ -71,11 +71,11 @@ void ColorBasedROIExtractorRGB::filter(PointCloud3D *originalPointCloud, PointCl
 		if (currentDistance <= distanceThresholdMaximum && currentDistance >= distanceThresholdMinimum) passed=true;
 
 		if(passed){
-//			BRICS_3D::Point3D *tempPoint3D =  new BRICS_3D::Point3D(originalPointCloud->getPointCloud()->data()[i].getX(),
+//			brics_3d::Point3D *tempPoint3D =  new brics_3d::Point3D(originalPointCloud->getPointCloud()->data()[i].getX(),
 //					originalPointCloud->getPointCloud()->data()[i].getY(),
 //					originalPointCloud->getPointCloud()->data()[i].getZ());
 //
-//			BRICS_3D::ColoredPoint3D *tempColoredPoint3D = new BRICS_3D::ColoredPoint3D(tempPoint3D,
+//			brics_3d::ColoredPoint3D *tempColoredPoint3D = new brics_3d::ColoredPoint3D(tempPoint3D,
 //					originalPointCloud->getPointCloud()->data()[i].red,
 //					originalPointCloud->getPointCloud()->data()[i].green,
 //					originalPointCloud->getPointCloud()->data()[i].blue);

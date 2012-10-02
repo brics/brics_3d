@@ -19,7 +19,7 @@
 
 #include "HomogeneousMatrix44.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 HomogeneousMatrix44::~HomogeneousMatrix44() {
 

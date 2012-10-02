@@ -20,9 +20,9 @@
 #include "OSGVisualizer.h"
 #include "core/Logger.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 /* OSG Helper classes  */
 class OSGOperationAdd : public osg::Operation {
@@ -250,16 +250,16 @@ bool OSGVisualizer::addGeometricNode(unsigned int parentId, unsigned int& assign
 			return true;
 		}
 
-		RSG::PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr pointCloud(new RSG::PointCloud<BRICS_3D::PointCloud3D>());
-		pointCloud = boost::dynamic_pointer_cast<PointCloud<BRICS_3D::PointCloud3D> >(shape);
-//		RSG::PointCloud<BRICS_3D::ColoredPointCloud3D>::PointCloudPtr coloredPointCloud(new RSG::PointCloud<BRICS_3D::ColoredPointCloud3D>());
-//		coloredPointCloud = boost::dynamic_pointer_cast<PointCloud<BRICS_3D::ColoredPointCloud3D> >(shape);
-		RSG::Mesh<BRICS_3D::ITriangleMesh>::MeshPtr mesh(new RSG::Mesh<BRICS_3D::ITriangleMesh>());
-		mesh = boost::dynamic_pointer_cast<RSG::Mesh<BRICS_3D::ITriangleMesh> >(shape);
-		RSG::Box::BoxPtr box(new RSG::Box());
-		box =  boost::dynamic_pointer_cast<RSG::Box>(shape);
-		RSG::Cylinder::CylinderPtr cylinder(new RSG::Cylinder());
-		cylinder =  boost::dynamic_pointer_cast<RSG::Cylinder>(shape);
+		rsg::PointCloud<brics_3d::PointCloud3D>::PointCloudPtr pointCloud(new rsg::PointCloud<brics_3d::PointCloud3D>());
+		pointCloud = boost::dynamic_pointer_cast<PointCloud<brics_3d::PointCloud3D> >(shape);
+//		rsg::PointCloud<brics_3d::ColoredPointCloud3D>::PointCloudPtr coloredPointCloud(new rsg::PointCloud<brics_3d::ColoredPointCloud3D>());
+//		coloredPointCloud = boost::dynamic_pointer_cast<PointCloud<brics_3d::ColoredPointCloud3D> >(shape);
+		rsg::Mesh<brics_3d::ITriangleMesh>::MeshPtr mesh(new rsg::Mesh<brics_3d::ITriangleMesh>());
+		mesh = boost::dynamic_pointer_cast<rsg::Mesh<brics_3d::ITriangleMesh> >(shape);
+		rsg::Box::BoxPtr box(new rsg::Box());
+		box =  boost::dynamic_pointer_cast<rsg::Box>(shape);
+		rsg::Cylinder::CylinderPtr cylinder(new rsg::Cylinder());
+		cylinder =  boost::dynamic_pointer_cast<rsg::Cylinder>(shape);
 
 //		if (coloredPointCloud !=0) {
 //			LOG(DEBUG) << "                 -> Adding a new colored point cloud.";
@@ -472,8 +472,8 @@ osg::ref_ptr<osg::Node> OSGVisualizer::createFrameAxis(double axisLength) {
 }
 
 
-}  // namespace RSG
+}  // namespace rsg
 
-}  // namespace BRICS_3D
+}  // namespace brics_3d
 
 /* EOF */

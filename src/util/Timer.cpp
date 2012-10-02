@@ -19,7 +19,7 @@
 
 #include "Timer.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 #ifdef WIN32
 static LONG64 winTicksPerSecond = 0;

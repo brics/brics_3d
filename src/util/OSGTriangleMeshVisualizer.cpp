@@ -25,7 +25,7 @@
 #include <osgGA/StateSetManipulator>
 #include <osgViewer/ViewerEventHandlers>
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 OSGTriangleMeshVisualizer::OSGTriangleMeshVisualizer() {
 	rootGeode = new osg::Group();

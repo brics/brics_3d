@@ -18,7 +18,7 @@
 #include "core/Point3DIntensity.h"
 
 using namespace std;
-using namespace BRICS_3D;
+using namespace brics_3d;
 using namespace Eigen;
 
 namespace unitTests {

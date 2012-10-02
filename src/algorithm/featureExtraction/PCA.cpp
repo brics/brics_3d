@@ -20,7 +20,7 @@
 #include "PCA.h"
 #include "core/Logger.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 PCA::PCA() {
 

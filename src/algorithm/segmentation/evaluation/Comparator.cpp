@@ -29,7 +29,7 @@
 #include "gnuplot_i.hpp" //Gnuplot class handles POSIX-Pipe-communikation with Gnuplot
 
 using namespace std;
-namespace BRICS_3D{
+namespace brics_3d{
 Comparator::Comparator() {
 	initialiseStatus=false;
 	overlapBaseName="_result_overlapMatrix.csv";

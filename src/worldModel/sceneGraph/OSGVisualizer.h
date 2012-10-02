@@ -34,9 +34,9 @@
 #include <osg/BlendFunc>
 #include <map>
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 
 /**
@@ -106,9 +106,9 @@ private:
 
 };
 
-}  // namespace RSG
+}  // namespace rsg
 
-}  // namespace BRICS_3D
+}  // namespace brics_3d
 
 #endif /* OSGVISUALIZER_H_ */
 

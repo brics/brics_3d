@@ -7,7 +7,7 @@
 
 #include "SACMethodMSAC.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 SACMethodMSAC::SACMethodMSAC() {}
 

@@ -19,9 +19,9 @@
 
 #include "GeometricNode.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 GeometricNode::GeometricNode() {
   // Bouml preserved body begin 0002B383
@@ -44,9 +44,9 @@ void GeometricNode::accept(INodeVisitor* visitor) {
 	}
 }
 
-} // namespace BRICS_3D::RSG
+} // namespace brics_3d::RSG
 
-} // namespace BRICS_3D
+} // namespace brics_3d
 
 /* EOF */
 

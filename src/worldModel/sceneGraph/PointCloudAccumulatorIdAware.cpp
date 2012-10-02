@@ -22,11 +22,11 @@
 #include "core/HomogeneousMatrix44.h"
 #include "core/Logger.h"
 
-using BRICS_3D::Logger;
+using brics_3d::Logger;
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 PointCloudAccumulatorIdAware::PointCloudAccumulatorIdAware(SceneGraphFacade* facadeHandle, unsigned int referenceNodeId) : PointCloudAccumulator(Node::NodePtr()) {
 	assert(facadeHandle != 0);

@@ -23,9 +23,9 @@
 #include "OutdatedDataDeleter.h"
 #include "SceneGraphFacade.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 /**
  * A more specialized visitor version to be used in conjunction with a SceneGraphFacade.

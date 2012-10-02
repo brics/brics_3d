@@ -419,7 +419,7 @@ void NearestNeighborTest::testSTANNHighDimension() {
 	nearestNeigborSTANN = new NearestNeighborSTANN();
 	CPPUNIT_ASSERT_EQUAL(-1, nearestNeigborSTANN->getDimension());
 
-	int dimension = BRICS_3D::STANNDimension;
+	int dimension = brics_3d::STANNDimension;
 	int numberElements = 10;
 	double value = 0.0;
 	vector< vector<double> > data;

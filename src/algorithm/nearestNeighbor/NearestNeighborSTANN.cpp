@@ -26,7 +26,7 @@ using std::cout;
 using std::endl;
 using std::runtime_error;
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 NearestNeighborSTANN::NearestNeighborSTANN() {
 	this->dimension = -1;
@@ -150,10 +150,10 @@ void NearestNeighborSTANN::findNearestNeighbors(vector<double>* query, std::vect
 	assert( static_cast<unsigned int>(squaredResultDistances->size()) == static_cast<unsigned int>(k));
 	assert( static_cast<unsigned int>(squaredResultDistances->size()) > 0);
 
-	BRICS_3D::Coordinate resultDistance; //distance has same data-type as Coordinate, although the meaning is different
+	brics_3d::Coordinate resultDistance; //distance has same data-type as Coordinate, although the meaning is different
 	int resultIndex;
 	for (int i = 0; i < static_cast<int>(k); i++) {
-		resultDistance = static_cast<BRICS_3D::Coordinate>(sqrt((*squaredResultDistances)[i])); //seems to return squared distance (although documentation does not suggest)
+		resultDistance = static_cast<brics_3d::Coordinate>(sqrt((*squaredResultDistances)[i])); //seems to return squared distance (although documentation does not suggest)
 		resultIndex = static_cast<int>((*(this->resultIndices))[i]);
 		if (resultDistance <= maxDistance || maxDistance < 0.0) { //if max distance is < 0 then the distance should have no influence
 			resultIndices->push_back(resultIndex);
@@ -186,10 +186,10 @@ void NearestNeighborSTANN::findNearestNeighbors(Point3D* query, std::vector<int>
 	assert( static_cast<unsigned int>(squaredResultDistances->size()) == static_cast<unsigned int>(k));
 	assert( static_cast<unsigned int>(squaredResultDistances->size()) > 0);
 
-	BRICS_3D::Coordinate resultDistance; //distance has same data-type as Coordinate, although the meaning is different
+	brics_3d::Coordinate resultDistance; //distance has same data-type as Coordinate, although the meaning is different
 	int resultIndex;
 	for (int i = 0; i < static_cast<int>(k); i++) {
-		resultDistance = static_cast<BRICS_3D::Coordinate>(sqrt((*squaredResultDistances)[i])); //seems to return squared distance (although documentation does not suggest)
+		resultDistance = static_cast<brics_3d::Coordinate>(sqrt((*squaredResultDistances)[i])); //seems to return squared distance (although documentation does not suggest)
 		resultIndex = static_cast<int>((*(this->resultIndices))[i]);
 		if (resultDistance <= maxDistance || maxDistance < 0.0) { //if max distance is < 0 then the distance should have no influence
 			resultIndices->push_back(resultIndex);

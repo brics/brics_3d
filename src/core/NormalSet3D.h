@@ -23,7 +23,7 @@
 #include "Normal3D.h"
 #include <vector>
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief Class to represent a set of 3D normals.

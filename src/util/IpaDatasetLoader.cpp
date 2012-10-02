@@ -20,7 +20,7 @@
 #include "IpaDatasetLoader.h"
 #include "core/ColoredPoint3D.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 IpaDatasetLoader::IpaDatasetLoader() {
 	imageSize = cvSize(-1, -1);

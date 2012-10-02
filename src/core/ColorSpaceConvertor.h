@@ -23,7 +23,7 @@
 #ifndef COLORSPACECONVERTOR_H_
 #define COLORSPACECONVERTOR_H_
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 class ColorSpaceConvertor {
 private:

@@ -28,7 +28,7 @@ using std::cout;
 using std::cerr;
 using std::endl;
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 RigidTransformationEstimationORTHO::RigidTransformationEstimationORTHO() {
 

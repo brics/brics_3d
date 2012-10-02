@@ -15,7 +15,7 @@
 #include "core/Logger.h"
 #include <sstream>
 
-using namespace BRICS_3D;
+using namespace brics_3d;
 
 
 

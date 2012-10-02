@@ -21,7 +21,7 @@
 #define POINT3DINDEXPAIR_H_
 
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief Class to represent a correspondence between two entities e.g points by their respective index of thier set.

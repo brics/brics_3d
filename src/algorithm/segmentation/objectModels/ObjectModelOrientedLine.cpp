@@ -19,7 +19,7 @@
 
 #include "ObjectModelOrientedLine.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 void
   ObjectModelOrientedLine::selectWithinDistance (const Eigen::VectorXd &model_coefficients,

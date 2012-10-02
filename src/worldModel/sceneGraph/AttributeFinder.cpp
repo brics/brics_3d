@@ -20,9 +20,9 @@
 #include "AttributeFinder.h"
 #include "core/Logger.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 AttributeFinder::AttributeFinder() : INodeVisitor(downwards) {
 	reset();

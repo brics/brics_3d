@@ -20,7 +20,7 @@
 #include "TriangleMeshImplicit.h"
 #include "assert.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 TriangleMeshImplicit::TriangleMeshImplicit() {
 	vertices = new std::vector<Point3D> ();

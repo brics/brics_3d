@@ -19,7 +19,7 @@
 
 #include "MetricCalculator.h"
 #include <boost/algorithm/string.hpp>
-namespace BRICS_3D{
+namespace brics_3d{
 MetricCalculator::MetricCalculator() {}
 
 double **MetricCalculator::getResultGtMetrics() const

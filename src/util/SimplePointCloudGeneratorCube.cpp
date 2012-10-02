@@ -19,7 +19,7 @@
 
 #include "SimplePointCloudGeneratorCube.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 
 SimplePointCloudGeneratorCube::SimplePointCloudGeneratorCube() {
@@ -95,13 +95,13 @@ SimplePointCloudGeneratorCube::~SimplePointCloudGeneratorCube() {
 }
 
 
-void SimplePointCloudGeneratorCube::generatePointCloud(BRICS_3D::PointCloud3D *generatedPointCloud){
+void SimplePointCloudGeneratorCube::generatePointCloud(brics_3d::PointCloud3D *generatedPointCloud){
 
 //	std::cout<< "Generating the cloud" << std::endl;
 
 	double incr = (this->cubeSideLength)/ ((double)(this->pointsOnEachSide));
 	float xincr, yincr, zincr;
-	BRICS_3D::Point3D tempPoint3D;
+	brics_3d::Point3D tempPoint3D;
 
 //	generatedPointCloud->getPointCloud()->clear();
 	double orgn[3];

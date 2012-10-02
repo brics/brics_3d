@@ -25,9 +25,9 @@
 #include "Shape.h"
 #include "Attribute.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 /**
  * @brief A leaf node in the robot scenegraph that carries any kind of 3D data.
@@ -77,9 +77,9 @@ private:
 
 };
 
-} // namespace BRICS_3D::RSG
+} // namespace brics_3d::RSG
 
-} // namespace BRICS_3D
+} // namespace brics_3d
 #endif
 
 /* EOF */

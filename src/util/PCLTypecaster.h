@@ -28,7 +28,7 @@
 #include <cmath>
 
 #include <stdio.h>
-namespace BRICS_3D {
+namespace brics_3d {
 
 class PCLTypecaster {
 public:
@@ -42,7 +42,7 @@ public:
 	 * @param pointCloud3DPtr	point cloud datda in BRICS_3D format
 	 */
 	inline void convertToPCLDataType(pcl::PointCloud<pcl::PointXYZ>::Ptr pclCloudPtr,
-			BRICS_3D::PointCloud3D* pointCloud3DPtr ) {
+			brics_3d::PointCloud3D* pointCloud3DPtr ) {
 			pclCloudPtr->width = pointCloud3DPtr->getSize();
 			pclCloudPtr->height = 1;
 			pclCloudPtr->points.resize( pclCloudPtr->width * pclCloudPtr->height );
@@ -60,7 +60,7 @@ public:
 	 * @param pointCloud3DPtr	point cloud datda in BRICS_3D format
 	 */
 	inline void convertToBRICS3DDataType(pcl::PointCloud<pcl::PointXYZ>::ConstPtr pclCloudPtr,
-			BRICS_3D::PointCloud3D* pointCloud3DPtr ){
+			brics_3d::PointCloud3D* pointCloud3DPtr ){
 		pointCloud3DPtr->getPointCloud()->resize(pclCloudPtr->size());
 
 		for (unsigned int i =0 ; i < pclCloudPtr->size()  ; i++){
@@ -86,10 +86,10 @@ public:
 	 * @param pointCloud3DPtr	point cloud datda in BRICS_3D format
 	 */
 	inline void convertToBRICS3DDataType(pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr pclCloudPtr,
-			BRICS_3D::PointCloud3D* pointCloud3DPtr, bool copyColorData=true ){
+			brics_3d::PointCloud3D* pointCloud3DPtr, bool copyColorData=true ){
 
 		uint8_t r, g, b;
-		BRICS_3D::ColorSpaceConvertor colorSpaceConvertor;
+		brics_3d::ColorSpaceConvertor colorSpaceConvertor;
 		uint32_t rgbVal;
 		unsigned char red, green, blue;
 		float rgbVal24Bit;
@@ -128,9 +128,9 @@ public:
 	 * @param pointCloud3DPtr	point cloud data in BRICS_3D format
 	 */
 	inline void convertToPCLDataType(pcl::PointCloud<pcl::PointXYZRGB>::Ptr pclCloudPtr,
-				BRICS_3D::PointCloud3D* pointCloud3DPtr ) {
+				brics_3d::PointCloud3D* pointCloud3DPtr ) {
 
-		BRICS_3D::ColorSpaceConvertor colorSpaceConvertor;
+		brics_3d::ColorSpaceConvertor colorSpaceConvertor;
 
 		pclCloudPtr->width = pointCloud3DPtr->getSize();
 		pclCloudPtr->height = 1;

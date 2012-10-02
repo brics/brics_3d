@@ -25,7 +25,7 @@
 #include "algorithm/nearestNeighbor/INearestNeighborSetup.h"
 #include "flann/src/cpp/flann.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @ingroup nearestNeighbor

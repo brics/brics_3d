@@ -27,7 +27,7 @@
 #include <vector>
 #include<stdio.h>
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * The class provides a wrapper for ONLY simple KDTree based Euclidean Cluster Extraction in PCL
@@ -57,14 +57,14 @@ private:
 	int maxClusterSize;
 
 
-	std::vector<BRICS_3D::PointCloud3D*> extractedClusters;
+	std::vector<brics_3d::PointCloud3D*> extractedClusters;
 
 	/**
 	 * Takes a pointcloud and returns an array of pointcloud that make up the clusters.
 	 * The clusters are defined by the parameters being set
 	 * @param inCloud	Input point cloud
 	 */
-	void extractClusters(BRICS_3D::PointCloud3D *inCloud);
+	void extractClusters(brics_3d::PointCloud3D *inCloud);
 
 
 public:
@@ -73,7 +73,7 @@ public:
 
 
 
-	void getExtractedClusters(std::vector<BRICS_3D::PointCloud3D*> &extractedClusters){
+	void getExtractedClusters(std::vector<brics_3d::PointCloud3D*> &extractedClusters){
 		extractedClusters = this->extractedClusters;
 	}
 

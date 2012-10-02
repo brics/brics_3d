@@ -28,8 +28,8 @@
 using namespace std;
 int main(){
 	//Create a pointcloud object
-	BRICS_3D::PointCloud3D cloud;
-	BRICS_3D::PointCloud3D planeCloud;
+	brics_3d::PointCloud3D cloud;
+	brics_3d::PointCloud3D planeCloud;
 
 	//read the points into the pointcloud
 	//Please modify the path if there is a file read error.
@@ -45,7 +45,7 @@ int main(){
 	std::vector<int> inliers;
 
 	//Create the SACSegmentation Object
-	BRICS_3D::RegionBasedSACSegmentation sacSegmenter;
+	brics_3d::RegionBasedSACSegmentation sacSegmenter;
 
 	//Initialize the segmenter
 	sacSegmenter.setPointCloud(&cloud);
@@ -71,10 +71,10 @@ int main(){
 	cout<<"The model-coefficients are: (" << modelCoefficients[0]<<", " << modelCoefficients[1]<<
 			", " << modelCoefficients[2]<<", " << modelCoefficients[3]<<")" <<endl;
 
-	BRICS_3D::MaskROIExtractor extractor;
+	brics_3d::MaskROIExtractor extractor;
 	extractor.extractIndexedPointCloud(&cloud, inliers, &planeCloud);
 
-	BRICS_3D::OSGPointCloudVisualizer visualizer;
+	brics_3d::OSGPointCloudVisualizer visualizer;
 	visualizer.addPointCloud(&cloud);
 	visualizer.visualizePointCloud(&planeCloud, 0, 1, 0, 0.8);
 

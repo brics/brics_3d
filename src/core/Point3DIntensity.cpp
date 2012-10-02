@@ -19,7 +19,7 @@
 
 #include "Point3DIntensity.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 Point3DIntensity::Point3DIntensity() :
 		Point3DDecorator() {

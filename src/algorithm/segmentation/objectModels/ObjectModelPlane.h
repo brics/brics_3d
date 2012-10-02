@@ -22,7 +22,7 @@
 #include "algorithm/segmentation/objectModels/IObjectModel.h"
 
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 
 /** @brief Get the distance from a point to a plane (signed) defined by ax+by+cz+d=0

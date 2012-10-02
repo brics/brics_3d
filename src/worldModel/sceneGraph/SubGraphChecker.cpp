@@ -19,9 +19,9 @@
 
 #include "SubGraphChecker.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 SubGraphChecker::SubGraphChecker(unsigned int subGraphNodeId) : INodeVisitor(upwards) {
 	reset(subGraphNodeId);

@@ -19,7 +19,7 @@
 
 #include "ObjectModelSphere.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 
 void ObjectModelSphere::computeRandomModel (int &iterations, Eigen::VectorXd &modelCoefficients,

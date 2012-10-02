@@ -19,9 +19,9 @@
 
 #include "PathCollector.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 PathCollector::PathCollector() : INodeVisitor(upwards) {
 	reset();

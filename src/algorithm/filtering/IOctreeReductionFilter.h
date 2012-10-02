@@ -23,7 +23,7 @@
 #include "core/PointCloud3D.h"
 #include "IFiltering.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief Abstract interface for the point cloud size reduction algorithm.

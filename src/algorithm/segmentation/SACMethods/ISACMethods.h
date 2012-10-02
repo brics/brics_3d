@@ -13,7 +13,7 @@
 #include "core/PointCloud3D.h"
 #include <algorithm>
 #include <float.h>
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief Abstract interface for Sample-Based-Consensus(SAC) methods.

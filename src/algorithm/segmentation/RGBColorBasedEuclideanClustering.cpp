@@ -28,7 +28,7 @@
 
 #include "RGBColorBasedEuclideanClustering.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 RGBColorBasedEuclideanClustering::RGBColorBasedEuclideanClustering() {
 	// TODO Auto-generated constructor stub
@@ -92,10 +92,10 @@ int RGBColorBasedEuclideanClustering::getMaxClusterSize() const
         }
     }
 
-    void RGBColorBasedEuclideanClustering::extractClusters(BRICS_3D::PointCloud3D *inCloud)
+    void RGBColorBasedEuclideanClustering::extractClusters(brics_3d::PointCloud3D *inCloud)
     {
     	this->extractedClusters.clear();
-        BRICS_3D::PCLTypecaster pclTypecaster;
+        brics_3d::PCLTypecaster pclTypecaster;
         pcl::PointCloud<pcl::PointXYZ>::Ptr inputXYZ(new pcl::PointCloud<pcl::PointXYZ>());
         pcl::PointCloud<pcl::PointXYZRGB>::Ptr inputXYZRGB(new pcl::PointCloud<pcl::PointXYZRGB>());
 
@@ -165,12 +165,12 @@ int RGBColorBasedEuclideanClustering::getMaxClusterSize() const
 
 //	        std::cout << "ChekPOINT!! : " << inCloud->getSize() << std::endl;
 
-			BRICS_3D::PointCloud3D *tempPointCloud =  new BRICS_3D::PointCloud3D();
+			brics_3d::PointCloud3D *tempPointCloud =  new brics_3d::PointCloud3D();
 
 			for (size_t j = 0; j < seed_queue.size (); ++j) {
 
-				BRICS_3D::ColoredPoint3D *tempPoint =  new BRICS_3D::ColoredPoint3D(
-						new BRICS_3D::Point3D(
+				brics_3d::ColoredPoint3D *tempPoint =  new brics_3d::ColoredPoint3D(
+						new brics_3d::Point3D(
 								(*inputPointCloud->getPointCloud())[seed_queue[j]].getX(),
 								(*inputPointCloud->getPointCloud())[seed_queue[j]].getY(),
 								(*inputPointCloud->getPointCloud())[seed_queue[j]].getZ()),
@@ -192,4 +192,4 @@ int RGBColorBasedEuclideanClustering::getMaxClusterSize() const
 }
 
 
-} /* namespace BRICS_3D */
+} /* namespace brics_3d */

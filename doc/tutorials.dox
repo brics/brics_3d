@@ -11,7 +11,7 @@
 
 @section point_tutorial Understanding the 3D point data-type
 
-The Cartesian point representation is implemented in the class BRICS_3D::Point3D. 
+The Cartesian point representation is implemented in the class brics_3d::Point3D. 
 A single point is represented be the coordinated whereas each coordinate @f$ x, y, z @f$ 
 has a dedicated variable. 
 To be able to choose the data-type at compile time, the Coordinate data-type can
@@ -57,17 +57,17 @@ Further information on the transformation representation can be found in section
 
 A point might have additional information like color or a normal vector. To allow good
 extendability, the @e decorator @e pattern is applied. 
-The Point3DDecorator has the same interface as the BRICS_3D::Point3D as it inherits from it. 
-Additionally it holds a reference to an instance of a BRICS_3D::Point3D. Whenever a function of
+The Point3DDecorator has the same interface as the brics_3d::Point3D as it inherits from it. 
+Additionally it holds a reference to an instance of a brics_3d::Point3D. Whenever a function of
 the decorator is invoked it is internally forwarded to this point reference.
 
-An example realization of a point extension, is the BRICS_3D::ColoredPoint3D class that adds new
-variables for the additional color information. It inherits form the BRICS_3D::Point3DDecorator, thus it
+An example realization of a point extension, is the brics_3d::ColoredPoint3D class that adds new
+variables for the additional color information. It inherits form the brics_3d::Point3DDecorator, thus it
 can wraps a point into a layer or skin that appears to the outer world as a regular Point3D, but
-internally it has additional information that is accessible with the BRICS_3D::ColoredPoint3D interface.
+internally it has additional information that is accessible with the brics_3d::ColoredPoint3D interface.
 It is possible to perform multiple decorations on a point. In this case, it can be seen as some
 kind of onion that has different layers - each adds a new portion of information. Queries to the
-outer layer BRICS_3D::Point3D are forwarded to the core in cascaded way.
+outer layer brics_3d::Point3D are forwarded to the core in cascaded way.
 
 This code snippet demonstrates how to create points with a color decoration:
 @code
@@ -88,9 +88,9 @@ The reference to the vector can be accessed via the getPointCloud method.
 The vector can contain either normal points of type Point3D or decorated
 points. Actually for the point cloud there is no difference.
 
-The point cloud class BRICS_3D::PointCloud3D implements abilities to apply a 
+The point cloud class brics_3d::PointCloud3D implements abilities to apply a 
 homogeneous transformation to all points. 
-The BRICS_3D::PointCloud3D::homogeneousTransformation method forwards the BRICS_3D::IHomogeneousMatrix44 
+The brics_3d::PointCloud3D::homogeneousTransformation method forwards the brics_3d::IHomogeneousMatrix44 
 to every point in the vector. A similar behavior have the streaming
 methods @p operator<< and @p operator>>, as data is forwarded from or to the points as explained earlier.
 
@@ -137,17 +137,17 @@ An example on how to use a point cloud with Cartesian points is given as follows
 
 @section transformation_tutorial Understanding the rigid transformation data-type
 
-The BRICS_3D::IHomogeneousMatrix44 class is an abstract interface to a homogeneous 
-transformation matrix. This abstract class has essentially one function BRICS_3D::IHomogeneousMatrix44::getRawData that
+The brics_3d::IHomogeneousMatrix44 class is an abstract interface to a homogeneous 
+transformation matrix. This abstract class has essentially one function brics_3d::IHomogeneousMatrix44::getRawData that
 returns a pointer to a data array that stores the values of the transformation matrix. This array
 stores the values in @b column-row order and has a fixed of size @f$ 16 @f$. This is the most general and
 simplest form to represent a matrix. The interface also has functions to multiply matrices with
 each other, to print the values with the streaming operator @p operator<< or assign new values with
 the @p operator= function.
 
-The interface is implemented in the BRICS_3D::HomogeneousMatrix44 class. It
+The interface is implemented in the brics_3d::HomogeneousMatrix44 class. It
 uses the Eigen library to implement matrix multiplications and convenient set-up in the class constructor. 
-The transformation function in BRICS_3D::Point3D depends only on the abstract interface, rather
+The transformation function in brics_3d::Point3D depends only on the abstract interface, rather
 on the implementation of the homogeneous matrix. This conforms to the @e Dependency @e Inversion
 Principle. 
 
@@ -174,20 +174,20 @@ The following code section shall illustrate on how to use the HomogeneousMatrix4
 @section triangle_mesh_tutorial Understanding the triangle mesh data-type
 
 Triangle meshes are often represented in an @e implicit or an @e explicit manner. 
-The BRICS_3D::TriangleMeshImplicit class implements the implicit version. It
-has a vector vertices that holds the points of type BRICS_3D::Point3D. In combination with the indices
-vector triangles can be represented. The explicit mesh representation BRICS_3D::TriangleMeshExplicit
-has a vector of triangles. Each triangle is modeled by the class BRICS_3D::Triangle. It has
+The brics_3d::TriangleMeshImplicit class implements the implicit version. It
+has a vector vertices that holds the points of type brics_3d::Point3D. In combination with the indices
+vector triangles can be represented. The explicit mesh representation brics_3d::TriangleMeshExplicit
+has a vector of triangles. Each triangle is modeled by the class brics_3d::Triangle. It has
 an array of dimension @f$ 3 @f$ to store the vertices belonging to a triangle. Both mesh
 implementations allow access to their individual vectors via @p getter and @p setter methods.
 
-To make both variants exchangeable, they share the same interface BRICS_3D::ITriangleMesh. 
+To make both variants exchangeable, they share the same interface brics_3d::ITriangleMesh. 
 It gives a common access to a the vertices of a triangle via: 
-BRICS_3D::ITriangleMesh::getTriangleVertex. Triangles can be added and
-removed with BRICS_3D::ITriangleMesh::addTriangle and BRICS_3D::ITriangleMesh::removeTriangle. 
+brics_3d::ITriangleMesh::getTriangleVertex. Triangles can be added and
+removed with brics_3d::ITriangleMesh::addTriangle and brics_3d::ITriangleMesh::removeTriangle. 
 The adequate maintenance of the underling structures has to be handled different by both mesh implementations. 
 The interface offers functionality to apply homogeneous transformation matrices. To transform a mesh, the matrix is
-propagated to the stored BRICS_3D::Point3D objects.
+propagated to the stored brics_3d::Point3D objects.
 
 Streaming capabilities are available by the @p operator<< and @p operator>> methods, similar to
 a point cloud. 
@@ -238,14 +238,14 @@ bunches of approximately no more than 10, 000 points. Otherwise the performance
 drops significantly. The partition into multiple bunches accounts for the parallel architecture of
 the graphics adapter hardware. This is done automatically within the visualizer implementation.
 
-To visualize a point cloud you can use the BRICS_3D::OSGPointCloudVisualizer()
+To visualize a point cloud you can use the brics_3d::OSGPointCloudVisualizer()
 @code
 	/* visualize point cloud */
 	OSGPointCloudVisualizer* visualizer = new OSGPointCloudVisualizer();
 	visualizer->visualizePointCloud(pointCloudCube);
 @endcode
 
-If you want to visualize triangle meshed you can use the  BRICS_3D::OSGTriangleMeshVisualizer()
+If you want to visualize triangle meshed you can use the  brics_3d::OSGTriangleMeshVisualizer()
 
 @code
 	/* visualize triangle mesh */

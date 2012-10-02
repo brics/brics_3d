@@ -20,9 +20,9 @@
 #ifndef IIDGENERATOR_H
 #define IIDGENERATOR_H
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 /**
  * @brief Abstract interface for unique ID generation.
@@ -54,9 +54,9 @@ class IIdGenerator { // TODO: Should be singelton?
 
 };
 
-} // namespace BRICS_3D::RSG
+} // namespace brics_3d::RSG
 
-} // namespace BRICS_3D
+} // namespace brics_3d
 #endif
 
 /* EOF */

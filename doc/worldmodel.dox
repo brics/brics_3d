@@ -44,12 +44,12 @@ will be created and further processed by (cf. @ref introduction) the algorithms.
 The raw data, the intermediate processing data as well as the "final" resulting data will be stored in leaves within the scene graph.
 This is in contrast to the 3D computer vision and 3D gaming approach where they typically only load pre-modelled 3D data.    
 
-The implementation of BRICS_3D contains a \e BRICS_3D::RSG::GeometricNode to store 3D data in leaves. The geometric node is a rather general container for any
+The implementation of BRICS_3D contains a \e brics_3d::rsg::GeometricNode to store 3D data in leaves. The geometric node is a rather general container for any
 kind of 3D data subsumed by a \e Shape class. Possible data ranges from rather primitive shapes like a box or a cylinder to unconstrained
 geometries like point clouds or meshes. 3D features like spin images for instance are placed in to a geometric node too.
 
 There is a set of inner nodes that can be used to create the certain scene structure. 
-- \e BRICS_3D::RSG::Group: The group is a node that allows for the actual graph relations, as it extends a node to have further child nodes.
+- \e brics_3d::rsg::Group: The group is a node that allows for the actual graph relations, as it extends a node to have further child nodes.
   The group nodes are responsible for memory management. A node "owns" its children - thus it will trigger deletion of its child references when it
   is deleted. A node will be automatically deleted when it does not have parents any more (except for the root node).
 
@@ -79,7 +79,7 @@ n->c4;
 }
 @enddot
 
-- \e BRICS_3D::RSG::Transform: A transform node is a special group node that expresses a geometric transform between its parents and children. 
+- \e brics_3d::rsg::Transform: A transform node is a special group node that expresses a geometric transform between its parents and children. 
  Every transform node along a path will apply a transform i.e. a translational and rotational transform relative to its parents. 
  Thus while traversing a scene graph transform nodes along a path means to apply multiple transforms in a chained-up fashion. 
  In robotic scenarios these transforms tend to change over time. 
@@ -108,10 +108,10 @@ Further information on the implemention can be found in the @ref sceneGraph sect
     	
 @section worldmodel_api The world model API
 
-All necessary operations to update or query the data of the scenegraph are gathered in the class BRICS_3D::RSG::SceneGraphFacade. 
-- In particular the interface BRICS_3D::RSG::ISceneGraphUpdate is dedicated to all update uperations i.e. to add new nodes, delete notes or 
+All necessary operations to update or query the data of the scenegraph are gathered in the class brics_3d::rsg::SceneGraphFacade. 
+- In particular the interface brics_3d::rsg::ISceneGraphUpdate is dedicated to all update uperations i.e. to add new nodes, delete notes or 
 add/update transforms or 3D data. 
-- The query interface BRICS_3D::RSG::ISceneGraphQuery allows to get 3D data, transforms or to locate
+- The query interface brics_3d::rsg::ISceneGraphQuery allows to get 3D data, transforms or to locate
 nodes with certein attaced attibute tags.
 
 

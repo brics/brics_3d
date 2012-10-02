@@ -27,7 +27,7 @@
 #include "algorithm/registration/IPointCorrespondence.h"
 #include "algorithm/registration/IRigidTransformationEstimation.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @ingroup registration

@@ -25,7 +25,7 @@
 #include "core/IHomogeneousMatrix44.h"
 #include "algorithm/featureExtraction/Centroid3D.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief Principle Component Analysis for point clouds.

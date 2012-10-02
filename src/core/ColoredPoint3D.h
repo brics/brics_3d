@@ -22,7 +22,7 @@
 
 #include "Point3DDecorator.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief A class to represent a point in the Cartesian space that carries color information (RGB)

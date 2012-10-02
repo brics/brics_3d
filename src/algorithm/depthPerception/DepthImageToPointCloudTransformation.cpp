@@ -24,7 +24,7 @@
 
 using namespace std;
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 DepthImageToPointCloudTransformation::DepthImageToPointCloudTransformation() {
 

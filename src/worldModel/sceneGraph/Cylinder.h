@@ -23,9 +23,9 @@
 #include "Shape.h"
 #include "core/Point3D.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 /**
  * @brief Simple model of a 3D cylinder.
@@ -70,9 +70,9 @@ private:
 
 };
 
-} // namespace BRICS_3D::RSG
+} // namespace brics_3d::RSG
 
-} // namespace BRICS_3D
+} // namespace brics_3d
 #endif
 
 /* EOF */

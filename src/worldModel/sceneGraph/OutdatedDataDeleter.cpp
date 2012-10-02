@@ -21,9 +21,9 @@
 
 #include "core/Logger.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 OutdatedDataDeleter::OutdatedDataDeleter() {
 	performAutomaticHistoryUpdates = true;
@@ -97,7 +97,7 @@ void OutdatedDataDeleter::doDeleteNode(Node* node) {
 		while (node->getNumberOfParents() > 0) { //NOTE: node->getNumberOfParents() will decrease within every iteration...
 			unsigned int i = 0;
 			unsigned int childIndex = 0;
-			RSG::Node* parentNode;
+			rsg::Node* parentNode;
 			parentNode = node->getParent(i);
 			Group* parentGroup =  dynamic_cast<Group*>(parentNode);
 			if (parentGroup != 0 ) {

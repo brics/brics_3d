@@ -36,7 +36,7 @@ using std::cerr;
 using std::endl;
 using std::string;
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 
 IterativeClosestPointFactory::IterativeClosestPointFactory() {

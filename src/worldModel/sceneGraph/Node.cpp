@@ -21,9 +21,9 @@
 #include "Attribute.h"
 #include <stdexcept>
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 Node::Node() {
 	this->id = 0;
@@ -98,9 +98,9 @@ void Node::accept(INodeVisitor* visitor) {
 	}
 }
 
-} // namespace BRICS_3D::RSG
+} // namespace brics_3d::RSG
 
-} // namespace BRICS_3D
+} // namespace brics_3d
 
 /* EOF */
 

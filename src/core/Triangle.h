@@ -22,7 +22,7 @@
 
 #include "core/Point3D.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief Basic representation of a trinagle

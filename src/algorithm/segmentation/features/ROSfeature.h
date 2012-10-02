@@ -44,7 +44,7 @@
 #include "core/Normal3D.h"
 #include "core/HomogeneousMatrix44.h"
 #include <Eigen/Dense>
-namespace BRICS_3D
+namespace brics_3d
 {
   /** \brief Compute the 3D (X-Y-Z) centroid of a set of points using their indices and return it as a 3D vector.
     * \param cloud the input point cloud

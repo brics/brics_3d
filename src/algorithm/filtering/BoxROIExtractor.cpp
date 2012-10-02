@@ -20,7 +20,7 @@
 #include "BoxROIExtractor.h"
 #include "core/HomogeneousMatrix44.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 BoxROIExtractor::BoxROIExtractor() {
 	this->sizeX = 1.0;
@@ -65,5 +65,5 @@ void BoxROIExtractor::filter(PointCloud3D* originalPointCloud, PointCloud3D* res
 	}
 }
 
-}  // namespace BRICS_3D
+}  // namespace brics_3d
 /* EOF */

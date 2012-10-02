@@ -23,7 +23,7 @@
 #include "core/ColoredPoint3D.h"
 #include <osg/Point>
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /* OSG Helper classes  */
 

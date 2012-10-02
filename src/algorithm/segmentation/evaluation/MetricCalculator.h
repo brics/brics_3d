@@ -24,7 +24,7 @@
 
 
 
-namespace BRICS_3D{
+namespace brics_3d{
 
 /**
  * @brief Performs all the calculation for generating the results of evaluation metrics.

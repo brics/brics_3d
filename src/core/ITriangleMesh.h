@@ -22,7 +22,7 @@
 
 #include "Point3D.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
  * @brief Abstract interface for a triangle mesh.
