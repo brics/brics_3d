@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef TIMER_H_
-#define TIMER_H_
+#ifndef BRICS_3D_TIMER_H_
+#define BRICS_3D_TIMER_H_
 
 #ifdef WIN32
 #include <windows.h>
@@ -82,6 +82,6 @@ private:
 
 }
 
-#endif /* TIMER_H_ */
+#endif /* BRICS_3D_TIMER_H_ */
 
 /* EOF */

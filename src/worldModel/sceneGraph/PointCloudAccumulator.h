@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef POINTCLOUDACCUMULATOR_H_
-#define POINTCLOUDACCUMULATOR_H_
+#ifndef RSG_POINTCLOUDACCUMULATOR_H_
+#define RSG_POINTCLOUDACCUMULATOR_H_
 
 #include "Node.h"
 #include "Group.h"
@@ -93,6 +93,6 @@ protected:
 
 }
 
-#endif /* POINTCLOUDACCUMULATOR_H_ */
+#endif /* RSG_POINTCLOUDACCUMULATOR_H_ */
 
 /* EOF */

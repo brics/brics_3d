@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef IRIGIDTRANSFORMATIONESTIMATION_H_
-#define IRIGIDTRANSFORMATIONESTIMATION_H_
+#ifndef BRICS_3D_IRIGIDTRANSFORMATIONESTIMATION_H_
+#define BRICS_3D_IRIGIDTRANSFORMATIONESTIMATION_H_
 
 #include "core/PointCloud3D.h"
 #include "core/IHomogeneousMatrix44.h"
@@ -64,6 +64,6 @@ public:
 
 }
 
-#endif /* IRIGIDTRANSFORMATIONESTIMATION_H_ */
+#endif /* BRICS_3D_IRIGIDTRANSFORMATIONESTIMATION_H_ */
 
 /* EOF */

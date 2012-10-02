@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef CENTROID3DESTIMATION_H_
-#define CENTROID3DESTIMATION_H_
+#ifndef BRICS_3D_CENTROID3DESTIMATION_H_
+#define BRICS_3D_CENTROID3DESTIMATION_H_
 
 #include "core/PointCloud3D.h"
 
@@ -47,4 +47,4 @@ public:
 
 }
 
-#endif /* CENTROID3DESTIMATION_H_ */
+#endif /* BRICS_3D_CENTROID3DESTIMATION_H_ */

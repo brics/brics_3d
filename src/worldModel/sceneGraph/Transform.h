@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef TRANSFORM_H
-#define TRANSFORM_H
+#ifndef RSG_TRANSFORM_H
+#define RSG_TRANSFORM_H
 
 #include "core/IHomogeneousMatrix44.h"
 #include "Group.h"
@@ -164,7 +164,7 @@ class Transform : public Group {
     unsigned int updateCount;
 };
 
-} // namespace brics_3d::RSG
+} // namespace brics_3d::rsg
 
 } // namespace brics_3d
 #endif

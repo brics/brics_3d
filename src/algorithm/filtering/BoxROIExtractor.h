@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef CUBEROIEXTRACTOR_H_
-#define CUBEROIEXTRACTOR_H_
+#ifndef BRICS_3D_BOXROIEXTRACTOR_H_
+#define BRICS_3D_BOXROIEXTRACTOR_H_
 
 #include "IFiltering.h"
 #include "core/IHomogeneousMatrix44.h"
@@ -92,6 +92,6 @@ private:
 
 }  // namespace brics_3d
 
-#endif /* CUBEROIEXTRACTOR_H_ */
+#endif /* BRICS_3D_BOXROIEXTRACTOR_H_ */
 
 /* EOF */

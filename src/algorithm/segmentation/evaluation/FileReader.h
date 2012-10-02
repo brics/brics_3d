@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef FILEREADER_H_
-#define FILEREADER_H_
+#ifndef BRICS_3D_FILEREADER_H_
+#define BRICS_3D_FILEREADER_H_
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -37,4 +37,4 @@ public:
 	int toStringVector(string fileName, vector<string> &vector);
 };
 }
-#endif /* FILEREADER_H_ */
+#endif /* BRICS_3D_FILEREADER_H_ */

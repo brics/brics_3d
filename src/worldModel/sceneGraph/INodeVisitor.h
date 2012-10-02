@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef INODEVISITOR_H_
-#define INODEVISITOR_H_
+#ifndef RSG_INODEVISITOR_H_
+#define RSG_INODEVISITOR_H_
 
 namespace brics_3d {
 
@@ -68,6 +68,6 @@ protected:
 
 }
 
-#endif /* INODEVISITOR_H_ */
+#endif /* RSG_INODEVISITOR_H_ */
 
 /* EOF */

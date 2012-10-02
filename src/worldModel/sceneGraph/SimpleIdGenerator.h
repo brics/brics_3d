@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef SIMPLEIDGENERATOR_H
-#define SIMPLEIDGENERATOR_H
+#ifndef RSG_SIMPLEIDGENERATOR_H
+#define RSG_SIMPLEIDGENERATOR_H
 
 #include "IIdGenerator.h"
 
@@ -46,7 +46,7 @@ private:
 
 };
 
-} // namespace brics_3d::RSG
+} // namespace brics_3d::rsg
 
 } // namespace brics_3d
 #endif

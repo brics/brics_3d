@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef ISCENEGRAPHUPDATE_H
-#define ISCENEGRAPHUPDATE_H
+#ifndef RSG_ISCENEGRAPHUPDATE_H
+#define RSG_ISCENEGRAPHUPDATE_H
 
 #include "core/IHomogeneousMatrix44.h"
 #include <vector>
@@ -147,7 +147,7 @@ class ISceneGraphUpdate {
 
 };
 
-} // namespace brics_3d::RSG
+} // namespace brics_3d::rsg
 
 } // namespace brics_3d
 #endif

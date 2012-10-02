@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef ITERATIVECLOSESTPOINTFACTORY_H_
-#define ITERATIVECLOSESTPOINTFACTORY_H_
+#ifndef BRICS_3D_ITERATIVECLOSESTPOINTFACTORY_H_
+#define BRICS_3D_ITERATIVECLOSESTPOINTFACTORY_H_
 
 #include "core/Logger.h"
 #include "algorithm/registration/IIterativeClosestPoint.h"
@@ -97,6 +97,6 @@ private:
 
 }
 
-#endif /* ITERATIVECLOSESTPOINTFACTORY_H_ */
+#endif /* BRICS_3D_ITERATIVECLOSESTPOINTFACTORY_H_ */
 
 /* EOF */

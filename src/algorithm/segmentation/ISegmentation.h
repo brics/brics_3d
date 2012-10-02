@@ -17,8 +17,8 @@
  *
  ******************************************************************************/
 
-#ifndef ISEGMENTATION_H_
-#define ISEGMENTATION_H_
+#ifndef BRICS_3D_ISEGMENTATION_H_
+#define BRICS_3D_ISEGMENTATION_H_
 
 #include "core/PointCloud3D.h"
 #include <iostream>
@@ -97,4 +97,4 @@ public:
 
 
 
-#endif /* ISEGMENTATION_H_ */
+#endif /* BRICS_3D_ISEGMENTATION_H_ */

@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef RIGIDTRANSFORMATIONESTIMATIONORTHO_H_
-#define RIGIDTRANSFORMATIONESTIMATIONORTHO_H_
+#ifndef BRICS_3D_RIGIDTRANSFORMATIONESTIMATIONORTHO_H_
+#define BRICS_3D_RIGIDTRANSFORMATIONESTIMATIONORTHO_H_
 
 #include "IRigidTransformationEstimation.h"
 
@@ -49,6 +49,6 @@ public:
 
 }
 
-#endif /* RIGIDTRANSFORMATIONESTIMATIONORTHO_H_ */
+#endif /* BRICS_3D_RIGIDTRANSFORMATIONESTIMATIONORTHO_H_ */
 
 /* EOF */

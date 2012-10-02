@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef IFUNCTIONBLOCK_H_
-#define IFUNCTIONBLOCK_H_
+#ifndef RSG_IFUNCTIONBLOCK_H_
+#define RSG_IFUNCTIONBLOCK_H_
 
 #include <vector>
 #include <core/ParameterSet.h>
@@ -66,6 +66,6 @@ private:
 
 }
 
-#endif /* IFUNCTIONBLOCK_H_ */
+#endif /* RSG_IFUNCTIONBLOCK_H_ */
 
 /* EOF */

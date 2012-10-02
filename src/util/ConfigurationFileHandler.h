@@ -17,10 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef CONFIGURATIONFILEHANDLER_H_
-#define CONFIGURATIONFILEHANDLER_H_
-
-//#define BRICS_XERCES_ENABLE //TODO remove this line (only for eclipse)
+#ifndef BRICS_3D_CONFIGURATIONFILEHANDLER_H_
+#define BRICS_3D_CONFIGURATIONFILEHANDLER_H_
 
 
 #include <string>
@@ -127,6 +125,6 @@ private:
 
 }
 
-#endif /* CONFIGURATIONFILEHANDLER_H_ */
+#endif /* BRICS_3D_CONFIGURATIONFILEHANDLER_H_ */
 
 /* EOF */

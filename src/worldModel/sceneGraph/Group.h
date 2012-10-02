@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef GROUP_H
-#define GROUP_H
+#ifndef RSG_GROUP_H
+#define RSG_GROUP_H
 
 #include "Node.h"
 #include <vector>
@@ -60,7 +60,7 @@ public:
 
 };
 
-} // namespace brics_3d::RSG
+} // namespace brics_3d::rsg
 
 } // namespace brics_3d
 #endif

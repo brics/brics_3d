@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef CARTESIANPOINTCLOUD_H_
-#define CARTESIANPOINTCLOUD_H_
+#ifndef BRICS_3D_CARTESIANPOINTCLOUD_H_
+#define BRICS_3D_CARTESIANPOINTCLOUD_H_
 
 #include <vector>
 #include <string>
@@ -148,7 +148,7 @@ protected:
 
 }
 
-#endif /* CARTESIANPOINTCLOUD_H_ */
+#endif /* BRICS_3D_CARTESIANPOINTCLOUD_H_ */
 
 /* EOF */
 

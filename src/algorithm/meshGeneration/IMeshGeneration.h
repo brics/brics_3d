@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef IMESHGENERATION_H_
-#define IMESHGENERATION_H_
+#ifndef BRICS_3D_IMESHGENERATION_H_
+#define BRICS_3D_IMESHGENERATION_H_
 
 #include "core/PointCloud3D.h"
 #include "core/ITriangleMesh.h"
@@ -39,6 +39,6 @@ public:
 
 }
 
-#endif /* IMESHGENERATION_H_ */
+#endif /* BRICS_3D_IMESHGENERATION_H_ */
 
 /* EOF */

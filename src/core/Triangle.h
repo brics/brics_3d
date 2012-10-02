@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef TRIANGLE_H_
-#define TRIANGLE_H_
+#ifndef BRICS_3D_TRIANGLE_H_
+#define BRICS_3D_TRIANGLE_H_
 
 #include "core/Point3D.h"
 
@@ -96,6 +96,6 @@ protected:
 
 }
 
-#endif /* TRIANGLE_H_ */
+#endif /* BRICS_3D_TRIANGLE_H_ */
 
 /* EOF */

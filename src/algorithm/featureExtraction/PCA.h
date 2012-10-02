@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef PCA_H_
-#define PCA_H_
+#ifndef BRICS_3D_PCA_H_
+#define BRICS_3D_PCA_H_
 
 #include <Eigen/StdVector>
 #include "core/PointCloud3D.h"
@@ -68,6 +68,6 @@ private:
 
 }
 
-#endif /* PCA_H_ */
+#endif /* BRICS_3D_PCA_H_ */
 
 /* EOF */

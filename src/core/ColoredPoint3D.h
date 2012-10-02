@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef COLOREDPOINT3D_H_
-#define COLOREDPOINT3D_H_
+#ifndef BRICS_3D_COLOREDPOINT3D_H_
+#define BRICS_3D_COLOREDPOINT3D_H_
 
 #include "Point3DDecorator.h"
 
@@ -160,6 +160,6 @@ public:
 
 }
 
-#endif /* COLOREDPOINT3D_H_ */
+#endif /* BRICS_3D_COLOREDPOINT3D_H_ */
 
 /* EOF */

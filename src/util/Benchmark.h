@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef BENCHMARK_H_
-#define BENCHMARK_H_
+#ifndef BRICS_3D_BENCHMARK_H_
+#define BRICS_3D_BENCHMARK_H_
 
 #include <string>
 #include <iostream>
@@ -94,6 +94,6 @@ private:
 
 }
 
-#endif /* BENCHMARK_H_ */
+#endif /* BRICS_3D_BENCHMARK_H_ */
 
 /* EOF */

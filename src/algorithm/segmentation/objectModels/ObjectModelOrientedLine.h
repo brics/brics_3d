@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef OBJECTMODELORIENTEDLINE_H_
-#define OBJECTMODELORIENTEDLINE_H_
+#ifndef BRICS_3D_OBJECTMODELORIENTEDLINE_H_
+#define BRICS_3D_OBJECTMODELORIENTEDLINE_H_
 
 #include "algorithm/segmentation/objectModels/ObjectModelLine.h"
 
@@ -53,4 +53,4 @@ public:
 
 }
 
-#endif /* OBJECTMODELORIENTEDLINE_H_ */
+#endif /* BRICS_3D_OBJECTMODELORIENTEDLINE_H_ */

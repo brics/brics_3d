@@ -18,8 +18,8 @@
 ******************************************************************************/
 
 
-#ifndef POINTCLOUD3DITERATOR_H_
-#define POINTCLOUD3DITERATOR_H_
+#ifndef BRICS_3D_POINTCLOUD3DITERATOR_H_
+#define BRICS_3D_POINTCLOUD3DITERATOR_H_
 
 #include <map>
 
@@ -115,6 +115,6 @@ protected:
 
 }
 
-#endif /* POINTCLOUD3DITERATOR_H_ */
+#endif /* BRICS_3D_POINTCLOUD3DITERATOR_H_ */
 
 /* EOF */

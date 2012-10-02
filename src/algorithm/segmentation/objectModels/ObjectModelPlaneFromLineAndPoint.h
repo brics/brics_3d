@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef OBJECTMODELPLANEFROMLINEANDPOINT_H_
-#define OBJECTMODELPLANEFROMLINEANDPOINT_H_
+#ifndef BRICS_3D_OBJECTMODELPLANEFROMLINEANDPOINT_H_
+#define BRICS_3D_OBJECTMODELPLANEFROMLINEANDPOINT_H_
 
 #include "algorithm/segmentation/objectModels/ObjectModelPlane.h"
 
@@ -93,4 +93,4 @@ public:
 
 };
 }
-#endif /* OBJECTMODELPLANEFROMLINEANDPOINT_H_ */
+#endif /* BRICS_3D_OBJECTMODELPLANEFROMLINEANDPOINT_H_ */

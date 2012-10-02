@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef VECTOR3D_H_
-#define VECTOR3D_H_
+#ifndef BRICS_3D_VECTOR3D_H_
+#define BRICS_3D_VECTOR3D_H_
 
 #include "core/IHomogeneousMatrix44.h"
 
@@ -178,6 +178,6 @@ private:
 
 }
 
-#endif /* VECTOR3D_H_ */
+#endif /* BRICS_3D_VECTOR3D_H_ */
 
 /* EOF */

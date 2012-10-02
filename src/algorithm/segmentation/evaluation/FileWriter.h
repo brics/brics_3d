@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef FILEWRITER_H_
-#define FILEWRITER_H_
+#ifndef BRICS_3D_FILEWRITER_H_
+#define BRICS_3D_FILEWRITER_H_
 #include "MetricCalculator.h"
 
 namespace brics_3d{
@@ -41,4 +41,4 @@ public:
 	void WriteToCsv(MetricCalculator m,string prefix);
 };
 }
-#endif /* FILEWRITER_H_ */
+#endif /* BRICS_3D_FILEWRITER_H_ */

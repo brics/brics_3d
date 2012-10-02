@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef OSGTRIANGLEMESHVISUALIZER_H_
-#define OSGTRIANGLEMESHVISUALIZER_H_
+#ifndef BRICS_3D_OSGTRIANGLEMESHVISUALIZER_H_
+#define BRICS_3D_OSGTRIANGLEMESHVISUALIZER_H_
 
 #include <osg/Group>
 #include <osg/Geometry>
@@ -65,6 +65,6 @@ private:
 
 }
 
-#endif /* OSGTRIANGLEMESHVISUALIZER_H_ */
+#endif /* BRICS_3D_OSGTRIANGLEMESHVISUALIZER_H_ */
 
 /* EOF */

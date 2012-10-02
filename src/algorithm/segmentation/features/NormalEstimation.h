@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 //ToDo Replace using concrete classes in algoritm/featureExtraction
-#ifndef NORMALESTIMATION_H_
-#define NORMALESTIMATION_H_
+#ifndef BRICS_3D_NORMALESTIMATION_H_
+#define BRICS_3D_NORMALESTIMATION_H_
 
 #include "core/PointCloud3D.h"
 #include "algorithm/segmentation/features/ROSnormal3D.h"
@@ -240,4 +240,4 @@ public:
 
 }
 
-#endif /* NORMALESTIMATION_H_ */
+#endif /* BRICS_3D_NORMALESTIMATION_H_ */

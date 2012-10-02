@@ -16,8 +16,8 @@
 * more details.
 *
 ******************************************************************************/
-#ifndef IFILTERING_H_
-#define IFILTERING_H_
+#ifndef BRICS_3D_IFILTERING_H_
+#define BRICS_3D_IFILTERING_H_
 
 #include "core/PointCloud3D.h"
 
@@ -44,6 +44,6 @@ public:
 
 }
 
-#endif /* IFILTERING_H_ */
+#endif /* BRICS_3D_IFILTERING_H_ */
 
 /* EOF */

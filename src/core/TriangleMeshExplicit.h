@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef TRIANGLEMESHEXPLICIT_H_
-#define TRIANGLEMESHEXPLICIT_H_
+#ifndef BRICS_3D_TRIANGLEMESHEXPLICIT_H_
+#define BRICS_3D_TRIANGLEMESHEXPLICIT_H_
 
 #include "core/ITriangleMesh.h"
 #include "core/Triangle.h"
@@ -92,6 +92,6 @@ private:
 
 }
 
-#endif /* TRIANGLEMESHEXPLICIT_H_ */
+#endif /* BRICS_3D_TRIANGLEMESHEXPLICIT_H_ */
 
 /* EOF */

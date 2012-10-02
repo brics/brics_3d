@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef IITERATIVECLOSESTPOINTDETAILED_H_
-#define IITERATIVECLOSESTPOINTDETAILED_H_
+#ifndef BRICS_3D_IITERATIVECLOSESTPOINTDETAILED_H_
+#define BRICS_3D_IITERATIVECLOSESTPOINTDETAILED_H_
 
 #include "core/IHomogeneousMatrix44.h"
 
@@ -104,6 +104,6 @@ public:
 
 }
 
-#endif /* IITERATIVECLOSESTPOINTDETAILED_H_ */
+#endif /* BRICS_3D_IITERATIVECLOSESTPOINTDETAILED_H_ */
 
 /* EOF */

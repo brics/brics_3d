@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef NORMALSET3D_H_
-#define NORMALSET3D_H_
+#ifndef BRICS_3D_NORMALSET3D_H_
+#define BRICS_3D_NORMALSET3D_H_
 
 #include "Normal3D.h"
 #include <vector>
@@ -67,6 +67,6 @@ protected:
 
 }
 
-#endif /* NORMALSET3D_H_ */
+#endif /* BRICS_3D_NORMALSET3D_H_ */
 
 /* EOF */

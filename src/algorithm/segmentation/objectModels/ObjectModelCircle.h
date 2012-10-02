@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef OBJECTMODELCIRCLE_H_
-#define OBJECTMODELCIRCLE_H_
+#ifndef BRICS_3D_OBJECTMODELCIRCLE_H_
+#define BRICS_3D_OBJECTMODELCIRCLE_H_
 
 #include "algorithm/segmentation/objectModels/IObjectModel.h"
 
@@ -50,4 +50,4 @@ public:
 
 }
 
-#endif /* OBJECTMODELCIRCLE_H_ */
+#endif /* BRICS_3D_OBJECTMODELCIRCLE_H_ */

@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef GEOMETRICNODE_H
-#define GEOMETRICNODE_H
+#ifndef RSG_GEOMETRICNODE_H
+#define RSG_GEOMETRICNODE_H
 
 #include "Node.h"
 #include "TimeStamp.h"
@@ -77,7 +77,7 @@ private:
 
 };
 
-} // namespace brics_3d::RSG
+} // namespace brics_3d::rsg
 
 } // namespace brics_3d
 #endif

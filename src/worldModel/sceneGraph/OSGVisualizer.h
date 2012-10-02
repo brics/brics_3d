@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef OSGVISUALIZER_H_
-#define OSGVISUALIZER_H_
+#ifndef RSG_OSGVISUALIZER_H_
+#define RSG_OSGVISUALIZER_H_
 
 #include "ISceneGraphUpdateObserver.h"
 #include "worldModel/sceneGraph/PointCloud.h"
@@ -110,6 +110,6 @@ private:
 
 }  // namespace brics_3d
 
-#endif /* OSGVISUALIZER_H_ */
+#endif /* RSG_OSGVISUALIZER_H_ */
 
 /* EOF */

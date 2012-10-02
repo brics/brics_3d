@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef IHOMOGENEOUSMATRIX44_H_
-#define IHOMOGENEOUSMATRIX44_H_
+#ifndef BRICS_3D_IHOMOGENEOUSMATRIX44_H_
+#define BRICS_3D_IHOMOGENEOUSMATRIX44_H_
 
 #include <iostream>
 #include <boost/shared_ptr.hpp>
@@ -112,6 +112,6 @@ public:
 
 }
 
-#endif /* IHOMOGENEOUSMATRIX44_H_ */
+#endif /* BRICS_3D_IHOMOGENEOUSMATRIX44_H_ */
 
 /* EOF */

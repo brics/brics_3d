@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef OBJECTMODELNORMALPLANE_H_
-#define OBJECTMODELNORMALPLANE_H_
+#ifndef BRICS_3D_OBJECTMODELNORMALPLANE_H_
+#define BRICS_3D_OBJECTMODELNORMALPLANE_H_
 
 
 #include "algorithm/segmentation/objectModels/IObjectModelUsingNormals.h"
@@ -133,4 +133,4 @@ public:
 
 }
 
-#endif /* OBJECTMODELNORMALPLANE_H_ */
+#endif /* BRICS_3D_OBJECTMODELNORMALPLANE_H_ */

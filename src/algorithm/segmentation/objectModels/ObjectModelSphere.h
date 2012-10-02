@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef OBJECTMODELSPHERE_H_
-#define OBJECTMODELSPHERE_H_
+#ifndef BRICS_3D_OBJECTMODELSPHERE_H_
+#define BRICS_3D_OBJECTMODELSPHERE_H_
 
 #include "algorithm/segmentation/objectModels/IObjectModel.h"
 
@@ -52,4 +52,4 @@ public:
 
 }
 
-#endif /* OBJECTMODELSPHERE_H_ */
+#endif /* BRICS_3D_OBJECTMODELSPHERE_H_ */

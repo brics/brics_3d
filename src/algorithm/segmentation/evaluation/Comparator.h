@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef COMPARATOR_H_
-#define COMPARATOR_H_
+#ifndef BRICS_3D_COMPARATOR_H_
+#define BRICS_3D_COMPARATOR_H_
 #include<vector>
 #include<string>
 using namespace std;
@@ -98,4 +98,4 @@ public:
 
 };
 }
-#endif /* COMPARATOR_H_ */
+#endif /* BRICS_3D_COMPARATOR_H_ */

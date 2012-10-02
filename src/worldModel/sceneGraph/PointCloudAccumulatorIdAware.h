@@ -18,8 +18,8 @@
 ******************************************************************************/
 
 
-#ifndef POINTCLOUDACCUMULATORIDAWARE_H_
-#define POINTCLOUDACCUMULATORIDAWARE_H_
+#ifndef RSG_POINTCLOUDACCUMULATORIDAWARE_H_
+#define RSG_POINTCLOUDACCUMULATORIDAWARE_H_
 
 #include "PointCloudAccumulator.h"
 #include "SceneGraphFacade.h"
@@ -64,6 +64,6 @@ private:
 
 }
 
-#endif /* POINTCLOUDACCUMULATORIDAWARE_H_ */
+#endif /* RSG_POINTCLOUDACCUMULATORIDAWARE_H_ */
 
 /* EOF */

@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef ISCENEGRAPHQUERY_H
-#define ISCENEGRAPHQUERY_H
+#ifndef RSG_ISCENEGRAPHQUERY_H
+#define RSG_ISCENEGRAPHQUERY_H
 
 #include "core/IHomogeneousMatrix44.h"
 #include <vector>
@@ -70,7 +70,7 @@ class ISceneGraphQuery {
 
 };
 
-} // namespace brics_3d::RSG
+} // namespace brics_3d::rsg
 
 } // namespace brics_3d
 #endif

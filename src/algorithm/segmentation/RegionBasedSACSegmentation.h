@@ -17,8 +17,8 @@
  *
  ******************************************************************************/
 
-#ifndef REGIONBASEDSACSEGMENTATION_H_
-#define REGIONBASEDSACSEGMENTATION_H_
+#ifndef BRICS_3D_REGIONBASEDSACSEGMENTATION_H_
+#define BRICS_3D_REGIONBASEDSACSEGMENTATION_H_
 
 #include "algorithm/segmentation/ISegmentation.h"
 #include "algorithm/segmentation/objectModels/IObjectModel.h"
@@ -403,4 +403,4 @@ public:
 	}
 };
 }
-#endif /* REGIONBASEDSACSEGMENTATION_H_ */
+#endif /* BRICS_3D_REGIONBASEDSACSEGMENTATION_H_ */

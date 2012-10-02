@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef IWORLDMODELQUERY_H
-#define IWORLDMODELQUERY_H
+#ifndef BRICS_3D_IWORLDMODELQUERY_H
+#define BRICS_3D_IWORLDMODELQUERY_H
 
 #include "core/IHomogeneousMatrix44.h"
 #include <vector>

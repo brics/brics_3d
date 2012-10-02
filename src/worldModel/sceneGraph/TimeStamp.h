@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef TIMESTAMP_H
-#define TIMESTAMP_H
+#ifndef RSG_TIMESTAMP_H
+#define RSG_TIMESTAMP_H
 
 namespace brics_3d {
 
@@ -50,7 +50,7 @@ private:
 
 };
 
-} // namespace brics_3d::RSG
+} // namespace brics_3d::rsg
 
 } // namespace brics_3d
 #endif

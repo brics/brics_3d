@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef VERSION_H_
-#define VERSION_H_
+#ifndef BRICS_3D_VERSION_H_
+#define BRICS_3D_VERSION_H_
 
 #include <string>
 
@@ -66,6 +66,6 @@ public:
 
 }
 
-#endif /* VERSION_H_ */
+#endif /* BRICS_3D_VERSION_H_ */
 
 /* EOF */

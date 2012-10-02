@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef EUCLEDIANCLUSTERINGPCL_H_
-#define EUCLEDIANCLUSTERINGPCL_H_
+#ifndef BRICS_3D_EUCLEDIANCLUSTERINGPCL_H_
+#define BRICS_3D_EUCLEDIANCLUSTERINGPCL_H_
 
 #include "core/PointCloud3D.h"
 #include "algorithm/segmentation/ISegmentation.h"
@@ -141,7 +141,7 @@ public:
 
 }
 
-#endif /* EUCLEDIANCLUSTERINGPCL_H_ */
+#endif /* BRICS_3D_EUCLEDIANCLUSTERINGPCL_H_ */
 
 /* EOF */
 

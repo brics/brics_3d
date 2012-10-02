@@ -20,8 +20,8 @@
 #include <math.h>
 #include <stdint.h>
 
-#ifndef COLORSPACECONVERTOR_H_
-#define COLORSPACECONVERTOR_H_
+#ifndef BRICS_3D_COLORSPACECONVERTOR_H_
+#define BRICS_3D_COLORSPACECONVERTOR_H_
 
 namespace brics_3d {
 
@@ -141,4 +141,4 @@ public:
 
 }
 
-#endif /* COLORSPACECONVERTOR_H_ */
+#endif /* BRICS_3D_COLORSPACECONVERTOR_H_ */

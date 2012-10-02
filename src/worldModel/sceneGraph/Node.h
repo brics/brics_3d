@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef NODE_H
-#define NODE_H
+#ifndef RSG_NODE_H
+#define RSG_NODE_H
 
 #include <vector>
 #include <boost/shared_ptr.hpp>
@@ -93,7 +93,7 @@ private:
 
 };
 
-} // namespace brics_3d::RSG
+} // namespace brics_3d::rsg
 
 } // namespace brics_3d
 #endif

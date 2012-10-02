@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef OBJECTMODELCYLINDER_H_
-#define OBJECTMODELCYLINDER_H_
+#ifndef BRICS_3D_OBJECTMODELCYLINDER_H_
+#define BRICS_3D_OBJECTMODELCYLINDER_H_
 
 #include "algorithm/segmentation/objectModels/IObjectModelUsingNormals.h"
 
@@ -111,4 +111,4 @@ protected:
 
 }
 
-#endif /* OBJECTMODELCYLINDER_H_ */
+#endif /* BRICS_3D_OBJECTMODELCYLINDER_H_ */

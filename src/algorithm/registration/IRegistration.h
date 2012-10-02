@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef IREGISTRATION_H_
-#define IREGISTRATION_H_
+#ifndef BRICS_3D_IREGISTRATION_H_
+#define BRICS_3D_IREGISTRATION_H_
 
 #include "core/PointCloud3D.h"
 #include "core/IHomogeneousMatrix44.h"
@@ -48,6 +48,6 @@ public:
 
 }
 
-#endif /* IREGISTRATION_H_ */
+#endif /* BRICS_3D_IREGISTRATION_H_ */
 
 /* EOF */

@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef ITRIANGLEMESH_H_
-#define ITRIANGLEMESH_H_
+#ifndef BRICS_3D_ITRIANGLEMESH_H_
+#define BRICS_3D_ITRIANGLEMESH_H_
 
 #include "Point3D.h"
 
@@ -152,6 +152,6 @@ private:
 
 }
 
-#endif /* ITRIANGLEMESH_H_ */
+#endif /* BRICS_3D_ITRIANGLEMESH_H_ */
 
 /* EOF */

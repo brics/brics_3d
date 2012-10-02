@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef POINTCORRESPONDANCEKDTREE_H_
-#define POINTCORRESPONDANCEKDTREE_H_
+#ifndef BRICS_3D_POINTCORRESPONDANCEKDTREE_H_
+#define BRICS_3D_POINTCORRESPONDANCEKDTREE_H_
 
 
 #include "IPointCorrespondence.h"
@@ -47,6 +47,6 @@ public:
 
 }
 
-#endif /* POINTCORRESPONDANCEKDTREE_H_ */
+#endif /* BRICS_3D_POINTCORRESPONDANCEKDTREE_H_ */
 
 /* EOF */

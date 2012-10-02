@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef OUTDATEDDATAIDAWAREDELETER_H_
-#define OUTDATEDDATAIDAWAREDELETER_H_
+#ifndef RSG_OUTDATEDDATAIDAWAREDELETER_H_
+#define RSG_OUTDATEDDATAIDAWAREDELETER_H_
 
 #include "OutdatedDataDeleter.h"
 #include "SceneGraphFacade.h"
@@ -51,6 +51,6 @@ private:
 
 }
 
-#endif /* OUTDATEDDATAIDAWAREDELETER_H_ */
+#endif /* RSG_OUTDATEDDATAIDAWAREDELETER_H_ */
 
 /* EOF */

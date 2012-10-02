@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef IOCTREEPARTITION_H_
-#define IOCTREEPARTITION_H_
+#ifndef BRICS_3D_IOCTREEPARTITION_H_
+#define BRICS_3D_IOCTREEPARTITION_H_
 
 #include "core/PointCloud3D.h"
 #include <vector>
@@ -61,6 +61,6 @@ public:
 
 }
 
-#endif /* IOCTREEPARTITION_H_ */
+#endif /* BRICS_3D_IOCTREEPARTITION_H_ */
 
 /* EOF */

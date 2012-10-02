@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef IDELAUNAYTRIANGULATION_H_
-#define IDELAUNAYTRIANGULATION_H_
+#ifndef BRICS_3D_IDELAUNAYTRIANGULATION_H_
+#define BRICS_3D_IDELAUNAYTRIANGULATION_H_
 
 #include "core/PointCloud3D.h"
 #include "core/ITriangleMesh.h"
@@ -50,6 +50,6 @@ public:
 
 }
 
-#endif /* IDELAUNAYTRIANGULATION_H_ */
+#endif /* BRICS_3D_IDELAUNAYTRIANGULATION_H_ */
 
 /* EOF */

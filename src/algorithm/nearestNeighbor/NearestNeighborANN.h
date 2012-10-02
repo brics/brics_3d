@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef NEARESTNEIGHBORANN_H_
-#define NEARESTNEIGHBORANN_H_
+#ifndef BRICS_3D_NEARESTNEIGHBORANN_H_
+#define BRICS_3D_NEARESTNEIGHBORANN_H_
 
 
 #include "algorithm/nearestNeighbor/INearestNeighbor.h"
@@ -87,6 +87,6 @@ private:
 
 }
 
-#endif /* NEARESTNEIGHBORANN_H_ */
+#endif /* BRICS_3D_NEARESTNEIGHBORANN_H_ */
 
 /* EOF */

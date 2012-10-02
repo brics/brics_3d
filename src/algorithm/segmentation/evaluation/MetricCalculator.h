@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef METRICCALCULATOR_H_
-#define METRICCALCULATOR_H_
+#ifndef BRICS_3D_METRICCALCULATOR_H_
+#define BRICS_3D_METRICCALCULATOR_H_
 
 #include "Evaluator.h"
 
@@ -77,4 +77,4 @@ public:
     int maxElementIndex(double array[],int start,int end);
 };
 }
-#endif /* METRICCALCULATOR_H_ */
+#endif /* BRICS_3D_METRICCALCULATOR_H_ */

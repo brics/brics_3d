@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef IOCTREEREDUCTIONFILTER_H_
-#define IOCTREEREDUCTIONFILTER_H_
+#ifndef BRICS_3D_IOCTREEREDUCTIONFILTER_H_
+#define BRICS_3D_IOCTREEREDUCTIONFILTER_H_
 
 #include "core/PointCloud3D.h"
 #include "IFiltering.h"
@@ -62,6 +62,6 @@ public:
 
 }
 
-#endif /* IOCTREEREDUCTIONFILTER_H_ */
+#endif /* BRICS_3D_IOCTREEREDUCTIONFILTER_H_ */
 
 /* EOF */

@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef INEARESTNEIGHBORSETUP_H_
-#define INEARESTNEIGHBORSETUP_H_
+#ifndef BRICS_3D_INEARESTNEIGHBORSETUP_H_
+#define BRICS_3D_INEARESTNEIGHBORSETUP_H_
 
 
 namespace brics_3d {
@@ -86,6 +86,6 @@ protected:
 
 }
 
-#endif /* INEARESTNEIGHBORSETUP_H_ */
+#endif /* BRICS_3D_INEARESTNEIGHBORSETUP_H_ */
 
 /* EOF */

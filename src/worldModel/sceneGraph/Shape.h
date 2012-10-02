@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef SHAPE_H
-#define SHAPE_H
+#ifndef RSG_SHAPE_H
+#define RSG_SHAPE_H
 
 #include <boost/shared_ptr.hpp>
 
@@ -46,7 +46,7 @@ public:
 
 };
 
-} // namespace brics_3d::RSG
+} // namespace brics_3d::rsg
 
 } // namespace brics_3d
 #endif

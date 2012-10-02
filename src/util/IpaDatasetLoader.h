@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef IPADATASETLOADER_H_
-#define IPADATASETLOADER_H_
+#ifndef BRICS_3D_IPADATASETLOADER_H_
+#define BRICS_3D_IPADATASETLOADER_H_
 
 #include "core/PointCloud3D.h"
 #include "core/Logger.h"
@@ -136,6 +136,6 @@ private:
 
 }
 
-#endif /* IPADATASETLOADER_H_ */
+#endif /* BRICS_3D_IPADATASETLOADER_H_ */
 
 /* EOF */

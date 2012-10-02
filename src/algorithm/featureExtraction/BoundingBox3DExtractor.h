@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef BOUNDINGBOX3DEXTRACTOR_H_
-#define BOUNDINGBOX3DEXTRACTOR_H_
+#ifndef BRICS_3D_BOUNDINGBOX3DEXTRACTOR_H_
+#define BRICS_3D_BOUNDINGBOX3DEXTRACTOR_H_
 
 #include "algorithm/featureExtraction/PCA.h"
 #include "core/PointCloud3D.h"
@@ -78,6 +78,6 @@ protected:
 
 }
 
-#endif /* BOUNDINGBOX3DEXTRACTOR_H_ */
+#endif /* BRICS_3D_BOUNDINGBOX3DEXTRACTOR_H_ */
 
 /* EOF */

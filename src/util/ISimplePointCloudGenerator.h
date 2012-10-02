@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef ISIMPLEPOINTCLOUDGENERATOR_H_
-#define ISIMPLEPOINTCLOUDGENERATOR_H_
+#ifndef BRICS_3D_ISIMPLEPOINTCLOUDGENERATOR_H_
+#define BRICS_3D_ISIMPLEPOINTCLOUDGENERATOR_H_
 #include "core/PointCloud3D.h"
 
 namespace brics_3d {
@@ -37,4 +37,4 @@ public:
 
 }
 
-#endif /* ISIMPLEPOINTCLOUDGENERATOR_H_ */
+#endif /* BRICS_3D_ISIMPLEPOINTCLOUDGENERATOR_H_ */

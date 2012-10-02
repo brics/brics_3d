@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef POINT3D_H_
-#define POINT3D_H_
+#ifndef BRICS_3D_POINT3D_H_
+#define BRICS_3D_POINT3D_H_
 
 #include <iostream>
 using std::ostream;
@@ -217,7 +217,7 @@ private:
 
 }
 
-#endif /* POINT3D_H_ */
+#endif /* BRICS_3D_POINT3D_H_ */
 
 /* EOF */
 

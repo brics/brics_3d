@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef TRIANGLEMESHIMPLICIT_H_
-#define TRIANGLEMESHIMPLICIT_H_
+#ifndef BRICS_3D_TRIANGLEMESHIMPLICIT_H_
+#define BRICS_3D_TRIANGLEMESHIMPLICIT_H_
 
 #include "core/ITriangleMesh.h"
 #include <vector>
@@ -104,6 +104,6 @@ private:
 
 }
 
-#endif /* TRIANGLEMESHIMPLICIT_H_ */
+#endif /* BRICS_3D_TRIANGLEMESHIMPLICIT_H_ */
 
 /* EOF */

@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef EVALUATOR_H_
-#define EVALUATOR_H_
+#ifndef BRICS_3D_EVALUATOR_H_
+#define BRICS_3D_EVALUATOR_H_
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -76,4 +76,4 @@ public:
 
 }
 
-#endif /* EVALUATOR_H_ */
+#endif /* BRICS_3D_EVALUATOR_H_ */

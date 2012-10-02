@@ -17,8 +17,8 @@
  *
  ******************************************************************************/
 
-#ifndef RGBCOLORBASEDEUCLIDEANCLUSTERING_H_
-#define RGBCOLORBASEDEUCLIDEANCLUSTERING_H_
+#ifndef BRICS_3D_RGBCOLORBASEDEUCLIDEANCLUSTERING_H_
+#define BRICS_3D_RGBCOLORBASEDEUCLIDEANCLUSTERING_H_
 
 #include "algorithm/segmentation/ISegmentation.h"
 #include <vector>
@@ -90,4 +90,4 @@ public:
 };
 
 } /* namespace brics_3d */
-#endif /* RGBCOLORBASEDEUCLIDEANCLUSTERING_H_ */
+#endif /* BRICS_3D_RGBCOLORBASEDEUCLIDEANCLUSTERING_H_ */

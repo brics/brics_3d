@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef OSGPOINTCLOUDVISUALIZER_H_
-#define OSGPOINTCLOUDVISUALIZER_H_
+#ifndef BRICS_3D_OSGPOINTCLOUDVISUALIZER_H_
+#define BRICS_3D_OSGPOINTCLOUDVISUALIZER_H_
 
 #include <osg/Group>
 #include <osg/Geometry>
@@ -162,6 +162,6 @@ friend class OSGOperationClearButLast;
 
 }
 
-#endif /* OSGPOINTCLOUDVISUALIZER_H_ */
+#endif /* BRICS_3D_OSGPOINTCLOUDVISUALIZER_H_ */
 
 /* EOF */

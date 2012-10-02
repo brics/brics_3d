@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef EUCLIDEANCLUSTERING3D_H_
-#define EUCLIDEANCLUSTERING3D_H_
+#ifndef BRICS_3D_EUCLIDEANCLUSTERING3D_H_
+#define BRICS_3D_EUCLIDEANCLUSTERING3D_H_
 
 #include "core/PointCloud3D.h"
 #include "algorithm/nearestNeighbor/NearestNeighborANN.h"
@@ -140,4 +140,4 @@ public:
 
 }
 
-#endif /* EUCLIDEANCLUSTERING3D_H_ */
+#endif /* BRICS_3D_EUCLIDEANCLUSTERING3D_H_ */

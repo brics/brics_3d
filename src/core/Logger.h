@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef LOGGER_H_
-#define LOGGER_H_
+#ifndef BRICS_3D_LOGGER_H_
+#define BRICS_3D_LOGGER_H_
 
 #include <iosfwd>
 #include <sstream>
@@ -115,5 +115,5 @@ protected:
 
 } //namespace brics_3d
 
-#endif // LOGGER_H_
+#endif // BRICS_3D_LOGGER_H_
 

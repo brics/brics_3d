@@ -5,8 +5,8 @@
  *      Author: Pinaki Sunil Banerjee
  */
 
-#ifndef COLORBASEDROIEXTRACTORRGB_H_
-#define COLORBASEDROIEXTRACTORRGB_H_
+#ifndef BRICS_3D_COLORBASEDROIEXTRACTORRGB_H_
+#define BRICS_3D_COLORBASEDROIEXTRACTORRGB_H_
 
 #include "IFiltering.h"
 #include <stdlib.h>
@@ -92,4 +92,4 @@ public:
 
 }
 
-#endif /* COLORBASEDROIEXTRACTORRGB_H_ */
+#endif /* BRICS_3D_COLORBASEDROIEXTRACTORRGB_H_ */

@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef POINT3DINTENSITY_H_
-#define POINT3DINTENSITY_H_
+#ifndef BRICS_3D_POINT3DINTENSITY_H_
+#define BRICS_3D_POINT3DINTENSITY_H_
 
 #include "Point3DDecorator.h"
 
@@ -52,6 +52,6 @@ protected:
 
 }
 
-#endif /* POINT3DINTENSITY_H_ */
+#endif /* BRICS_3D_POINT3DINTENSITY_H_ */
 
 /* EOF */

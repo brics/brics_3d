@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef POINTCORRESPONDENCEGENERICNN_H_
-#define POINTCORRESPONDENCEGENERICNN_H_
+#ifndef BRICS_3D_POINTCORRESPONDENCEGENERICNN_H_
+#define BRICS_3D_POINTCORRESPONDENCEGENERICNN_H_
 
 #include "IPointCorrespondence.h"
 #include "algorithm/nearestNeighbor/INearestPoint3DNeighbor.h"
@@ -70,6 +70,6 @@ private:
 
 }
 
-#endif /* POINTCORRESPONDENCEGENERICNN_H_ */
+#endif /* BRICS_3D_POINTCORRESPONDENCEGENERICNN_H_ */
 
 /* EOF */

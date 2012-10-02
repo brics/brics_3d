@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef IOBJECTMODELUSINGNORMALS_H_
-#define IOBJECTMODELUSINGNORMALS_H_
+#ifndef BRICS_3D_IOBJECTMODELUSINGNORMALS_H_
+#define BRICS_3D_IOBJECTMODELUSINGNORMALS_H_
 #include <vector>
 #include "algorithm/segmentation/objectModels/IObjectModel.h"
 #include "core/NormalSet3D.h"
@@ -137,4 +137,4 @@ public:
 
 }
 
-#endif /* IOBJECTMODELUSINGNORMALS_H_ */
+#endif /* BRICS_3D_IOBJECTMODELUSINGNORMALS_H_ */

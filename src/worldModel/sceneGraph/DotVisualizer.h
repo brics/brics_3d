@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef DOTVISUALIZER_H_
-#define DOTVISUALIZER_H_
+#ifndef RSG_DOTVISUALIZER_H_
+#define RSG_DOTVISUALIZER_H_
 
 #include <iostream>
 #include <fstream>
@@ -85,6 +85,6 @@ private:
 
 }
 
-#endif /* DOTVISUALIZER_H_ */
+#endif /* RSG_DOTVISUALIZER_H_ */
 
 /* EOF */

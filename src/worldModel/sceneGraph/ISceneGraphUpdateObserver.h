@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef ISCENEGRAPHUPDATEOBSERVER_H_
-#define ISCENEGRAPHUPDATEOBSERVER_H_
+#ifndef RSG_ISCENEGRAPHUPDATEOBSERVER_H_
+#define RSG_ISCENEGRAPHUPDATEOBSERVER_H_
 
 #include "ISceneGraphUpdate.h"
 
@@ -39,6 +39,6 @@ class ISceneGraphUpdateObserver : public ISceneGraphUpdate {
 
 }
 
-#endif /* ISCENEGRAPHUPDATEOBSERVER_H_ */
+#endif /* RSG_ISCENEGRAPHUPDATEOBSERVER_H_ */
 
 /* EOF */

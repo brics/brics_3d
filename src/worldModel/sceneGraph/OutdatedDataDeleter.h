@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef OUTDATEDDATADELETER_H_
-#define OUTDATEDDATADELETER_H_
+#ifndef RSG_OUTDATEDDATADELETER_H_
+#define RSG_OUTDATEDDATADELETER_H_
 
 #include "Node.h"
 #include "Group.h"
@@ -92,6 +92,6 @@ private:
 
 }
 
-#endif /* OUTDATEDDATADELETER_H_ */
+#endif /* RSG_OUTDATEDDATADELETER_H_ */
 
 /* EOF */

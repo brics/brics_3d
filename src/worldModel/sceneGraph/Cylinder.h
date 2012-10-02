@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef CYLINDER_H
-#define CYLINDER_H
+#ifndef RSG_CYLINDER_H
+#define RSG_CYLINDER_H
 
 #include "Shape.h"
 #include "core/Point3D.h"
@@ -70,7 +70,7 @@ private:
 
 };
 
-} // namespace brics_3d::RSG
+} // namespace brics_3d::rsg
 
 } // namespace brics_3d
 #endif

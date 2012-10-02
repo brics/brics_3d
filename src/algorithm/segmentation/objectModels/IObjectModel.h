@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef IOBJECTMODEL_H_
-#define IOBJECTMODEL_H_
+#ifndef BRICS_3D_IOBJECTMODEL_H_
+#define BRICS_3D_IOBJECTMODEL_H_
 
 
 #include <Eigen/Geometry>
@@ -170,4 +170,4 @@ public:
 	  }
 };
 }
-#endif /* IOBJECTMODEL_H_ */
+#endif /* BRICS_3D_IOBJECTMODEL_H_ */

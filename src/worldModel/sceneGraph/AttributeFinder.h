@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef ATTRIBUTEFINDER_H_
-#define ATTRIBUTEFINDER_H_
+#ifndef RSG_ATTRIBUTEFINDER_H_
+#define RSG_ATTRIBUTEFINDER_H_
 
 #include "INodeVisitor.h"
 #include "Node.h"
@@ -77,6 +77,6 @@ protected:
 
 }
 
-#endif /* ATTRIBUTEFINDER_H_ */
+#endif /* RSG_ATTRIBUTEFINDER_H_ */
 
 /* EOF */

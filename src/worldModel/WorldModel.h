@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef WORLDMODEL_H
-#define WORLDMODEL_H
+#ifndef BRICS_3D_WORLDMODEL_H
+#define BRICS_3D_WORLDMODEL_H
 
 #include "IWorldModelQuery.h"
 #include "sceneGraph/SceneGraphFacade.h"

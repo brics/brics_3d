@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef BOX_H
-#define BOX_H
+#ifndef RSG_BOX_H
+#define RSG_BOX_H
 
 #include "Shape.h"
 #include "core/Point3D.h"
@@ -81,7 +81,7 @@ private:
 
 };
 
-} // namespace brics_3d::RSG
+} // namespace brics_3d::rsg
 
 } // namespace brics_3d
 #endif

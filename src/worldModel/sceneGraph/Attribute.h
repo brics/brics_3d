@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef ATTRIBUTE_H
-#define ATTRIBUTE_H
+#ifndef RSG_ATTRIBUTE_H
+#define RSG_ATTRIBUTE_H
 
 #include <string>
 #include <vector>

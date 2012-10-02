@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef IPOINT3DITERATOR_H_
-#define IPOINT3DITERATOR_H_
+#ifndef BRICS_3D_IPOINT3DITERATOR_H_
+#define BRICS_3D_IPOINT3DITERATOR_H_
 
 #include <boost/shared_ptr.hpp>
 #include "Point3D.h"
@@ -106,6 +106,6 @@ public:
 
 }
 
-#endif /* IPOINT3DITERATOR_H_ */
+#endif /* BRICS_3D_IPOINT3DITERATOR_H_ */
 
 /* EOF */

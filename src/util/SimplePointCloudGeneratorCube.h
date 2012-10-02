@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef SIMPLEPOINTCLOUDGENERATORCUBE_H_
-#define SIMPLEPOINTCLOUDGENERATORCUBE_H_
+#ifndef BRICS_3D_SIMPLEPOINTCLOUDGENERATORCUBE_H_
+#define BRICS_3D_SIMPLEPOINTCLOUDGENERATORCUBE_H_
 
 #include "ISimplePointCloudGenerator.h"
 #include "iostream"
@@ -131,4 +131,4 @@ public:
 
 }
 
-#endif /* SIMPLEPOINTCLOUDGENERATORCUBE_H_ */
+#endif /* BRICS_3D_SIMPLEPOINTCLOUDGENERATORCUBE_H_ */

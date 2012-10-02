@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef INORMALESTIMATION_H_
-#define INORMALESTIMATION_H_
+#ifndef BRICS_3D_INORMALESTIMATION_H_
+#define BRICS_3D_INORMALESTIMATION_H_
 
 #include "core/PointCloud3D.h"
 #include "core/NormalSet3D.h"
@@ -49,6 +49,6 @@ public:
 
 }
 
-#endif /* INORMALESTIMATION_H_ */
+#endif /* BRICS_3D_INORMALESTIMATION_H_ */
 
 /* EOF */

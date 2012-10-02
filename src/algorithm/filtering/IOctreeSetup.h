@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef IOCTREESETUP_H_
-#define IOCTREESETUP_H_
+#ifndef BRICS_3D_IOCTREESETUP_H_
+#define BRICS_3D_IOCTREESETUP_H_
 
 /*
  *
@@ -59,6 +59,6 @@ public:
 
 }
 
-#endif /* IOCTREESETUP_H_ */
+#endif /* BRICS_3D_IOCTREESETUP_H_ */
 
 /* EOF */

@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef NORMAL3D_H_
-#define NORMAL3D_H_
+#ifndef BRICS_3D_NORMAL3D_H_
+#define BRICS_3D_NORMAL3D_H_
 
 #include "core/Vector3D.h"
 
@@ -38,6 +38,6 @@ public:
 
 }
 
-#endif /* NORMAL3D_H_ */
+#endif /* BRICS_3D_NORMAL3D_H_ */
 
 /* EOF */

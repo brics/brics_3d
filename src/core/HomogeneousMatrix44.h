@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef HOMOGENEOUSMATRIX44_H_
-#define HOMOGENEOUSMATRIX44_H_
+#ifndef BRICS_3D_HOMOGENEOUSMATRIX44_H_
+#define BRICS_3D_HOMOGENEOUSMATRIX44_H_
 
 #include "IHomogeneousMatrix44.h"
 #include <Eigen/Geometry>
@@ -110,6 +110,6 @@ private:
 
 }
 
-#endif /* HOMOGENEOUSMATRIX44_H_ */
+#endif /* BRICS_3D_HOMOGENEOUSMATRIX44_H_ */
 
 /* EOF */

@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef SUBGRAPHCHECKER_H_
-#define SUBGRAPHCHECKER_H_
+#ifndef RSG_SUBGRAPHCHECKER_H_
+#define RSG_SUBGRAPHCHECKER_H_
 
 #include "INodeVisitor.h"
 #include "Node.h"
@@ -89,6 +89,6 @@ protected:
 
 }
 
-#endif /* SUBGRAPHCHECKER_H_ */
+#endif /* RSG_SUBGRAPHCHECKER_H_ */
 
 /* EOF */

@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef IWORLDMODELCOORDINATION_H
-#define IWORLDMODELCOORDINATION_H
+#ifndef BRICS_3D_IWORLDMODELCOORDINATION_H
+#define BRICS_3D_IWORLDMODELCOORDINATION_H
 
 namespace brics_3d {
 

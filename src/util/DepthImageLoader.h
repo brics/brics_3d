@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef DEPTHIMAGELOADER_H_
-#define DEPTHIMAGELOADER_H_
+#ifndef BRICS_3D_DEPTHIMAGELOADER_H_
+#define BRICS_3D_DEPTHIMAGELOADER_H_
 
 #include <iostream>
 #include <string>
@@ -100,4 +100,4 @@ private:
 
 }
 
-#endif /* DEPTHIMAGELOADER_H_ */
+#endif /* BRICS_3D_DEPTHIMAGELOADER_H_ */

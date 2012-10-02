@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef IIDGENERATOR_H
-#define IIDGENERATOR_H
+#ifndef RSG_IIDGENERATOR_H
+#define RSG_IIDGENERATOR_H
 
 namespace brics_3d {
 
@@ -54,7 +54,7 @@ class IIdGenerator { // TODO: Should be singelton?
 
 };
 
-} // namespace brics_3d::RSG
+} // namespace brics_3d::rsg
 
 } // namespace brics_3d
 #endif

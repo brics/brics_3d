@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef PARAMETERSET_H_
-#define PARAMETERSET_H_
+#ifndef BRICS_3D_PARAMETERSET_H_
+#define BRICS_3D_PARAMETERSET_H_
 
 #include <map>
 #include <string>
@@ -108,4 +108,4 @@ std::string skipBlank(std::string s);
 
 } // namespace brics_3d
 
-#endif // PARAMETERSET_H_
+#endif // BRICS_3D_PARAMETERSET_H_

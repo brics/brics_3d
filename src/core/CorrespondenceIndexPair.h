@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef POINT3DINDEXPAIR_H_
-#define POINT3DINDEXPAIR_H_
+#ifndef BRICS_3D_POINT3DINDEXPAIR_H_
+#define BRICS_3D_POINT3DINDEXPAIR_H_
 
 
 namespace brics_3d {
@@ -59,6 +59,6 @@ public:
 
 }
 
-#endif /* POINT3DINDEXPAIR_H_ */
+#endif /* BRICS_3D_POINT3DINDEXPAIR_H_ */
 
 /* EOF */

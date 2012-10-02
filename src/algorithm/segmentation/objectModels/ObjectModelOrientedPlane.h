@@ -16,8 +16,8 @@
 * more details.
 *
 ******************************************************************************/
-#ifndef OBJECTMODELORIENTEDPLANE_H_
-#define OBJECTMODELORIENTEDPLANE_H_
+#ifndef BRICS_3D_OBJECTMODELORIENTEDPLANE_H_
+#define BRICS_3D_OBJECTMODELORIENTEDPLANE_H_
 
 #include "algorithm/segmentation/objectModels/ObjectModelPlane.h"
 
@@ -85,4 +85,4 @@ public:
 };
 }
 
-#endif /* OBJECTMODELORIENTEDPLANE_H_ */
+#endif /* BRICS_3D_OBJECTMODELORIENTEDPLANE_H_ */

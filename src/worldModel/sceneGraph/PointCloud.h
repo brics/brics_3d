@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef POINTCLOUD_H
-#define POINTCLOUD_H
+#ifndef RSG_POINTCLOUD_H
+#define RSG_POINTCLOUD_H
 
 #include "Shape.h"
 
@@ -48,7 +48,7 @@ class PointCloud : public Shape {
 
 };
 
-} // namespace brics_3d::RSG
+} // namespace brics_3d::rsg
 
 } // namespace brics_3d
 #endif

@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef COLORBASEDROIEXTRACTORHSV_H_
-#define COLORBASEDROIEXTRACTORHSV_H_
+#ifndef BRICS_3D_COLORBASEDROIEXTRACTORHSV_H_
+#define BRICS_3D_COLORBASEDROIEXTRACTORHSV_H_
 
 #include "IFiltering.h"
 
@@ -156,4 +156,4 @@ public:
 
 }
 
-#endif /* COLORBASEDROIEXTRACTORHSV_H_ */
+#endif /* BRICS_3D_COLORBASEDROIEXTRACTORHSV_H_ */

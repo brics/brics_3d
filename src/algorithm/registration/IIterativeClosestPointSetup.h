@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef IITERATIVECLOSESTPOINTSETUP_H_
-#define IITERATIVECLOSESTPOINTSETUP_H_
+#ifndef BRICS_3D_IITERATIVECLOSESTPOINTSETUP_H_
+#define BRICS_3D_IITERATIVECLOSESTPOINTSETUP_H_
 
 #include "algorithm/registration/IPointCorrespondence.h"
 #include "algorithm/registration/IRigidTransformationEstimation.h"
@@ -93,6 +93,6 @@ public:
 
 }
 
-#endif /* IITERATIVECLOSESTPOINTSETUP_H_ */
+#endif /* BRICS_3D_IITERATIVECLOSESTPOINTSETUP_H_ */
 
 /* EOF */

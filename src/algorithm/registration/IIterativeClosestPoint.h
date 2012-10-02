@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef IITERATIVECLOSESTPOINT_H_
-#define IITERATIVECLOSESTPOINT_H_
+#ifndef BRICS_3D_IITERATIVECLOSESTPOINT_H_
+#define BRICS_3D_IITERATIVECLOSESTPOINT_H_
 
 #include "core/PointCloud3D.h"
 #include "core/IHomogeneousMatrix44.h"
@@ -60,6 +60,6 @@ public:
 
 }
 
-#endif /* IITERATIVECLOSESTPOINT_H_ */
+#endif /* BRICS_3D_IITERATIVECLOSESTPOINT_H_ */
 
 /* EOF */

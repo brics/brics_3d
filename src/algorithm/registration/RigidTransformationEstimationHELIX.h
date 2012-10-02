@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef RIGIDTRANSFORMATIONESTIMATIONHELIX_H_
-#define RIGIDTRANSFORMATIONESTIMATIONHELIX_H_
+#ifndef BRICS_3D_RIGIDTRANSFORMATIONESTIMATIONHELIX_H_
+#define BRICS_3D_RIGIDTRANSFORMATIONESTIMATIONHELIX_H_
 
 #include "IRigidTransformationEstimation.h"
 
@@ -49,6 +49,6 @@ public:
 
 }
 
-#endif /* RIGIDTRANSFORMATIONESTIMATIONHELIX_H_ */
+#endif /* BRICS_3D_RIGIDTRANSFORMATIONESTIMATIONHELIX_H_ */
 
 /* EOF */

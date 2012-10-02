@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef ICOLORREGIONEXTRACTOR_H_
-#define ICOLORREGIONEXTRACTOR_H_
+#ifndef BRICS_3D_ICOLORREGIONEXTRACTOR_H_
+#define BRICS_3D_ICOLORREGIONEXTRACTOR_H_
 
 #include "core/ColoredPointCloud3D.h"
 
@@ -53,4 +53,4 @@ public:
 
 }
 
-#endif /* ICOLORREGIONEXTRACTOR_H_ */
+#endif /* BRICS_3D_ICOLORREGIONEXTRACTOR_H_ */

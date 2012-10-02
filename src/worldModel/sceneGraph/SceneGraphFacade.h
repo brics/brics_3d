@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef SCENEGRAPHFACADE_H
-#define SCENEGRAPHFACADE_H
+#ifndef RSG_SCENEGRAPHFACADE_H
+#define RSG_SCENEGRAPHFACADE_H
 
 #include "ISceneGraphQuery.h"
 #include "ISceneGraphUpdate.h"
@@ -127,7 +127,7 @@ class SceneGraphFacade : public ISceneGraphQuery, public ISceneGraphUpdate {
 
 };
 
-} // namespace brics_3d::RSG
+} // namespace brics_3d::rsg
 
 } // namespace brics_3d
 #endif

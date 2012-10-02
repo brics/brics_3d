@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef MESH_H
-#define MESH_H
+#ifndef RSG_MESH_H
+#define RSG_MESH_H
 
 #include "Shape.h"
 
@@ -45,7 +45,7 @@ class Mesh : public Shape {
 
 };
 
-} // namespace brics_3d::RSG
+} // namespace brics_3d::rsg
 
 } // namespace brics_3d
 #endif

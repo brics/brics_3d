@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef ROSNORMAL3D_H_
-#define ROSNORMAL3D_H_
+#ifndef BRICS_3D_ROSNORMAL3D_H_
+#define BRICS_3D_ROSNORMAL3D_H_
 #include "core/PointCloud3D.h"
 #include "core/NormalSet3D.h"
 #include "ROSfeature.h"
@@ -179,4 +179,4 @@ inline void
 
 }
 
-#endif /* ROSNORMAL3D_H_ */
+#endif /* BRICS_3D_ROSNORMAL3D_H_ */

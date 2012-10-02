@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef MASKROIEXTRACTOR_H_
-#define MASKROIEXTRACTOR_H_
+#ifndef BRICS_3D_MASKROIEXTRACTOR_H_
+#define BRICS_3D_MASKROIEXTRACTOR_H_
 
 #include "IFiltering.h"
 
@@ -51,6 +51,6 @@ private:
 
 }
 
-#endif /* MASKROIEXTRACTOR_H_ */
+#endif /* BRICS_3D_MASKROIEXTRACTOR_H_ */
 
 /* EOF */

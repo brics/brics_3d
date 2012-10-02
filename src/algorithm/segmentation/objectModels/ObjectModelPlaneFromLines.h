@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef OBJECTMODELPLANEFROMLINES_H_
-#define OBJECTMODELPLANEFROMLINES_H_
+#ifndef BRICS_3D_OBJECTMODELPLANEFROMLINES_H_
+#define BRICS_3D_OBJECTMODELPLANEFROMLINES_H_
 
 #include "algorithm/segmentation/objectModels/ObjectModelPlane.h"
 
@@ -94,4 +94,4 @@ public:
 
 }
 
-#endif /* OBJECTMODELPLANEFROMLINES_H_ */
+#endif /* BRICS_3D_OBJECTMODELPLANEFROMLINES_H_ */

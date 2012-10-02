@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef OCTREE_H_
-#define OCTREE_H_
+#ifndef BRICS_3D_OCTREE_H_
+#define BRICS_3D_OCTREE_H_
 
 #include "algorithm/filtering/IOctreeReductionFilter.h"
 #include "algorithm/filtering/IOctreePartition.h"
@@ -60,6 +60,6 @@ private:
 
 }
 
-#endif /* OCTREE_H_ */
+#endif /* BRICS_3D_OCTREE_H_ */
 
 /* EOF */

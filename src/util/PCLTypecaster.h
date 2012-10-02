@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef PCLTYPECASTER_H_
-#define PCLTYPECASTER_H_
+#ifndef BRICS_3D_PCLTYPECASTER_H_
+#define BRICS_3D_PCLTYPECASTER_H_
 
 #include <pcl/point_types.h>
 #include <pcl/io/pcd_io.h>
@@ -162,4 +162,4 @@ public:
 
 }
 
-#endif /* PCLTYPECASTER_H_ */
+#endif /* BRICS_3D_PCLTYPECASTER_H_ */

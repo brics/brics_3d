@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef DELAUNAYTRIANGULATIONOSG_H_
-#define DELAUNAYTRIANGULATIONOSG_H_
+#ifndef BRICS_3D_DELAUNAYTRIANGULATIONOSG_H_
+#define BRICS_3D_DELAUNAYTRIANGULATIONOSG_H_
 
 #include "IDelaunayTriangulation.h"
 #include "IMeshGeneration.h"
@@ -46,6 +46,6 @@ public:
 
 }
 
-#endif /* DELAUNAYTRIANGULATIONOSG_H_ */
+#endif /* BRICS_3D_DELAUNAYTRIANGULATIONOSG_H_ */
 
 /* EOF */

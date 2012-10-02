@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef CORRESPONDENCEPOINT3DPAIR_H_
-#define CORRESPONDENCEPOINT3DPAIR_H_
+#ifndef BRICS_3D_CORRESPONDENCEPOINT3DPAIR_H_
+#define BRICS_3D_CORRESPONDENCEPOINT3DPAIR_H_
 
 #include "core/Point3D.h"
 
@@ -57,6 +57,6 @@ public:
 
 }
 
-#endif /* CORRESPONDENCEPOINT3DPAIR_H_ */
+#endif /* BRICS_3D_CORRESPONDENCEPOINT3DPAIR_H_ */
 
 /* EOF */

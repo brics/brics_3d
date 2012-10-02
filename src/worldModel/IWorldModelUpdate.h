@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef IWORLDMODELUPDATE_H
-#define IWORLDMODELUPDATE_H
+#ifndef BRICS_3D_IWORLDMODELUPDATE_H
+#define BRICS_3D_IWORLDMODELUPDATE_H
 
 #include "SceneObject.h"
 

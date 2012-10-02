@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef DEPTHIMAGETOPOINTCLOUDTRANSFORMATION_H_
-#define DEPTHIMAGETOPOINTCLOUDTRANSFORMATION_H_
+#ifndef BRICS_3D_DEPTHIMAGETOPOINTCLOUDTRANSFORMATION_H_
+#define BRICS_3D_DEPTHIMAGETOPOINTCLOUDTRANSFORMATION_H_
 
 #include "core/PointCloud3D.h"
 #include <cv.h>
@@ -94,7 +94,7 @@ public:
 
 }
 
-#endif /* DEPTHIMAGETOPOINTCLOUDTRANSFORMATION_H_ */
+#endif /* BRICS_3D_DEPTHIMAGETOPOINTCLOUDTRANSFORMATION_H_ */
 
 /* EOF */
 

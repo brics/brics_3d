@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef INEARESTNEIGHBOR_H_
-#define INEARESTNEIGHBOR_H_
+#ifndef BRICS_3D_INEARESTNEIGHBOR_H_
+#define BRICS_3D_INEARESTNEIGHBOR_H_
 
 #include "core/PointCloud3D.h"
 #include <vector>
@@ -87,6 +87,6 @@ public:
 
 }  // namespace brics_3d
 
-#endif /* INEARESTNEIGHBOR_H_ */
+#endif /* BRICS_3D_INEARESTNEIGHBOR_H_ */
 
 /* EOF */

@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef POINT3DDECORATOR_H_
-#define POINT3DDECORATOR_H_
+#ifndef BRICS_3D_POINT3DDECORATOR_H_
+#define BRICS_3D_POINT3DDECORATOR_H_
 
 #include "core/Point3D.h"
 
@@ -141,6 +141,6 @@ inline DecorationT* getPointType(Point3D* queryPoint) {
 
 }
 
-#endif /* POINT3DDECORATOR_H_ */
+#endif /* BRICS_3D_POINT3DDECORATOR_H_ */
 
 /* EOF */
