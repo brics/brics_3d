@@ -20,7 +20,7 @@
 #ifndef RSG_ISCENEGRAPHUPDATE_H
 #define RSG_ISCENEGRAPHUPDATE_H
 
-#include "core/IHomogeneousMatrix44.h"
+#include "brics_3d/core/IHomogeneousMatrix44.h"
 #include <vector>
 using std::vector;
 #include "TimeStamp.h"

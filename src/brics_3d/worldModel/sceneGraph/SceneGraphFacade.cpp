@@ -19,7 +19,7 @@
 
 #include "SceneGraphFacade.h"
 #include "SimpleIdGenerator.h"
-#include "core/Logger.h"
+#include "brics_3d/core/Logger.h"
 #include "AttributeFinder.h"
 
 namespace brics_3d {

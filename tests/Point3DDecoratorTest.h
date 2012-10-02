@@ -12,13 +12,13 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "core/Point3DDecorator.h"
-#include "core/ColoredPoint3D.h"
-#include "core/Point3DIntensity.h"
+#include "brics_3d/core/Point3DDecorator.h"
+#include "brics_3d/core/ColoredPoint3D.h"
+#include "brics_3d/core/Point3DIntensity.h"
 
 #include <Eigen/Geometry>
-#include "core/Point3D.h"
-#include "core/HomogeneousMatrix44.h"
+#include "brics_3d/core/Point3D.h"
+#include "brics_3d/core/HomogeneousMatrix44.h"
 
 #include <boost/shared_ptr.hpp>
 

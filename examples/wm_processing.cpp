@@ -18,30 +18,30 @@
 ******************************************************************************/
 
 /* BRICS_3D includes */
-#include <util/DepthImageLoader.h>
-#include <util/OSGPointCloudVisualizer.h>
-#include <util/OSGTriangleMeshVisualizer.h>
-#include <worldModel/sceneGraph/OSGVisualizer.h>
-#include <core/PointCloud3D.h>
-#include <core/Logger.h>
-#include <core/HomogeneousMatrix44.h>
-#include <core/TriangleMeshImplicit.h>
-#include <core/TriangleMeshExplicit.h>
-#include <algorithm/filtering/Octree.h>
-#include <algorithm/filtering/BoxROIExtractor.h>
-#include <algorithm/registration/IterativeClosestPointFactory.h>
-#include <algorithm/depthPerception/DepthImageToPointCloudTransformation.h>
-#include <algorithm/meshGeneration/DelaunayTriangulationOSG.h>
-#include <worldModel/WorldModel.h>
-#include <worldModel/sceneGraph/PointCloud.h>
-#include <worldModel/sceneGraph/Mesh.h>
-#include <worldModel/sceneGraph/Box.h>
-#include <worldModel/sceneGraph/Cylinder.h>
-#include <worldModel/sceneGraph/DotGraphGenerator.h>
-#include <worldModel/sceneGraph/PointCloudAccumulatorIdAware.h>
+#include <brics_3d/util/DepthImageLoader.h>
+#include <brics_3d/util/OSGPointCloudVisualizer.h>
+#include <brics_3d/util/OSGTriangleMeshVisualizer.h>
+#include <brics_3d/worldModel/sceneGraph/OSGVisualizer.h>
+#include <brics_3d/core/PointCloud3D.h>
+#include <brics_3d/core/Logger.h>
+#include <brics_3d/core/HomogeneousMatrix44.h>
+#include <brics_3d/core/TriangleMeshImplicit.h>
+#include <brics_3d/core/TriangleMeshExplicit.h>
+#include <brics_3d/algorithm/filtering/Octree.h>
+#include <brics_3d/algorithm/filtering/BoxROIExtractor.h>
+#include <brics_3d/algorithm/registration/IterativeClosestPointFactory.h>
+#include <brics_3d/algorithm/depthPerception/DepthImageToPointCloudTransformation.h>
+#include <brics_3d/algorithm/meshGeneration/DelaunayTriangulationOSG.h>
+#include <brics_3d/worldModel/WorldModel.h>
+#include <brics_3d/worldModel/sceneGraph/PointCloud.h>
+#include <brics_3d/worldModel/sceneGraph/Mesh.h>
+#include <brics_3d/worldModel/sceneGraph/Box.h>
+#include <brics_3d/worldModel/sceneGraph/Cylinder.h>
+#include <brics_3d/worldModel/sceneGraph/DotGraphGenerator.h>
+#include <brics_3d/worldModel/sceneGraph/PointCloudAccumulatorIdAware.h>
 
 #ifdef EIGEN3
-#include <algorithm/featureExtraction/BoundingBox3DExtractor.h>
+#include <brics_3d/algorithm/featureExtraction/BoundingBox3DExtractor.h>
 #endif /*EIGEN3*/
 
 /* general includes */

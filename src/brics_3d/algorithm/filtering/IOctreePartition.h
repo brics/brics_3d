@@ -20,7 +20,7 @@
 #ifndef BRICS_3D_IOCTREEPARTITION_H_
 #define BRICS_3D_IOCTREEPARTITION_H_
 
-#include "core/PointCloud3D.h"
+#include "brics_3d/core/PointCloud3D.h"
 #include <vector>
 
 namespace brics_3d {

@@ -30,9 +30,9 @@
 
 
 #include <iostream>
-#include <util/DepthImageLoader.h>
-#include <core/PointCloud3D.h>
-#include <algorithm/depthPerception/DepthImageToPointCloudTransformation.h>
+#include <brics_3d/util/DepthImageLoader.h>
+#include <brics_3d/core/PointCloud3D.h>
+#include <brics_3d/algorithm/depthPerception/DepthImageToPointCloudTransformation.h>
 
 using namespace std;
 using namespace brics_3d;

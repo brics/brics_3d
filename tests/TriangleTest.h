@@ -12,8 +12,8 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "core/Triangle.h"
-#include "core/HomogeneousMatrix44.h"
+#include "brics_3d/core/Triangle.h"
+#include "brics_3d/core/HomogeneousMatrix44.h"
 
 namespace unitTests {
 

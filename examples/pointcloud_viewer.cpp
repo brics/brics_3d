@@ -19,9 +19,9 @@
 
 
 #include <iostream>
-#include <util/OSGPointCloudVisualizer.h>
-#include <core/PointCloud3D.h>
-#include <algorithm/filtering/Octree.h>
+#include <brics_3d/util/OSGPointCloudVisualizer.h>
+#include <brics_3d/core/PointCloud3D.h>
+#include <brics_3d/algorithm/filtering/Octree.h>
 #include <cstring>
 
 using namespace std;

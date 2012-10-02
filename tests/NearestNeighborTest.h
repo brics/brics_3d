@@ -12,10 +12,10 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "algorithm/nearestNeighbor/NearestNeighborFLANN.h"
-#include "algorithm/nearestNeighbor/NearestNeighborSTANN.h"
-#include "algorithm/nearestNeighbor/NearestNeighborANN.h"
-#include "core/HomogeneousMatrix44.h"
+#include "brics_3d/algorithm/nearestNeighbor/NearestNeighborFLANN.h"
+#include "brics_3d/algorithm/nearestNeighbor/NearestNeighborSTANN.h"
+#include "brics_3d/algorithm/nearestNeighbor/NearestNeighborANN.h"
+#include "brics_3d/core/HomogeneousMatrix44.h"
 #include <Eigen/Geometry>
 
 using namespace std;

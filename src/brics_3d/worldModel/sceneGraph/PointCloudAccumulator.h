@@ -26,7 +26,7 @@
 #include "GeometricNode.h"
 #include "INodeVisitor.h"
 
-#include "core/PointCloud3DIterator.h"
+#include "brics_3d/core/PointCloud3DIterator.h"
 
 namespace brics_3d {
 

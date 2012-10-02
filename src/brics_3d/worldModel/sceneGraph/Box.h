@@ -21,7 +21,7 @@
 #define RSG_BOX_H
 
 #include "Shape.h"
-#include "core/Point3D.h"
+#include "brics_3d/core/Point3D.h"
 
 namespace brics_3d {
 

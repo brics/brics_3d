@@ -14,8 +14,8 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "algorithm/featureExtraction/BoundingBox3DExtractor.h"
-#include "core/HomogeneousMatrix44.h"
+#include "brics_3d/algorithm/featureExtraction/BoundingBox3DExtractor.h"
+#include "brics_3d/core/HomogeneousMatrix44.h"
 
 using namespace std;
 using namespace brics_3d;

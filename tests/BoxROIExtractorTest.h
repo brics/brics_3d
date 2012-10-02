@@ -12,8 +12,8 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "core/HomogeneousMatrix44.h"
-#include "algorithm/filtering/BoxROIExtractor.h"
+#include "brics_3d/core/HomogeneousMatrix44.h"
+#include "brics_3d/algorithm/filtering/BoxROIExtractor.h"
 
 using namespace std;
 using namespace Eigen;

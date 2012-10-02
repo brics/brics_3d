@@ -22,8 +22,8 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/foreach.hpp>
 #include <boost/tokenizer.hpp>
-#include "core/ParameterSet.h"
-#include "core/Logger.h"
+#include "brics_3d/core/ParameterSet.h"
+#include "brics_3d/core/Logger.h"
 
 namespace brics_3d {
 

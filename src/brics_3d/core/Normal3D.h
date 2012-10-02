@@ -20,7 +20,7 @@
 #ifndef BRICS_3D_NORMAL3D_H_
 #define BRICS_3D_NORMAL3D_H_
 
-#include "core/Vector3D.h"
+#include "brics_3d/core/Vector3D.h"
 
 /**
  * @namespace brics_3d

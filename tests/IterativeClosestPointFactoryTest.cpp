@@ -7,9 +7,9 @@
  */
 
 #include "IterativeClosestPointFactoryTest.h"
-#include "algorithm/registration/IterativeClosestPoint.h"
-#include "algorithm/registration/PointCorrespondenceKDTree.h"
-#include "algorithm/registration/RigidTransformationEstimationSVD.h"
+#include "brics_3d/algorithm/registration/IterativeClosestPoint.h"
+#include "brics_3d/algorithm/registration/PointCorrespondenceKDTree.h"
+#include "brics_3d/algorithm/registration/RigidTransformationEstimationSVD.h"
 
 #include <cstring>
 #include <typeinfo>

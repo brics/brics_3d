@@ -21,22 +21,22 @@
 #include <pcl/point_types.h>
 #include <pcl/io/openni_grabber.h>
 
-#include <core/PointCloud3D.h>
-#include <core/HomogeneousMatrix44.h>
-#include <core/TriangleMeshExplicit.h>
-#include <core/Logger.h>
-#include <algorithm/filtering/BoxROIExtractor.h>
-#include <algorithm/segmentation/RegionBasedSACSegmentation.h>
-#include <algorithm/segmentation/EuclideanClustering.h>
-#include <algorithm/segmentation/EuclideanClusteringPCL.h>
-#include <algorithm/meshGeneration/DelaunayTriangulationOSG.h>
-#include <util/PCLTypecaster.h>
-#include <util/Timer.h>
-#include <worldModel/WorldModel.h>
-#include <worldModel/sceneGraph/PointCloud.h>
-#include <worldModel/sceneGraph/Mesh.h>
-#include <worldModel/sceneGraph/Box.h>
-#include <worldModel/sceneGraph/OSGVisualizer.h>
+#include <brics_3d/core/PointCloud3D.h>
+#include <brics_3d/core/HomogeneousMatrix44.h>
+#include <brics_3d/core/TriangleMeshExplicit.h>
+#include <brics_3d/core/Logger.h>
+#include <brics_3d/algorithm/filtering/BoxROIExtractor.h>
+#include <brics_3d/algorithm/segmentation/RegionBasedSACSegmentation.h>
+#include <brics_3d/algorithm/segmentation/EuclideanClustering.h>
+#include <brics_3d/algorithm/segmentation/EuclideanClusteringPCL.h>
+#include <brics_3d/algorithm/meshGeneration/DelaunayTriangulationOSG.h>
+#include <brics_3d/util/PCLTypecaster.h>
+#include <brics_3d/util/Timer.h>
+#include <brics_3d/worldModel/WorldModel.h>
+#include <brics_3d/worldModel/sceneGraph/PointCloud.h>
+#include <brics_3d/worldModel/sceneGraph/Mesh.h>
+#include <brics_3d/worldModel/sceneGraph/Box.h>
+#include <brics_3d/worldModel/sceneGraph/OSGVisualizer.h>
 
 using brics_3d::Logger;
 

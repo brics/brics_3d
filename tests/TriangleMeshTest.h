@@ -12,8 +12,8 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "core/TriangleMeshExplicit.h"
-#include "core/TriangleMeshImplicit.h"
+#include "brics_3d/core/TriangleMeshExplicit.h"
+#include "brics_3d/core/TriangleMeshImplicit.h"
 
 using namespace brics_3d;
 using namespace std;

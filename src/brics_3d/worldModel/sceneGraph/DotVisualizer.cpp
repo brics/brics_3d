@@ -18,7 +18,7 @@
 ******************************************************************************/
 
 #include "DotVisualizer.h"
-#include "core/Logger.h"
+#include "brics_3d/core/Logger.h"
 
 using brics_3d::Logger;
 

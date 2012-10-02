@@ -20,7 +20,7 @@
 #ifndef BRICS_3D_DEPTHIMAGETOPOINTCLOUDTRANSFORMATION_H_
 #define BRICS_3D_DEPTHIMAGETOPOINTCLOUDTRANSFORMATION_H_
 
-#include "core/PointCloud3D.h"
+#include "brics_3d/core/PointCloud3D.h"
 #include <cv.h>
 #include <highgui.h>
 

@@ -18,7 +18,7 @@
 ******************************************************************************/
 
 #include "IterativeClosestPoint.h"
-#include "core/HomogeneousMatrix44.h" //TODO? now it depends  on implementation of HomogeneousMatrix44
+#include "brics_3d/core/HomogeneousMatrix44.h" //TODO? now it depends  on implementation of HomogeneousMatrix44
 #include <cmath>
 #include <assert.h>
 #include <stdexcept>

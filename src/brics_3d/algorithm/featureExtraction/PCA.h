@@ -21,9 +21,9 @@
 #define BRICS_3D_PCA_H_
 
 #include <Eigen/StdVector>
-#include "core/PointCloud3D.h"
-#include "core/IHomogeneousMatrix44.h"
-#include "algorithm/featureExtraction/Centroid3D.h"
+#include "brics_3d/core/PointCloud3D.h"
+#include "brics_3d/core/IHomogeneousMatrix44.h"
+#include "brics_3d/algorithm/featureExtraction/Centroid3D.h"
 
 namespace brics_3d {
 

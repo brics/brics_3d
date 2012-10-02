@@ -18,7 +18,7 @@
 ******************************************************************************/
 
 #include "MaskROIExtractor.h"
-#include "core/Logger.h"
+#include "brics_3d/core/Logger.h"
 
 namespace brics_3d {
 

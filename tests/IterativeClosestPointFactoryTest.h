@@ -12,7 +12,7 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "algorithm/registration/IterativeClosestPointFactory.h"
+#include "brics_3d/algorithm/registration/IterativeClosestPointFactory.h"
 
 using namespace std;
 using namespace brics_3d;

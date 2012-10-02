@@ -21,8 +21,8 @@
 #define RSG_IFUNCTIONBLOCK_H_
 
 #include <vector>
-#include <core/ParameterSet.h>
-#include <worldModel/WorldModel.h>
+#include <brics_3d/core/ParameterSet.h>
+#include <brics_3d/worldModel/WorldModel.h>
 
 namespace brics_3d {
 

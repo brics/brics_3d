@@ -20,7 +20,7 @@
 #ifndef BRICS_3D_ICOLORREGIONEXTRACTOR_H_
 #define BRICS_3D_ICOLORREGIONEXTRACTOR_H_
 
-#include "core/ColoredPointCloud3D.h"
+#include "brics_3d/core/ColoredPointCloud3D.h"
 
 #include <stdlib.h>
 #include <math.h>

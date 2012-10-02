@@ -19,8 +19,8 @@
 
 #ifndef BRICS_3D_ROSNORMAL3D_H_
 #define BRICS_3D_ROSNORMAL3D_H_
-#include "core/PointCloud3D.h"
-#include "core/NormalSet3D.h"
+#include "brics_3d/core/PointCloud3D.h"
+#include "brics_3d/core/NormalSet3D.h"
 #include "ROSfeature.h"
 
 //ToDo Replace using concrete classes in algoritm/featureExtraction

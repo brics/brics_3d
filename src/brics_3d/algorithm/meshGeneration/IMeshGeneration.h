@@ -20,8 +20,8 @@
 #ifndef BRICS_3D_IMESHGENERATION_H_
 #define BRICS_3D_IMESHGENERATION_H_
 
-#include "core/PointCloud3D.h"
-#include "core/ITriangleMesh.h"
+#include "brics_3d/core/PointCloud3D.h"
+#include "brics_3d/core/ITriangleMesh.h"
 
 namespace brics_3d {
 

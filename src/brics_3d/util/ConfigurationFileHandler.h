@@ -23,7 +23,7 @@
 
 #include <string>
 
-#include "core/Logger.h"
+#include "brics_3d/core/Logger.h"
 
 #ifdef BRICS_XERCES_ENABLE
 #include <xercesc/util/PlatformUtils.hpp>
@@ -88,7 +88,7 @@ public:
 	bool getAttribute(std::string algorithm, std::string attribute, double* result);
 
 	/**
-	 * @brief Get the a sub algorithm/component
+	 * @brief Get the a sub brics_3d/core/component
 	 *
 	 * TODO: return XML node ID to allow for arbitrary nested algorithms
 	 *

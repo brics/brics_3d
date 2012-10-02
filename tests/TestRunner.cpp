@@ -13,7 +13,7 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/ui/text/TestRunner.h>
 #include <cppunit/XmlOutputter.h>
-#include "core/Logger.h" // control the BRICS logger module
+#include "brics_3d/core/Logger.h" // control the BRICS logger module
 
 int main(int argc, char* argv[]) {
 

@@ -21,7 +21,7 @@
 #define BRICS_3D_POINTCORRESPONDENCEGENERICNN_H_
 
 #include "IPointCorrespondence.h"
-#include "algorithm/nearestNeighbor/INearestPoint3DNeighbor.h"
+#include "brics_3d/algorithm/nearestNeighbor/INearestPoint3DNeighbor.h"
 
 namespace brics_3d {
 

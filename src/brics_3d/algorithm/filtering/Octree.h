@@ -20,9 +20,9 @@
 #ifndef BRICS_3D_OCTREE_H_
 #define BRICS_3D_OCTREE_H_
 
-#include "algorithm/filtering/IOctreeReductionFilter.h"
-#include "algorithm/filtering/IOctreePartition.h"
-#include "algorithm/filtering/IOctreeSetup.h"
+#include "brics_3d/algorithm/filtering/IOctreeReductionFilter.h"
+#include "brics_3d/algorithm/filtering/IOctreePartition.h"
+#include "brics_3d/algorithm/filtering/IOctreeSetup.h"
 
 namespace brics_3d {
 

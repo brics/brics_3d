@@ -20,8 +20,8 @@
 #ifndef BRICS_3D_IOBJECTMODELUSINGNORMALS_H_
 #define BRICS_3D_IOBJECTMODELUSINGNORMALS_H_
 #include <vector>
-#include "algorithm/segmentation/objectModels/IObjectModel.h"
-#include "core/NormalSet3D.h"
+#include "brics_3d/algorithm/segmentation/objectModels/IObjectModel.h"
+#include "brics_3d/core/NormalSet3D.h"
 //using namespace std;
 namespace brics_3d {
 

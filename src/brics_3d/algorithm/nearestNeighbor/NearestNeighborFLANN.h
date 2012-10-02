@@ -20,9 +20,9 @@
 #ifndef BRICS_3D_NEARESTNEIGHBORFLANN_H_
 #define BRICS_3D_NEARESTNEIGHBORFLANN_H_
 
-#include "algorithm/nearestNeighbor/INearestNeighbor.h"
-#include "algorithm/nearestNeighbor/INearestPoint3DNeighbor.h"
-#include "algorithm/nearestNeighbor/INearestNeighborSetup.h"
+#include "brics_3d/algorithm/nearestNeighbor/INearestNeighbor.h"
+#include "brics_3d/algorithm/nearestNeighbor/INearestPoint3DNeighbor.h"
+#include "brics_3d/algorithm/nearestNeighbor/INearestNeighborSetup.h"
 #include "flann/src/cpp/flann.h"
 
 namespace brics_3d {

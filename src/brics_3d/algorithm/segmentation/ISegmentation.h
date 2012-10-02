@@ -20,7 +20,7 @@
 #ifndef BRICS_3D_ISEGMENTATION_H_
 #define BRICS_3D_ISEGMENTATION_H_
 
-#include "core/PointCloud3D.h"
+#include "brics_3d/core/PointCloud3D.h"
 #include <iostream>
 
 namespace brics_3d{

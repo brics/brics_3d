@@ -19,7 +19,7 @@
 
 #ifndef BRICS_3D_OBJECTMODELPLANE_H_
 #define BRICS_3D_OBJECTMODELPLANE_H_
-#include "algorithm/segmentation/objectModels/IObjectModel.h"
+#include "brics_3d/algorithm/segmentation/objectModels/IObjectModel.h"
 
 
 namespace brics_3d {

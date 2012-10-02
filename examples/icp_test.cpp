@@ -23,19 +23,19 @@
 
 #include <iostream>
 #include <sstream>
-#include "util/OSGPointCloudVisualizer.h"
-#include "core/PointCloud3D.h"
-#include "core/HomogeneousMatrix44.h"
-#include "algorithm/nearestNeighbor/NearestNeighborFLANN.h"
-#include "algorithm/registration/PointCorrespondenceKDTree.h"
-#include "algorithm/registration/PointCorrespondenceGenericNN.h"
-#include "algorithm/registration/RigidTransformationEstimationSVD.h"
-#include "algorithm/registration/RigidTransformationEstimationHELIX.h"
-#include "algorithm/registration/RigidTransformationEstimationAPX.h"
-#include "algorithm/registration/RigidTransformationEstimationORTHO.h"
-#include "algorithm/registration/IterativeClosestPoint.h"
-#include "algorithm/registration/IIterativeClosestPointSetup.h"
-#include "util/Timer.h"
+#include "brics_3d/util/OSGPointCloudVisualizer.h"
+#include "brics_3d/core/PointCloud3D.h"
+#include "brics_3d/core/HomogeneousMatrix44.h"
+#include "brics_3d/algorithm/nearestNeighbor/NearestNeighborFLANN.h"
+#include "brics_3d/algorithm/registration/PointCorrespondenceKDTree.h"
+#include "brics_3d/algorithm/registration/PointCorrespondenceGenericNN.h"
+#include "brics_3d/algorithm/registration/RigidTransformationEstimationSVD.h"
+#include "brics_3d/algorithm/registration/RigidTransformationEstimationHELIX.h"
+#include "brics_3d/algorithm/registration/RigidTransformationEstimationAPX.h"
+#include "brics_3d/algorithm/registration/RigidTransformationEstimationORTHO.h"
+#include "brics_3d/algorithm/registration/IterativeClosestPoint.h"
+#include "brics_3d/algorithm/registration/IIterativeClosestPointSetup.h"
+#include "brics_3d/util/Timer.h"
 
 #include <Eigen/Geometry>
 

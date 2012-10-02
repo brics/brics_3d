@@ -34,11 +34,11 @@
 
 
 #include<iostream>
-#include <algorithm/segmentation/evaluation/Evaluator.h>
-#include <algorithm/segmentation/evaluation/FileReader.h>
-#include <algorithm/segmentation/evaluation/FileWriter.h>
-#include <algorithm/segmentation/evaluation/MetricCalculator.h>
-#include <algorithm/segmentation/evaluation/Comparator.h>
+#include <brics_3d/algorithm/segmentation/evaluation/Evaluator.h>
+#include <brics_3d/algorithm/segmentation/evaluation/FileReader.h>
+#include <brics_3d/algorithm/segmentation/evaluation/FileWriter.h>
+#include <brics_3d/algorithm/segmentation/evaluation/MetricCalculator.h>
+#include <brics_3d/algorithm/segmentation/evaluation/Comparator.h>
 using namespace std;
 
 int main(){
@@ -46,7 +46,7 @@ int main(){
 
 	//Create a string vector containing the names of the methods. These names will be used
 	//to fetch the metric files so they should be consistent with the filenames. For more help
-	//regarding filename conventions see "trunk/src/algorithm/segmentation/evaluation/FileNameReadMe.txt"
+	//regarding filename conventions see "trunk/src/brics_3d/algorithm/segmentation/evaluation/FileNameReadMe.txt"
 	vector<string> methodNames;
 	methodNames.push_back("RANSAC");
 	methodNames.push_back("MSAC");
@@ -59,7 +59,7 @@ int main(){
 	//If the naming conventions are different for storing the evaluation metrics then it
 	//should be modified
 	comparatorObject.setMethods(methodNames);
-	comparatorObject.setPath("../src/algorithm/segmentation/evaluation/data/");
+	comparatorObject.setPath("../src/brics_3d/algorithm/segmentation/evaluation/data/");
 	comparatorObject.setGtMetricsBaseName("_result_GtMetrics.csv");
 	comparatorObject.setMsMetricsBaseName("_result_MsMetrics.csv");
 	comparatorObject.setOverlapBaseName("_result_overlapMatrix.csv");

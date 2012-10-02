@@ -12,7 +12,7 @@
 #include <sstream>
 #include <stdexcept>
 
-#include "core/HomogeneousMatrix44.h"
+#include "brics_3d/core/HomogeneousMatrix44.h"
 
 namespace unitTests {
 

@@ -20,9 +20,9 @@
 #ifndef BRICS_3D_ITERATIVECLOSESTPOINTFACTORY_H_
 #define BRICS_3D_ITERATIVECLOSESTPOINTFACTORY_H_
 
-#include "core/Logger.h"
-#include "algorithm/registration/IIterativeClosestPoint.h"
-#include "algorithm/registration/IIterativeClosestPointSetup.h"
+#include "brics_3d/core/Logger.h"
+#include "brics_3d/algorithm/registration/IIterativeClosestPoint.h"
+#include "brics_3d/algorithm/registration/IIterativeClosestPointSetup.h"
 #include <string>
 
 #include <boost/shared_ptr.hpp>

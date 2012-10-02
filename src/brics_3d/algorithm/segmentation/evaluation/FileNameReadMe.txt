@@ -12,7 +12,7 @@ comparison of 3D segmentation algorithms.
 			Typical filename should look like : "Scenario1_gt_1.txt"
 			
 		** Machine Segmented files. By default these files should be located in:
-			trunk/src/algorithm/segmentation/evaluation/data/ with user defined directory name. The file naming should be
+			trunk/src/brics_3d/algorithm/segmentation/evaluation/data/ with user defined directory name. The file naming should be
 			<prefix>_<region no><file-ext>. For Example "Scenario1_RANSAC_1.txt"
 		
 
@@ -45,7 +45,7 @@ comparison of 3D segmentation algorithms.
 2. Comparison
 
 	The comparison framework by default considers that the csv file produced during the evaluation
-	are located in trunk/src/algorithm/segmentation/evaluation/data/. This default path can be changed by setting path variable
+	are located in trunk/src/brics_3d/algorithm/segmentation/evaluation/data/. This default path can be changed by setting path variable
 	of a comparator object.
 	The filenames should follow this format:
 	<CSV-prefix><metrics-base-name>

@@ -27,7 +27,7 @@
 #include <osgUtil/Optimizer>
 #include <osgViewer/Viewer>
 
-#include "core/ITriangleMesh.h"
+#include "brics_3d/core/ITriangleMesh.h"
 
 namespace brics_3d {
 

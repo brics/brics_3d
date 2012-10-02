@@ -18,14 +18,14 @@
 ******************************************************************************/
 
 #include "IterativeClosestPointFactory.h"
-#include "util/ConfigurationFileHandler.h"
-#include "algorithm/registration/IterativeClosestPoint.h"
-#include "algorithm/registration/PointCorrespondenceKDTree.h"
-#include "algorithm/registration/RigidTransformationEstimationSVD.h"
-#include "algorithm/registration/RigidTransformationEstimationHELIX.h"
-#include "algorithm/registration/RigidTransformationEstimationAPX.h"
-#include "algorithm/registration/RigidTransformationEstimationQUAT.h"
-#include "algorithm/registration/RigidTransformationEstimationORTHO.h"
+#include "brics_3d/util/ConfigurationFileHandler.h"
+#include "brics_3d/algorithm/registration/IterativeClosestPoint.h"
+#include "brics_3d/algorithm/registration/PointCorrespondenceKDTree.h"
+#include "brics_3d/algorithm/registration/RigidTransformationEstimationSVD.h"
+#include "brics_3d/algorithm/registration/RigidTransformationEstimationHELIX.h"
+#include "brics_3d/algorithm/registration/RigidTransformationEstimationAPX.h"
+#include "brics_3d/algorithm/registration/RigidTransformationEstimationQUAT.h"
+#include "brics_3d/algorithm/registration/RigidTransformationEstimationORTHO.h"
 
 
 #include <iostream>

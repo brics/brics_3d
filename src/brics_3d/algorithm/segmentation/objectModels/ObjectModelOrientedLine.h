@@ -20,7 +20,7 @@
 #ifndef BRICS_3D_OBJECTMODELORIENTEDLINE_H_
 #define BRICS_3D_OBJECTMODELORIENTEDLINE_H_
 
-#include "algorithm/segmentation/objectModels/ObjectModelLine.h"
+#include "brics_3d/algorithm/segmentation/objectModels/ObjectModelLine.h"
 
 namespace brics_3d {
 

@@ -163,7 +163,7 @@ include(UseCodeCoverage) # for codecoverage tools with gcc (optional)
 # set parameters for build paths
 SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_HOME_DIRECTORY}/bin/ CACHE PATH "Configure the executable output path.")
 SET(LIBRARY_OUTPUT_PATH ${CMAKE_HOME_DIRECTORY}/lib/ CACHE PATH "Configure the library output path.")
-SET(BRICS_3D_INSTALL_NAME brics3d)
+SET(BRICS_3D_INSTALL_NAME brics_3d)
 #SET(INCLUDE_INSTALL_DIR /usr/local/include/brics CACHE PATH "The subdirectory to the header prefix")
 #SET(LIBRARY_INSTALL_DIR /usr/local/lib/brics CACHE PATH "The subdirectory to the header prefix")
 
@@ -171,7 +171,7 @@ SET(BRICS_3D_INSTALL_NAME brics3d)
 ADD_SUBDIRECTORY(./external/6dslam)
 ADD_SUBDIRECTORY(./external/flann)
 ADD_SUBDIRECTORY(./external/ann)
-ADD_SUBDIRECTORY(./src) #compile everything in src to create the libraries
+ADD_SUBDIRECTORY(./src/brics_3d) #compile everything in src to create the libraries
 ADD_SUBDIRECTORY(./examples) #compile everything in examples to create the example binaries
 
 IF(CppUnit_FOUND)

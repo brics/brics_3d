@@ -18,7 +18,7 @@
 ******************************************************************************/
 
 #include "IpaDatasetLoader.h"
-#include "core/ColoredPoint3D.h"
+#include "brics_3d/core/ColoredPoint3D.h"
 
 namespace brics_3d {
 

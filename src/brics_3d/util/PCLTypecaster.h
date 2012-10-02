@@ -22,9 +22,9 @@
 
 #include <pcl/point_types.h>
 #include <pcl/io/pcd_io.h>
-#include "core/ColoredPoint3D.h"
-#include "core/ColorSpaceConvertor.h"
-#include "core/PointCloud3D.h"
+#include "brics_3d/core/ColoredPoint3D.h"
+#include "brics_3d/core/ColorSpaceConvertor.h"
+#include "brics_3d/core/PointCloud3D.h"
 #include <cmath>
 
 #include <stdio.h>

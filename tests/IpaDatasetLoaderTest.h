@@ -12,7 +12,7 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "util/IpaDatasetLoader.h"
+#include "brics_3d/util/IpaDatasetLoader.h"
 
 #include <string>
 #include <iostream>

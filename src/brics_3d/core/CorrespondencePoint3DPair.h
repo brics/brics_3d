@@ -20,7 +20,7 @@
 #ifndef BRICS_3D_CORRESPONDENCEPOINT3DPAIR_H_
 #define BRICS_3D_CORRESPONDENCEPOINT3DPAIR_H_
 
-#include "core/Point3D.h"
+#include "brics_3d/core/Point3D.h"
 
 namespace brics_3d {
 

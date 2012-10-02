@@ -12,7 +12,7 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "core/Logger.h"
+#include "brics_3d/core/Logger.h"
 #include <sstream>
 
 using namespace brics_3d;

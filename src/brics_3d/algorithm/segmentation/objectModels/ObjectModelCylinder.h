@@ -20,7 +20,7 @@
 #ifndef BRICS_3D_OBJECTMODELCYLINDER_H_
 #define BRICS_3D_OBJECTMODELCYLINDER_H_
 
-#include "algorithm/segmentation/objectModels/IObjectModelUsingNormals.h"
+#include "brics_3d/algorithm/segmentation/objectModels/IObjectModelUsingNormals.h"
 
 namespace brics_3d {
 

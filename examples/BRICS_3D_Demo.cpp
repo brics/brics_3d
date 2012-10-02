@@ -18,17 +18,17 @@
 ******************************************************************************/
 
 /* BRICS_3D includes */
-#include <util/DepthImageLoader.h>
-#include <util/OSGPointCloudVisualizer.h>
-#include <util/OSGTriangleMeshVisualizer.h>
-#include <core/PointCloud3D.h>
-#include <core/HomogeneousMatrix44.h>
-#include <core/TriangleMeshImplicit.h>
-#include <core/TriangleMeshExplicit.h>
-#include <algorithm/filtering/Octree.h>
-#include <algorithm/registration/IterativeClosestPointFactory.h>
-#include <algorithm/depthPerception/DepthImageToPointCloudTransformation.h>
-#include <algorithm/meshGeneration/DelaunayTriangulationOSG.h>
+#include <brics_3d/util/DepthImageLoader.h>
+#include <brics_3d/util/OSGPointCloudVisualizer.h>
+#include <brics_3d/util/OSGTriangleMeshVisualizer.h>
+#include <brics_3d/core/PointCloud3D.h>
+#include <brics_3d/core/HomogeneousMatrix44.h>
+#include <brics_3d/core/TriangleMeshImplicit.h>
+#include <brics_3d/core/TriangleMeshExplicit.h>
+#include <brics_3d/algorithm/filtering/Octree.h>
+#include <brics_3d/algorithm/registration/IterativeClosestPointFactory.h>
+#include <brics_3d/algorithm/depthPerception/DepthImageToPointCloudTransformation.h>
+#include <brics_3d/algorithm/meshGeneration/DelaunayTriangulationOSG.h>
 
 /* general includes */
 #include <iostream>

@@ -18,7 +18,7 @@
 ******************************************************************************/
 
 #include "DelaunayTriangulationOSG.h"
-#include "core/TriangleMeshImplicit.h"
+#include "brics_3d/core/TriangleMeshImplicit.h"
 
 #include <osg/Group>
 #include <osg/Geometry>

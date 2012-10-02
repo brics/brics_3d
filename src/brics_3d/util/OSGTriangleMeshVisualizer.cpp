@@ -18,7 +18,7 @@
 ******************************************************************************/
 
 #include "OSGTriangleMeshVisualizer.h"
-#include "core/TriangleMeshImplicit.h"
+#include "brics_3d/core/TriangleMeshImplicit.h"
 
 #include <osg/ShapeDrawable>
 #include <osg/Point>

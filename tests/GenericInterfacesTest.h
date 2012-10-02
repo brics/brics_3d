@@ -23,14 +23,14 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "core/HomogeneousMatrix44.h"
-#include "core/TriangleMeshExplicit.h"
-#include "core/TriangleMeshImplicit.h"
-#include "algorithm/filtering/Octree.h"
-#include "algorithm/registration/IterativeClosestPoint.h"
-#include "algorithm/registration/PointCorrespondenceKDTree.h"
-#include "algorithm/registration/RigidTransformationEstimationSVD.h"
-#include "algorithm/meshGeneration/DelaunayTriangulationOSG.h"
+#include "brics_3d/core/HomogeneousMatrix44.h"
+#include "brics_3d/core/TriangleMeshExplicit.h"
+#include "brics_3d/core/TriangleMeshImplicit.h"
+#include "brics_3d/algorithm/filtering/Octree.h"
+#include "brics_3d/algorithm/registration/IterativeClosestPoint.h"
+#include "brics_3d/algorithm/registration/PointCorrespondenceKDTree.h"
+#include "brics_3d/algorithm/registration/RigidTransformationEstimationSVD.h"
+#include "brics_3d/algorithm/meshGeneration/DelaunayTriangulationOSG.h"
 
 using namespace std;
 using namespace Eigen;

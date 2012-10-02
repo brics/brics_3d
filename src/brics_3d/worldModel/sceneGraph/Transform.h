@@ -20,7 +20,7 @@
 #ifndef RSG_TRANSFORM_H
 #define RSG_TRANSFORM_H
 
-#include "core/IHomogeneousMatrix44.h"
+#include "brics_3d/core/IHomogeneousMatrix44.h"
 #include "Group.h"
 #include "TimeStamp.h"
 #include <vector>

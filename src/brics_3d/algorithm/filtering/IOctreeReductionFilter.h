@@ -20,7 +20,7 @@
 #ifndef BRICS_3D_IOCTREEREDUCTIONFILTER_H_
 #define BRICS_3D_IOCTREEREDUCTIONFILTER_H_
 
-#include "core/PointCloud3D.h"
+#include "brics_3d/core/PointCloud3D.h"
 #include "IFiltering.h"
 
 namespace brics_3d {

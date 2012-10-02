@@ -17,11 +17,11 @@
 *
 ******************************************************************************/
 
-#include <core/PointCloud3D.h>
-#include <core/Point3D.h>
-#include <algorithm/segmentation/RegionBasedSACSegmentation.h>
-#include <algorithm/filtering/MaskROIExtractor.h>
-#include <util/OSGPointCloudVisualizer.h>
+#include <brics_3d/core/PointCloud3D.h>
+#include <brics_3d/core/Point3D.h>
+#include <brics_3d/algorithm/segmentation/RegionBasedSACSegmentation.h>
+#include <brics_3d/algorithm/filtering/MaskROIExtractor.h>
+#include <brics_3d/util/OSGPointCloudVisualizer.h>
 
 #include <iostream>
 
@@ -33,8 +33,8 @@ int main(){
 
 	//read the points into the pointcloud
 	//Please modify the path if there is a file read error.
-//	cloud.readFromTxtFile("./src/algorithm/segmentation/evaluation/data/demoCloud.txt");
-	cloud.readFromTxtFile("./src/algorithm/segmentation/evaluation/groundTruthData/bureau3/bureau3.txt");
+//	cloud.readFromTxtFile("./src/brics_3d/algorithm/segmentation/evaluation/data/demoCloud.txt");
+	cloud.readFromTxtFile("./src/brics_3d/algorithm/segmentation/evaluation/groundTruthData/bureau3/bureau3.txt");
 
 	cout<< "INFO: Current PointCloud Size: " <<cloud.getSize()<<endl;
 

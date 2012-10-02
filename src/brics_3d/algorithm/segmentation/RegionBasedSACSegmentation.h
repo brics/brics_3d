@@ -20,30 +20,30 @@
 #ifndef BRICS_3D_REGIONBASEDSACSEGMENTATION_H_
 #define BRICS_3D_REGIONBASEDSACSEGMENTATION_H_
 
-#include "algorithm/segmentation/ISegmentation.h"
-#include "algorithm/segmentation/objectModels/IObjectModel.h"
-#include "algorithm/segmentation/objectModels/IObjectModelUsingNormals.h"
-#include "algorithm/segmentation/SACMethods/ISACMethods.h"
-#include "core/PointCloud3D.h"
+#include "brics_3d/algorithm/segmentation/ISegmentation.h"
+#include "brics_3d/algorithm/segmentation/objectModels/IObjectModel.h"
+#include "brics_3d/algorithm/segmentation/objectModels/IObjectModelUsingNormals.h"
+#include "brics_3d/algorithm/segmentation/SACMethods/ISACMethods.h"
+#include "brics_3d/core/PointCloud3D.h"
 
 //Object Models Supported
-#include "algorithm/segmentation/objectModels/ObjectModelPlane.h"
-#include "algorithm/segmentation/objectModels/ObjectModelPlaneFromLines.h"
-#include "algorithm/segmentation/objectModels/ObjectModelPlaneFromLineAndPoint.h"
-#include "algorithm/segmentation/objectModels/ObjectModelOrientedPlane.h"
-#include "algorithm/segmentation/objectModels/ObjectModelNormalPlane.h"
-#include "algorithm/segmentation/objectModels/ObjectModelCircle.h"
-#include "algorithm/segmentation/objectModels/ObjectModelCylinder.h"
-#include "algorithm/segmentation/objectModels/ObjectModelOrientedLine.h"
-#include "algorithm/segmentation/objectModels/ObjectModelLine.h"
-#include "algorithm/segmentation/objectModels/ObjectModelSphere.h"
+#include "brics_3d/algorithm/segmentation/objectModels/ObjectModelPlane.h"
+#include "brics_3d/algorithm/segmentation/objectModels/ObjectModelPlaneFromLines.h"
+#include "brics_3d/algorithm/segmentation/objectModels/ObjectModelPlaneFromLineAndPoint.h"
+#include "brics_3d/algorithm/segmentation/objectModels/ObjectModelOrientedPlane.h"
+#include "brics_3d/algorithm/segmentation/objectModels/ObjectModelNormalPlane.h"
+#include "brics_3d/algorithm/segmentation/objectModels/ObjectModelCircle.h"
+#include "brics_3d/algorithm/segmentation/objectModels/ObjectModelCylinder.h"
+#include "brics_3d/algorithm/segmentation/objectModels/ObjectModelOrientedLine.h"
+#include "brics_3d/algorithm/segmentation/objectModels/ObjectModelLine.h"
+#include "brics_3d/algorithm/segmentation/objectModels/ObjectModelSphere.h"
 
 //SAC Methods Supported
-#include "algorithm/segmentation/SACMethods/SACMethodALMeDS.h"
-#include "algorithm/segmentation/SACMethods/SACMethodRANSAC.h"
-#include "algorithm/segmentation/SACMethods/SACMethodMSAC.h"
-#include "algorithm/segmentation/SACMethods/SACMethodLMeDS.h"
-#include "algorithm/segmentation/SACMethods/SACMethodMLESAC.h"
+#include "brics_3d/algorithm/segmentation/SACMethods/SACMethodALMeDS.h"
+#include "brics_3d/algorithm/segmentation/SACMethods/SACMethodRANSAC.h"
+#include "brics_3d/algorithm/segmentation/SACMethods/SACMethodMSAC.h"
+#include "brics_3d/algorithm/segmentation/SACMethods/SACMethodLMeDS.h"
+#include "brics_3d/algorithm/segmentation/SACMethods/SACMethodMLESAC.h"
 
 namespace brics_3d{
 

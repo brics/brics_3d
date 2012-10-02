@@ -20,8 +20,8 @@
 #ifndef BRICS_3D_INORMALESTIMATION_H_
 #define BRICS_3D_INORMALESTIMATION_H_
 
-#include "core/PointCloud3D.h"
-#include "core/NormalSet3D.h"
+#include "brics_3d/core/PointCloud3D.h"
+#include "brics_3d/core/NormalSet3D.h"
 
 namespace brics_3d {
 

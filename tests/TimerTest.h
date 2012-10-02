@@ -12,7 +12,7 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "util/Timer.h"
+#include "brics_3d/util/Timer.h"
 
 using namespace brics_3d;
 

@@ -12,10 +12,10 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "algorithm/filtering/IOctreeReductionFilter.h"
-#include "algorithm/filtering/IOctreeSetup.h"
-#include "algorithm/filtering/IOctreePartition.h"
-#include "algorithm/filtering/Octree.h"
+#include "brics_3d/algorithm/filtering/IOctreeReductionFilter.h"
+#include "brics_3d/algorithm/filtering/IOctreeSetup.h"
+#include "brics_3d/algorithm/filtering/IOctreePartition.h"
+#include "brics_3d/algorithm/filtering/Octree.h"
 
 using namespace std;
 using namespace brics_3d;

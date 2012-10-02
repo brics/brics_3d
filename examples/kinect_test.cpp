@@ -23,10 +23,10 @@
 #include <pcl/io/openni_grabber.h>
 
 // BRICS_3D includes
-#include <core/PointCloud3D.h>
-#include <core/Logger.h>
-#include <util/PCLTypecaster.h>
-#include <util/OSGPointCloudVisualizer.h>
+#include <brics_3d/core/PointCloud3D.h>
+#include <brics_3d/core/Logger.h>
+#include <brics_3d/util/PCLTypecaster.h>
+#include <brics_3d/util/OSGPointCloudVisualizer.h>
 
 using brics_3d::Logger;
 

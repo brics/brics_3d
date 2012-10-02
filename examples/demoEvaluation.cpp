@@ -34,11 +34,11 @@
 
 
 #include<iostream>
-#include <algorithm/segmentation/evaluation/Evaluator.h>
-#include <algorithm/segmentation/evaluation/FileReader.h>
-#include <algorithm/segmentation/evaluation/FileWriter.h>
-#include <algorithm/segmentation/evaluation/MetricCalculator.h>
-#include <algorithm/segmentation/evaluation/Comparator.h>
+#include <brics_3d/algorithm/segmentation/evaluation/Evaluator.h>
+#include <brics_3d/algorithm/segmentation/evaluation/FileReader.h>
+#include <brics_3d/algorithm/segmentation/evaluation/FileWriter.h>
+#include <brics_3d/algorithm/segmentation/evaluation/MetricCalculator.h>
+#include <brics_3d/algorithm/segmentation/evaluation/Comparator.h>
 using namespace std;
 
 int main(){
@@ -54,19 +54,19 @@ int main(){
 	//Evaluator Initialization
 	//ToDo set the ground truth file path properly
 	stringstream baseName;
-	string folderPath = "../src/algorithm/segmentation/evaluation/groundTruthData/";
+	string folderPath = "../src/brics_3d/algorithm/segmentation/evaluation/groundTruthData/";
 	string scenarioName = "bureau3/";
 	string prefix ="bureau3_gt_";
 
 	//set the ground truth base file name. For more info on file convention see
-	// "trunk/src/algorithm/segmentation/evaluation/FileNameReadMe.txt"
+	// "trunk/src/brics_3d/algorithm/segmentation/evaluation/FileNameReadMe.txt"
 	baseName.str("");
 	baseName.clear();
 	baseName << folderPath << scenarioName << prefix;
 	evaluator.setGtBaseName(baseName.str());
 
 	//set the machne segmented file names.
-	folderPath = "../src/algorithm/segmentation/evaluation/data/MSAC_results/";
+	folderPath = "../src/brics_3d/algorithm/segmentation/evaluation/data/MSAC_results/";
 	prefix="bureau3_plane_msac_";
 	baseName.str("");
 	baseName.clear();

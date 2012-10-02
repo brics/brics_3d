@@ -142,7 +142,7 @@ void Point3DDecoratorTest::testRecursiveDecoration() {
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(testY, basePointOuter->getY(), maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(testZ, basePointOuter->getZ(), maxTolerance);
 
-	/* change data from core/base */
+	/* change data from brics_3d/core/base */
 	testX = 30.0;
 	testY = 31.0;
 	testZ = 32.0;
@@ -291,7 +291,7 @@ void Point3DDecoratorTest::testRecursiveDecorationCopies() {
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(test2Y, basePointOuter->getY(), maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(test2Z, basePointOuter->getZ(), maxTolerance);
 
-	/* change data from core/base */
+	/* change data from brics_3d/core/base */
 	Coordinate test3X = 30.0;
 	Coordinate test3Y = 31.0;
 	Coordinate test3Z = 32.0;

@@ -20,7 +20,7 @@
 #ifndef BRICS_3D_IITERATIVECLOSESTPOINTDETAILED_H_
 #define BRICS_3D_IITERATIVECLOSESTPOINTDETAILED_H_
 
-#include "core/IHomogeneousMatrix44.h"
+#include "brics_3d/core/IHomogeneousMatrix44.h"
 
 namespace brics_3d {
 

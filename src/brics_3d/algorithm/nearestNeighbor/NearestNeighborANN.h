@@ -21,9 +21,9 @@
 #define BRICS_3D_NEARESTNEIGHBORANN_H_
 
 
-#include "algorithm/nearestNeighbor/INearestNeighbor.h"
-#include "algorithm/nearestNeighbor/INearestPoint3DNeighbor.h"
-#include "algorithm/nearestNeighbor/INearestNeighborSetup.h"
+#include "brics_3d/algorithm/nearestNeighbor/INearestNeighbor.h"
+#include "brics_3d/algorithm/nearestNeighbor/INearestPoint3DNeighbor.h"
+#include "brics_3d/algorithm/nearestNeighbor/INearestNeighborSetup.h"
 #include "ann/include/ANN/ANN.h"
 
 namespace brics_3d {

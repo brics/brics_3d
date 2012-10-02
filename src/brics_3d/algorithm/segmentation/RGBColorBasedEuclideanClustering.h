@@ -20,7 +20,7 @@
 #ifndef BRICS_3D_RGBCOLORBASEDEUCLIDEANCLUSTERING_H_
 #define BRICS_3D_RGBCOLORBASEDEUCLIDEANCLUSTERING_H_
 
-#include "algorithm/segmentation/ISegmentation.h"
+#include "brics_3d/algorithm/segmentation/ISegmentation.h"
 #include <vector>
 
 

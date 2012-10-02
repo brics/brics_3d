@@ -20,12 +20,12 @@
 #include <iostream>
 #include <cstdlib>
 
-#include "core/PointCloud3D.h"
-#include "core/ColoredPoint3D.h"
-#include "core/HomogeneousMatrix44.h"
-#include "util/OSGPointCloudVisualizer.h"
-#include "util/Timer.h"
-#include "util/Benchmark.h"
+#include "brics_3d/core/PointCloud3D.h"
+#include "brics_3d/core/ColoredPoint3D.h"
+#include "brics_3d/core/HomogeneousMatrix44.h"
+#include "brics_3d/util/OSGPointCloudVisualizer.h"
+#include "brics_3d/util/Timer.h"
+#include "brics_3d/util/Benchmark.h"
 
 
 using namespace std;

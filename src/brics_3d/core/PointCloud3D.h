@@ -24,7 +24,7 @@
 #include <string>
 #include <boost/ptr_container/ptr_vector.hpp>
 
-#include "core/Point3D.h"
+#include "Point3D.h"
 
 #define USE_POINTER_VECTOR
 

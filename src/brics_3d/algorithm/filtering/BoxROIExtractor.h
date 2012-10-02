@@ -21,7 +21,7 @@
 #define BRICS_3D_BOXROIEXTRACTOR_H_
 
 #include "IFiltering.h"
-#include "core/IHomogeneousMatrix44.h"
+#include "brics_3d/core/IHomogeneousMatrix44.h"
 
 namespace brics_3d {
 

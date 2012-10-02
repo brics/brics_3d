@@ -20,8 +20,8 @@
 #ifndef BRICS_3D_IPADATASETLOADER_H_
 #define BRICS_3D_IPADATASETLOADER_H_
 
-#include "core/PointCloud3D.h"
-#include "core/Logger.h"
+#include "brics_3d/core/PointCloud3D.h"
+#include "brics_3d/core/Logger.h"
 
 #ifdef WIN32
 	#include <windows.h>

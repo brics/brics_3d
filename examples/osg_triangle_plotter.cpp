@@ -18,9 +18,9 @@
 ******************************************************************************/
 
 #include <iostream>
-#include <core/TriangleMeshImplicit.h>
-#include <core/TriangleMeshExplicit.h>
-#include <util/OSGTriangleMeshVisualizer.h>
+#include <brics_3d/core/TriangleMeshImplicit.h>
+#include <brics_3d/core/TriangleMeshExplicit.h>
+#include <brics_3d/util/OSGTriangleMeshVisualizer.h>
 
 
 

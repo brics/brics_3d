@@ -23,9 +23,9 @@
 
 #include <Eigen/Geometry>
 #include <set>
-#include "algorithm/segmentation/features/ROSnormal3D.h"
-#include "core/Point3D.h"
-#include "core/PointCloud3D.h"
+#include "brics_3d/algorithm/segmentation/features/ROSnormal3D.h"
+#include "brics_3d/core/Point3D.h"
+#include "brics_3d/core/PointCloud3D.h"
 #include <float.h>
 
 

@@ -13,7 +13,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include <cstring>
 
-#include "util/ConfigurationFileHandler.h"
+#include "brics_3d/util/ConfigurationFileHandler.h"
 
 
 using namespace std;

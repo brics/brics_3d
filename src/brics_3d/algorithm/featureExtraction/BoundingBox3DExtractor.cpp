@@ -19,8 +19,8 @@
 
 #include "BoundingBox3DExtractor.h"
 #include "Centroid3D.h"
-#include "core/Logger.h"
-#include "core/HomogeneousMatrix44.h"
+#include "brics_3d/core/Logger.h"
+#include "brics_3d/core/HomogeneousMatrix44.h"
 #include <limits>
 
 namespace brics_3d {

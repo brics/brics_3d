@@ -19,8 +19,8 @@
 
 #include "ColorBasedROIExtractorHSV.h"
 
-#include "core/ColorSpaceConvertor.h"
-#include "core/ColoredPoint3D.h"
+#include "brics_3d/core/ColorSpaceConvertor.h"
+#include "brics_3d/core/ColoredPoint3D.h"
 #include <stdio.h>
 
 namespace brics_3d {

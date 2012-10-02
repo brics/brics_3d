@@ -22,10 +22,10 @@
 
 #include <vector>
 #include <Eigen/Geometry>
-#include "core/NormalSet3D.h"
+#include "brics_3d/core/NormalSet3D.h"
 #include "RegionBasedSACSegmentation.h"
-#include "algorithm/segmentation/objectModels/ObjectModelCylinder.h"
-#include "algorithm/segmentation/objectModels/ObjectModelNormalPlane.h"
+#include "brics_3d/algorithm/segmentation/objectModels/ObjectModelCylinder.h"
+#include "brics_3d/algorithm/segmentation/objectModels/ObjectModelNormalPlane.h"
 
 
 namespace brics_3d {

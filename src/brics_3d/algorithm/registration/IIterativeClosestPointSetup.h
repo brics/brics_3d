@@ -20,8 +20,8 @@
 #ifndef BRICS_3D_IITERATIVECLOSESTPOINTSETUP_H_
 #define BRICS_3D_IITERATIVECLOSESTPOINTSETUP_H_
 
-#include "algorithm/registration/IPointCorrespondence.h"
-#include "algorithm/registration/IRigidTransformationEstimation.h"
+#include "brics_3d/algorithm/registration/IPointCorrespondence.h"
+#include "brics_3d/algorithm/registration/IRigidTransformationEstimation.h"
 
 namespace brics_3d {
 

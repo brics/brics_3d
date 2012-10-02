@@ -26,7 +26,7 @@
 #include "sceneGraph/OutdatedDataIdAwareDeleter.h"
 #include "IWorldModelUpdate.h"
 #include "IWorldModelCoordination.h"
-#include "util/Timer.h"
+#include "brics_3d/util/Timer.h"
 
 namespace brics_3d {
 

@@ -20,7 +20,7 @@
 #ifdef BRICS_OSG_ENABLE
 
 #include "OSGPointCloudVisualizer.h"
-#include "core/ColoredPoint3D.h"
+#include "brics_3d/core/ColoredPoint3D.h"
 #include <osg/Point>
 
 namespace brics_3d {

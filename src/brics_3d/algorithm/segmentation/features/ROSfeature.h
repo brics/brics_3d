@@ -40,9 +40,9 @@
 #ifndef PCL_FEATURE_H_
 #define PCL_FEATURE_H_
 
-#include "core/PointCloud3D.h"
-#include "core/Normal3D.h"
-#include "core/HomogeneousMatrix44.h"
+#include "brics_3d/core/PointCloud3D.h"
+#include "brics_3d/core/Normal3D.h"
+#include "brics_3d/core/HomogeneousMatrix44.h"
 #include <Eigen/Dense>
 namespace brics_3d
 {

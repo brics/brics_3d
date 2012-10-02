@@ -17,16 +17,16 @@
 *
 ******************************************************************************/
 
-#include "util/OSGPointCloudVisualizer.h"
-#include "core/PointCloud3D.h"
+#include "brics_3d/util/OSGPointCloudVisualizer.h"
+#include "brics_3d/core/PointCloud3D.h"
 
-#include "util/PCLTypecaster.h"
-#include "algorithm/segmentation/EuclideanClustering.h"
-#include "algorithm/segmentation/EuclideanClusteringPCL.h"
-#include "algorithm/segmentation/RGBColorBasedEuclideanClustering.h"
-#include "algorithm/filtering/ColorBasedROIExtractorHSV.h"
-#include "algorithm/featureExtraction/Centroid3D.h"
-#include "core/ColorSpaceConvertor.h"
+#include "brics_3d/util/PCLTypecaster.h"
+#include "brics_3d/algorithm/segmentation/EuclideanClustering.h"
+#include "brics_3d/algorithm/segmentation/EuclideanClusteringPCL.h"
+#include "brics_3d/algorithm/segmentation/RGBColorBasedEuclideanClustering.h"
+#include "brics_3d/algorithm/filtering/ColorBasedROIExtractorHSV.h"
+#include "brics_3d/algorithm/featureExtraction/Centroid3D.h"
+#include "brics_3d/core/ColorSpaceConvertor.h"
 
 
 #include <iostream>

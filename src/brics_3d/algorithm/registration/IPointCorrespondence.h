@@ -20,9 +20,9 @@
 #ifndef BRICS_3D_IPOINTCORRESPONDENCE_H_
 #define BRICS_3D_IPOINTCORRESPONDENCE_H_
 
-#include "core/PointCloud3D.h"
-//#include "core/CorrespondenceIndexPair.h"
-#include "core/CorrespondencePoint3DPair.h"
+#include "brics_3d/core/PointCloud3D.h"
+//#include "brics_3d/core/CorrespondenceIndexPair.h"
+#include "brics_3d/core/CorrespondencePoint3DPair.h"
 
 #include <vector>
 

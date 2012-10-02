@@ -20,8 +20,8 @@
 #ifndef BRICS_3D_TRIANGLEMESHEXPLICIT_H_
 #define BRICS_3D_TRIANGLEMESHEXPLICIT_H_
 
-#include "core/ITriangleMesh.h"
-#include "core/Triangle.h"
+#include "brics_3d/core/ITriangleMesh.h"
+#include "brics_3d/core/Triangle.h"
 #include <vector>
 
 namespace brics_3d {

@@ -18,11 +18,11 @@
 ******************************************************************************/
 
 #include <iostream>
-#include <util/DepthImageLoader.h>
-#include <util/OSGPointCloudVisualizer.h>
-#include <core/PointCloud3D.h>
-#include <algorithm/depthPerception/DepthImageToPointCloudTransformation.h>
-#include <algorithm/filtering/Octree.h>
+#include <brics_3d/util/DepthImageLoader.h>
+#include <brics_3d/util/OSGPointCloudVisualizer.h>
+#include <brics_3d/core/PointCloud3D.h>
+#include <brics_3d/algorithm/depthPerception/DepthImageToPointCloudTransformation.h>
+#include <brics_3d/algorithm/filtering/Octree.h>
 
 using namespace std;
 using namespace brics_3d;

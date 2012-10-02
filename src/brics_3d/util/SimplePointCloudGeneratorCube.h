@@ -22,7 +22,7 @@
 
 #include "ISimplePointCloudGenerator.h"
 #include "iostream"
-#include "core/PointCloud3D.h"
+#include "brics_3d/core/PointCloud3D.h"
 
 namespace brics_3d {
 

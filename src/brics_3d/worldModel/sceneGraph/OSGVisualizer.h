@@ -21,13 +21,13 @@
 #define RSG_OSGVISUALIZER_H_
 
 #include "ISceneGraphUpdateObserver.h"
-#include "worldModel/sceneGraph/PointCloud.h"
-#include "worldModel/sceneGraph/Mesh.h"
-#include "worldModel/sceneGraph/Box.h"
-#include "worldModel/sceneGraph/Cylinder.h"
-#include "worldModel/sceneGraph/Attribute.h"
-#include "util/OSGPointCloudVisualizer.h" //unfortunately libbrics3d_world_model depends now on libbrics3d_util
-#include "util/OSGTriangleMeshVisualizer.h"
+#include "brics_3d/worldModel/sceneGraph/PointCloud.h"
+#include "brics_3d/worldModel/sceneGraph/Mesh.h"
+#include "brics_3d/worldModel/sceneGraph/Box.h"
+#include "brics_3d/worldModel/sceneGraph/Cylinder.h"
+#include "brics_3d/worldModel/sceneGraph/Attribute.h"
+#include "brics_3d/util/OSGPointCloudVisualizer.h" //unfortunately libbrics3d_world_model depends now on libbrics3d_util
+#include "brics_3d/util/OSGTriangleMeshVisualizer.h"
 
 #include <osg/MatrixTransform>
 #include <osg/ShapeDrawable>

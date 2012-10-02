@@ -20,11 +20,11 @@
 #ifndef BRICS_3D_NORMALESTIMATION_H_
 #define BRICS_3D_NORMALESTIMATION_H_
 
-#include "core/PointCloud3D.h"
-#include "algorithm/segmentation/features/ROSnormal3D.h"
-#include "core/NormalSet3D.h"
+#include "brics_3d/core/PointCloud3D.h"
+#include "brics_3d/algorithm/segmentation/features/ROSnormal3D.h"
+#include "brics_3d/core/NormalSet3D.h"
 
-#include "algorithm/nearestNeighbor/INearestPoint3DNeighbor.h"
+#include "brics_3d/algorithm/nearestNeighbor/INearestPoint3DNeighbor.h"
 
 namespace brics_3d {
 

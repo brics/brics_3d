@@ -12,12 +12,12 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "core/HomogeneousMatrix44.h"
-#include "util/Timer.h"
-#include "worldModel/WorldModel.h"
-#include "worldModel/sceneGraph/Attribute.h"
-#include "worldModel/sceneGraph/Box.h"
-#include "worldModel/sceneGraph/Cylinder.h"
+#include "brics_3d/core/HomogeneousMatrix44.h"
+#include "brics_3d/util/Timer.h"
+#include "brics_3d/worldModel/WorldModel.h"
+#include "brics_3d/worldModel/sceneGraph/Attribute.h"
+#include "brics_3d/worldModel/sceneGraph/Box.h"
+#include "brics_3d/worldModel/sceneGraph/Cylinder.h"
 
 
 namespace unitTests {

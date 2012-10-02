@@ -20,8 +20,8 @@
 #ifndef BRICS_3D_IREGISTRATION_H_
 #define BRICS_3D_IREGISTRATION_H_
 
-#include "core/PointCloud3D.h"
-#include "core/IHomogeneousMatrix44.h"
+#include "brics_3d/core/PointCloud3D.h"
+#include "brics_3d/core/IHomogeneousMatrix44.h"
 
 namespace brics_3d {
 

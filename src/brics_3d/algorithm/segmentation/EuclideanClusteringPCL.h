@@ -20,9 +20,9 @@
 #ifndef BRICS_3D_EUCLEDIANCLUSTERINGPCL_H_
 #define BRICS_3D_EUCLEDIANCLUSTERINGPCL_H_
 
-#include "core/PointCloud3D.h"
-#include "algorithm/segmentation/ISegmentation.h"
-#include "core/ColorSpaceConvertor.h"
+#include "brics_3d/core/PointCloud3D.h"
+#include "brics_3d/algorithm/segmentation/ISegmentation.h"
+#include "brics_3d/core/ColorSpaceConvertor.h"
 
 #include <vector>
 #include<stdio.h>

@@ -20,7 +20,7 @@
 #ifndef BRICS_3D_TRIANGLEMESHIMPLICIT_H_
 #define BRICS_3D_TRIANGLEMESHIMPLICIT_H_
 
-#include "core/ITriangleMesh.h"
+#include "brics_3d/core/ITriangleMesh.h"
 #include <vector>
 
 namespace brics_3d {

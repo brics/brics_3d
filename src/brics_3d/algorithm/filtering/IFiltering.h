@@ -19,7 +19,7 @@
 #ifndef BRICS_3D_IFILTERING_H_
 #define BRICS_3D_IFILTERING_H_
 
-#include "core/PointCloud3D.h"
+#include "brics_3d/core/PointCloud3D.h"
 
 namespace brics_3d {
 

@@ -20,7 +20,7 @@
 #ifndef BRICS_3D_IWORLDMODELQUERY_H
 #define BRICS_3D_IWORLDMODELQUERY_H
 
-#include "core/IHomogeneousMatrix44.h"
+#include "brics_3d/core/IHomogeneousMatrix44.h"
 #include <vector>
 using std::vector;
 

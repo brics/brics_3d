@@ -26,7 +26,7 @@
 #include "GeometricNode.h"
 #include "INodeVisitor.h"
 
-#include "util/Timer.h"
+#include "brics_3d/util/Timer.h"
 
 namespace brics_3d {
 

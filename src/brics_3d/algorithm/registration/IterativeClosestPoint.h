@@ -20,12 +20,12 @@
 #ifndef BRICS_3D_ITERATIVECLOSESTPOINT_H_
 #define BRICS_3D_ITERATIVECLOSESTPOINT_H_
 
-#include "core/Logger.h"
-#include "algorithm/registration/IIterativeClosestPoint.h"
-#include "algorithm/registration/IIterativeClosestPointSetup.h"
-#include "algorithm/registration/IIterativeClosestPointDetailed.h"
-#include "algorithm/registration/IPointCorrespondence.h"
-#include "algorithm/registration/IRigidTransformationEstimation.h"
+#include "brics_3d/core/Logger.h"
+#include "brics_3d/algorithm/registration/IIterativeClosestPoint.h"
+#include "brics_3d/algorithm/registration/IIterativeClosestPointSetup.h"
+#include "brics_3d/algorithm/registration/IIterativeClosestPointDetailed.h"
+#include "brics_3d/algorithm/registration/IPointCorrespondence.h"
+#include "brics_3d/algorithm/registration/IRigidTransformationEstimation.h"
 
 namespace brics_3d {
 

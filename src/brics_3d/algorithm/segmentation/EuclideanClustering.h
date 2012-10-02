@@ -20,10 +20,10 @@
 #ifndef BRICS_3D_EUCLIDEANCLUSTERING3D_H_
 #define BRICS_3D_EUCLIDEANCLUSTERING3D_H_
 
-#include "core/PointCloud3D.h"
-#include "algorithm/nearestNeighbor/NearestNeighborANN.h"
-#include "algorithm/nearestNeighbor/NearestNeighborFLANN.h"
-#include "algorithm/segmentation/ISegmentation.h"
+#include "brics_3d/core/PointCloud3D.h"
+#include "brics_3d/algorithm/nearestNeighbor/NearestNeighborANN.h"
+#include "brics_3d/algorithm/nearestNeighbor/NearestNeighborFLANN.h"
+#include "brics_3d/algorithm/segmentation/ISegmentation.h"
 
 #include <vector>
 #include<stdio.h>

@@ -20,8 +20,8 @@
 #define BRICS_3D_NEARESTNEIGHBORSTANN_H_
 
 #include "INearestNeighbor.h"
-#include "algorithm/nearestNeighbor/INearestPoint3DNeighbor.h"
-#include "algorithm/nearestNeighbor/INearestNeighborSetup.h"
+#include "brics_3d/algorithm/nearestNeighbor/INearestPoint3DNeighbor.h"
+#include "brics_3d/algorithm/nearestNeighbor/INearestNeighborSetup.h"
 #include "stann/include/dpoint.hpp"
 #include "stann/include/sfcnn.hpp"
 

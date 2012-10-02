@@ -30,7 +30,7 @@
  */
 
 #include <iostream>
-#include <util/DepthImageLoader.h>
+#include <brics_3d/util/DepthImageLoader.h>
 
 using namespace std;
 using namespace brics_3d;

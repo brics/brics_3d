@@ -12,9 +12,9 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "core/PointCloud3D.h"
-#include "core/HomogeneousMatrix44.h"
-#include "algorithm/registration/PointCorrespondenceKDTree.h"
+#include "brics_3d/core/PointCloud3D.h"
+#include "brics_3d/core/HomogeneousMatrix44.h"
+#include "brics_3d/algorithm/registration/PointCorrespondenceKDTree.h"
 
 #include <Eigen/Geometry>
 #include <iostream>

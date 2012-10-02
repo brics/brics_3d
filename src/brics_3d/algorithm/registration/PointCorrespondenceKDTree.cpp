@@ -17,7 +17,7 @@
 *
 ******************************************************************************/
 
-#include "algorithm/registration/PointCorrespondenceKDTree.h"
+#include "brics_3d/algorithm/registration/PointCorrespondenceKDTree.h"
 
 #define MAX_OPENMP_NUM_THREADS 4
 #include "6dslam/src/d2tree.h"

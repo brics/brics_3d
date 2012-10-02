@@ -7,7 +7,7 @@
  */
 
 #include "IpaDatasetLoaderTest.h"
-#include "util/OSGPointCloudVisualizer.h"
+#include "brics_3d/util/OSGPointCloudVisualizer.h"
 
 namespace unitTests {
 

@@ -17,12 +17,12 @@
 *
 ******************************************************************************/
 
-#include "algorithm/segmentation/RegionBasedSACSegmentationUsingNormals.h"
-#include "core/PointCloud3D.h"
-#include "core/Point3D.h"
+#include "brics_3d/algorithm/segmentation/RegionBasedSACSegmentationUsingNormals.h"
+#include "brics_3d/core/PointCloud3D.h"
+#include "brics_3d/core/Point3D.h"
 #include <iostream>
-#include "algorithm/segmentation/features/NormalEstimation.h"
-#include "algorithm/nearestNeighbor/NearestNeighborANN.h"
+#include "brics_3d/algorithm/segmentation/features/NormalEstimation.h"
+#include "brics_3d/algorithm/nearestNeighbor/NearestNeighborANN.h"
 
 int main(){
 
@@ -40,7 +40,7 @@ int main(){
 	//read the points into the pointcloud
 	//Please modify the path if there is a file read error.
 	//FIXME do not use absolute path
-	cloud.readFromTxtFile("./src/algorithm/segmentation/evaluation/data/demoCloud.txt");
+	cloud.readFromTxtFile("./src/brics_3d/algorithm/segmentation/evaluation/data/demoCloud.txt");
 
 	if (cloud.getSize()>0){
 	cout<< "INFO: Current PointCloud Size: " <<cloud.getSize()<<endl;

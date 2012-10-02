@@ -14,7 +14,7 @@
 #include <stdexcept>
 
 #include "Point3DTest.h"
-#include "core/HomogeneousMatrix44.h"
+#include "brics_3d/core/HomogeneousMatrix44.h"
 
 
 namespace unitTests {

@@ -12,14 +12,14 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "core/PointCloud3D.h"
-#include "core/HomogeneousMatrix44.h"
-#include "core/Logger.h"
-#include "algorithm/registration/RigidTransformationEstimationSVD.h"
-#include "algorithm/registration/RigidTransformationEstimationQUAT.h"
-#include "algorithm/registration/RigidTransformationEstimationHELIX.h"
-#include "algorithm/registration/RigidTransformationEstimationAPX.h"
-#include "algorithm/registration/RigidTransformationEstimationORTHO.h"
+#include "brics_3d/core/PointCloud3D.h"
+#include "brics_3d/core/HomogeneousMatrix44.h"
+#include "brics_3d/core/Logger.h"
+#include "brics_3d/algorithm/registration/RigidTransformationEstimationSVD.h"
+#include "brics_3d/algorithm/registration/RigidTransformationEstimationQUAT.h"
+#include "brics_3d/algorithm/registration/RigidTransformationEstimationHELIX.h"
+#include "brics_3d/algorithm/registration/RigidTransformationEstimationAPX.h"
+#include "brics_3d/algorithm/registration/RigidTransformationEstimationORTHO.h"
 
 #include <Eigen/Geometry>
 #include <iostream>

@@ -20,8 +20,8 @@
 #include "Transform.h"
 
 /* for transform tools: */
-#include "core/HomogeneousMatrix44.h"
-#include "core/Logger.h"
+#include "brics_3d/core/HomogeneousMatrix44.h"
+#include "brics_3d/core/Logger.h"
 #include "PathCollector.h"
 
 //#define STATIC_TRANSFORM

@@ -24,7 +24,7 @@
 using std::ostream;
 using std::istream;
 
-#include "core/IHomogeneousMatrix44.h"
+#include "brics_3d/core/IHomogeneousMatrix44.h"
 
 /**
  * @namespace brics_3d

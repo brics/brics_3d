@@ -20,7 +20,7 @@
 #ifndef BRICS_3D_SCENEOBJECT_H
 #define BRICS_3D_SCENEOBJECT_H
 
-#include "core/IHomogeneousMatrix44.h"
+#include "brics_3d/core/IHomogeneousMatrix44.h"
 #include "sceneGraph/Shape.h"
 #include <vector>
 using std::vector;
