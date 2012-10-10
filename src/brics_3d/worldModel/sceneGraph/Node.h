@@ -31,7 +31,7 @@ using std::vector;
 namespace brics_3d {
 
 /**
- * @brief RobotSceneGraph: A scene graph for robot 3D perception and modeling.
+ * @brief RobotSceneGraph: A scene graph for robot 3D world modeling.
  * @ingroup sceneGraph
  */
 namespace rsg {

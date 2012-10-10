@@ -30,6 +30,7 @@
 #include "brics_3d/worldModel/sceneGraph/PointCloudAccumulator.h"
 #include "brics_3d/worldModel/sceneGraph/PointCloud.h"
 #include "brics_3d/worldModel/sceneGraph/SubGraphChecker.h"
+#include "brics_3d/worldModel/sceneGraph/SceneGraphToUpdatesTraverser.h"
 #include "brics_3d/core/PointCloud3D.h"
 #include "brics_3d/core/PointCloud3DIterator.h"
 
@@ -186,6 +187,7 @@ class SceneGraphNodesTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testScenePointIterator );
 	CPPUNIT_TEST( testSubGraphChecker );
 	CPPUNIT_TEST( testForcedIds );
+	CPPUNIT_TEST( testSceneGraphToUpdates );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -216,6 +218,7 @@ public:
 	void testScenePointIterator();
 	void testSubGraphChecker();
 	void testForcedIds();
+	void testSceneGraphToUpdates();
 
 private:
 	  /// Maximum deviation for equality check of double variables

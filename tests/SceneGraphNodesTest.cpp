@@ -2650,7 +2650,6 @@ void SceneGraphNodesTest::testDotGraphGenerator() {
 	unsigned int plateGroupId = 0;
 	unsigned int boxGroupId1 = 0;
 	unsigned int boxGroupId2 = 0;
-	unsigned int pointCloudId1 = 0;
 	unsigned int geometryId = 0;
 
 	/* Some (dummy) data to be use within the scenegraph */
@@ -2901,7 +2900,7 @@ void SceneGraphNodesTest::testPointIterator() {
 		it->getX();
 		it->getY();
 		it->getZ();
-		Point3D* tmpPoint = it->getRawData();
+//		Point3D* tmpPoint = it->getRawData();
 //		std::cout << "transformed: ("<< it->getX() << "," << it->getY() << "," << it->getZ() << ")" << std::endl;
 //		std::cout << "RAW        : ("<< tmpPoint->getX() << "," << tmpPoint->getY() << "," << tmpPoint->getZ() << ")" << std::endl;
 
@@ -2925,7 +2924,7 @@ void SceneGraphNodesTest::testPointIterator() {
 		it->getX();
 		it->getY();
 		it->getZ();
-		Point3D* tmpPoint = it->getRawData();
+//		Point3D* tmpPoint = it->getRawData();
 //		std::cout << "transformed: ("<< it->getX() << "," << it->getY() << "," << it->getZ() << ")" << std::endl;
 //		std::cout << "RAW        : ("<< tmpPoint->getX() << "," << tmpPoint->getY() << "," << tmpPoint->getZ() << ")" << std::endl;
 
@@ -2946,7 +2945,7 @@ void SceneGraphNodesTest::testPointIterator() {
 		it->getX();
 		it->getY();
 		it->getZ();
-		Point3D* tmpPoint = it->getRawData();
+//		Point3D* tmpPoint = it->getRawData();
 //		std::cout << "transformed: ("<< it->getX() << "," << it->getY() << "," << it->getZ() << ")" << std::endl;
 //		std::cout << "RAW        : ("<< tmpPoint->getX() << "," << tmpPoint->getY() << "," << tmpPoint->getZ() << ")" << std::endl;
 
@@ -3032,7 +3031,7 @@ void SceneGraphNodesTest::testScenePointIterator() {
 		it->getX();
 		it->getY();
 		it->getZ();
-		Point3D* tmpPoint = it->getRawData();
+//		Point3D* tmpPoint = it->getRawData();
 //		std::cout << "transformed: ("<< it->getX() << "," << it->getY() << "," << it->getZ() << ")" << std::endl;
 //		std::cout << "RAW        : ("<< tmpPoint->getX() << "," << tmpPoint->getY() << "," << tmpPoint->getZ() << ")" << std::endl;
 		count++;
@@ -3186,7 +3185,7 @@ void SceneGraphNodesTest::testForcedIds() {
 
 
 	/* will be assigned later */
-	unsigned int rootId = 0;
+//	unsigned int rootId = 0;
 	unsigned int tf1Id = 0;
 	unsigned int tf1IdForced = 0;
 	unsigned int group2Id = 0;
@@ -3266,6 +3265,158 @@ void SceneGraphNodesTest::testForcedIds() {
 	CPPUNIT_ASSERT_EQUAL(16u, geode4IdForced);
 	CPPUNIT_ASSERT(!scene.addGeometricNode(invalidId, geode4IdForced, attributes, dummyBox, dummyTime, false));
 	CPPUNIT_ASSERT_EQUAL(15u, geode4Id);
+
+}
+
+void SceneGraphNodesTest::testSceneGraphToUpdates() {
+	/* Graph structure: (remember: nodes can only serve as are leaves)
+	 *             root
+	 *              |
+	 *        ------+-------
+	 *        |             |
+	 *      group1        group2
+	 *        |             |
+	 *    ----+----  -------+-------
+	 *    |       |  |      |      |
+	 *   node3    group4    tf5   geom6
+	 *              |
+	 *          ----+---
+	 *          |      |
+	 *       group7   group8
+	 *          |      |
+	 *          ----+---
+	 *           group9
+	 */
+
+	unsigned int group1Id = 0;
+	unsigned int group2Id = 0;
+	unsigned int node3Id = 0;
+	unsigned int group4Id = 0;
+	unsigned int tf5Id = 0;
+	unsigned int geom6Id = 0;
+	unsigned int group7Id = 0;
+	unsigned int group8Id = 0;
+	unsigned int group9Id = 0;
+
+	brics_3d::rsg::SceneGraphFacade scene;			// The 3D world model handle
+	vector<Attribute> attributes;	// with this one we can attach attibutes / tags to the nodes
+
+	/* Some (dummy) data to be use within the scenegraph */
+	brics_3d::rsg::TimeStamp dummyTime(0);
+	brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform123(new brics_3d::HomogeneousMatrix44(1,0,0,  	// Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             1,2,3)); 						// Translation coefficients
+	brics_3d::rsg::Box::BoxPtr dummyBox(new brics_3d::rsg::Box());
+
+	/*
+	 * Set up the scenegraph
+	 */
+	MyObserver elementCounterCretation;
+	MyObserver elementCounterTraversal;
+
+	CPPUNIT_ASSERT_EQUAL(0, elementCounterCretation.addNodeCounter); //precondition
+	CPPUNIT_ASSERT_EQUAL(0, elementCounterCretation.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(0, elementCounterCretation.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, elementCounterCretation.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, elementCounterCretation.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(0, elementCounterCretation.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, elementCounterCretation.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, elementCounterCretation.addParentCounter);
+
+	CPPUNIT_ASSERT_EQUAL(0, elementCounterTraversal.addNodeCounter); //precondition
+	CPPUNIT_ASSERT_EQUAL(0, elementCounterTraversal.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(0, elementCounterTraversal.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, elementCounterTraversal.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, elementCounterTraversal.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(0, elementCounterTraversal.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, elementCounterTraversal.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, elementCounterTraversal.addParentCounter);
+
+	scene.attachUpdateObserver(&elementCounterCretation);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","group1"));
+	scene.addGroup(scene.getRootId(), group1Id, attributes);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","group2"));
+	scene.addGroup(scene.getRootId(), group2Id, attributes);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","node3"));
+	scene.addNode(group1Id, node3Id, attributes);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","group4"));
+	scene.addGroup(group1Id, group4Id, attributes);
+
+	scene.addParent(group4Id, group2Id);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","tf5"));
+	scene.addTransformNode(group2Id, tf5Id, attributes, transform123, dummyTime);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","geom6"));
+	scene.addGeometricNode(group2Id, geom6Id, attributes, dummyBox, dummyTime);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","group7"));
+	scene.addGroup(group4Id, group7Id, attributes);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","group8"));
+	scene.addGroup(group4Id, group8Id, attributes);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","group9"));
+	scene.addGroup(group7Id, group9Id, attributes);
+
+	scene.addParent(group9Id, group8Id);
+
+	CPPUNIT_ASSERT_EQUAL(1, elementCounterCretation.addNodeCounter); //postcondition
+	CPPUNIT_ASSERT_EQUAL(6, elementCounterCretation.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(1, elementCounterCretation.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, elementCounterCretation.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, elementCounterCretation.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(0, elementCounterCretation.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, elementCounterCretation.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(2, elementCounterCretation.addParentCounter);
+
+	SceneGraphToUpdatesTraverser graphToUpdates(&elementCounterTraversal);
+	scene.executeGraphTraverser(&graphToUpdates, scene.getRootId());
+
+	CPPUNIT_ASSERT_EQUAL(1, elementCounterTraversal.addNodeCounter); //postcondition
+	CPPUNIT_ASSERT_EQUAL(6, elementCounterTraversal.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(1, elementCounterTraversal.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, elementCounterTraversal.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, elementCounterTraversal.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(0, elementCounterTraversal.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, elementCounterTraversal.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(2, elementCounterTraversal.addParentCounter);
+
+
+//	cout << "Duplicating..." << endl;
+	brics_3d::rsg::SceneGraphFacade sceneDuplication;
+	SceneGraphToUpdatesTraverser graphDuplicator(&sceneDuplication);
+	scene.executeGraphTraverser(&graphDuplicator, scene.getRootId());
+
+	DotGraphGenerator dotTraverser;
+	dotTraverser.reset();
+	scene.executeGraphTraverser(&dotTraverser, scene.getRootId());
+//	cout << "Graph from scene 1:" << endl;
+//	cout << dotTraverser.getDotGraph() << endl;
+	string graph1 = dotTraverser.getDotGraph();
+
+	dotTraverser.reset();
+	sceneDuplication.executeGraphTraverser(&dotTraverser, sceneDuplication.getRootId());
+//	cout << "Graph from duplicated scene 2:" << endl;
+//	cout << dotTraverser.getDotGraph() << endl;
+	string graph2 = dotTraverser.getDotGraph();
+
+	CPPUNIT_ASSERT(graph1.compare(graph2) == 0);
+
 
 }
 

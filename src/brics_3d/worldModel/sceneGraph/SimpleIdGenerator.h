@@ -21,6 +21,7 @@
 #define RSG_SIMPLEIDGENERATOR_H
 
 #include "IIdGenerator.h"
+#include <vector>
 
 namespace brics_3d {
 
@@ -44,6 +45,7 @@ private:
 	unsigned int runningNumber;
 	unsigned int rootId;
 
+	std::vector<unsigned int> idPool;
 };
 
 } // namespace brics_3d::rsg
