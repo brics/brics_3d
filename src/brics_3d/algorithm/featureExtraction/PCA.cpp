@@ -107,6 +107,11 @@ void PCA::computeRotationMatrix(Eigen::MatrixXd eigenvectors, Eigen::VectorXd ei
 	matrixData[6] = eigenvectors(2,1);
 	matrixData[10] = eigenvectors(2,2);
 
+	/* flip z axis (to make it compliant to the right hand rule for frames) */
+	matrixData[8] = -matrixData[8];
+	matrixData[9] = -matrixData[9];
+	matrixData[10] = -matrixData[10];
+
 	/* translation */
 	matrixData[12] = 0.0;
 	matrixData[13] = 0.0;
