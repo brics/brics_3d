@@ -122,6 +122,51 @@ public:
 	}
 
 
+	
+	
+	/**
+	 * Converts from XYZRGB-cloud format of PCL to XYZ-cloud format of BRICS_3D
+	 * @param pclCloudPtr		point cloud data in PCL format
+	 * @param pointCloud3DPtr	point cloud datda in BRICS_3D format
+	 */
+	inline void convertToBRICS3DDataType(const pcl::PointCloud<pcl::PointXYZRGBNormal> &pclCloudPtr,
+			brics_3d::PointCloud3D* pointCloud3DPtr, bool copyColorData=true ){
+
+//		LOG(WARN)<<"WARNING: Losing normals in conversion to BRICS data";
+		uint8_t r, g, b;
+		brics_3d::ColorSpaceConvertor colorSpaceConvertor;
+		uint32_t rgbVal;
+		unsigned char red, green, blue;
+		float rgbVal24Bit;
+//		pointCloud3DPtr->getPointCloud()->resize(pclCloudPtr->size());
+
+		for (unsigned int i =0 ; i < pclCloudPtr.size()  ; i++){
+			if(!std::isnan(pclCloudPtr.points[i].x) && !std::isinf(pclCloudPtr.points[i].x) &&
+					!std::isnan(pclCloudPtr.points[i].y) && !std::isinf(pclCloudPtr.points[i].y) &&
+					!std::isnan(pclCloudPtr.points[i].z) && !std::isinf(pclCloudPtr.points[i].z) ) {
+
+				Point3D* tmpPoint =  new Point3D(pclCloudPtr.points[i].x, pclCloudPtr.points[i].y, pclCloudPtr.points[i].z);
+
+				if(copyColorData) {
+					rgbVal24Bit = pclCloudPtr.points[i].rgb;
+					rgbVal= *reinterpret_cast<int*>(&rgbVal24Bit);
+					colorSpaceConvertor.rgb24bitToRGB(rgbVal, &r, &g, &b);
+					red= *reinterpret_cast<unsigned char*>(&r);
+					green= *reinterpret_cast<unsigned char*>(&g);
+					blue= *reinterpret_cast<unsigned char*>(&b);
+
+					ColoredPoint3D* tmpColoredPoint = new ColoredPoint3D(tmpPoint, red, green, blue);
+					pointCloud3DPtr->addPointPtr(tmpColoredPoint);
+				} else {
+					pointCloud3DPtr->addPointPtr(tmpPoint);
+				}
+
+			}
+		}
+
+	}
+
+
 	/**
 	 * Converts from XYZRGB-cloud format of BRICS_3D to XYZRGB-cloud format of PCL
 	 * @param pclCloudPtr		point cloud data in PCL format
@@ -158,6 +203,9 @@ public:
 
 		}
 	}
+	
+	
+	
 };
 
 }

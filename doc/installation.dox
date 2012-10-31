@@ -17,7 +17,14 @@
 The latest version can be found on the project page under 
 https://svn.best-of-robotics.org/brics/BROCRE/BRICS_3D/trunk
 
-In case you are asked for a SVN login take \e svnuser as username and \e svnuser as password to retrive the latest read-only copy.
+To get the code invoke:
+@code
+	svn co https://svn.best-of-robotics.org/brics/BROCRE/BRICS_3D/trunk brics_3d
+@endcode
+
+In case you are asked for a SVN login take \e svnuser as username and \e svnuser as password to retrieve the latest read-only copy.
+
+
 
 @section external_libraries External libraries 
 
@@ -169,7 +176,7 @@ use the doxygen tool. Then open the html files with your favorite web browser. T
 
 @code
  $ doxygen BRICS_3D.doxyfile
- $ firefox ./doc/html/index.htm
+ $ firefox ./doc/html/index.html
 @endcode
 
 
