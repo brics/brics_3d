@@ -57,7 +57,7 @@ void PointCloud3DIterator::next() {
 		}
 
 		if ( !end() ) { // end could be reach meanwhile so we have to check again
-			if(false && pointCloudsIterator->second->isIdentity()) { // "lazyness" case
+			if(false && pointCloudsIterator->second->isIdentity()) { // "lazyness" case  //TODO: isIdentity is really slow!
 				/* cache the real data */
 				currentTransformedPoint = &(*pointCloudsIterator->first->getPointCloud())[index];
 			} else {
