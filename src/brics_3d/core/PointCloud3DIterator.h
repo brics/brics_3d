@@ -83,11 +83,17 @@ public:
 
 	/**
 	 * @brief Add a point cloud with its associated transform.
-	 * @param pointCloud The pont cloud to be added.
+	 * @param pointCloud The point cloud to be added.
 	 * @param associatedTransform Transform theat will be automatically applied to all points od that point cloud when calling getX(), getY() or getZ().
 	 */
-//	void insert(PointCloud3D* pointCloud, IHomogeneousMatrix44* associatedTransform);
 	void insert(PointCloud3D::PointCloud3DPtr pointCloud, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr associatedTransform);
+
+	/**
+	 * @brief Add a point cloud with an assumed identity transform.
+	 * This function is for convenience.
+	 * @param pointCloud The point cloud to be added.
+	 */
+	void insert(PointCloud3D::PointCloud3DPtr pointCloud);
 
 
 protected:
@@ -96,20 +102,28 @@ protected:
 	 * The stored pointers to the point clouds with associated transforms.
 	 * Destruction of the iterator will not delete the pointers.
 	 */
-//	std::map<PointCloud3D*, IHomogeneousMatrix44*> pointCloudsWithTransforms;
 	std::map<PointCloud3D::PointCloud3DPtr, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr> pointCloudsWithTransforms;
 
 
 	/// Internal outer iteration handle.
-//	std::map<PointCloud3D*, IHomogeneousMatrix44*>::iterator pointCloudsIterator;
 	std::map<PointCloud3D::PointCloud3DPtr, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr>::iterator pointCloudsIterator;
 
 
 	/// Internal inner iteration handle.
 	unsigned int index;
 
+
+	/**
+	 * Shortcut if an associated transform is the Identity transform.
+	 * Assumes ith entry in this vector belongs to ith entry in pointCloudsWithTransforms.
+	 * By having this memory we can avoid sucessive calls of IHomogeneousMatrix44::isIdentity() -
+	 * which is a rather expensive operation.
+	 */
+	std::vector<bool> associatedTransformIsIdentity;
+	std::vector<bool>::iterator associatedTransformIsIdentityIterator;
+
 	/// The cached data.
-	Point3D* currentTransformedPoint;
+	Point3D currentTransformedPoint;
 };
 
 

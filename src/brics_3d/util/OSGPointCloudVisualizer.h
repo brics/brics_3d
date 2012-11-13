@@ -32,6 +32,7 @@
 #include "boost/thread.hpp"
 
 #include "brics_3d/core/PointCloud3D.h"
+#include "brics_3d/core/IPoint3DIterator.h"
 
 
 namespace brics_3d {
@@ -131,11 +132,21 @@ public:
 	static osg::ref_ptr<osg::Node> createPointCloudNode(PointCloud3D* pointCloud, float red=1.0f, float green=1.0f, float blue=1.0f, float alpha=1.0f);
 
 	/**
+	 * @brief Creates a "geode" (geometric node) element for OSG out of a point cloud iterator
+	 * Same as createPointCloudNode(PointCloud3D* pointCloud, float red=1.0f, float green=1.0f, float blue=1.0f, float alpha=1.0f)
+	 * but uses an iterator rather than the point cloud itself.
+	 */
+	static osg::ref_ptr<osg::Node> createPointCloudNode(IPoint3DIterator* pointCloudIt, float red=1.0f, float green=1.0f, float blue=1.0f, float alpha=1.0f);
+
+
+	/**
 	 * @brief Creates a "geode" (geometric node) element for OSG out of a colored point cloud
 	 * @param[in] pointCloud Pointer to colored point cloud that will be transformed into an OSG geode
 	 * @param alpha Specifies the amount of the alpha channel of the point cloud. Range is 0.0f to 1.0f
 	 */
 	static osg::ref_ptr<osg::Node> createColoredPointCloudNode(PointCloud3D* coloredPointCloud, float alpha=1.0f);
+
+	static osg::ref_ptr<osg::Node> createColoredPointCloudNode(IPoint3DIterator* pointCloudIt, float alpha=1.0f);
 
 private:
 

@@ -19,11 +19,12 @@
 
 
 #include "PointCloud3DIterator.h"
+#include "HomogeneousMatrix44.h"
+#include "Logger.h"
 
 namespace brics_3d {
 
 PointCloud3DIterator::PointCloud3DIterator() {
-	currentTransformedPoint = 0;
 	begin();
 }
 
@@ -34,16 +35,26 @@ PointCloud3DIterator::~PointCloud3DIterator() {
 void PointCloud3DIterator::begin() {
 	index = 0;
 	pointCloudsIterator = pointCloudsWithTransforms.begin();
+	associatedTransformIsIdentityIterator = associatedTransformIsIdentity.begin();
+
+	while(!end() && (pointCloudsIterator->first->getSize() <= 0)) { //skip empty clouds
+		pointCloudsIterator++;
+		associatedTransformIsIdentityIterator++;
+		LOG(WARNING) << "PointCloud3DIterator contains empty point clouds.";
+	}
 
 	if ( !end() ) {
-		if (currentTransformedPoint) { //delete old copy
-			delete currentTransformedPoint;
-			currentTransformedPoint = 0;
+
+		Point3D* tmpHandle = &((*pointCloudsIterator->first->getPointCloud())[index]); //only one operator[] access - which is sightly faster
+		currentTransformedPoint.setX(tmpHandle->getX());
+		currentTransformedPoint.setY(tmpHandle->getY());
+		currentTransformedPoint.setZ(tmpHandle->getZ());
+		if(*associatedTransformIsIdentityIterator == false) { // the non "lazyness" case
+			currentTransformedPoint.homogeneousTransformation(pointCloudsIterator->second.get());
 		}
 
-		/* cache the a transformed copy */
-		currentTransformedPoint = (*pointCloudsIterator->first->getPointCloud())[index].clone();
-		currentTransformedPoint->homogeneousTransformation(pointCloudsIterator->second.get());
+	} else {
+		pointCloudsIterator = pointCloudsWithTransforms.end(); // empty iterator
 	}
 }
 
@@ -51,25 +62,29 @@ void PointCloud3DIterator::next() {
 	++index;
 
 	if ( !end() ) {
+
 		if(index >= pointCloudsIterator->first->getSize()) { //wrap over - advance to next point cloud
 			index = 0;
 			pointCloudsIterator++;
+			associatedTransformIsIdentityIterator++;
+
+			while(!end() && (pointCloudsIterator->first->getSize() <= 0)) { //skip further empty clouds
+				pointCloudsIterator++;
+				associatedTransformIsIdentityIterator++;
+				LOG(WARNING) << "PointCloud3DIterator contains empty point clouds.";
+			}
 		}
 
 		if ( !end() ) { // end could be reach meanwhile so we have to check again
-			if(false && pointCloudsIterator->second->isIdentity()) { // "lazyness" case  //TODO: isIdentity is really slow!
-				/* cache the real data */
-				currentTransformedPoint = &(*pointCloudsIterator->first->getPointCloud())[index];
-			} else {
-				if (currentTransformedPoint) { //delete old copy
-					delete currentTransformedPoint;
-					currentTransformedPoint = 0;
-				}
 
-				/* cache the a transformed copy */
-				currentTransformedPoint = (*pointCloudsIterator->first->getPointCloud())[index].clone();
-				currentTransformedPoint->homogeneousTransformation(pointCloudsIterator->second.get());
+			Point3D* tmpHandle = &((*pointCloudsIterator->first->getPointCloud())[index]); //only one operator[] access - which is slightly faster
+			currentTransformedPoint.setX(tmpHandle->getX());
+			currentTransformedPoint.setY(tmpHandle->getY());
+			currentTransformedPoint.setZ(tmpHandle->getZ());
+			if(*associatedTransformIsIdentityIterator == false) { // the non "lazyness" case
+				currentTransformedPoint.homogeneousTransformation(pointCloudsIterator->second.get());
 			}
+
 		}
 	} else {
 		/* no further iterations, we are at the end */
@@ -84,15 +99,15 @@ bool PointCloud3DIterator::end() {
 }
 
 Coordinate PointCloud3DIterator::getX() {
-	return currentTransformedPoint->getX();
+	return currentTransformedPoint.getX();
 }
 
 Coordinate PointCloud3DIterator::getY(){
-	return currentTransformedPoint->getY();
+	return currentTransformedPoint.getY();
 }
 
 Coordinate PointCloud3DIterator::getZ() {
-	return currentTransformedPoint->getZ();
+	return currentTransformedPoint.getZ();
 }
 
 Point3D* PointCloud3DIterator::getRawData() {
@@ -100,11 +115,16 @@ Point3D* PointCloud3DIterator::getRawData() {
 }
 
 void PointCloud3DIterator::insert(PointCloud3D::PointCloud3DPtr pointCloud, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr associatedTransform) {
-//void PointCloud3DIterator::insert(PointCloud3D* pointCloud, IHomogeneousMatrix44* associatedTransform) {
-
+	assert(pointCloud != 0);
+	assert(associatedTransform != 0);
 	pointCloudsWithTransforms.insert(std::make_pair(pointCloud, associatedTransform));
+	associatedTransformIsIdentity.push_back(associatedTransform->isIdentity());
 }
 
+void PointCloud3DIterator::insert(PointCloud3D::PointCloud3DPtr pointCloud) {
+	brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr identityTransform(new brics_3d::HomogeneousMatrix44());
+	insert(pointCloud, identityTransform);
+}
 
 }
 

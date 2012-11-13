@@ -179,15 +179,9 @@ osg::ref_ptr<osg::Node> OSGPointCloudVisualizer::createPointCloudNode(PointCloud
 
 	unsigned int targetNumVertices = 10000; //maximal points per geode
 
-//	osg::Geode* geode = new osg::Geode;
-//	osg::Geometry* geometry = new osg::Geometry;
 	osg::ref_ptr<osg::Geode> geode = new osg::Geode;
 	osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
-
-//	osg::Vec3Array* vertices = new osg::Vec3Array;
 	osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
-	//osg::Vec3Array* normals = new osg::Vec3Array;
-	//osg::Vec4ubArray* colours = new osg::Vec4ubArray; //every point has color
 	osg::ref_ptr<osg::Vec4Array> colours = new osg::Vec4Array(1); //all point have same color
 	(*colours)[0].set(red, green, blue, alpha); //set colours (r,g,b,a)
 
@@ -249,12 +243,85 @@ osg::ref_ptr<osg::Node> OSGPointCloudVisualizer::createPointCloudNode(PointCloud
 	geode->addDrawable(geometry);
 	geode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
 
-//	osg::Group* group = new osg::Group;
 	osg::ref_ptr<osg::Group> group = new osg::Group;
 	group->addChild(geode);
 
 	return group;
 }
+
+osg::ref_ptr<osg::Node> OSGPointCloudVisualizer::createPointCloudNode(IPoint3DIterator* pointCloudIt, float red, float green, float blue, float alpha) {
+	unsigned int targetNumVertices = 10000; //maximal points per geode
+
+	osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+	osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
+	osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
+//	osg::ref_ptr<osg::Vec4ubArray> colours = new osg::Vec4ubArray; //every point has color
+	osg::ref_ptr<osg::Vec4Array> colours = new osg::Vec4Array(1); //all point have same color
+	(*colours)[0].set(red, green, blue, alpha); //set colours (r,g,b,a)
+
+	vertices->reserve(targetNumVertices);
+	colours->reserve(targetNumVertices);
+
+	//feed point cloud into osg "geode(s)"
+	for (pointCloudIt->begin(); !pointCloudIt->end(); pointCloudIt->next()) {
+
+		osg::Vec3 tmpPoint;
+		tmpPoint.set((float) pointCloudIt->getX(),
+				(float) pointCloudIt->getY(),
+				(float) pointCloudIt->getZ());
+		vertices->push_back(tmpPoint);
+
+		/*
+		 * If geode gets bigger than 10000 (targetNumVertices) points than create a new child node.
+		 * This is necessary to improve the performance due to graphics adapter internals.
+		 */
+		if (vertices->size() >= targetNumVertices) {
+			// finishing setting up the current geometry and add it to the geode.
+			geometry->setUseDisplayList(true);
+			geometry->setUseVertexBufferObjects(true);
+			geometry->setVertexArray(vertices);
+			//geometry->setNormalArray(normals);
+			//geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+			geometry->setColorArray(colours);
+//			geometry->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+			geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+
+			geometry->addPrimitiveSet(new osg::DrawArrays(GL_POINTS, 0, vertices->size())); //GL_POINTS
+
+			geode->addDrawable(geometry);
+
+			// allocate a new geometry
+			geometry = new osg::Geometry;
+
+			vertices = new osg::Vec3Array;
+			//normals = new osg::Vec3Array;
+//			colours = new osg::Vec4ubArray;
+
+			vertices->reserve(targetNumVertices);
+			//normals->reserve(targetNumVertices);
+			colours->reserve(targetNumVertices);
+
+		}
+
+	}
+
+	geometry->setUseDisplayList(true);
+	geometry->setVertexArray(vertices);
+	geometry->addPrimitiveSet(new osg::DrawArrays(GL_POINTS, 0, vertices->size()));
+	geometry->setColorArray(colours);
+//	geometry->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+	geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+	geometry->setDrawCallback(new DrawCallback);
+
+	geode->addDrawable(geometry);
+	geode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+
+	osg::ref_ptr<osg::Group> group = new osg::Group;
+	group->addChild(geode);
+
+	return group;
+}
+
 
 osg::ref_ptr<osg::Node> OSGPointCloudVisualizer::createColoredPointCloudNode(PointCloud3D* coloredPointCloud, float alpha) {
 	float red = 0.0;
@@ -351,6 +418,99 @@ osg::ref_ptr<osg::Node> OSGPointCloudVisualizer::createColoredPointCloudNode(Poi
 
 	return group;
 }
+
+osg::ref_ptr<osg::Node> OSGPointCloudVisualizer::createColoredPointCloudNode(IPoint3DIterator* pointCloudIt, float alpha) {
+	float red = 0.0;
+	float green = 0.0;
+	float blue = 0.0;
+	unsigned int targetNumVertices = 10000; //maximal points per geode
+
+	osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+	osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
+	osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
+	osg::ref_ptr<osg::Vec4ubArray> colours = new osg::Vec4ubArray; //every point has color
+
+	vertices->reserve(targetNumVertices);
+	colours->reserve(targetNumVertices);
+
+	Point3D* rawPoint;
+
+	//feed point cloud into osg "geode(s)"
+	for (pointCloudIt->begin(); !pointCloudIt->end(); pointCloudIt->next()) {
+
+		osg::Vec3 tmpPoint;
+		tmpPoint.set((float) pointCloudIt->getX(),
+				(float) pointCloudIt->getY(),
+				(float) pointCloudIt->getZ());
+		vertices->push_back(tmpPoint);
+
+		osg::Vec4ub tmpColor;
+
+		/* default color (= white) if no colored decoration layer is found */
+		red = 1.0;
+		green = 1.0;
+		blue = 1.0;
+
+		rawPoint =  pointCloudIt->getRawData();
+
+		if (rawPoint->asColoredPoint3D() != 0) { //go for default colors in case no color information is attached
+			red = rawPoint->asColoredPoint3D()->getR();
+			green = rawPoint->asColoredPoint3D()->getG();
+			blue = rawPoint->asColoredPoint3D()->getB();
+		}
+
+		tmpColor.set(red, green, blue, alpha);
+		colours->push_back(tmpColor);
+
+		/*
+		 * If geode gets bigger than 10000 (targetNumVertices) points than create a new child node.
+		 * This is necessary to improve the performance due to graphics adapter internals.
+		 */
+		if (vertices->size() >= targetNumVertices) {
+			// finishing setting up the current geometry and add it to the geode.
+			geometry->setUseDisplayList(true);
+			geometry->setUseVertexBufferObjects(true);
+			geometry->setVertexArray(vertices);
+			//geometry->setNormalArray(normals);
+			//geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+			geometry->setColorArray(colours);
+			geometry->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+
+			geometry->addPrimitiveSet(new osg::DrawArrays(GL_POINTS, 0, vertices->size())); //GL_POINTS
+
+			geode->addDrawable(geometry);
+
+			// allocate a new geometry
+			geometry = new osg::Geometry;
+
+			vertices = new osg::Vec3Array;
+			//normals = new osg::Vec3Array;
+			colours = new osg::Vec4ubArray;
+
+			vertices->reserve(targetNumVertices);
+			//normals->reserve(targetNumVertices);
+			colours->reserve(targetNumVertices);
+
+		}
+
+	}
+
+	geometry->setUseDisplayList(true);
+	geometry->setVertexArray(vertices);
+	geometry->addPrimitiveSet(new osg::DrawArrays(GL_POINTS, 0, vertices->size()));
+	geometry->setColorArray(colours);
+	geometry->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+	geometry->setDrawCallback(new DrawCallback);
+
+	geode->addDrawable(geometry);
+	geode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+
+	osg::ref_ptr<osg::Group> group = new osg::Group;
+	group->addChild(geode);
+
+	return group;
+}
+
 
 void OSGPointCloudVisualizer::threadFunction(OSGPointCloudVisualizer* obj) {
 	boost::this_thread::sleep(boost::posix_time::milliseconds(100)); // Avoid race condition

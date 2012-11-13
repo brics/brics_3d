@@ -21,6 +21,7 @@
 #define BRICS_3D_PCLPOINTCLOUDITERATOR_H_
 
 #include "brics_3d/core/IPoint3DIterator.h"
+#include "brics_3d/core/HomogeneousMatrix44.h"
 #include "pcl/point_cloud.h"
 
 namespace brics_3d {
@@ -53,10 +54,11 @@ public:
 	void begin(){
 		index = 0;
 		pointCloudsIterator = pointCloudsWithTransforms.begin();
-
+		associatedTransformIsIdentityIterator = associatedTransformIsIdentity.begin();
 
 		while(!end() && (pointCloudsIterator->first->points.size() <= 0)) { //skip empty clouds
 			pointCloudsIterator++;
+			associatedTransformIsIdentityIterator++;
 			LOG(WARNING) << "PCL Iterator contains empty point clouds.";
 		}
 
@@ -79,27 +81,23 @@ public:
 			if(index >= pointCloudsIterator->first->points.size()) { //wrap over - advance to next point cloud
 				index = 0;
 				pointCloudsIterator++;
+				associatedTransformIsIdentityIterator++;
 				while(!end() && (pointCloudsIterator->first->points.size() <= 0)) { //skip further empty clouds
 					pointCloudsIterator++;
+					associatedTransformIsIdentityIterator++;
 					LOG(WARNING) << "PCL Iterator contains empty point clouds.";
 				}
 			}
 
 			if ( !end() ) { // end could be reached meanwhile so we have to check again
-				if (false && pointCloudsIterator->second->isIdentity()) { // "lazyness" case //TODO: isIdentity is really slow!
-					/* cache the real data */
-					currentTransformedPoint.x = pointCloudsIterator->first->points[index].x;
-					currentTransformedPoint.y = pointCloudsIterator->first->points[index].y;
-					currentTransformedPoint.z = pointCloudsIterator->first->points[index].z;
 
-				} else {
-
-					/* cache the a transformed copy */
-					currentTransformedPoint.x = pointCloudsIterator->first->points[index].x;
-					currentTransformedPoint.y = pointCloudsIterator->first->points[index].y;
-					currentTransformedPoint.z = pointCloudsIterator->first->points[index].z;
+				currentTransformedPoint.x = pointCloudsIterator->first->points[index].x;
+				currentTransformedPoint.y = pointCloudsIterator->first->points[index].y;
+				currentTransformedPoint.z = pointCloudsIterator->first->points[index].z;
+				if(*associatedTransformIsIdentityIterator == false) { // the non "lazyness" case
 					homogeneousTransformation(currentTransformedPoint, pointCloudsIterator->second);
 				}
+
 			}
 		} else {
 			/* no further iterations, we are at the end */
@@ -134,6 +132,8 @@ public:
 				pointCloudsIterator->first->points[index].y,
 				pointCloudsIterator->first->points[index].z);
 
+//		toPoint3D(pointCloudsIterator->first->points[index], currentRawPoint);
+
 		return currentRawPoint;
 	}
 
@@ -143,7 +143,20 @@ public:
 	 * @param associatedTransform An associated transform. It will be automatically applied to getX(), getY() and getZ()
 	 */
 	void insert(const typename pcl::PointCloud<PointT>::ConstPtr pointCloud, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr associatedTransform) {
+		assert(pointCloud != 0);
+		assert(associatedTransform != 0);
 		pointCloudsWithTransforms.insert(std::make_pair(pointCloud, associatedTransform));
+		associatedTransformIsIdentity.push_back(associatedTransform->isIdentity());
+	}
+
+	/**
+	 * @brief Add a point cloud with an assumed identity transform.
+	 * This function is for convenience.
+	 * @param pointCloud The point cloud to be added.
+	 */
+	void insert(const typename pcl::PointCloud<PointT>::ConstPtr pointCloud) {
+		brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr identityTransform(new brics_3d::HomogeneousMatrix44());
+		insert(pointCloud, identityTransform);
 	}
 
 	/**
@@ -193,6 +206,15 @@ protected:
 	/// Internal inner iteration handle.
 	unsigned int index;
 
+	/**
+	 * Shortcut if an associated transform is the Identity transform.
+	 * Assumes ith entry in this vector belongs to ith entry in pointCloudsWithTransforms.
+	 * By having this memory we can avoid sucessive calls of IHomogeneousMatrix44::isIdentity() -
+	 * which is a rather expensive operation.
+	 */
+	std::vector<bool> associatedTransformIsIdentity;
+	std::vector<bool>::iterator associatedTransformIsIdentityIterator;
+
 	/// The cached data.
 	PointT currentTransformedPoint;
 
@@ -200,6 +222,24 @@ protected:
 	brics_3d::Point3D* currentRawPoint;
 
 };
+
+/**
+ * @brief Base function for converting a generic PCL point into a BRICS_3D point.
+ * @param inPoint PCL point
+ * @param outPoint BRICS_3D point
+ */
+template<class PointT>
+inline void toPoint3D(PointT& inPoint, brics_3d::Point3D* outPoint) {
+	LOG(INFO) << "TODO.";
+}
+
+template<>
+inline void toPoint3D(pcl::PointXYZ& inPoint, brics_3d::Point3D* outPoint){
+	LOG(INFO) << "PointXYZ";
+}
+
+
+
 
 }
 
