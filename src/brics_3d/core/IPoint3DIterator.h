@@ -62,6 +62,13 @@ public:
 	virtual ~IPoint3DIterator(){};
 
 	/**
+	 * @brief Return a hint what kint of type the underlying point cloud is.
+	 * This is mainly meant for debugging purposes.
+	 * @return A string that identifies the type. E.g. brics_3d::PointCloud3D.
+	 */
+	virtual std::string getPointCloudTypeName() = 0;
+
+	/**
 	 * @brief Set the iterator to the begining of the point set.
 	 */
 	virtual void begin() = 0;

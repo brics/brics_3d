@@ -62,6 +62,9 @@ class PointCloud3DIterator : public IPoint3DIterator {
 
 public:
 
+	typedef boost::shared_ptr<PointCloud3DIterator> PointCloud3DIteratorPtr;
+	typedef boost::shared_ptr<PointCloud3DIterator const> PointCloud3DIteratorConstPtr;
+
 	/**
 	 * @brief Standard constructor.
 	 */
@@ -72,6 +75,7 @@ public:
 	 */
 	virtual ~PointCloud3DIterator();
 
+	std::string getPointCloudTypeName();
 	void begin();
 	void next();
 	bool end();

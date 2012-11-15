@@ -167,6 +167,19 @@ IF (USE_OSG)
         	${OSGVIEWER_LIBRARY_DEBUG}
         	${PCL_IO_LIBRARY}
         )
+        
+        ADD_EXECUTABLE(wm_iterator_test wm_iterator_test) 
+        TARGET_LINK_LIBRARIES(wm_iterator_test
+            brics3d_world_model
+            brics3d_algorithm
+            brics3d_util
+            brics3d_core 
+            ${OSG_LIBRARY_DEBUG}
+        	${OSGGA_LIBRARY_DEBUG}
+        	${OSGVIEWER_LIBRARY_DEBUG}
+        	${PCL_IO_LIBRARY}
+        )
+        
     ENDIF(USE_PCL AND USE_EIGEN3)    
     
     ADD_EXECUTABLE(wm_processing wm_processing)

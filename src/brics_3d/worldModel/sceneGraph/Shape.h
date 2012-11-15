@@ -21,6 +21,7 @@
 #define RSG_SHAPE_H
 
 #include <boost/shared_ptr.hpp>
+#include "brics_3d/core/IPoint3DIterator.h"
 
 namespace brics_3d { namespace rsg { class GeometricNode; }  } 
 
@@ -43,6 +44,14 @@ public:
 	Shape();
 
 	virtual ~Shape();
+
+	/**
+	 * @brief Introspection for point cloud shapes.
+	 * @return Returns a point cloud iterator in case the shape is a point cloud. Otherwise returns null.
+	 */
+	virtual IPoint3DIterator::IPoint3DIteratorPtr getPointCloudIterator() {
+    	return IPoint3DIterator::IPoint3DIteratorPtr(); // kind of null
+    };
 
 };
 

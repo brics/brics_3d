@@ -32,6 +32,10 @@ PointCloud3DIterator::~PointCloud3DIterator() {
 
 }
 
+std::string PointCloud3DIterator::getPointCloudTypeName() {
+	return "brics_3d::PointCloud3D";
+}
+
 void PointCloud3DIterator::begin() {
 	index = 0;
 	pointCloudsIterator = pointCloudsWithTransforms.begin();

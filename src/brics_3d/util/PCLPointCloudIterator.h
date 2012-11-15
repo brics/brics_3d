@@ -22,6 +22,8 @@
 
 #include "brics_3d/core/IPoint3DIterator.h"
 #include "brics_3d/core/HomogeneousMatrix44.h"
+#include "brics_3d/core/ColorSpaceConvertor.h"
+#include "brics_3d/core/ColoredPoint3D.h"
 #include "pcl/point_cloud.h"
 
 namespace brics_3d {
@@ -33,11 +35,14 @@ template <typename PointT>
 class PCLPointCloudIterator : public IPoint3DIterator {
 public:
 
+	typedef boost::shared_ptr<PCLPointCloudIterator> PCLPointCloudIteratorPtr;
+	typedef boost::shared_ptr<PCLPointCloudIterator const> PCLPointCloudIteratorConstPtr;
+
 	/**
 	 * @brief Default constructor.
 	 */
 	PCLPointCloudIterator(){
-		currentRawPoint = 0;
+		currentRawPoint = new Point3D();
 		begin();
 	};
 
@@ -50,6 +55,10 @@ public:
 			currentRawPoint = 0;
 		}
 	};
+
+	std::string getPointCloudTypeName() {
+		return "pcl::PointCloud<PointT>";
+	}
 
 	void begin(){
 		index = 0;
@@ -124,21 +133,13 @@ public:
 	};
 
 	Point3D* getRawData() { //not transformed, but might have additional data like color, etc.
-		if (currentRawPoint) { //delete old copy
-			delete currentRawPoint;
-			currentRawPoint = 0;
-		}
-		currentRawPoint = new Point3D(pointCloudsIterator->first->points[index].x,
-				pointCloudsIterator->first->points[index].y,
-				pointCloudsIterator->first->points[index].z);
-
-//		toPoint3D(pointCloudsIterator->first->points[index], currentRawPoint);
+		toPoint3D(pointCloudsIterator->first->points[index], currentRawPoint);
 
 		return currentRawPoint;
 	}
 
 	/**
-	 * @brief Insert a new point cloud tht will be acessable via the iterator
+	 * @brief Insert a new point cloud that will be acessable via the iterator
 	 * @param pointCloud The point cloud.
 	 * @param associatedTransform An associated transform. It will be automatically applied to getX(), getY() and getZ()
 	 */
@@ -213,6 +214,8 @@ protected:
 	 * which is a rather expensive operation.
 	 */
 	std::vector<bool> associatedTransformIsIdentity;
+
+	/// Iterator for associatedTransformIsIdentity.
 	std::vector<bool>::iterator associatedTransformIsIdentityIterator;
 
 	/// The cached data.
@@ -229,17 +232,84 @@ protected:
  * @param outPoint BRICS_3D point
  */
 template<class PointT>
-inline void toPoint3D(PointT& inPoint, brics_3d::Point3D* outPoint) {
-	LOG(INFO) << "TODO.";
+inline void toPoint3D(PointT& inPoint, brics_3d::Point3D*& outPoint) {
+	assert(outPoint != 0);
+	outPoint->setX(inPoint.x);
+	outPoint->setY(inPoint.y);
+	outPoint->setZ(inPoint.z);
 }
 
+/*
+ * Further specializations:
+ */
+
+/// Specialization for pcl::PointXYZRGB
 template<>
-inline void toPoint3D(pcl::PointXYZ& inPoint, brics_3d::Point3D* outPoint){
-	LOG(INFO) << "PointXYZ";
+inline void toPoint3D(const pcl::PointXYZRGB& inPoint, brics_3d::Point3D*& outPoint){ //ref
+	assert(outPoint != 0);
+	outPoint->setX(inPoint.x);
+	outPoint->setY(inPoint.y);
+	outPoint->setZ(inPoint.z);
+
+	if(outPoint->asColoredPoint3D() == 0) { // We need an extra decoration layer. Should be done only once.
+		ColoredPoint3D* tmpColoredPoint = new ColoredPoint3D(outPoint);
+		outPoint = tmpColoredPoint; // Change pointer such that the color decoration is at the outer layer
+		assert(outPoint->asColoredPoint3D() != 0);
+		LOG(DEBUG) << "PCLPointCloudIterator: Adding a new color decoration layer as type is PointXYZRGB.";
+	}
+
+	uint8_t r, g, b;
+	uint32_t rgbVal;
+	unsigned char red, green, blue;
+	pcl::PointXYZRGB tmpPoint;
+
+	tmpPoint = inPoint;
+	rgbVal = *reinterpret_cast<int*>(&tmpPoint.rgb);
+	r = ((rgbVal >> 16) & 0xff);
+	g = ((rgbVal >> 8) & 0xff);
+	b = (rgbVal & 0xff);
+	red = *reinterpret_cast<unsigned char*>(&r);
+	green = *reinterpret_cast<unsigned char*>(&g);
+	blue = *reinterpret_cast<unsigned char*>(&b);
+
+	outPoint->asColoredPoint3D()->setR(red);
+	outPoint->asColoredPoint3D()->setG(green);
+	outPoint->asColoredPoint3D()->setB(blue);
 }
 
+/// Specialization for pcl::PointXYZRGBNormal
+template<>
+inline void toPoint3D(const pcl::PointXYZRGBNormal& inPoint, brics_3d::Point3D*& outPoint){ //ref
+	assert(outPoint != 0);
+	outPoint->setX(inPoint.x);
+	outPoint->setY(inPoint.y);
+	outPoint->setZ(inPoint.z);
 
+	if(outPoint->asColoredPoint3D() == 0) { // We need an extra decoration layer. Should be done only once.
+		ColoredPoint3D* tmpColoredPoint = new ColoredPoint3D(outPoint);
+		outPoint = tmpColoredPoint; // Change pointer such that the color decoration is at the outer layer
+		assert(outPoint->asColoredPoint3D() != 0);
+		LOG(DEBUG) << "PCLPointCloudIterator: Adding a new color decoration layer as type is PointXYZRGBNormal.";
+	}
 
+	uint8_t r, g, b;
+	uint32_t rgbVal;
+	unsigned char red, green, blue;
+	pcl::PointXYZRGBNormal tmpPoint;
+
+	tmpPoint = inPoint;
+	rgbVal = *reinterpret_cast<int*>(&tmpPoint.rgb);
+	r = ((rgbVal >> 16) & 0xff);
+	g = ((rgbVal >> 8) & 0xff);
+	b = (rgbVal & 0xff);
+	red = *reinterpret_cast<unsigned char*>(&r);
+	green = *reinterpret_cast<unsigned char*>(&g);
+	blue = *reinterpret_cast<unsigned char*>(&b);
+
+	outPoint->asColoredPoint3D()->setR(red);
+	outPoint->asColoredPoint3D()->setG(green);
+	outPoint->asColoredPoint3D()->setB(blue);
+}
 
 }
 
