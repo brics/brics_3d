@@ -69,7 +69,7 @@ void MaskROIExtractor::extractNonIndexedPointCloud(brics_3d::PointCloud3D* input
 	int invertedIndliersIndex = 0;
 	std::sort(inliers.begin(), inliers.end());
 	invertedInliers.resize(inputPoinCloud->getSize()-inliers.size());
-	invertedInliers[invertedInliers.size()-1] = -1;
+	invertedInliers[invertedInliers.size()-1] = 0;//-1; FIXME
 	for (int i = 0; i < static_cast<int>(inputPoinCloud->getSize()); ++i) { // run ofer all input data and skip those that belong to inliers
 		if (i == inliers[indliersIndex]) {
 			indliersIndex++;
@@ -78,14 +78,16 @@ void MaskROIExtractor::extractNonIndexedPointCloud(brics_3d::PointCloud3D* input
 		invertedInliers[invertedIndliersIndex] = i;
 		invertedIndliersIndex++;
 	}
-	assert( invertedInliers[invertedInliers.size()-1] > 0);
+	LOG(DEBUG) << "invertedInliers[invertedInliers.size()-1] = " << invertedInliers[invertedInliers.size()-1] << " invertedIndliersIndex = " << invertedIndliersIndex;
+	LOG(DEBUG) << "inliers.size(), invertedInliers.size(), inputPoinCloud->getSize()" << inliers.size() << ", " << invertedInliers.size() << ", " << inputPoinCloud->getSize();
+	assert( invertedInliers[invertedInliers.size()-1] >= 0);
 //		assert(invertedInliers.size() == inputPoinCloud->getSize());
 
 
 //		for (int i = 0; i < static_cast<int>(inliers.size()); ++i) {
 //			invertedInliers.erase(invertedInliers.begin() + inliers[i]);
 //		}
-	LOG(DEBUG) << "inliers.size(), invertedInliers.size(), inputPoinCloud->getSize()" << inliers.size() << ", " << invertedInliers.size() << ", " << inputPoinCloud->getSize();
+//	LOG(DEBUG) << "inliers.size(), invertedInliers.size(), inputPoinCloud->getSize()" << inliers.size() << ", " << invertedInliers.size() << ", " << inputPoinCloud->getSize();
 	assert(inliers.size() + invertedInliers.size() == inputPoinCloud->getSize());
 	extractIndexedPointCloud(inputPoinCloud, invertedInliers, outputPointCloud);
 }
