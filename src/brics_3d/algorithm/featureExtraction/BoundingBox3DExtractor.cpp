@@ -140,9 +140,9 @@ void BoundingBox3DExtractor::computeOrientedBoundingBox(PointCloud3D* inputPoint
 	double* matrixData;
 	matrixData = resultTransform->setRawData();
 	//djd RC5 - don't use centroid as centre of bounding box if only returning dimensions - you will not be able to reconstruct it
-	//matrixData[12] = centroid[0];
-	//matrixData[13] = centroid[1];
-	//matrixData[14] = centroid[2];
+	matrixData[12] = centroid[0];
+	matrixData[13] = centroid[1];
+	matrixData[14] = centroid[2];
 
 	LOG(DEBUG) << "Estimated transform for oriented bounding box: "<< std::endl << *resultTransform;
 
@@ -150,9 +150,9 @@ void BoundingBox3DExtractor::computeOrientedBoundingBox(PointCloud3D* inputPoint
 	resultBoxDimensions.setY(fabs(upperBound.getY() - lowerBound.getY()));
 	resultBoxDimensions.setZ(fabs(upperBound.getZ() - lowerBound.getZ()));
 
-	matrixData[12]=resultBoxDimensions.getX()/2+lowerBound.getX();
-	matrixData[13]=resultBoxDimensions.getY()/2+lowerBound.getY();
-	matrixData[14]=resultBoxDimensions.getZ()/2+lowerBound.getZ();
+//	matrixData[12]=resultBoxDimensions.getX()/2+lowerBound.getX(); //FIXME
+//	matrixData[13]=resultBoxDimensions.getY()/2+lowerBound.getY();
+//	matrixData[14]=resultBoxDimensions.getZ()/2+lowerBound.getZ();
 }
 
 }
