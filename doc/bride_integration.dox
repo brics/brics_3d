@@ -1,0 +1,255 @@
+/*!
+
+@page brics_3d_bride BRICS_3D components for the BRIDE tool chain
+
+BRIDE implements a model driven tool chain for developing robotic applications. 
+In BRIDE components can be (graphically) specified and the skeleton code for a specific framework (e.g. ROS) will be automatically generated.
+In the remainder of this section the BRIDE version that is capable of generating code stubs for the ROS framework is referred to.
+
+Based on the user defined component(s) the BRIDE tool chain will generate all necessary files to be able compile a runnable ROS node.
+This includes among others the manifest file, a CMake file, a ROS specific C++ code stub and a "common" C++ code stub. The latter one
+is the only place where custom C++ code can be added. So called "protected regions" allow to write code that will not be overwritten
+whenever the code generation is triggered again. The BRICS_3D code can be hooked in into exactly these places.  
+
+This section will illustrate how the generic interfaces as explained in section @ref taxonomy can be used in conjunction with 
+the BRIDE tool chain. For each such interface a generic component is modeled. Each generic component will carry an example implementation 
+in the "common" code part. The implementation can be seen as a variation point, i.e. one specific implementation that implements
+the generic interface can be selected. Although a generic model in BRIDE defines common inputs and outputs it does not specify the parameters.
+Inputs and outputs are the stable parts of the components, while he parameters might differ depending on the chosen algorithm. 
+To further account for that the strategy is to create more specialized components for specific algorithms that still have the same 
+inputs and outputs as in the generic model but add parameters to configure the algorithm's behavior. 
+This defines a common procedure how to add new components that can replace existing ones easily. 
+
+As an example the generic filtering component defines one point cloud as an input and one point cloud as an output but no further parameters.
+An Octree base sub-sampling filter has exactly the same inputs and outputs but it has a configurable parameter to adjust the size of the smallest voxels.
+Examples for more specialized components are depicted in section @ref brics_3d_bride_examples. 
+
+
+@section brics_3d_bride_interfaces Generic interfaces modeled in BRIDE
+
+A component modeled in BRIDE offers a rather abstract representation of some piece of functionality. It is not automatically
+linked to a specific implementation of an algorithm as it will only generate a skeleton code. 
+In order to close this gap between a model for an algorithm and its implementation in C++ a small portion of glue code needs to be
+inserted. This is straight forward as both the models and BRICS_3D code are organized according to the same taxonomy (cf. @ref taxonomy).
+The common structure for this glue code can be summarized as follows:
+
+- Convert from the framework specific to the custom data-types. In this case ROS messages to the BRICS_3D types. 
+  Helper functions can be found in brics_3d::PCLTypecaster for instance. 
+- Set the parameters for the algorithm. They can be set at runtime with dynamic_reconfigure tool for instance.
+- Do the actual computation i.e. call the method from the interfaces of the respective taxonomy category.
+  For instance a @e registration component in BRIDE will use the brics_3d::IRegistration interface and so on.	
+- Convert the result back to the framework specific data-types.
+ 
+In order to create a complete application by connecting inputs and outputs, all components need to be proper
+defined first. 
+ 
+@subsection brics_3d_bride_depth_perception Model for depth perception
+
+The CameraStub component acts as a dummy component for any kind of data source that is capable of emitting point clouds. 
+It is in particular useful to express a camera in a BRIDE model for systems of connected BRIDE components 
+(cf. @ref brics_3d_bride_example_system). In such a system topic names can be configured. 
+
+If a default topic name of an the existing divers is selected like @p /camera/depth/points for a Kinect camera for instance then the 
+follow up components will receive proper data without further configuration. 
+To start the system the driver and system should be launched in parallel.  
+
+ @image html brics_3d_bride_camera_stub.svg
+ @image latex brics_3d_bride_camera_stub.pdf "CameraStub model for BRIDE" width=10cm 
+
+ @param[out] pointClouds ROS Message of type @p sensor_msgs::PointCloud2 The point cloud representing a single acquired frame from a 3D camera. 
+
+
+@subsection brics_3d_bride_filtering Model for filtering
+
+The Filter component has a point cloud as input and sends the modified data as point cloud messages as well. 
+The example implementation uses the brics_3d::Octree filter. Either the code is replaced by any other filer that 
+implements the brics_3d::IFiltering interface (variation point) or a new specialized component is developed 
+with the same below input and outputs (cf. @ref brics_3d_bride_filtering_octree or @ref brics_3d_bride_filtering_roi). 
+
+ @image html brics_3d_bride_filter.svg
+ @image latex brics_3d_bride_filter.pdf "Filter model for BRIDE" width=12cm 
+
+ @param[in] inputPointCloud 	ROS Message of type @p sensor_msgs::PointCloud2 This point cloud will be filtered.
+ @param[out] outputPointCloud  	ROS Message of type @p sensor_msgs::PointCloud2 The point cloud that holds the filtered data.
+
+
+@subsection brics_3d_bride_registration Model for registration
+
+The registration component receives two point clouds, calculates the rigid transformation that is necessary to align both point clouds
+and published the resulting transform. In BRIDE the input ports can be configured (@e Event @e Port) to trigger the computation. 
+As default the @e dataPointCloud port triggers execution. The skeleton code is filled with the brics_3d::IterativeClosestPoint algorithm. 
+
+ @image html brics_3d_bride_registration.svg
+ @image latex brics_3d_bride_registration.pdf "Registrator model for BRIDE" width=12cm 
+ 
+ @param[in] dataPointCloud 		ROS Message of type @p sensor_msgs::PointCloud2 The point cloud that represents the @e data.
+ @param[in] modelPointCloud 	ROS Message of type @p sensor_msgs::PointCloud2 The point cloud that represents the model. 
+ 								The @e data points will be alligned with respect to the @e model. 
+ @param[out] transform			ROS Message of type @p tf::tfMessage The resulting rigid transformation that is necessary 
+ 								to align both point clouds. It is expressed with respect to the @e model. 	
+
+
+@subsection brics_3d_bride_segmentation Model for segmentation
+
+For segmentation two slightly different generic models are available. The Segementor component receives a point cloud and emits 
+an array of point clouds. Each entry of the array represents a single segment. The second component DichotomySegmentor 
+is a bit more specialized as it will generate exactly two resulting segments. 
+This is in particular interesting for model fitting based approaches that will compute inliers and outliers for the fitted model. 
+E.g. a plane fitting approach will create a point cloud inliers for the points that belong to a plane and outliers for the remaining points. 
+Please note that at most one of the two segments can be empty. 
+As sample implementations the Segementor component uses a clustering based segmentation strategy brics_3d::EuclideanClustering while 
+the DichotomySegmentor implements a plane extraction based on brics_3d::RegionBasedSACSegmentation.
+
+ @image html brics_3d_bride_segmentation.svg
+ @image latex brics_3d_bride_segmentation.pdf "Segmentation models for BRIDE." width=12cm 
+ 
+ @param[in] 	inputPointCloud ROS Message of type @p sensor_msgs::PointCloud2 Used by Segementor as well as DichotomySegmentor component: 
+ 				The point cloud that will be segmented.
+ @param[out] 	pointCloudSegmetns ROS Message of type @p brics_3d_msgs:: PointCloudSegments Used by Segementor component: 
+ 				A vector of point clouds. Each entry of the vector holds one segment.
+ @param[out] 	inliers ROS Message of type @p sensor_msgs::PointCloud2 Used by DichotomySegmentor component: 
+ 				A point cloud representing the inliers for some fitted model.
+ @param[out] 	outliers ROS Message of type @p sensor_msgs::PointCloud2 Used by DichotomySegmentor component: 
+ 				A point cloud representing the outliers for some fitted model.
+ 
+
+@subsection brics_3d_bride_mesh_generation Model for mesh generation
+
+The MeshGenerator component receives one point cloud and converts it into a triangle mesh. The example implementation is based on 
+the algorithm in brics_3d::DelaunayTriangulationOSG.  
+
+ @image html brics_3d_bride_mesh_generation.svg
+ @image latex brics_3d_bride_mesh_generation.pdf "Mesh generator model for BRIDE." width=12cm 
+ 
+ @param[in] 	inputPointCloud ROS Message of type @p sensor_msgs::PointCloud2 
+ 				For this point cloud a triangle mesh will be genrated. 
+ @param[out] 	mesh ROS Message of type @p pcl::PolygonMesh
+ 				The generated mesh.
+
+@section brics_3d_bride_examples Examples for specialized components
+
+As stated earlier the generic components are designed around the stable parts i.e. input and output data. 
+The parameters are not included in those models yet. The following section will illustrate two examples on 
+how to create more specialized components for specific algorithms that can realize a common functionality i.e.
+filtering. 
+
+@subsection brics_3d_bride_filtering_octree Model for Octree based sub-sampling filter
+
+The OctreeFilter component implements a sub-sampling filter for point clouds. It has the same data ports as generic filter but it adds
+the configurable parameter @e octreeCellSize that sets the smallest cell size of the Octree.
+
+ @image html brics_3d_bride_octree_filter.svg
+ @image latex brics_3d_bride_octree_filter.pdf "Octree filter model for BRIDE." width=12cm 
+
+ @param[in] inputPointCloud 	ROS Message of type @p sensor_msgs::PointCloud2 This point cloud will be filtered.
+ @param[out] outputPointCloud  	ROS Message of type @p sensor_msgs::PointCloud2 The point cloud that holds the filtered data.
+ @param octreeCellSize  		Set the size of the smallest cell(voxel) in an Octree.
+
+@subsection brics_3d_bride_filtering_roi Model for Region of Intrest filter     
+
+Similar to the OctreeFilter the ROIFilter represents another algorithm for filtering. Beside the standard filtering inputs and outputs 
+it has parameters to configure a box like region. 
+All points in that region will be forwarded to the output while the others will be neglected.
+
+ @image html brics_3d_bride_filter_roi.svg
+ @image latex brics_3d_bride_filter_roi.pdf "Region of Interest (ROI) filter model for BRIDE." width=12cm 
+ 
+ @param[in] inputPointCloud 	ROS Message of type @p sensor_msgs::PointCloud2 This point cloud will be filtered.
+ @param[out] outputPointCloud  	ROS Message of type @p sensor_msgs::PointCloud2 The point cloud that holds the filtered data. 
+ @param	min_x Lower boundary in x dimension.
+ @param max_x Upper boundary in x dimension.
+ @param	min_y Lower boundary in y dimension.
+ @param max_y Upper boundary in y dimension.
+ @param	min_z Lower boundary in z dimension.
+ @param max_z Upper boundary in z dimension.
+
+
+@section brics_3d_bride_example_system Example perception system modeled in BRIDE 
+
+
+A complete application can be set up by creating a <a href="http://www.ros.org/wiki/bride/Tutorials/Creating-ros-systems-with-bride">BRIDE system model</a>. 
+It allows to connect the selected components via topics. 
+
+The following figure shows an application that is able to find object clusters on top of a plane 
+(sometimes referred as  @e tabletop @e segmentation).  
+The cluster's poses will be estimated, the results will be cached and are available via the getSceneObjects service request. 
+The participating components are:
+
+- CameraStub: A dummy for a Kinect camera. In this application the topic that connects this component with the first processing component
+  is set to @p /camera/depth/points which corresponds to the default topic name of a Kinect camera. 
+  Further details can be found in in section @ref brics_3d_bride_depth_perception.
+
+- ROIFilter: Defines the Region of Interest (ROI). The component can be use to set the parameres in such a way that parts of
+  a robot itself can be excluded. Further details can be found in in section @ref brics_3d_bride_filtering_roi. 
+
+- OctreeFilter: Sub-samples the point cloud to speed up the computational time.  
+  Further details can be found in in section @ref brics_3d_bride_filtering_octree. 
+
+- DichaotomySegmentor: Uses plane segmentation as provided by the example implementation for the generic model. 
+  The outliers are further processed as these points represent the scene without its dominant plane. 
+  The removal of the plane is important for the next step: the Euclidean clustering which assumes segments that
+  are not connected. Further details can be found in in section @ref brics_3d_bride_segmentation.  
+
+- Segmentor: Uses Euclidean clustering to find more fine grained segments.   
+  Further details can be found in in section @ref brics_3d_bride_segmentation.  
+
+- ForEachSegment: A utility component that converts from the @p brics_3d::PointCloudSegments into multiple @p sensor_msgs::PointCloud2 messages.
+  This allows to use every component that has the @p sensor_msgs::PointCloud2 as an input port for further processing.   
+
+- PCAPoseEstimation: Uses PCA based oriented bounding box estimation to find the translation and rotation of a cluster
+  relative to the origin of the point cloud. 
+  The related algorithm can be found in brics_3d::BoundingBox3DExtractor::computeOrientedBoundingBox. 
+
+- scene_model: A custom node for this application. All estimated poses are cached in this node as some kind of simplistic world model. 
+  The getSceneObjects service request will return the objects. It is of type @p brics_3d_msgs::GetSceneObjects 
+
+ @image html brics_3d_bride_example_system.svg
+ @image latex brics_3d_bride_example_system.pdf "Example perception system modeled in BRIDE" width=14cm 
+
+
+@section brics_3d_bride_usage Usage
+
+All components and the above example are available on the 
+<a href="https://github.com/blumenthal/brics_3d_bride_models">BRICS_3D repository for BRIDE models</a>.
+To use the system follow the steps below:
+
+
+-# In order to generate and compile the system a set of dependencies needs to be satisfied: 
+ -# ROS: The ROS framework is required as the BRIDE tool will generate ROS code.
+ -# BRIDE: The BRIDE tool chain for ROS. An installation instruction is given <a href="http://www.ros.org/wiki/bride">here</a>.
+ -# brics_3d: The BRICS_3D library that implements the used algorithms. 
+    Installation instructions can found in section @ref brics_3d_ros_compilation.
+ -# brics_3d_ros: and brics_3d_msgs: ROS stacks including utilities for using BRICS_3D in conjunction with ROS as well as custom defined message types. 
+    Check out the repository such that it is accessible within the ROS environment (ROS_PACKAGE_PATH):
+@code
+ $ git clone git://github.com/blumenthal/brics_3d_experimental.git
+@endcode  	 
+ -# brics_3d_bride_models: The actual BRIDE models and example application. 
+    Also check out the repository such that it is accessible within the ROS environment:
+@code
+ $ git clone git://github.com/blumenthal/brics_3d_bride_models.git
+@endcode
+   As an alternative to manually checkig out the repositories the <a href="http://www.best-of-robotics.org/brocre/">BROCRE</a> tool 
+   can help to retrieve the correct dependencies. 
+-# Import models for BRICS_3D into BRIDE. Use the "Import from existing projects" importer provided by Eclipse and 
+   select all project files available in the @p brics_3d_bride_models folder that has be previously checked out.  
+-# Generate the code based on the models. Open for each project the model file and generate the C++ code (except for @e ForEachSegment) as 
+   described in the <a href="http://www.ros.org/wiki/bride/Tutorials/Creating-nodes-with-BRIDE">BRIDE tutorial for creating components</a>.
+   The model files are located in the @p models subfolder for each project and have the file extention @p ros_package_diagram
+-# Compile each node. The little hammer icon in Eclipce can be used to trigger compilation as the BRIDE tool has the Eclipse CDT plugin for C++ installed as default.     
+-# Generate a system model. Open the model for brics_3d_bride_example_system and generate the launch file that will deploy the system.
+   The <a href="http://www.ros.org/wiki/bride/Tutorials/Creating-ros-systems-with-bride"> BRIDE tutorial for creating systems</a> 
+   explains in further detail how to do that.
+-# Plug a Kinect camera and start the driver with:
+@code
+ $ roslaunch openni_camera openni_node.launch
+@endcode   
+-# Start the system by launching the generated script:
+@code
+ $ roslaunch brics_3d_bride_example_system system.launch
+@endcode   
+
+
+Results can be visualized by using the @e rviz tool for instance.
+
+*/
