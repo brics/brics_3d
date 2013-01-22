@@ -2,15 +2,83 @@
 
 @page worldmodel Introduction to the world model concept
 
+Robots need some internal representation of their
+surroundings to be able to reason about and to interact
+with it. As real world scenes are dynamic it is not sufficient
+to load a static environment model from a file. 
+Sensor data needs to be processed and continuously incorporated 
+into the applications world model. This scene data
+is relevant for a variety of \e users like path planners, a task
+coordinator, motion control modules or perception functionality. 
+Modern robot systems often make use of component-based 
+frameworks like ROS or OROCOS for instance to realize this kind of functionalities.
+Each component encapsulates a particular kind of functionality and
+solely communicates though a set of interfaces. 
+
+Components for planning, coordination, control, and perception
+ tend to have their individual internal world representation with custom data types,
+interfaces or mechanisms to retrieve the latest data. As a consequence parts of the
+world model are scattered over a variety of components and
+might remain unconnected or potentially hidden in the code.
+Furthermore each component might produce intermediate
+processing results that might be interesting
+for other components as well. But this kind of data would have to be replicated
+in the other components if there is no dedicated mechanism
+for sharing the data. A better approach would be to have a common and shared
+world model while each component has access to its relevant
+parts of a scene as indicated by following figure. In the remainder of this section the shared
+world model approach that is used in BRICS_3D is presented.
+
+ @image html brics_3d_rsg_world_model_overview.svg
+ @image latex brics_3d_rsg_world_model_overview.pdf "Overview of a shared world model." width=10cm 
+
 @section worldmodel_intro Basic concept
 
-The world model concept in BRICS_3D is centered around the idea of a \e scenegraph. 
-Scenegraphs are frequently deployed within the field of the 3D computer vision and 3D gaming. 
-However to make the scenegraph successful in the robotic domain we need to make some adjustments as explained later.
+The world model concept in BRICS_3D is centered around the idea of a \e scene \e graph. 
+Scene graphs are frequently deployed within the field of the 3D computer vision and 3D gaming. 
+However to make the scene graph successful in the robotic domain we need to make some adjustments as explained later.
 
-The core idea is to represent a 3D scene as a directed acyclic graph (DAG) of geometrical and hierarchal entities. 
-The edges of the graph represent relations between nodes in the sense of "belongs to". 
-Traveling along a path of edges will produce a hierarchical order of the nodes.
+The core idea is to represent a 3D scene as a directed acyclic graph (DAG) of 
+geometrical and hierarchal entities. The edges of the graph represent relations 
+between nodes. Traveling along a path of edges from the root node to a leave 
+will produce a hierarchical order of the nodes. Depending on the node type a 
+certain relation is expressed. For example the Transform nodes along such a path will
+define rigid transformations that will have to be applied to the leave node. 
+An example scene graph is illustrated in the following diagram:
+
+@dot 
+digraph {
+1 [label = "Group:\n root"];
+2 [label = "Transform\n"style="filled" fillcolor=yellow];
+3 [label = "Transform\n"style="filled" fillcolor=yellow];
+4 [label = "Group:\n table"];
+5 [label = "Group:\n robot"];
+6 [label = "GeometricNode:\n table mesh" style="filled" fillcolor=green];
+7 [label = "Transform\n"style="filled" fillcolor=yellow];
+8 [label = "Group:\n cup"];
+9 [label = "GeometricNode:\n cylinder" style="filled" fillcolor=green];
+10 [label = "GeometricNode:\n handle mesh" style="filled" fillcolor=green];
+11 [label = "Transform\n"style="filled" fillcolor=yellow];
+#12 [label = "Group:\n sensor"];
+#13 [label = "Transform\n"style="filled" fillcolor=yellow];
+
+1 -> 2;
+1 -> 3;
+2 -> 4;
+3 -> 5;
+4 -> 6;
+4 -> 7;
+7 -> 8;
+8 -> 9;
+8 -> 10;
+5 -> 11;
+#11 -> 12;
+#12 -> 13;
+#13 -> 9;
+11 -> 9;
+}
+@enddot
+
 
 A node is defined as:
 - A leaf in the graph. It can have multiple parent nodes. The \e root \e node is a node that has no parents.
@@ -19,11 +87,11 @@ A node is defined as:
 - Each node has attached attributes. These attributes are stored as a list of key value pairs. 
   This mechanism allows to tag graph entities with e.g. semantic attributes or debug information. 
   However the exact usage and meaning depends on the actually application and requires some kind of convention. 
-  The scenegraph offers the flexibility and infrastructure to be able to realize such tagging but it does not interpret any semantics.
+  The scene graph offers the flexibility and infrastructure to be able to realize such tagging but it does not interpret any semantics.
 
 @dot 
 digraph {
-n [label = "node"];
+n [label = "Node"];
 p1 [label = "parent 1"];
 p2 [label = "parent 2"];
 p3 [label = "parent ..." style=dotted];
@@ -45,8 +113,20 @@ The raw data, the intermediate processing data as well as the "final" resulting 
 This is in contrast to the 3D computer vision and 3D gaming approach where they typically only load pre-modelled 3D data.    
 
 The implementation of BRICS_3D contains a \e brics_3d::rsg::GeometricNode to store 3D data in leaves. The geometric node is a rather general container for any
-kind of 3D data subsumed by a \e Shape class. Possible data ranges from rather primitive shapes like a box or a cylinder to unconstrained
+kind of 3D data subsumed by the brics_3d::rsg::Shape class. Possible data ranges from rather primitive shapes like a box or a cylinder to unconstrained
 geometries like point clouds or meshes. 3D features like spin images for instance are placed in to a geometric node too.
+
+@dot 
+digraph {
+n [label = "GeometricNode" style="filled" fillcolor=green];
+p1 [label = "parent 1"];
+p2 [label = "parent ..." style=dotted];
+
+p1->n;
+p2->n[style=dotted];
+
+}
+@enddot
 
 There is a set of inner nodes that can be used to create the certain scene structure. 
 - \e brics_3d::rsg::Group: The group is a node that allows for the actual graph relations, as it extends a node to have further child nodes.
@@ -55,7 +135,7 @@ There is a set of inner nodes that can be used to create the certain scene struc
 
 @dot 
 digraph {
-n [label = "group"];
+n [label = "Group"];
 p1 [label = "parent 1"];
 p2 [label = "parent 2"];
 p3 [label = "parent ..." style=dotted];
@@ -86,16 +166,16 @@ n->c4;
  For example the robot is moving in a world frame, dynamic objects are moving in the environment or the links of the a manipulator move while grasping 
  an object of interest. To be able to determine the current velocity of dynamic objects or even make predictions where they will be in near future 
  we need to store (a limited) history of the transforms. 
- Each transform node in the scenegraph stores the data in a cache with associated time stamps. 
+ Each transform node in the scene graph stores the data in a cache with associated time stamps. 
  Data that exceeds a certain duration will be deleted. This forms a short-term temporal cache.
  
 @dot 
 digraph {
 
-r [label = "root"];
-t1 [label = "transform T1"];
-t2 [label = "transform T2"];
-n [label = "node with pose = T1*T2 relative to root"]
+r [[label = "Group:\n root"]];
+t1 [label = "Transform T1" style="filled" fillcolor=yellow];
+t2 [label = "Transform T2" style="filled" fillcolor=yellow];
+n [label = "Node with pose = T1*T2 relative to root"]
 
 r->t1
 t1->t2
@@ -104,15 +184,15 @@ t2->n
 }
 @enddot
 
-Further information on the implemention can be found in the @ref sceneGraph section. 
+Further information on the implementation can be found in the @ref sceneGraph section. 
     	
 @section worldmodel_api The world model API
 
-All necessary operations to update or query the data of the scenegraph are gathered in the class brics_3d::rsg::SceneGraphFacade. 
-- In particular the interface brics_3d::rsg::ISceneGraphUpdate is dedicated to all update uperations i.e. to add new nodes, delete notes or 
+All necessary operations to update or query the data of the scene graph are gathered in the class brics_3d::rsg::SceneGraphFacade. 
+- In particular the interface brics_3d::rsg::ISceneGraphUpdate is dedicated to all update operations i.e. to add new nodes, delete notes or 
 add/update transforms or 3D data. 
 - The query interface brics_3d::rsg::ISceneGraphQuery allows to get 3D data, transforms or to locate
-nodes with certein attaced attibute tags.
+nodes with certain attached attribute tags.
 
 
 

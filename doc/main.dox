@@ -34,7 +34,7 @@
  - @ref mesh_generation
  - @ref visualization
 - @ref sceneGraph world model implementation
-- @ref Integration into existin frameworks
+- @ref Integration into existing frameworks
  - @ref brics_3d_bride 
 - @ref license
 - @ref references 
