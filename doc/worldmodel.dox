@@ -37,7 +37,9 @@ world model approach that is used in BRICS_3D is presented.
 The world model concept in BRICS_3D is centered around the idea of a \e scene \e graph. 
 Scene graphs are frequently deployed within the field of the 3D computer vision and 3D gaming. 
 However to make the scene graph successful in the robotic domain we need to make some adjustments as explained later.
-
+To seperate the approach from traditional scene graphs it will be labeled with \e Robot \e Scene \e Graph (RSG). 
+This is reflected in the namespace brics_3d::rsg for the related classes.
+ 
 The core idea is to represent a 3D scene as a directed acyclic graph (DAG) of 
 geometrical and hierarchal entities. The edges of the graph represent relations 
 between nodes. Traveling along a path of edges from the root node to a leave 
@@ -184,17 +186,108 @@ t2->n
 }
 @enddot
 
-Further information on the implementation can be found in the @ref sceneGraph section. 
+Detailed information on the implementation can be found in the @ref sceneGraph section. 
     	
 @section worldmodel_api The world model API
 
+The world model implementation offers two APIs that reside on different conceptual levels.
+-# API for the scene graph primitives. This API grands access to all scene graph elements.
+-# Hight level API for working with \e scene \e objects. This API intents to hide the complexity
+for users that want quick/convenient access to task relevant objects like a cup to be grasped. 
+
+All interfaces are available via the brics_3d::WorldModel class. Typically a handle will be instantiated
+like in the following code snippet:
+
+@code
+	brics_3d::WorldModel* wm = new brics_3d::WorldModel();
+@endcode
+
+@subsection worldmodel_rsg_api API for the scene graph primitives
+
 All necessary operations to update or query the data of the scene graph are gathered in the class brics_3d::rsg::SceneGraphFacade. 
-- In particular the interface brics_3d::rsg::ISceneGraphUpdate is dedicated to all update operations i.e. to add new nodes, delete notes or 
+Such a handle is part of the brics_3d::WorldModel as well via the public member variable \e scene.
+- The interface brics_3d::rsg::ISceneGraphUpdate is dedicated to all update operations i.e. to add new nodes, delete notes or 
 add/update transforms or 3D data. 
 - The query interface brics_3d::rsg::ISceneGraphQuery allows to get 3D data, transforms or to locate
 nodes with certain attached attribute tags.
 
+The code for working with the API - in this case for adding a Node relative to the root - will be similar 
+to the excerpt below: 
 
+@code
+	unsigned int groupId = 0;                        // World model assigns (uniqe) IDs. Thus the value will be returned later. 
+	vector<brics_3d::rsg::Attribute> tmpAttributes;  // Optional attributes to be assigned.
+	tmpAttributes.push_back(brics_3d::rsg::Attribute("name","some_group"));
+	
+	/* add a group node relative to root */
+	wm->scene.addGroup(wm->scene.getRootId(), groupId, tmpAttributes);	
+@endcode
+
+@subsection worldmodel_secene_objects_api High level world model API
+
+On top of the @ref worldmodel_rsg_api the high level API allow access of \e scene \e objects. 
+A scene object can be seen as an aggregation of some parts in the scene graph. A result of a query will
+comprise the following elements:
+- ID: A unique ID.
+- Parent ID: ID of the parent node.
+- Transform: Transform of scene object relative to root. 
+- Shape: One shape representing the geometry. 
+- Attributes: A set of tags belonging to the object.
+
+Scene objects are represented in the scene graph as nodes that follow a certain convention. 
+Essentially a query will search for brics_3d::rsg::Transform nodes that are tagged with the attribute
+(taskType = sceneObject). It is assumed to have at least one brics_3d::rsg::GeometricNode as a child that can be 
+returned as a shape. In case of multiple GeometricNodes the first child will be taken. In the following
+example the nodes with IDs 911 and 898 form a scene object as they comply to this convention:  
+
+@dot
+digraph {
+1 [label = "Group:\nID [1]\n(name = root)\n"];
+7 [label = "Group:\nID [7]\n(name = sceneObjects)\n"];
+911 [label = "Transform:\nID [911]\nUpdates: 5\n(name = cluster_tf)\n(taskType = sceneObject)\n"style="filled" fillcolor=yellow];
+898 [label = "GeometricNode:\nID [898]\n(name = cluster_bbox)\n(shapeType = Box)\n" style="filled" fillcolor=green];
+
+1 -> 7;
+7 -> 911;
+911 -> 898;
+
+}
+@enddot
+
+The code for requesting all available scene objects in a scene graph involves the following lines:
+
+@code
+	vector<brics_3d::rsg::Attribute> queryArributes;    // We leave the attributes empty here to seach for all available scene objects.
+	vector<brics_3d::SceneObject> resultObjects;
+
+	/* query for scene objects */
+	wm->getSceneObjects(queryArributes, resultObjects);
+@endcode
+
+@section worldmodel_tools Tools for debugging
+
+The robot scene graph offers tools to visualize and inspect a graph at run time. The implementation
+makes use of the \e observer \e software \e pattern. This allows to observe all updates that are
+performed via the API. The following observers are available:
+
+- brics_3d::rsg::OSGVisualizer: Shows the 3D geometry of the scene graph based on the OpenSceneGraph (OSG) library.
+Note that OSG is an optional dependency that has to be enabled first (cf. @ref install_optional_birearies). To attach
+the OSG based visualizer use the code below:
+@code
+	brics_3d::rsg::OSGVisualizer* wmObserver = new brics_3d::rsg::OSGVisualizer();
+	wm->scene.attachUpdateObserver(wmObserver); // Enable 3D visualization.
+@endcode
+- brics_3d::rsg::DotVisualizer: Shows the structure of the graph. It traverses a scene graph on every update and saves it 
+as dot files and svg images. 
+@code
+	brics_3d::rsg::DotVisualizer* dbgObserver = new brics_3d::rsg::DotVisualizer(&wm->scene);
+	dbgObserver->setKeepHistory(true);           // If set to true _all_ graph snapshots will be saved as a file.
+	wm->scene.attachUpdateObserver(dbgObserver); // Enable graph structure visualization.
+@endcode
+
+@section worldmodel_links Further world model resources
+
+- ROS integration of API: https://github.com/blumenthal/brics_3d_experimental/tree/master/brics_3d_ros
 
 
 
