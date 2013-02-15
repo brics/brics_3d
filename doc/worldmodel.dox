@@ -2,20 +2,20 @@
 
 @page worldmodel Introduction to the world model concept
 
-Robots need some internal representation of their
+Robots need an internal representation of their
 surroundings to be able to reason about and to interact
 with it. As real world scenes are dynamic it is not sufficient
 to load a static environment model from a file. 
 Sensor data needs to be processed and continuously incorporated 
-into the applications world model. This scene data
-is relevant for a variety of \e users like path planners, a task
+into the world model of a robotic application. This scene data
+can be relevant for a variety of \e users like path planners, a task
 coordinator, motion control modules or perception functionality. 
 Modern robot systems often make use of component-based 
 frameworks like ROS or OROCOS for instance to realize this kind of functionalities.
 Each component encapsulates a particular kind of functionality and
 solely communicates though a set of interfaces. 
 
-Components for planning, coordination, control, and perception
+The components for planning, coordination, control, and perception
  tend to have their individual internal world representation with custom data types,
 interfaces or mechanisms to retrieve the latest data. As a consequence parts of the
 world model are scattered over a variety of components and
@@ -108,8 +108,9 @@ p4->n;
 @enddot
 
 There are two different types of nodes: \e leaves and \e inner \e nodes. 
+This differentiation between leaf nodes and an inner node is realized in BRICS_3D with the \e composite \e software \e pattern.
 Leaves contain the actual 3D data like point clouds or triangle meshes. 
-While running robotic 3D perception applications there will be some intermediate data the 
+When running robotic 3D perception applications there will be some intermediate data the 
 will be created and further processed by (cf. @ref introduction) the algorithms. 
 The raw data, the intermediate processing data as well as the "final" resulting data will be stored in leaves within the scene graph.
 This is in contrast to the 3D computer vision and 3D gaming approach where they typically only load pre-modelled 3D data.    
