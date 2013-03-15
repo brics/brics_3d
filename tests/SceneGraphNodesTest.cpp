@@ -2537,6 +2537,7 @@ void SceneGraphNodesTest::testUpdateObserver() {
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.setTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.deleteNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.removeParentCounter);
 
 	CPPUNIT_ASSERT(scene.addNode(scene.getRootId(), dymmyId, tmpAttributes) == true);
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.addNodeCounter); //poscondition
@@ -2547,6 +2548,8 @@ void SceneGraphNodesTest::testUpdateObserver() {
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.setTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.deleteNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.removeParentCounter);
+
 
 	CPPUNIT_ASSERT(scene.addGroup(scene.getRootId(), dymmyId, tmpAttributes) == true);
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.addNodeCounter); //poscondition
@@ -2557,6 +2560,8 @@ void SceneGraphNodesTest::testUpdateObserver() {
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.setTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.deleteNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.removeParentCounter);
+
 
 	CPPUNIT_ASSERT(scene.addTransformNode(scene.getRootId(), tfId, tmpAttributes, transform123, dummyTime) == true);
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.addNodeCounter); //poscondition
@@ -2567,6 +2572,8 @@ void SceneGraphNodesTest::testUpdateObserver() {
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.setTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.deleteNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.removeParentCounter);
+
 
 	CPPUNIT_ASSERT(scene.addGeometricNode(scene.getRootId(), geodeId, tmpAttributes, cylinder1, dummyTime) == true);
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.addNodeCounter); //poscondition
@@ -2577,6 +2584,8 @@ void SceneGraphNodesTest::testUpdateObserver() {
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.setTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.deleteNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.removeParentCounter);
+
 
 	CPPUNIT_ASSERT(scene.setNodeAttributes(scene.getRootId(), tmpAttributes) == true);
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.addNodeCounter); //poscondition
@@ -2587,6 +2596,8 @@ void SceneGraphNodesTest::testUpdateObserver() {
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.setTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.deleteNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.removeParentCounter);
+
 
 	CPPUNIT_ASSERT(scene.setTransform(tfId, transform123, dummyTime) == true);
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.addNodeCounter); //poscondition
@@ -2597,6 +2608,8 @@ void SceneGraphNodesTest::testUpdateObserver() {
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.setTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.deleteNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.removeParentCounter);
+
 
 	CPPUNIT_ASSERT(scene.deleteNode(tfId) == true);
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.addNodeCounter); //poscondition
@@ -2607,6 +2620,8 @@ void SceneGraphNodesTest::testUpdateObserver() {
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.setTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.deleteNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.removeParentCounter);
+
 
 	CPPUNIT_ASSERT(scene.addParent(geodeId, scene.getRootId()) == true); //actually same relation twice
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.addNodeCounter); //poscondition
@@ -2617,6 +2632,18 @@ void SceneGraphNodesTest::testUpdateObserver() {
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.setTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.deleteNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.removeParentCounter);
+
+	CPPUNIT_ASSERT(scene.removeParent(geodeId, scene.getRootId()) == true);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addNodeCounter); //poscondition
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.removeParentCounter);
 
 	/* detach -> no further updates are expected */
 	CPPUNIT_ASSERT(scene.detachUpdateObserver(&testObserver) == true);
@@ -2629,9 +2656,14 @@ void SceneGraphNodesTest::testUpdateObserver() {
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.setTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.deleteNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.removeParentCounter);
 
 	CPPUNIT_ASSERT(scene.detachUpdateObserver(&testObserver) == false);
 
+	DotVisualizer debugObserver(&scene);
+	CPPUNIT_ASSERT(scene.attachUpdateObserver(&debugObserver) == true);
+	//CPPUNIT_ASSERT(scene.addNode(scene.getRootId(), dymmyId, tmpAttributes) == true); //trigger an update
+	CPPUNIT_ASSERT(scene.detachUpdateObserver(&debugObserver) == true);
 }
 
 void SceneGraphNodesTest::testDotGraphGenerator() {
@@ -3323,6 +3355,7 @@ void SceneGraphNodesTest::testSceneGraphToUpdates() {
 	CPPUNIT_ASSERT_EQUAL(0, elementCounterCretation.setTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(0, elementCounterCretation.deleteNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(0, elementCounterCretation.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(0, elementCounterCretation.deleteNodeCounter);
 
 	CPPUNIT_ASSERT_EQUAL(0, elementCounterTraversal.addNodeCounter); //precondition
 	CPPUNIT_ASSERT_EQUAL(0, elementCounterTraversal.addGroupCounter);
@@ -3332,6 +3365,7 @@ void SceneGraphNodesTest::testSceneGraphToUpdates() {
 	CPPUNIT_ASSERT_EQUAL(0, elementCounterTraversal.setTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(0, elementCounterTraversal.deleteNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(0, elementCounterTraversal.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(0, elementCounterCretation.deleteNodeCounter);
 
 	scene.attachUpdateObserver(&elementCounterCretation);
 
@@ -3383,6 +3417,7 @@ void SceneGraphNodesTest::testSceneGraphToUpdates() {
 	CPPUNIT_ASSERT_EQUAL(0, elementCounterCretation.setTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(0, elementCounterCretation.deleteNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(2, elementCounterCretation.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(0, elementCounterCretation.deleteNodeCounter);
 
 	SceneGraphToUpdatesTraverser graphToUpdates(&elementCounterTraversal);
 	scene.executeGraphTraverser(&graphToUpdates, scene.getRootId());
@@ -3395,7 +3430,7 @@ void SceneGraphNodesTest::testSceneGraphToUpdates() {
 	CPPUNIT_ASSERT_EQUAL(0, elementCounterTraversal.setTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(0, elementCounterTraversal.deleteNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(2, elementCounterTraversal.addParentCounter);
-
+	CPPUNIT_ASSERT_EQUAL(0, elementCounterCretation.deleteNodeCounter);
 
 //	cout << "Duplicating..." << endl;
 	brics_3d::rsg::SceneGraphFacade sceneDuplication;
@@ -3417,6 +3452,172 @@ void SceneGraphNodesTest::testSceneGraphToUpdates() {
 
 	CPPUNIT_ASSERT(graph1.compare(graph2) == 0);
 
+
+}
+
+void SceneGraphNodesTest::testRemoveParents() {
+	/* Graph structure: (remember: nodes can only serve as are leaves)
+	 *                 root
+	 *                   |
+	 *              +----------+
+	 *              |          |
+	 *            group1    group2
+	 *              |          |
+	 *              +----  ----+
+	 *                  |  |
+	 *                 node3
+	 */
+
+	unsigned int group1Id = 0;
+	unsigned int group2Id = 0;
+	unsigned int node3Id = 0;
+
+	brics_3d::rsg::SceneGraphFacade scene;
+	std::vector<Attribute> attributes;
+	std::vector<unsigned int> resultIds;
+
+	attributes.clear(); //empty dummy
+	CPPUNIT_ASSERT(scene.addGroup(scene.getRootId(), group1Id, attributes));
+	CPPUNIT_ASSERT(scene.addGroup(scene.getRootId(), group2Id, attributes));
+	CPPUNIT_ASSERT(scene.addNode(group1Id, node3Id, attributes));
+	CPPUNIT_ASSERT(scene.addParent(node3Id, group2Id));
+
+	CPPUNIT_ASSERT(scene.getNodeAttributes(group1Id, attributes)); //result will be empty but the should be no error as the nodes exist
+	CPPUNIT_ASSERT(scene.getNodeAttributes(group2Id, attributes));
+	CPPUNIT_ASSERT(scene.getNodeAttributes(node3Id, attributes));
+
+	/* check all relations */
+	resultIds.clear(); //check parents
+	CPPUNIT_ASSERT(scene.getNodeParents(scene.getRootId(), resultIds));
+	CPPUNIT_ASSERT_EQUAL(0u, resultIds.size());
+	resultIds.clear();
+	CPPUNIT_ASSERT(scene.getNodeParents(group1Id, resultIds));
+	CPPUNIT_ASSERT_EQUAL(1u, resultIds.size());
+	resultIds.clear();
+	CPPUNIT_ASSERT(scene.getNodeParents(group2Id, resultIds));
+	CPPUNIT_ASSERT_EQUAL(1u, resultIds.size());
+	resultIds.clear();
+	CPPUNIT_ASSERT(scene.getNodeParents(node3Id, resultIds));
+	CPPUNIT_ASSERT_EQUAL(2u, resultIds.size());
+
+	resultIds.clear();//check childs
+	CPPUNIT_ASSERT(scene.getGroupChildren(scene.getRootId(), resultIds));
+	CPPUNIT_ASSERT_EQUAL(2u, resultIds.size());
+	resultIds.clear();
+	CPPUNIT_ASSERT(scene.getGroupChildren(group1Id, resultIds));
+	CPPUNIT_ASSERT_EQUAL(1u, resultIds.size());
+	resultIds.clear();
+	CPPUNIT_ASSERT(scene.getGroupChildren(group2Id, resultIds));
+	CPPUNIT_ASSERT_EQUAL(1u, resultIds.size());
+
+	/* remove one relation
+	 *                 root
+	 *                   |
+	 *              +----------+
+	 *              |          |
+	 *            group1    group2
+	 *                         |
+	 *                 X   ----+
+	 *                     |
+	 *                 node3
+	 */
+
+	CPPUNIT_ASSERT(scene.removeParent(node3Id, group1Id));
+
+	/* check again all relations */
+	resultIds.clear(); //check parents
+	CPPUNIT_ASSERT(scene.getNodeParents(scene.getRootId(), resultIds));
+	CPPUNIT_ASSERT_EQUAL(0u, resultIds.size());
+	resultIds.clear();
+	CPPUNIT_ASSERT(scene.getNodeParents(group1Id, resultIds));
+	CPPUNIT_ASSERT_EQUAL(1u, resultIds.size());
+	resultIds.clear();
+	CPPUNIT_ASSERT(scene.getNodeParents(group2Id, resultIds));
+	CPPUNIT_ASSERT_EQUAL(1u, resultIds.size());
+	resultIds.clear();
+	CPPUNIT_ASSERT(scene.getNodeParents(node3Id, resultIds));
+	CPPUNIT_ASSERT_EQUAL(1u, resultIds.size());
+
+	resultIds.clear();//check childs
+	CPPUNIT_ASSERT(scene.getGroupChildren(scene.getRootId(), resultIds));
+	CPPUNIT_ASSERT_EQUAL(2u, resultIds.size());
+	resultIds.clear();
+	CPPUNIT_ASSERT(scene.getGroupChildren(group1Id, resultIds));
+	CPPUNIT_ASSERT_EQUAL(0u, resultIds.size());
+	resultIds.clear();
+	CPPUNIT_ASSERT(scene.getGroupChildren(group2Id, resultIds));
+	CPPUNIT_ASSERT_EQUAL(1u, resultIds.size());
+
+	/* those oprations should fail */
+	CPPUNIT_ASSERT(!scene.removeParent(node3Id, group1Id));	 // again the same
+	CPPUNIT_ASSERT(!scene.removeParent(group1Id, group1Id)); // self
+	CPPUNIT_ASSERT(!scene.removeParent(node3Id, scene.getRootId())); // invalid relation
+	CPPUNIT_ASSERT(!scene.removeParent(group2Id, node3Id)); // invalid ralation as it is inversed
+	CPPUNIT_ASSERT(!scene.removeParent(scene.getRootId(), node3Id)); // invalid as root is first ID
+	const unsigned int invalidNodeId = 10003522;
+	CPPUNIT_ASSERT(!scene.removeParent(invalidNodeId, group1Id)); // invalid ID1
+	CPPUNIT_ASSERT(!scene.removeParent(group1Id, invalidNodeId)); // invalid ID2
+
+
+	/* check again all relations */
+	resultIds.clear(); //check parents
+	CPPUNIT_ASSERT(scene.getNodeParents(scene.getRootId(), resultIds));
+	CPPUNIT_ASSERT_EQUAL(0u, resultIds.size());
+	resultIds.clear();
+	CPPUNIT_ASSERT(scene.getNodeParents(group1Id, resultIds));
+	CPPUNIT_ASSERT_EQUAL(1u, resultIds.size());
+	resultIds.clear();
+	CPPUNIT_ASSERT(scene.getNodeParents(group2Id, resultIds));
+	CPPUNIT_ASSERT_EQUAL(1u, resultIds.size());
+	resultIds.clear();
+	CPPUNIT_ASSERT(scene.getNodeParents(node3Id, resultIds));
+	CPPUNIT_ASSERT_EQUAL(1u, resultIds.size());
+
+	resultIds.clear();//check childs
+	CPPUNIT_ASSERT(scene.getGroupChildren(scene.getRootId(), resultIds));
+	CPPUNIT_ASSERT_EQUAL(2u, resultIds.size());
+	resultIds.clear();
+	CPPUNIT_ASSERT(scene.getGroupChildren(group1Id, resultIds));
+	CPPUNIT_ASSERT_EQUAL(0u, resultIds.size());
+	resultIds.clear();
+	CPPUNIT_ASSERT(scene.getGroupChildren(group2Id, resultIds));
+	CPPUNIT_ASSERT_EQUAL(1u, resultIds.size());
+
+	/* remove another relation
+	 *                 root
+	 *                   |
+	 *              +-----    X
+	 *              |
+	 *            group1    group2
+	 *                         |
+	 *                     ----+
+	 *                     |
+	 *                   node3
+	 */
+
+	CPPUNIT_ASSERT(scene.removeParent(group2Id, scene.getRootId()));
+
+	/* check again all relations */
+	resultIds.clear(); //check parents
+	CPPUNIT_ASSERT(scene.getNodeParents(scene.getRootId(), resultIds));
+	CPPUNIT_ASSERT_EQUAL(0u, resultIds.size());
+	resultIds.clear();
+	CPPUNIT_ASSERT(scene.getNodeParents(group1Id, resultIds));
+	CPPUNIT_ASSERT_EQUAL(1u, resultIds.size());
+	resultIds.clear();
+	CPPUNIT_ASSERT(!scene.getNodeParents(group2Id, resultIds));
+	resultIds.clear();
+	CPPUNIT_ASSERT(!scene.getNodeParents(node3Id, resultIds));
+
+
+	resultIds.clear();//check childs
+	CPPUNIT_ASSERT(scene.getGroupChildren(scene.getRootId(), resultIds));
+	CPPUNIT_ASSERT_EQUAL(1u, resultIds.size());
+	resultIds.clear();
+	CPPUNIT_ASSERT(scene.getGroupChildren(group1Id, resultIds));
+	CPPUNIT_ASSERT_EQUAL(0u, resultIds.size());
+	resultIds.clear();
+	CPPUNIT_ASSERT(!scene.getGroupChildren(group2Id, resultIds));
 
 }
 

@@ -143,7 +143,14 @@ class ISceneGraphUpdate {
 	 */
 	virtual bool addParent(unsigned int id, unsigned int parentId) = 0;
 
-    //void delete parent
+    /**
+     * @brief Remove an existing parent-child relation between two nodes.
+	 *
+	 * @param id ID of the node
+	 * @param parentId ID of the parent node.
+	 * @return True on success.
+	 */
+    virtual bool removeParent(unsigned int id, unsigned int parentId) = 0;
 
 };
 

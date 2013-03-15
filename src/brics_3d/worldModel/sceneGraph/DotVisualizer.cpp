@@ -76,6 +76,12 @@ bool DotVisualizer::addParent(unsigned int id, unsigned int parentId) {
 	return true;
 }
 
+bool DotVisualizer::removeParent(unsigned int id, unsigned int parentId) {
+	printGraph();
+	return true;
+}
+
+
 void DotVisualizer::printGraph(){
 	LOG(DEBUG) << "DotVisualizer: Printing graph to file.";
 	scene->executeGraphTraverser(&graphPrinter, scene->getRootId());

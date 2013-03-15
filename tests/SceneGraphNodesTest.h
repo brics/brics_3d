@@ -24,6 +24,7 @@
 #include "brics_3d/worldModel/sceneGraph/PathCollector.h"
 #include "brics_3d/worldModel/sceneGraph/AttributeFinder.h"
 #include "brics_3d/worldModel/sceneGraph/DotGraphGenerator.h"
+#include "brics_3d/worldModel/sceneGraph/DotVisualizer.h"
 #include "brics_3d/worldModel/sceneGraph/SimpleIdGenerator.h"
 #include "brics_3d/worldModel/sceneGraph/SceneGraphFacade.h"
 #include "brics_3d/worldModel/sceneGraph/OutdatedDataDeleter.h"
@@ -107,6 +108,7 @@ public:
 		setTransformCounter = 0;
 		deleteNodeCounter = 0;
 		addParentCounter = 0;
+		removeParentCounter = 0;
 	}
 
 	bool addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, bool forceId = false) {
@@ -149,6 +151,11 @@ public:
 		return true;
 	}
 
+	bool removeParent(unsigned int id, unsigned int parentId) {
+		removeParentCounter++;
+		return true;
+	}
+
 	int addNodeCounter;
 	int addGroupCounter;
 	int addTransformCounter;
@@ -157,6 +164,7 @@ public:
 	int setTransformCounter;
 	int deleteNodeCounter;
 	int addParentCounter;
+	int removeParentCounter;
 };
 
 
@@ -188,6 +196,7 @@ class SceneGraphNodesTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testSubGraphChecker );
 	CPPUNIT_TEST( testForcedIds );
 	CPPUNIT_TEST( testSceneGraphToUpdates );
+	CPPUNIT_TEST( testRemoveParents );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -219,6 +228,7 @@ public:
 	void testSubGraphChecker();
 	void testForcedIds();
 	void testSceneGraphToUpdates();
+	void testRemoveParents();
 
 private:
 	  /// Maximum deviation for equality check of double variables

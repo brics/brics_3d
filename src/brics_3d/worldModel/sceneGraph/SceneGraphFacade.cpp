@@ -464,7 +464,7 @@ bool SceneGraphFacade::addParent(unsigned int id, unsigned int parentId) {
 	Group::GroupPtr parentGroup = boost::dynamic_pointer_cast<Group>(parentNode);
 
 	if (parentGroup != 0 && node != 0) {
-		parentGroup->addChild(node);// TODO shared ref.
+		parentGroup->addChild(node);
 		operationSucceeded = true;
 	}
 
@@ -481,6 +481,55 @@ bool SceneGraphFacade::addParent(unsigned int id, unsigned int parentId) {
 		return false;
 	}
 }
+
+bool SceneGraphFacade::removeParent(unsigned int id, unsigned int parentId) {
+	bool operationSucceeded = false;
+	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
+	Node::NodePtr node = tmpNode.lock();
+	if (node != 0) {
+		if (node->getNumberOfParents() == 0) { // oops we are trying to delete the root node, but this on has no parents...
+			assert (id == getRootId()); // just to be sure something really strange did not happend...
+			LOG(WARNING) << "The root node with ID " << id << " has no parents that could be removed.";
+			operationSucceeded = false;
+
+		} else {
+
+			/*
+			 * so we found the handle to the current node; now we will look
+			 * for respective parent and delete that
+			 */
+			for (unsigned int currentParentID = 0; currentParentID < node->getNumberOfParents(); ++currentParentID) {//NOTE: node->getNumberOfParents() will decrease within every iteration...
+				//unsigned int i = 0;
+				rsg::Node* parentNode;
+				parentNode = node->getParent(currentParentID);
+				if (parentNode->getId() == parentId) { // (Finally) we found the parent of interest.
+					Group* parentGroup =  dynamic_cast<Group*>(parentNode);
+					if (parentGroup != 0 ) {
+						parentGroup->removeChild(node);
+						operationSucceeded = true;
+					} else {
+						assert(false); // actually parents need to be groups otherwise sth. really went wrong
+					}
+				}
+			}
+			// TODO: what abput orphaned IDs?
+
+		}
+	}
+
+	/* Call all observers regardless if an error occured or not */
+	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
+	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
+		(*observerIterator)->removeParent(id, parentId);
+	}
+
+	if (operationSucceeded) {
+		return true;
+	} else {
+		return false;
+	};
+}
+
 
 bool SceneGraphFacade::attachUpdateObserver(ISceneGraphUpdateObserver* observer) {
 	assert(observer != 0);

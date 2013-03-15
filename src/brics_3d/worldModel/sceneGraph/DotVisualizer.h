@@ -50,6 +50,7 @@ public:
 	bool setTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp);
 	bool deleteNode(unsigned int id);
 	bool addParent(unsigned int id, unsigned int parentId);
+    bool removeParent(unsigned int id, unsigned int parentId);
 
     bool getKeepHistory() const
     {

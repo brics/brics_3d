@@ -372,8 +372,22 @@ bool OSGVisualizer::deleteNode(unsigned int id) {
 }
 
 bool OSGVisualizer::addParent(unsigned int id, unsigned int parentId) {
-	LOG(DEBUG) << "OSGVisualizer: adding new parent ";
+	LOG(DEBUG) << "OSGVisualizer: ignoring new parent ";
 	return true;
+}
+
+bool OSGVisualizer::removeParent(unsigned int id, unsigned int parentId) {
+	LOG(DEBUG) << "OSGVisualizer: ignoring remove parent ";
+
+	/* We ignore it unlesse deletion is required */
+	osg::ref_ptr<osg::Node> node = findNodeRecerence(id);
+	if (node != 0) {
+		if (node->getNumParents() <= 1) { //
+			return deleteNode(id);
+		}
+		return true;
+	}
+	return false;
 }
 
 bool OSGVisualizer::done() {
@@ -458,7 +472,6 @@ osg::ref_ptr<osg::Node> OSGVisualizer::createFrameAxis(double axisLength) {
 
     return frameNode;
 }
-
 
 }  // namespace rsg
 

@@ -31,7 +31,7 @@ namespace brics_3d { namespace rsg { class GeometricNode; }  }
 namespace brics_3d {
 
 /**
- * @brief Interface to get access to elements in the 3D model.
+ * @brief "High level" interface to get access to elements in the 3D model.
  * @ingroup sceneGraph
  */
 class IWorldModelQuery {
