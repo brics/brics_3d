@@ -148,32 +148,32 @@ cv [label = OpenCV]
 o [label = OSG  color=blue]
 p [label = PCL color=blue]
 x [label = Xerces color=blue]
-cg [label = CGAL color=blue]
+//cg [label = CGAL color=blue]
 //required dependencies
 c->e;
 c->b;
 a->c;
 a->cv;
 u->c;
-u->x
+w->c;
 
 //optional dependencies
 w->o[style=dotted];
 u->o[style=dotted];
 u->p[style=dotted];
 a->p[style=dotted];
-w->c[style=dotted];
-a->cg[style=dotted];
+u->x[style=dotted];
+//a->cg[style=dotted];
 //w->u[style=dotted];
 }
 @enddot
 
-This structure has inplications on the corretly added and ordered libraries to be linked to the application. 
-While liking BRICS_3D to an application \e brics_3d_core needs to be linked first (which means it will be supplied
+This structure has implications on the correctly added and ordered libraries to be linked to the application. 
+While linking BRICS_3D to an application \e brics_3d_core needs to be linked first (which means it will be supplied
 to the gcc linker last!). However the \e FindBRICS_3D.cmake script provides the variable 
 \e ${BRICS_3D_LIBRARIES} containing all BRICS_3D libraries in the correct order.
 
-For a new project that makes use of BRICS_3D it is recommended to follws thees steps:
+For a new project that makes use of BRICS_3D it is recommended to follws these steps:
 
 - Create a new folder and copy over the external/cmake_modules from BRICS_3D. It contains all relevant CMake scripts to resolve the
   BRICS_3D and its dependencies.
