@@ -73,7 +73,16 @@ void DotGraphGenerator::visit(Transform* node){
 }
 
 void DotGraphGenerator::visit(GeometricNode* node){
-	this->visit(dynamic_cast<Node*>(node)); //just feed forward to be handled as node
+	//this->visit(dynamic_cast<Node*>(node)); //just feed forward to be handled as node
+	assert (node != 0);
+
+	vector<Node*>::iterator visitedNodes;
+	visitedNodes = find (alreadyVisitedNodes.begin(), alreadyVisitedNodes.end(), node);
+
+	if (visitedNodes == alreadyVisitedNodes.end()) { // if not in list: insert and handle node
+		doHandleGeometricNode(node);
+		alreadyVisitedNodes.push_back(node);
+	}
 }
 
 void DotGraphGenerator::doHandleNode(Node* node) {
@@ -125,8 +134,31 @@ void DotGraphGenerator::doHandleTransform(Transform* node) {
     nodes << "\"";
 //    nodes << "style=\"rounded,filled\", shape=diamond";
 //    nodes << "shape=circle";
-    nodes << "style=\"filled\"";
+    nodes << "style=\"filled\" ";
+    nodes << "fillcolor=yellow ";
     nodes <<"]";
+	nodes << ";" << std::endl;
+}
+
+void DotGraphGenerator::doHandleGeometricNode(GeometricNode* node) {
+	assert (node !=0);
+
+	std::stringstream aggregatedAttributes;
+	vector<Attribute> attributeList = node->getAttributes();
+	for (unsigned int i = 0; i < static_cast<unsigned int>(attributeList.size()); ++i) {
+		aggregatedAttributes << attributeList[i];
+		aggregatedAttributes << "\\n";
+	}
+
+	nodes << node->getId();
+    nodes << " [label = \"";
+    nodes << "ID [" << node->getId() << "]\\n";
+    nodes << aggregatedAttributes.str();
+    nodes << "\"";
+    nodes << "style=\"filled\" ";
+//    nodes << "fillcolor=green ";
+    nodes << "fillcolor=lime ";
+    nodes << "]";
 	nodes << ";" << std::endl;
 }
 

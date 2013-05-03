@@ -54,6 +54,7 @@ protected:
 
 	virtual void doHandleNode(Node* node); //could be overidden by more advanced/beautiful handlers
 	virtual void doHandleTransform(Transform* node);
+	virtual void doHandleGeometricNode(GeometricNode* node);
 	virtual void doHandleEdges(Group* node);
 
 	std::stringstream dotGraph;
