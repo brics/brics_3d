@@ -8,6 +8,7 @@
 
 #include "SceneGraphNodesTest.h"
 #include <stdexcept>
+#include "brics_3d/core/Logger.h"
 
 namespace unitTests {
 
@@ -625,6 +626,406 @@ void SceneGraphNodesTest::testTemporalTransformAccess() {
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, matrixPtr[12], maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, matrixPtr[13], maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, matrixPtr[14], maxTolerance);
+
+}
+
+void SceneGraphNodesTest::testUncertainTransform() {
+	Group::GroupPtr root(new Group);
+	rsg::UncertainTransform::UncertainTransformPtr uncertainTransform1 (new rsg::UncertainTransform);
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr resultTransform;
+	ITransformUncertainty::ITransformUncertaintyPtr resultUncertainty;
+
+	unsigned const int rootId = 1;
+	unsigned const int uncertainTransform1Id = 2;
+
+	root->setId(rootId);
+	uncertainTransform1->setId(uncertainTransform1Id);
+
+	CPPUNIT_ASSERT_EQUAL(rootId, root->getId()); // preconditions
+	CPPUNIT_ASSERT_EQUAL(uncertainTransform1Id, uncertainTransform1->getId());
+
+	root->addChild(uncertainTransform1);
+
+	/* check parent-child relation */
+	CPPUNIT_ASSERT_EQUAL(1u, root->getNumberOfChildren());
+	CPPUNIT_ASSERT_EQUAL(0u, root->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(0u, uncertainTransform1->getNumberOfChildren());
+	CPPUNIT_ASSERT_EQUAL(1u, uncertainTransform1->getNumberOfParents());
+
+	/* test data */
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform123(new HomogeneousMatrix44(1,0,0,  //Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             1,2,3)); //Translation coefficients
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform234(new HomogeneousMatrix44(1,0,0,  //Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             2,3,4)); //Translation coefficients
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform345(new HomogeneousMatrix44(1,0,0,  //Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             3,4,5)); //Translation coefficients
+
+	ITransformUncertainty::ITransformUncertaintyPtr uncertainty123(new CovarianceMatrix66(0.91,0.92,0.93, 0.1,0.2,0.3));
+	ITransformUncertainty::ITransformUncertaintyPtr uncertainty234(new CovarianceMatrix66(0.81,0.82,0.83, 0.4,0.5,0.6));
+	ITransformUncertainty::ITransformUncertaintyPtr uncertainty345(new CovarianceMatrix66(0.71,0.72,0.73, 0.7,0.8,0.9));
+
+	/* Some checks for the covariance representation */
+	CPPUNIT_ASSERT_EQUAL(36, uncertainty123->getDimension());
+	CPPUNIT_ASSERT_EQUAL(6, uncertainty123->getRowDimension());
+	CPPUNIT_ASSERT_EQUAL(6, uncertainty123->getColumnDimension());
+
+	matrixPtr = uncertainty123->getRawData();
+	for (int i = 0; i < uncertainty123->getDimension(); ++i) {
+		if ((i%7) != 0) { //skip diagonal elements
+			CPPUNIT_ASSERT_DOUBLES_EQUAL(0, matrixPtr[i], maxTolerance);
+		}
+	}
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.91, matrixPtr[0],  maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.92, matrixPtr[7],  maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.93, matrixPtr[14], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.1,  matrixPtr[21], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.2,  matrixPtr[28], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.3,  matrixPtr[35], maxTolerance);
+
+
+//	LOG(ERROR) << "Covariance matrices: ";
+//	LOG(ERROR) << *uncertainty123;
+//	LOG(ERROR) << *uncertainty234;
+//	LOG(ERROR) << *uncertainty345;
+
+	uncertainTransform1->setMaxHistoryDuration(TimeStamp(10.0)); //this is just an arbitrary number!!!
+
+	/* insertion */
+	CPPUNIT_ASSERT_EQUAL(0u, uncertainTransform1->getCurrentHistoryLenght());
+	CPPUNIT_ASSERT_EQUAL(0u, uncertainTransform1->getCurrentUncertaintyHistoryLength());
+	uncertainTransform1->insertTransform(transform123, uncertainty123, TimeStamp(0));
+	CPPUNIT_ASSERT_EQUAL(1u, uncertainTransform1->getCurrentHistoryLenght());
+	CPPUNIT_ASSERT_EQUAL(1u, uncertainTransform1->getCurrentUncertaintyHistoryLength());
+
+	/* get latest transform + uncetainty and check ist content */
+	resultTransform = uncertainTransform1->getLatestTransform();
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, matrixPtr[12], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, matrixPtr[14], maxTolerance);
+
+	resultUncertainty = uncertainTransform1->getLatestTransformUncertainty();
+	matrixPtr = resultUncertainty->getRawData();
+	for (int i = 0; i < resultUncertainty->getDimension(); ++i) {
+		if ((i%7) != 0) { //skip diagonal elements
+			CPPUNIT_ASSERT_DOUBLES_EQUAL(0, matrixPtr[i], maxTolerance);
+		}
+	}
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.91, matrixPtr[0],  maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.92, matrixPtr[7],  maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.93, matrixPtr[14], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.1,  matrixPtr[21], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.2,  matrixPtr[28], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.3,  matrixPtr[35], maxTolerance);
+
+	/*
+	 * second insertion
+	 */
+	uncertainTransform1->insertTransform(transform234, uncertainty234, TimeStamp(5.0));
+	CPPUNIT_ASSERT_EQUAL(2u, uncertainTransform1->getCurrentHistoryLenght());
+	CPPUNIT_ASSERT_EQUAL(2u, uncertainTransform1->getCurrentUncertaintyHistoryLength());
+
+	/* get latest transform + uncetainty and check its content */
+	resultTransform = uncertainTransform1->getLatestTransform();
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, matrixPtr[12], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, matrixPtr[14], maxTolerance);
+
+	resultUncertainty = uncertainTransform1->getLatestTransformUncertainty();
+	matrixPtr = resultUncertainty->getRawData();
+	for (int i = 0; i < resultUncertainty->getDimension(); ++i) {
+		if ((i%7) != 0) { //skip diagonal elements
+			CPPUNIT_ASSERT_DOUBLES_EQUAL(0, matrixPtr[i], maxTolerance);
+		}
+	}
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.81, matrixPtr[0],  maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.82, matrixPtr[7],  maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.83, matrixPtr[14], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.4,  matrixPtr[21], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5,  matrixPtr[28], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.6,  matrixPtr[35], maxTolerance);
+
+	/*
+	 * third insertion beyond time limit -> first element in each cache should get deleted
+	 */
+	uncertainTransform1->insertTransform(transform345, uncertainty345, TimeStamp(11.0));
+	CPPUNIT_ASSERT_EQUAL(2u, uncertainTransform1->getCurrentHistoryLenght());
+	CPPUNIT_ASSERT_EQUAL(2u, uncertainTransform1->getCurrentUncertaintyHistoryLength());
+
+	/* get latest transform + uncetainty and check its content */
+	resultTransform = uncertainTransform1->getLatestTransform();
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, matrixPtr[12], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, matrixPtr[14], maxTolerance);
+
+	resultUncertainty = uncertainTransform1->getLatestTransformUncertainty();
+	matrixPtr = resultUncertainty->getRawData();
+	for (int i = 0; i < resultUncertainty->getDimension(); ++i) {
+		if ((i%7) != 0) { //skip diagonal elements
+			CPPUNIT_ASSERT_DOUBLES_EQUAL(0, matrixPtr[i], maxTolerance);
+		}
+	}
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.71, matrixPtr[0],  maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.72, matrixPtr[7],  maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.73, matrixPtr[14], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.7,  matrixPtr[21], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.8,  matrixPtr[28], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.9,  matrixPtr[35], maxTolerance);
+
+	/* get transform @ T= 5.0 + uncetainty and check its content */
+	resultTransform = uncertainTransform1->getTransform(TimeStamp(5.0));
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, matrixPtr[12], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, matrixPtr[14], maxTolerance);
+
+	resultUncertainty = uncertainTransform1->getTransformUncertainty(TimeStamp(5.0));
+	matrixPtr = resultUncertainty->getRawData();
+	for (int i = 0; i < resultUncertainty->getDimension(); ++i) {
+		if ((i%7) != 0) { //skip diagonal elements
+			CPPUNIT_ASSERT_DOUBLES_EQUAL(0, matrixPtr[i], maxTolerance);
+		}
+	}
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.81, matrixPtr[0],  maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.82, matrixPtr[7],  maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.83, matrixPtr[14], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.4,  matrixPtr[21], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5,  matrixPtr[28], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.6,  matrixPtr[35], maxTolerance);
+
+}
+
+void SceneGraphNodesTest::testTemporalUncertainTransform() {
+	Group::GroupPtr root(new Group);
+	rsg::UncertainTransform::UncertainTransformPtr uncertainTransform1 (new rsg::UncertainTransform);
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr resultTransform;
+	ITransformUncertainty::ITransformUncertaintyPtr resultUncertainty;
+
+	unsigned const int rootId = 1;
+	unsigned const int uncertainTransform1Id = 2;
+
+	root->setId(rootId);
+	uncertainTransform1->setId(uncertainTransform1Id);
+
+	CPPUNIT_ASSERT_EQUAL(rootId, root->getId()); // preconditions
+	CPPUNIT_ASSERT_EQUAL(uncertainTransform1Id, uncertainTransform1->getId());
+
+	root->addChild(uncertainTransform1);
+
+	/* test data */
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform123(new HomogeneousMatrix44(1,0,0,  //Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             1,2,3)); //Translation coefficients
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform234(new HomogeneousMatrix44(1,0,0,  //Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             2,3,4)); //Translation coefficients
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform345(new HomogeneousMatrix44(1,0,0,  //Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             3,4,5)); //Translation coefficients
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform456(new HomogeneousMatrix44(1,0,0,  //Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             4,5,6)); //Translation coefficients
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform567(new HomogeneousMatrix44(1,0,0,  //Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             5,6,7)); //Translation coefficients
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform678(new HomogeneousMatrix44(1,0,0,  //Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             6,7,8)); //Translation coefficients
+
+	ITransformUncertainty::ITransformUncertaintyPtr uncertainty123(new CovarianceMatrix66(0.91,0.92,0.93, 0.1,0.2,0.3));
+	ITransformUncertainty::ITransformUncertaintyPtr uncertainty234(new CovarianceMatrix66(0.81,0.82,0.83, 0.4,0.5,0.6));
+	ITransformUncertainty::ITransformUncertaintyPtr uncertainty345(new CovarianceMatrix66(0.71,0.72,0.73, 0.7,0.8,0.9));
+	ITransformUncertainty::ITransformUncertaintyPtr uncertainty456(new CovarianceMatrix66(0.61,0.62,0.63, 0.7,0.8,0.9));
+	ITransformUncertainty::ITransformUncertaintyPtr uncertainty567(new CovarianceMatrix66(0.51,0.52,0.53, 1.0,1.0,1.0));
+	ITransformUncertainty::ITransformUncertaintyPtr uncertainty678(new CovarianceMatrix66(0.41,0.42,0.43, 1.0,1.0,1.0));
+
+
+	uncertainTransform1->setMaxHistoryDuration(TimeStamp(10.0)); //this is just an arbitrary number!!!
+
+	/*
+	 * un-ordered insertion
+	 */
+	CPPUNIT_ASSERT_EQUAL(0u, uncertainTransform1->getCurrentHistoryLenght());
+	CPPUNIT_ASSERT_EQUAL(0u, uncertainTransform1->getCurrentUncertaintyHistoryLength());
+	uncertainTransform1->insertTransform(transform123, uncertainty123, TimeStamp(0));
+	CPPUNIT_ASSERT_EQUAL(1u, uncertainTransform1->getCurrentHistoryLenght());
+	CPPUNIT_ASSERT_EQUAL(1u, uncertainTransform1->getCurrentUncertaintyHistoryLength());
+
+	uncertainTransform1->insertTransform(transform234, uncertainty234, TimeStamp(7.0));
+	CPPUNIT_ASSERT_EQUAL(2u, uncertainTransform1->getCurrentHistoryLenght());
+	CPPUNIT_ASSERT_EQUAL(2u, uncertainTransform1->getCurrentUncertaintyHistoryLength());
+
+	uncertainTransform1->insertTransform(transform345, uncertainty345, TimeStamp(5.0));
+	CPPUNIT_ASSERT_EQUAL(3u, uncertainTransform1->getCurrentHistoryLenght());
+	CPPUNIT_ASSERT_EQUAL(3u, uncertainTransform1->getCurrentUncertaintyHistoryLength());
+
+	/* quick test for latest (at T= 7.0)*/
+	resultTransform = uncertainTransform1->getLatestTransform();
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, matrixPtr[12], maxTolerance);
+	resultUncertainty = uncertainTransform1->getLatestTransformUncertainty();
+	matrixPtr = resultUncertainty->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.81, matrixPtr[0],  maxTolerance);
+
+	/* quick test for oldest (at T= 0.0)*/
+	resultTransform = uncertainTransform1->getTransform(TimeStamp(0));
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, matrixPtr[12], maxTolerance);
+	resultUncertainty = uncertainTransform1->getTransformUncertainty(TimeStamp(0));
+	matrixPtr = resultUncertainty->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.91, matrixPtr[0],  maxTolerance);
+
+	/* quick test for oldest (interpolated at T= 2.0) */
+	resultTransform = uncertainTransform1->getTransform(TimeStamp(2.0));
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, matrixPtr[12], maxTolerance);
+	resultUncertainty = uncertainTransform1->getTransformUncertainty(TimeStamp(2.0));
+	matrixPtr = resultUncertainty->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.91, matrixPtr[0],  maxTolerance);
+
+	/* quick test for T=5.0 (interpolated at T= 4.0)  */
+	resultTransform = uncertainTransform1->getTransform(TimeStamp(4.0));
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, matrixPtr[12], maxTolerance);
+	resultUncertainty = uncertainTransform1->getTransformUncertainty(TimeStamp(4.0));
+	matrixPtr = resultUncertainty->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.71, matrixPtr[0],  maxTolerance);
+
+	CPPUNIT_ASSERT(uncertainTransform1->getOldestTimeStamp() == uncertainTransform1->getOldestTransformUncertaintyTimeStamp());
+
+	/* insertion that will delet oldest */
+	uncertainTransform1->insertTransform(transform456, uncertainty456, TimeStamp(11.0));
+	CPPUNIT_ASSERT_EQUAL(3u, uncertainTransform1->getCurrentHistoryLenght());
+	CPPUNIT_ASSERT_EQUAL(3u, uncertainTransform1->getCurrentUncertaintyHistoryLength());
+
+	/* quick test for latest (at T= 11.0)*/
+	resultTransform = uncertainTransform1->getLatestTransform();
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, matrixPtr[12], maxTolerance);
+	resultUncertainty = uncertainTransform1->getLatestTransformUncertainty();
+	matrixPtr = resultUncertainty->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.61, matrixPtr[0],  maxTolerance);
+
+	/* quick test for oldest (at T= 5.0)*/
+	resultTransform = uncertainTransform1->getTransform(TimeStamp(0.5));
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, matrixPtr[12], maxTolerance);
+	resultUncertainty = uncertainTransform1->getTransformUncertainty(TimeStamp(0.5));
+	matrixPtr = resultUncertainty->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.71, matrixPtr[0],  maxTolerance);
+
+	/* quick test for T=0 -> should be redirected to T=5 as there are no older elemnts than 1.0 */
+	resultTransform = uncertainTransform1->getTransform(TimeStamp(0.0));
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, matrixPtr[12], maxTolerance);
+	resultUncertainty = uncertainTransform1->getTransformUncertainty(TimeStamp(0.0));
+	matrixPtr = resultUncertainty->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.71, matrixPtr[0],  maxTolerance);
+
+	CPPUNIT_ASSERT(uncertainTransform1->getOldestTimeStamp() == uncertainTransform1->getOldestTransformUncertaintyTimeStamp());
+
+	/* insertion that will delete all others  */
+	uncertainTransform1->insertTransform(transform567, uncertainty567, TimeStamp(30.0));
+	CPPUNIT_ASSERT_EQUAL(1u, uncertainTransform1->getCurrentHistoryLenght());
+	CPPUNIT_ASSERT_EQUAL(1u, uncertainTransform1->getCurrentUncertaintyHistoryLength());
+
+	/* quick test for latest (at T= 30.0)*/
+	resultTransform = uncertainTransform1->getLatestTransform();
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, matrixPtr[12], maxTolerance);
+	resultUncertainty = uncertainTransform1->getLatestTransformUncertainty();
+	matrixPtr = resultUncertainty->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.51, matrixPtr[0],  maxTolerance);
+
+	CPPUNIT_ASSERT(uncertainTransform1->getOldestTimeStamp() == uncertainTransform1->getOldestTransformUncertaintyTimeStamp());
+
+	/* flush the caches */
+	uncertainTransform1->deleteOutdatedTransforms(TimeStamp(50.0));
+	CPPUNIT_ASSERT_EQUAL(0u, uncertainTransform1->getCurrentHistoryLenght());
+	CPPUNIT_ASSERT_EQUAL(0u, uncertainTransform1->getCurrentUncertaintyHistoryLength());
+	CPPUNIT_ASSERT(uncertainTransform1->getOldestTimeStamp() == uncertainTransform1->getOldestTransformUncertaintyTimeStamp());
+
+	/*
+	 * insertions with intermixed invocationds of transforms and transforms + uncertainty
+	 */
+	uncertainTransform1->insertTransform(transform123, uncertainty123, TimeStamp(100.0));
+	CPPUNIT_ASSERT_EQUAL(1u, uncertainTransform1->getCurrentHistoryLenght());
+	CPPUNIT_ASSERT_EQUAL(1u, uncertainTransform1->getCurrentUncertaintyHistoryLength());
+	CPPUNIT_ASSERT(uncertainTransform1->getOldestTimeStamp() == uncertainTransform1->getOldestTransformUncertaintyTimeStamp());
+
+	uncertainTransform1->insertTransform(transform234, TimeStamp(102.0));
+	CPPUNIT_ASSERT_EQUAL(2u, uncertainTransform1->getCurrentHistoryLenght());
+	CPPUNIT_ASSERT_EQUAL(1u, uncertainTransform1->getCurrentUncertaintyHistoryLength());
+	CPPUNIT_ASSERT(uncertainTransform1->getOldestTimeStamp() == uncertainTransform1->getOldestTransformUncertaintyTimeStamp());
+
+	uncertainTransform1->insertTransform(transform345, uncertainty345, TimeStamp(105.0));
+	CPPUNIT_ASSERT_EQUAL(3u, uncertainTransform1->getCurrentHistoryLenght());
+	CPPUNIT_ASSERT_EQUAL(2u, uncertainTransform1->getCurrentUncertaintyHistoryLength());
+	CPPUNIT_ASSERT(uncertainTransform1->getOldestTimeStamp() == uncertainTransform1->getOldestTransformUncertaintyTimeStamp());
+
+	/* quick test at T= 100.0*/
+	resultTransform = uncertainTransform1->getTransform(TimeStamp(100.0));
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, matrixPtr[12], maxTolerance);
+	resultUncertainty = uncertainTransform1->getTransformUncertainty(TimeStamp(100.0));
+	matrixPtr = resultUncertainty->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.91, matrixPtr[0],  maxTolerance);
+
+	/* quick test at T= 102.0*/
+	resultTransform = uncertainTransform1->getTransform(TimeStamp(102.0));
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, matrixPtr[12], maxTolerance);
+	resultUncertainty = uncertainTransform1->getTransformUncertainty(TimeStamp(102.0));
+	matrixPtr = resultUncertainty->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.91, matrixPtr[0],  maxTolerance); // redirected from T=100.0
+
+	/* quick test at T= 105.0 */
+	resultTransform = uncertainTransform1->getTransform(TimeStamp(105.0));
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, matrixPtr[12], maxTolerance);
+	resultUncertainty = uncertainTransform1->getTransformUncertainty(TimeStamp(105.0));
+	matrixPtr = resultUncertainty->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.71, matrixPtr[0],  maxTolerance);
+
+	uncertainTransform1->insertTransform(transform456, TimeStamp(120.0)); //this one unsyncs the caches (start + endpoint)
+	CPPUNIT_ASSERT_EQUAL(1u, uncertainTransform1->getCurrentHistoryLenght());
+	CPPUNIT_ASSERT_EQUAL(2u, uncertainTransform1->getCurrentUncertaintyHistoryLength());
+	CPPUNIT_ASSERT(uncertainTransform1->getOldestTimeStamp() != uncertainTransform1->getOldestTransformUncertaintyTimeStamp());
+
+	/* quick test at T= 120.0 */
+	resultTransform = uncertainTransform1->getTransform(TimeStamp(120.0));
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, matrixPtr[12], maxTolerance);
+	resultUncertainty = uncertainTransform1->getTransformUncertainty(TimeStamp(120.0)); // redirects to 105.0
+	matrixPtr = resultUncertainty->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.71, matrixPtr[0],  maxTolerance);
+
+	uncertainTransform1->insertTransform(transform567, uncertainty567, TimeStamp(150.0)); //this one re-syncs the durations (start + endpoint)
+	CPPUNIT_ASSERT_EQUAL(1u, uncertainTransform1->getCurrentHistoryLenght());
+	CPPUNIT_ASSERT_EQUAL(1u, uncertainTransform1->getCurrentUncertaintyHistoryLength());
+	CPPUNIT_ASSERT(uncertainTransform1->getOldestTimeStamp() == uncertainTransform1->getOldestTransformUncertaintyTimeStamp());
+
+	/* quick test at T= 150.0 */
+	resultTransform = uncertainTransform1->getTransform(TimeStamp(150.0));
+	matrixPtr = resultTransform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, matrixPtr[12], maxTolerance);
+	resultUncertainty = uncertainTransform1->getTransformUncertainty(TimeStamp(150.0));
+	matrixPtr = resultUncertainty->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.51, matrixPtr[0],  maxTolerance);
 
 }
 

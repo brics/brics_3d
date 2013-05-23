@@ -74,6 +74,7 @@ SET (CORE_LIBRARY_SOURCES
     ./core/ColorSpaceConvertor
     ./core/Version
     ./core/ParameterSet
+    ./core/CovarianceMatrix66
 )
 
 SET (ALGORITHM_LIBRARY_SOURCES
@@ -177,6 +178,7 @@ SET (WORLD_MODEL_LIBRARY_SOURCES
     ./worldModel/sceneGraph/SimpleIdGenerator
     ./worldModel/sceneGraph/TimeStamp
     ./worldModel/sceneGraph/Transform
+    ./worldModel/sceneGraph/UncertainTransform
     ./worldModel/sceneGraph/PathCollector
     ./worldModel/sceneGraph/AttributeFinder
     ./worldModel/sceneGraph/DotGraphGenerator    

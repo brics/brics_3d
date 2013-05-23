@@ -138,6 +138,14 @@ class Transform : public Group {
      */
     void deleteOutdatedTransforms(TimeStamp latestTimeStamp);
 
+  protected:
+
+    /// Maximum duration of storing the history of transforms.
+    TimeStamp maxHistoryDuration; //TODO: should be of some Duration type not a time stamp...
+
+    /// 10s in [ms] in case that the brics_3d::Timer is used, otherwise this number has no real meaning and should just serve as @p a default.
+    static const long double dafaultMaxHistoryDuration = 10000.0;
+
   private:
 
     /**
@@ -153,12 +161,6 @@ class Transform : public Group {
 
     /// Iterator for the history data.
     HistoryIterator historyIterator;
-
-    /// Maximum duration of storing the history of transforms.
-    TimeStamp maxHistoryDuration; //TODO: should be of some Duration type not a time stamp...
-
-    /// 10s in [ms] in case that the brics_3d::Timer is used, otherwise this number has no real meaning and should just serve as @p a default.
-    static const long double dafaultMaxHistoryDuration = 10000.0;
 
     /// Counter for how often this transform node has been updated via insertTransform.
     unsigned int updateCount;

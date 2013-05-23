@@ -13,6 +13,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "brics_3d/core/HomogeneousMatrix44.h"
+#include "brics_3d/core/CovarianceMatrix66.h"
 #include "brics_3d/worldModel/sceneGraph/Node.h"
 #include "brics_3d/worldModel/sceneGraph/Group.h"
 #include "brics_3d/worldModel/sceneGraph/Transform.h"
@@ -32,6 +33,7 @@
 #include "brics_3d/worldModel/sceneGraph/PointCloud.h"
 #include "brics_3d/worldModel/sceneGraph/SubGraphChecker.h"
 #include "brics_3d/worldModel/sceneGraph/SceneGraphToUpdatesTraverser.h"
+#include "brics_3d/worldModel/sceneGraph/UncertainTransform.h"
 #include "brics_3d/core/PointCloud3D.h"
 #include "brics_3d/core/PointCloud3DIterator.h"
 
@@ -176,6 +178,8 @@ class SceneGraphNodesTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testTransform );
 	CPPUNIT_TEST( testTemporalTransform);
 	CPPUNIT_TEST( testTemporalTransformAccess);
+	CPPUNIT_TEST( testUncertainTransform );
+	CPPUNIT_TEST( testTemporalUncertainTransform );
 	CPPUNIT_TEST( testGeometricNode );
 	CPPUNIT_TEST( testSimpleGraph );
 	CPPUNIT_TEST( testOwnership );
@@ -208,6 +212,8 @@ public:
 	void testTransform();
 	void testTemporalTransform();
 	void testTemporalTransformAccess();
+	void testUncertainTransform();
+	void testTemporalUncertainTransform();
 	void testGeometricNode();
 	void testOwnership();
 	void testSimpleGraph();
