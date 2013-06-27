@@ -1,0 +1,68 @@
+/*!
+
+@page changelog Change log
+
+@section version_0_5 0.5 ()
+
+ - UncertainTransform node added. 
+ - Imroved dot file generation. 
+
+@section version_0_4 0.4 (2013-15-03)
+
+ - Revised scene graph API (removeParent added). 
+ - RemoveParent function added to sceneGraphFacade API 
+ - Documentation for BRIDE integration added.
+
+@section version_0_3_1 0.3.1 (2012-12-05)
+
+- Version used for the BRICS video. 
+
+@section version_0_3 0.3 (2012-10-15)
+
+- New folder sructure for header includes (starts with brics_3d now). 
+- All namespaces changed to lower case (brics_3d). 
+- Various improvements for using point cloud iterators. 
+- Point cloud iterator for PCL types added. 
+- Bugfix for frame estimated in PCA. 
+- Added resent service for scene graph. 
+- Scene graph to updates traverser added. 
+- Optional forced ID in SceneGraphFacade. 
+- Sub graph checker added. 
+
+@section version_0_2 0.2 (2012-09-21)
+
+- Bugfix for Transform calculation between nodes. 
+- Visualizer added to obeserve how the graph evolves. 
+- Point cloud aggragator for a scenegraph added
+- Point iterator for scenegraph added. 
+- Function Block interface added.
+
+@section version_0_1 0.1 (2012-01-19)
+
+- Initial version.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*/
