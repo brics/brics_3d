@@ -88,6 +88,14 @@ public:
 	//virtual fuseUncertainty(A,B)
 
 	/**
+	 * Retrieve dimensions for visualization via an ellipsoid.
+	 * @param[out] x
+	 * @param[out] y
+	 * @param[out] z
+	 */
+	virtual void getVisualizationDimensions(double& x, double& y, double& z) = 0;
+
+	/**
 	 * @brief Overridden << operator.
 	 *
 	 * Writes a homogeneous matrix to a stream e.g. std::cout << homMatObj;

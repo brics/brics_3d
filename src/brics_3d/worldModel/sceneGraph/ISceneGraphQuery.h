@@ -21,6 +21,7 @@
 #define RSG_ISCENEGRAPHQUERY_H
 
 #include "brics_3d/core/IHomogeneousMatrix44.h"
+#include "brics_3d/core/ITransformUncertainty.h"
 #include <vector>
 using std::vector;
 #include "TimeStamp.h"
@@ -62,6 +63,12 @@ class ISceneGraphQuery {
      * @brief Get the transform of a TransformNode at a certain time.
      */
     virtual bool getTransform(unsigned int id, TimeStamp timeStamp, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform) = 0;
+
+    /**
+     * @brief Get the transform and uncertainty data of an UncertainTransformNode at a certain time.
+     */
+    virtual bool getUncertainTransform(unsigned int id, TimeStamp timeStamp, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform, ITransformUncertainty::ITransformUncertaintyPtr &uncertainty) = 0;
+
 
     /**
      * @brief Get the data of a GeometryNode.

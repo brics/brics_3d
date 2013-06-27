@@ -96,8 +96,14 @@ public:
 
 	void inverse();
 
+	//@depricated
+	//void getRollPitchYaw(double& roll, double& pitch, double& yaw);
+
 	friend ostream& operator<<(ostream &outStream, const IHomogeneousMatrix44 &matrix);
 
+	/* Some helper functions for conversions: */
+	static void xyzRollPitchYawToMatrix(double x, double y, double z, double roll, double pitch, double yaw, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& resultMatrix);
+	static void matrixToXyzRollPitchYaw(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr matrix, double& x, double& y, double& z, double& roll, double& pitch, double& yaw);
 
 private:
 

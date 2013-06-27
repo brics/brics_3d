@@ -41,8 +41,8 @@ namespace rsg {
  * There are a couple of implementational issues to keep in mind:
  * - To be able to successfully add new elements in the observing/receiving graph only already existing nodes
  * can be referenced, in particular via the parent IDs. Only nodes that have been traversed before can be
- * assumbed to exist already.
- * - During a traversal the visited elements do not now which preceeding parent caused the invokation.
+ * assumed to exist already.
+ * - During a traversal the visited elements do not show which preceeding parent caused the invokation.
  * This needs to be recovered.
  * - Potential duplications of parent-child relation could occour while traversing a more complex graph.
  *
@@ -76,7 +76,7 @@ public:
 private:
 
 	/**
-	 * @brief The common part for all nodeds. Only the cretation of new nodes differs.
+	 * @brief The common part for all nodes. Only the creation of new nodes differs.
 	 * @param node The current node to be processed.
 	 * @param[out] parentId The deduced parent ID such that a new node can be created in case false will be returned.
 	 * @return True if node exists and was sucessfully handeled or false if node could not be handled

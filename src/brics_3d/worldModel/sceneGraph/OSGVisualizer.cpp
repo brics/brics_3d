@@ -229,6 +229,44 @@ bool OSGVisualizer::addTransformNode(unsigned int parentId, unsigned int& assign
 	return false;
 }
 
+bool OSGVisualizer::addUncertainTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp, bool forcedId) {
+	LOG(DEBUG) << "OSGVisualizer: adding uncertain transform node";
+	//return addTransformNode(parentId, assignedId, attributes, transform, timeStamp, forcedId);
+
+	bool noVisualisation = false;
+	Attribute noVisualisationTag("debugInfo","no_visualization");
+	noVisualisation = attributeListContainsAttribute(attributes, noVisualisationTag);
+
+	osg::ref_ptr<osg::Node> node = findNodeRecerence(parentId);
+	osg::ref_ptr<osg::Group> parentGroup = 0;
+	if (node != 0) {
+		parentGroup = node->asGroup();
+	}
+	if (parentGroup != 0) {
+		osg::ref_ptr<osg::MatrixTransform> newTransformNode = new osg::MatrixTransform();
+		osg::Matrixd transformMatrix;
+		transformMatrix.set(transform->getRawData());
+		newTransformNode->setMatrix(transformMatrix);
+		if (noVisualisation) {
+			LOG(DEBUG) << "OSGVisualizer: uncertain transform has no_visualization debug tag. Skipping visualization.";
+		} else {
+			newTransformNode->addChild(createFrameAxis(frameAxisVisualisationScale)); //optionally for visualization
+			double radiusX;
+			double radiusY;
+			double radiusZ;
+			uncertainty->getVisualizationDimensions(radiusX, radiusY, radiusZ);
+			newTransformNode->addChild(createUncertaintyVisualization(radiusX, radiusY, radiusZ));
+			newTransformNode->addChild(createAttributeVisualization(attributes, assignedId));
+		}
+		viewer.addUpdateOperation(new OSGOperationAdd(this, newTransformNode, parentGroup));
+		idLookUpTable.insert(std::make_pair(assignedId, newTransformNode));
+		return true;
+	}
+	LOG(ERROR) << "OSGVisualizer: Parent with ID " << parentId << " is not a group. Cannot add a new uncertain transform as a child of it.";
+	return false;
+}
+
+
 bool OSGVisualizer::addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp, bool forcedId) {
 	LOG(DEBUG) << "OSGVisualizer: adding geode";
 
@@ -359,6 +397,30 @@ bool OSGVisualizer::setTransform(unsigned int id, IHomogeneousMatrix44::IHomogen
 	return true;
 }
 
+bool OSGVisualizer::setUncertainTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp) {
+	LOG(DEBUG) << "OSGVisualizer: updating uncertain transform data";
+	//return setTransform(id, transform, timeStamp);
+
+	osg::ref_ptr<osg::Node> node = findNodeRecerence(id);
+	osg::ref_ptr<osg::Transform> transformNode;
+	osg::ref_ptr<osg::MatrixTransform> matrixTransformNode;
+	if (node != 0) {
+		transformNode = node->asTransform();
+		matrixTransformNode = transformNode->asMatrixTransform();
+	}
+	if (matrixTransformNode != 0) {
+		osg::Matrixd transformMatrix;
+		transformMatrix.set(transform->getRawData());
+		viewer.addUpdateOperation(new OSGOperationUpdateTransform(this, matrixTransformNode, transformMatrix));
+		return true;
+	}
+	LOG(ERROR) << "OSGVisualizer: Node with ID " << id << " is not an uncertain transform node. Cannot add a new transform data.";
+	return false;
+
+	return true;
+}
+
+
 bool OSGVisualizer::deleteNode(unsigned int id) {
 	LOG(DEBUG) << "OSGVisualizer: deleting node";
 
@@ -472,6 +534,49 @@ osg::ref_ptr<osg::Node> OSGVisualizer::createFrameAxis(double axisLength) {
 
     return frameNode;
 }
+
+osg::ref_ptr<osg::Node> OSGVisualizer::createUncertaintyVisualization(double radiusX, double radiusY, double radiusZ) {
+	osg::ref_ptr<osg::Group> visualizationNode = new osg::Group();
+	visualizationNode->setName("uncertaintyVisualization");
+    osg::Geode *ellipsoid = new osg::Geode;
+
+    osg::MatrixTransform *mt = new osg::MatrixTransform(osg::Matrix::scale(radiusX, radiusY, radiusZ));
+
+    float unitRadius = 1.0f;
+    osg::ShapeDrawable *ellipsoidShape = new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(0.0f,0.0f,0.0f), unitRadius));
+    ellipsoid->addDrawable(ellipsoidShape);
+
+    visualizationNode->addChild(mt);
+    mt->addChild(ellipsoid);
+
+    return visualizationNode;
+}
+
+//osg::ref_ptr<osg::Node>findUncertaintyVisualizationScaleMatrix(osg::ref_ptr<osg::Group> uncertainTransformNode) {
+//	//TODO
+//}
+
+osg::ref_ptr<osg::Node> OSGVisualizer::createAttributeVisualization(vector<Attribute> attributes, unsigned int id) {
+	osg::ref_ptr<osg::Group> textNode = new osg::Group();
+	if (id!= 0) {
+		osg::Geode* textGeode = new osg::Geode();
+		osgText::Text* text = new osgText::Text();
+//		text->setFont("arial.ttf");
+		text->setFont("/usr/share/fonts/truetype/msttcorefonts/arial.ttf");
+		text->setCharacterSize(1.0f);
+		text->setPosition(osg::Vec3(0, 0, 1.0));
+		text->setAlignment(osgText::Text::LEFT_BASE_LINE);
+		text->setColor(osg::Vec4(1.0f, 1.0f, 0.0f, 1.0f));
+		std::stringstream message;
+		message.str("");
+		message << "ID = " << id;
+		text->setText(message.str());
+		textGeode->addDrawable(text);
+		textNode->addChild(textGeode);
+	}
+	return textNode;
+}
+
 
 }  // namespace rsg
 

@@ -21,11 +21,28 @@
 #define COVARIANCEMATRIX66_H_
 
 #include "ITransformUncertainty.h"
+#include "IHomogeneousMatrix44.h" //for compound
+
+#include <Eigen/Geometry>
+
+#ifdef EIGEN3
+	#define EIGEN_ALIGN_MEMORY EIGEN_ALIGN16
+#else
+	#define EIGEN_ALIGN_MEMORY EIGEN_ALIGN_128
+	#include <Eigen/LU>
+#endif
 
 namespace brics_3d {
 
+
+
+
 class CovarianceMatrix66 : public ITransformUncertainty {
 public:
+
+	typedef boost::shared_ptr<CovarianceMatrix66> CovarianceMatrix66Ptr;
+	typedef boost::shared_ptr<CovarianceMatrix66 const> CovarianceMatrix66ConstPtr;
+
 	CovarianceMatrix66();
 	CovarianceMatrix66(double x,double y, double z, double roll, double pitch, double yaw);
 	virtual ~CovarianceMatrix66();
@@ -40,6 +57,8 @@ public:
 	const double* getRawData() const;
 
 	double* setRawData();
+
+	void getVisualizationDimensions(double& x, double& y, double& z);
 
 	friend ostream& operator<<(ostream &outStream, const ITransformUncertainty &uncertainty);
 
@@ -59,6 +78,21 @@ private:
 	/// Set all values to zero.
 	void zeros();
 };
+
+extern CovarianceMatrix66::CovarianceMatrix66Ptr compoundCovariance(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr mean1,
+		                                                            CovarianceMatrix66::CovarianceMatrix66Ptr uncertainty1,
+		                                                            IHomogeneousMatrix44::IHomogeneousMatrix44Ptr mean2,
+		                                                            CovarianceMatrix66::CovarianceMatrix66Ptr uncertainty2);
+
+extern CovarianceMatrix66::CovarianceMatrix66Ptr invertCovariance(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr mean,
+		                                                            CovarianceMatrix66::CovarianceMatrix66Ptr uncertainty);
+
+extern bool mergeCovariance(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr mean1,
+		                    CovarianceMatrix66::CovarianceMatrix66Ptr uncertainty1,
+		                    IHomogeneousMatrix44::IHomogeneousMatrix44Ptr mean2,
+		                    CovarianceMatrix66::CovarianceMatrix66Ptr uncertainty2,
+		                    IHomogeneousMatrix44::IHomogeneousMatrix44Ptr mergedMean,
+		                    CovarianceMatrix66::CovarianceMatrix66Ptr mergedUncertainty);
 
 }
 

@@ -53,9 +53,11 @@ public:
 	bool addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, bool forceId = false);
 	bool addGroup(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, bool forceId = false);
 	bool addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp, bool forceId = false);
+	bool addUncertainTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp, bool forcedId = false);
 	bool addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp, bool forceId = false);
 	bool setNodeAttributes(unsigned int id, vector<Attribute> newAttributes);
 	bool setTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp);
+	bool setUncertainTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp);
 	bool deleteNode(unsigned int id);
 	bool addParent(unsigned int id, unsigned int parentId);
 	bool removeParent(unsigned int id, unsigned int parentId);
@@ -80,8 +82,14 @@ private:
     /// map IDs to real references
     osg::ref_ptr<osg::Node> findNodeRecerence(unsigned int id);
 
-    /// Helper function to visualize coodinate frame
+    /// Helper function to visualize coordinate frame
     osg::ref_ptr<osg::Node> createFrameAxis(double axisLength = 1.0);
+
+    /// Helper function to visualize uncertainty of a frame
+    osg::ref_ptr<osg::Node> createUncertaintyVisualization(double radiusX, double radiusY, double radiusZ);
+
+    /// Helper function to visualize attributes as text
+    osg::ref_ptr<osg::Node> createAttributeVisualization(vector<Attribute> attributes, unsigned int id = 0);
 
 	/// OSG viewer object
 	osgViewer::Viewer viewer;

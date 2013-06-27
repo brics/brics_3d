@@ -122,6 +122,35 @@ void HomogeneousMatrix44::inverse() { //could be refactored towards returning a 
 
 }
 
+//void HomogeneousMatrix44::getRollPitchYaw(double& roll, double& pitch, double& yaw) {
+//	/*
+//	 * column-row layout:
+//	 * 0 4 8  12
+//	 * 1 5 9  13
+//	 * 2 6 10 14
+//	 * 3 7 11 15
+//     *
+//     *  <=>
+//     *
+//	 * r11 r12 r13  12
+//	 * r21 r22 r23  13
+//	 * r31 r32 r33  14
+//	 * 3    7   11  15
+//	 */
+//
+//	//	  http://en.wikibooks.org/wiki/Robotics_Kinematics_and_Dynamics/Description_of_Position_and_Orientation
+//	//    r = \textrm{atan2}(R_{32}, R_{33})
+//	//    y = \textrm{atan2}(R_{21}, R_{11})
+//	//    p = \textrm{atan2}(-R_{31}, c_{y} R_{11} + s_{y} R_{21})
+//
+//	roll = atan2(matrixData[6], matrixData[10]);
+//	pitch = atan2(matrixData[1], matrixData[0]);
+//	yaw = atan2(-matrixData[2], (cos(matrixData[0]) + sin(matrixData[1])) );
+//
+//	// TODO Gimbal lock
+//	// Numerical instabilitiy for pitch around  PI/2 and -PI/2.
+//}
+
 ostream& operator<<(ostream &outStream, const IHomogeneousMatrix44 &matrix) {
 	const double *matrixData = matrix.getRawData();
 
@@ -136,6 +165,93 @@ ostream& operator<<(ostream &outStream, const IHomogeneousMatrix44 &matrix) {
 
 	return outStream;
 }
+
+void HomogeneousMatrix44::xyzRollPitchYawToMatrix(double x, double y, double z, double roll, double pitch, double yaw, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& resultMatrix) {
+	double* matrixData = resultMatrix->setRawData();
+
+	/* Translation */
+	matrixData[12] = x;
+	matrixData[13] = y;
+	matrixData[14] = z;
+
+	/* Rotation */
+	/*
+	 * column-row layout:
+	 * 0 4 8  12
+	 * 1 5 9  13
+	 * 2 6 10 14
+	 * 3 7 11 15
+     *
+     *  <=>
+     *
+	 * r11 r12 r13  12
+	 * r21 r22 r23  13
+	 * r31 r32 r33  14
+	 * 3    7   11  15
+	 */
+	matrixData[0] = cos(yaw)*cos(pitch);
+	matrixData[4] = cos(yaw)*sin(pitch)*sin(roll) - sin(yaw)*cos(roll);
+	matrixData[8] = cos(yaw)*sin(pitch)*cos(roll) + sin(yaw)*sin(roll);
+
+	matrixData[1] = sin(yaw)*cos(pitch);
+	matrixData[5] = sin(yaw)*sin(pitch)*sin(roll) + cos(yaw)*cos(roll);
+	matrixData[9] = sin(yaw)*sin(pitch)*cos(roll) - cos(yaw)*sin(roll);
+
+	matrixData[2] = -sin(pitch);
+	matrixData[6] = cos(pitch)*sin(roll);
+	matrixData[10] = cos(pitch)*cos(roll);
+}
+
+
+void HomogeneousMatrix44::matrixToXyzRollPitchYaw(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr matrix, double& x, double& y, double& z, double& roll, double& pitch, double& yaw) {
+	const double* matrixData = matrix->getRawData();
+
+	x = matrixData[12];
+	y = matrixData[13];
+	z = matrixData[14];
+
+	/*
+	 * column-row layout:
+	 * 0 4 8  12
+	 * 1 5 9  13
+	 * 2 6 10 14
+	 * 3 7 11 15
+     *
+     *  <=>
+     *
+	 * r11 r12 r13  12
+	 * r21 r22 r23  13
+	 * r31 r32 r33  14
+	 * 3    7   11  15
+	 */
+
+	//cf. Craig pp. 43
+	// NOTE: Numerical instabilitiy for pitch around  PI/2 and -PI/2.
+	pitch = atan2(-matrixData[2], sqrt (matrixData[0]*matrixData[0] + matrixData[1]*matrixData[1]) ); // <- correct? (should be 2x more?)
+
+	double c_pitch = cos(pitch);
+	double tolerance = 10e-5;
+	if ( fabs(c_pitch - M_PI*0.5) < tolerance) {
+//		LOG(WARN) << "Gimbal Lock detected.";
+		if (pitch > 0) { // case + PI/2
+			pitch = M_PI * 0.5;
+			yaw = 0;
+			roll = atan2(matrixData[1], matrixData[5]);
+		} else { // case - PI/2
+			pitch = -M_PI * 0.5;
+			yaw = 0;
+			roll = -atan2(matrixData[1], matrixData[5]);
+		}
+		return;
+	}
+
+	roll = atan2(matrixData[6]/c_pitch, matrixData[10]/c_pitch);
+	yaw = atan2(matrixData[1]/c_pitch, matrixData[0]/c_pitch);
+
+
+
+}
+
 
 }
 /* EOF */

@@ -98,6 +98,14 @@ public:
 	virtual void inverse() = 0;
 
 	/**
+	 * @brief Retrieve roll pitch yaw values in radian from the rotational part of the homogenious matrix.
+	 * @param[out] roll Roll in [rad]
+	 * @param[out] pitch Pitch in [rad]
+	 * @param[out] yaw Yaw in [rad]
+	 */
+//	virtual void getRollPitchYaw(double& roll, double& pitch, double& yaw) = 0;s
+
+	/**
 	 * @brief Overridden << operator.
 	 *
 	 * Writes a homogeneous matrix to a stream e.g. std::cout << homMatObj;

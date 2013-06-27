@@ -1738,6 +1738,172 @@ void SceneGraphNodesTest::testTransformVisitor() {
 	delete idCollector;
 }
 
+void SceneGraphNodesTest::testUncertainTransformVisitor() {
+	/* Graph structure: (remember: nodes can only serve as are leaves)
+	 *            root
+	 *              |
+	 *        ------+-----
+	 *        |          |
+	 *       tf1        utf2
+	 *        |          |
+	 *       utf3        group4
+	 *        |          |
+	 *        +----  ----+
+	 *            |  |
+	 *            node5
+	 */
+	unsigned const int rootId = 0;
+	unsigned const int tf1Id = 1;
+	unsigned const int utf2Id = 2;
+	unsigned const int utf3Id = 3;
+	unsigned const int group4Id = 4;
+	unsigned const int node5Id = 5;
+
+	Group::GroupPtr root(new Group());
+	root->setId(rootId);
+	rsg::Transform::TransformPtr tf1(new rsg::Transform());
+	tf1->setId(tf1Id);
+	rsg::UncertainTransform::UncertainTransformPtr utf2(new rsg::UncertainTransform());
+	utf2->setId(utf2Id);
+	rsg::UncertainTransform::UncertainTransformPtr utf3(new rsg::UncertainTransform());
+	utf3->setId(utf3Id);
+	Group::GroupPtr group4(new Group());
+	group4->setId(group4Id);
+	Node::NodePtr node5(new Node());
+	node5->setId(node5Id);
+
+	TimeStamp dummyTime(1.0);
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform123(new HomogeneousMatrix44(1,0,0,  	//Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             1,2,3)); 						//Translation coefficients
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform654(new HomogeneousMatrix44(1,0,0,  	//Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             6,5,4)); 						//Translation coefficients
+
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform789(new HomogeneousMatrix44(1,0,0,  	//Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             7,8,9)); 						//Translation coefficients
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr resultTransform;
+
+	ITransformUncertainty::ITransformUncertaintyPtr uncertainty234(new CovarianceMatrix66(0.81,0.82,0.83, 0.4,0.5,0.6));
+	ITransformUncertainty::ITransformUncertaintyPtr uncertainty345(new CovarianceMatrix66(0.71,0.72,0.73, 0.7,0.8,0.9));
+
+
+	tf1->insertTransform(transform123, dummyTime);
+	utf2->insertTransform(transform654, uncertainty234, dummyTime);
+	utf3->insertTransform(transform789, uncertainty345, dummyTime);
+
+	CPPUNIT_ASSERT_EQUAL(rootId, root->getId()); // preconditions:
+	CPPUNIT_ASSERT_EQUAL(tf1Id, tf1->getId());
+	CPPUNIT_ASSERT_EQUAL(utf2Id, utf2->getId());
+	CPPUNIT_ASSERT_EQUAL(utf3Id, utf3->getId());
+	CPPUNIT_ASSERT_EQUAL(group4Id, group4->getId());
+	CPPUNIT_ASSERT_EQUAL(node5Id, node5->getId());
+
+	/* setup scenegraph */
+	root->addChild(tf1);
+	root->addChild(utf2);
+	tf1->addChild(utf3);
+	utf3->addChild(node5);
+	utf2->addChild(group4);
+	group4->addChild(node5);
+
+
+	IdCollector* idCollector = new IdCollector();
+
+	cout << "Graph with transforms" << endl;
+	root->accept(idCollector);
+
+	CPPUNIT_ASSERT_EQUAL(7u, static_cast<unsigned int>(idCollector->collectedIDs.size()));
+	CPPUNIT_ASSERT_EQUAL(rootId, idCollector->collectedIDs[0]); //Remember: we have depth-first-search
+	CPPUNIT_ASSERT_EQUAL(tf1Id, idCollector->collectedIDs[1]);
+	CPPUNIT_ASSERT_EQUAL(utf3Id, idCollector->collectedIDs[2]);
+	CPPUNIT_ASSERT_EQUAL(node5Id, idCollector->collectedIDs[3]);
+	CPPUNIT_ASSERT_EQUAL(utf2Id, idCollector->collectedIDs[4]);
+	CPPUNIT_ASSERT_EQUAL(group4Id, idCollector->collectedIDs[5]);
+	CPPUNIT_ASSERT_EQUAL(node5Id, idCollector->collectedIDs[6]);
+
+	PathCollector* pathCollector = new PathCollector();
+	node5->accept(pathCollector);
+
+	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(pathCollector->getNodePaths().size()));
+	CPPUNIT_ASSERT_EQUAL(3u, static_cast<unsigned int>(pathCollector->getNodePaths()[0].size()));
+	CPPUNIT_ASSERT_EQUAL(3u, static_cast<unsigned int>(pathCollector->getNodePaths()[1].size()));
+
+	CPPUNIT_ASSERT_EQUAL(rootId, (*pathCollector->getNodePaths()[0][0]).getId()); // 1. path
+	CPPUNIT_ASSERT_EQUAL(tf1Id, (*pathCollector->getNodePaths()[0][1]).getId());
+	CPPUNIT_ASSERT_EQUAL(utf3Id, (*pathCollector->getNodePaths()[0][2]).getId());
+
+	CPPUNIT_ASSERT_EQUAL(rootId, (*pathCollector->getNodePaths()[1][0]).getId()); // 2. path
+	CPPUNIT_ASSERT_EQUAL(utf2Id, (*pathCollector->getNodePaths()[1][1]).getId());
+	CPPUNIT_ASSERT_EQUAL(group4Id, (*pathCollector->getNodePaths()[1][2]).getId());
+
+	resultTransform = getGlobalTransformAlongPath(pathCollector->getNodePaths()[0]);
+//	cout << (*resultTransform) << endl;
+
+	matrixPtr = resultTransform->getRawData();
+
+	/* rotation in column-major order*/
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, matrixPtr[0], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[4], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[8], maxTolerance);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[1], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, matrixPtr[5], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[9], maxTolerance);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[2], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[6], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, matrixPtr[10], maxTolerance);
+
+	/* translation */
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(8.0, matrixPtr[12], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(10.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(12.0, matrixPtr[14], maxTolerance);
+
+	/* stuffing coefficients */
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[3], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[7], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[11], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, matrixPtr[15], maxTolerance);
+
+	resultTransform = getGlobalTransformAlongPath(pathCollector->getNodePaths()[1]);
+//	cout << (*resultTransform) << endl;
+
+	matrixPtr = resultTransform->getRawData();
+
+	/* rotation in column-major order*/
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, matrixPtr[0], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[4], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[8], maxTolerance);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[1], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, matrixPtr[5], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[9], maxTolerance);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[2], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[6], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, matrixPtr[10], maxTolerance);
+
+	/* translation */
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(6.0, matrixPtr[12], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, matrixPtr[14], maxTolerance);
+
+	/* stuffing coefficients */
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[3], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[7], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[11], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, matrixPtr[15], maxTolerance);
+
+    //TODO test update of uncertain transform
+
+
+}
+
 void SceneGraphNodesTest::testGlobalTransformCalculation() {
 	/* Graph structure: (remember: nodes can only serve as are leaves)
 	 *            root(tf)
@@ -2926,6 +3092,7 @@ void SceneGraphNodesTest::testUpdateObserver() {
 	                                                             1,2,3)); 						//Translation coefficients
 
 	Cylinder::CylinderPtr cylinder1(new Cylinder(0.2,0.1));
+	ITransformUncertainty::ITransformUncertaintyPtr uncertainty123(new CovarianceMatrix66(0.91,0.92,0.93, 0.1,0.2,0.3));
 
 	MyObserver testObserver;
 	CPPUNIT_ASSERT(scene.attachUpdateObserver(&testObserver) == true);
@@ -2939,6 +3106,8 @@ void SceneGraphNodesTest::testUpdateObserver() {
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.deleteNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.addParentCounter);
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.removeParentCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.addUncertainTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.setUncertainTransformCounter);
 
 	CPPUNIT_ASSERT(scene.addNode(scene.getRootId(), dymmyId, tmpAttributes) == true);
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.addNodeCounter); //poscondition
@@ -2950,6 +3119,9 @@ void SceneGraphNodesTest::testUpdateObserver() {
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.deleteNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.addParentCounter);
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.removeParentCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.addUncertainTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.setUncertainTransformCounter);
+
 
 
 	CPPUNIT_ASSERT(scene.addGroup(scene.getRootId(), dymmyId, tmpAttributes) == true);
@@ -2962,6 +3134,8 @@ void SceneGraphNodesTest::testUpdateObserver() {
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.deleteNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.addParentCounter);
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.removeParentCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.addUncertainTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.setUncertainTransformCounter);
 
 
 	CPPUNIT_ASSERT(scene.addTransformNode(scene.getRootId(), tfId, tmpAttributes, transform123, dummyTime) == true);
@@ -2974,6 +3148,8 @@ void SceneGraphNodesTest::testUpdateObserver() {
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.deleteNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.addParentCounter);
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.removeParentCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.addUncertainTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.setUncertainTransformCounter);
 
 
 	CPPUNIT_ASSERT(scene.addGeometricNode(scene.getRootId(), geodeId, tmpAttributes, cylinder1, dummyTime) == true);
@@ -2986,6 +3162,8 @@ void SceneGraphNodesTest::testUpdateObserver() {
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.deleteNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.addParentCounter);
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.removeParentCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.addUncertainTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.setUncertainTransformCounter);
 
 
 	CPPUNIT_ASSERT(scene.setNodeAttributes(scene.getRootId(), tmpAttributes) == true);
@@ -2998,6 +3176,8 @@ void SceneGraphNodesTest::testUpdateObserver() {
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.deleteNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.addParentCounter);
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.removeParentCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.addUncertainTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.setUncertainTransformCounter);
 
 
 	CPPUNIT_ASSERT(scene.setTransform(tfId, transform123, dummyTime) == true);
@@ -3010,7 +3190,34 @@ void SceneGraphNodesTest::testUpdateObserver() {
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.deleteNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.addParentCounter);
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.removeParentCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.addUncertainTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.setUncertainTransformCounter);
 
+	CPPUNIT_ASSERT(scene.addUncertainTransformNode(scene.getRootId(), tfId, tmpAttributes, transform123, uncertainty123, dummyTime) == true);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addNodeCounter); //poscondition
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.removeParentCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addUncertainTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.setUncertainTransformCounter);
+
+	CPPUNIT_ASSERT(scene.setUncertainTransform(tfId, transform123, uncertainty123, dummyTime) == true);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addNodeCounter); //poscondition
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(0, testObserver.removeParentCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addUncertainTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.setUncertainTransformCounter);
 
 	CPPUNIT_ASSERT(scene.deleteNode(tfId) == true);
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.addNodeCounter); //poscondition
@@ -3022,6 +3229,8 @@ void SceneGraphNodesTest::testUpdateObserver() {
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.deleteNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.addParentCounter);
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.removeParentCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addUncertainTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.setUncertainTransformCounter);
 
 
 	CPPUNIT_ASSERT(scene.addParent(geodeId, scene.getRootId()) == true); //actually same relation twice
@@ -3034,6 +3243,9 @@ void SceneGraphNodesTest::testUpdateObserver() {
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.deleteNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.addParentCounter);
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.removeParentCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addUncertainTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.setUncertainTransformCounter);
+
 
 	CPPUNIT_ASSERT(scene.removeParent(geodeId, scene.getRootId()) == true);
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.addNodeCounter); //poscondition
@@ -3045,6 +3257,9 @@ void SceneGraphNodesTest::testUpdateObserver() {
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.deleteNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.addParentCounter);
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.removeParentCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addUncertainTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.setUncertainTransformCounter);
+
 
 	/* detach -> no further updates are expected */
 	CPPUNIT_ASSERT(scene.detachUpdateObserver(&testObserver) == true);
@@ -3058,6 +3273,9 @@ void SceneGraphNodesTest::testUpdateObserver() {
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.deleteNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.addParentCounter);
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.removeParentCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.addUncertainTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, testObserver.setUncertainTransformCounter);
+
 
 	CPPUNIT_ASSERT(scene.detachUpdateObserver(&testObserver) == false);
 

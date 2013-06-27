@@ -129,6 +129,19 @@ bool SceneGraphFacade::getTransform(unsigned int id, TimeStamp timeStamp, IHomog
 	return false;
 }
 
+bool SceneGraphFacade::getUncertainTransform(unsigned int id, TimeStamp timeStamp, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform, ITransformUncertainty::ITransformUncertaintyPtr &uncertainty) {
+	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
+	Node::NodePtr node = tmpNode.lock();
+	rsg::UncertainTransform::UncertainTransformPtr transformNode = boost::dynamic_pointer_cast<rsg::UncertainTransform>(node);
+	if (transformNode != 0) {
+		transform = transformNode->getTransform(timeStamp);
+		uncertainty = transformNode->getTransformUncertainty(timeStamp);
+		return true;
+	}
+	LOG(ERROR) << "Node with ID " << id << " is not an uncertain transform. Cannot return transform data.";
+	return false;
+}
+
 bool SceneGraphFacade::getGeometry(unsigned int id, Shape::ShapePtr& shape, TimeStamp& timeStamp) {
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();
@@ -309,6 +322,57 @@ bool SceneGraphFacade::addTransformNode(unsigned int parentId, unsigned int& ass
 	}
 }
 
+bool SceneGraphFacade::addUncertainTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp, bool forcedId) {
+	bool operationSucceeded = false;
+	bool idIsOk = false;
+	unsigned int id;
+	Node::NodeWeakPtr tmpNode = findNodeRecerence(parentId);
+	Node::NodePtr node = tmpNode.lock();
+
+	Group::GroupPtr parentGroup = boost::dynamic_pointer_cast<Group>(node);
+
+	if (forcedId) {
+		if( (!doesIdExist(assignedId)) && (idGenerator->removeIdFromPool(assignedId)) ) {
+			id = assignedId;
+			idIsOk = true;
+		} else {
+			LOG(WARNING) << "Forced ID " << assignedId << " cannot be assigend. Probably another object with that ID exists already!";
+			idIsOk = false;
+		}
+	} else {
+		id = idGenerator->getNextValidId();
+		idIsOk = true;
+	}
+
+	if ((parentGroup != 0) && (idIsOk)) {
+		rsg::UncertainTransform::UncertainTransformPtr newTransform(new UncertainTransform());
+		newTransform->setId(id);
+		newTransform->setAttributes(attributes);
+		newTransform->insertTransform(transform, uncertainty, timeStamp);
+		parentGroup->addChild(newTransform);
+		assignedId = newTransform->getId();
+		idLookUpTable.insert(std::make_pair(newTransform->getId(), newTransform));
+		operationSucceeded = true;
+	}
+
+	/* Call all observers regardless if an error occured or not */
+	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
+	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
+		unsigned int assignedIdcopy = assignedId; // prevent that observer might change this....
+		(*observerIterator)->addUncertainTransformNode(parentId, assignedIdcopy, attributes, transform, uncertainty, timeStamp);
+	}
+
+	if(operationSucceeded) {
+		return true;
+	} else {
+		if (idIsOk) { //If ID was OK but operation did not succeeded, then it is because of the parent...
+			LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new uncertain transform as a child of it.";
+		}
+		return false;
+	}
+	return false;
+}
+
 bool SceneGraphFacade::addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp, bool forcedId) {
 	bool operationSucceeded = false;
 	bool idIsOk = false;
@@ -407,6 +471,31 @@ bool SceneGraphFacade::setTransform(unsigned int id, IHomogeneousMatrix44::IHomo
 		LOG(ERROR) << "Node with ID " << id << " is not a transform. Cannot set new transform data.";
 		return false;
 	}
+}
+
+bool SceneGraphFacade::setUncertainTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp) {
+	bool operationSucceeded = false;
+	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
+	Node::NodePtr node = tmpNode.lock();
+	rsg::UncertainTransform::UncertainTransformPtr transformNode = boost::dynamic_pointer_cast<rsg::UncertainTransform>(node);
+	if (transformNode != 0) {
+		transformNode->insertTransform(transform, uncertainty, timeStamp);
+		operationSucceeded = true;
+	}
+
+	/* Call all observers regardless if an error occured or not */
+	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
+	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
+		(*observerIterator)->setUncertainTransform(id, transform, uncertainty, timeStamp);
+	}
+
+	if (operationSucceeded) {
+		return true;
+	} else {
+		LOG(ERROR) << "Node with ID " << id << " is not an uncertain transform. Cannot set new transform and uncertainy data.";
+		return false;
+	}
+	return false;
 }
 
 bool SceneGraphFacade::deleteNode(unsigned int id) {
@@ -529,7 +618,6 @@ bool SceneGraphFacade::removeParent(unsigned int id, unsigned int parentId) {
 		return false;
 	};
 }
-
 
 bool SceneGraphFacade::attachUpdateObserver(ISceneGraphUpdateObserver* observer) {
 	assert(observer != 0);

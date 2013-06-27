@@ -27,6 +27,7 @@
 #include "Group.h"
 #include "Node.h"
 #include "Transform.h"
+#include "UncertainTransform.h"
 #include "GeometricNode.h"
 #include "Shape.h"
 
@@ -69,6 +70,7 @@ class SceneGraphFacade : public ISceneGraphQuery, public ISceneGraphUpdate {
     bool getNodeParents(unsigned int id, vector<unsigned int>& parentIds);
     bool getGroupChildren(unsigned int id, vector<unsigned int>& childIds);
     bool getTransform(unsigned int id, TimeStamp timeStamp, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform);
+    bool getUncertainTransform(unsigned int id, TimeStamp timeStamp, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform, ITransformUncertainty::ITransformUncertaintyPtr &uncertainty);
     bool getGeometry(unsigned int id, Shape::ShapePtr& shape, TimeStamp& timeStamp);
 
     bool getTransformForNode (unsigned int id, unsigned int idReferenceNode, TimeStamp timeStamp, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform);
@@ -77,9 +79,11 @@ class SceneGraphFacade : public ISceneGraphQuery, public ISceneGraphUpdate {
     bool addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, bool forcedId = false);
     bool addGroup(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, bool forcedId = false);
     bool addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp, bool forcedId = false);
+    bool addUncertainTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp, bool forcedId = false);
     bool addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp, bool forcedId = false);
     bool setNodeAttributes(unsigned int id, vector<Attribute> newAttributes);
     bool setTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp);
+    bool setUncertainTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp);
 	bool deleteNode(unsigned int id);
     bool addParent(unsigned int id, unsigned int parentId);
     bool removeParent(unsigned int id, unsigned int parentId);

@@ -21,6 +21,7 @@
 #define RSG_ISCENEGRAPHUPDATE_H
 
 #include "brics_3d/core/IHomogeneousMatrix44.h"
+#include "brics_3d/core/ITransformUncertainty.h"
 #include <vector>
 using std::vector;
 #include "TimeStamp.h"
@@ -90,6 +91,8 @@ class ISceneGraphUpdate {
 	 */
 	virtual bool addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp, bool forcedId = false) = 0;
 
+	virtual bool addUncertainTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp, bool forcedId = false) = 0;
+
     /**
      * @brief Add a GeometricNode that contains 3D data to the robot scene graph.
 	 *
@@ -125,6 +128,9 @@ class ISceneGraphUpdate {
 	 * @return True on success.
 	 */
 	virtual bool setTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp) = 0;
+
+	virtual bool setUncertainTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp) = 0;
+
 
     /**
      * @brief Delete a node in the robot scenegraph.

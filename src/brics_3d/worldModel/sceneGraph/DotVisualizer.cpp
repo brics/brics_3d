@@ -51,6 +51,12 @@ bool DotVisualizer::addTransformNode(unsigned int parentId, unsigned int& assign
 	return true;
 }
 
+bool DotVisualizer::addUncertainTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp, bool forcedId) {
+	printGraph();
+	return true;
+}
+
+
 bool DotVisualizer::addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp, bool forcedId) {
 	printGraph();
 	return true;
@@ -65,6 +71,12 @@ bool DotVisualizer::setTransform(unsigned int id, brics_3d::IHomogeneousMatrix44
 	printGraph();
 	return true;
 }
+
+bool DotVisualizer::setUncertainTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp) {
+	printGraph();
+	return true;
+}
+
 
 bool DotVisualizer::deleteNode(unsigned int id) {
 	printGraph();

@@ -105,9 +105,11 @@ public:
 		addNodeCounter = 0;
 		addGroupCounter = 0;
 		addTransformCounter = 0;
+		addUncertainTransformCounter = 0;
 		addGeometricNodeCounter = 0;
 		setNodeAttributesCounter = 0;
 		setTransformCounter = 0;
+		setUncertainTransformCounter = 0;
 		deleteNodeCounter = 0;
 		addParentCounter = 0;
 		removeParentCounter = 0;
@@ -128,6 +130,11 @@ public:
 		return true;
 	}
 
+	bool addUncertainTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp, bool forceId = false) {
+		addUncertainTransformCounter++;
+		return true;
+	}
+
 	bool addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp, bool forceId = false) {
 		addGeometricNodeCounter++;
 		return true;
@@ -140,6 +147,11 @@ public:
 
 	bool setTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp) {
 		setTransformCounter++;
+		return true;
+	}
+
+	bool setUncertainTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp) {
+		setUncertainTransformCounter++;
 		return true;
 	}
 
@@ -161,9 +173,11 @@ public:
 	int addNodeCounter;
 	int addGroupCounter;
 	int addTransformCounter;
+	int addUncertainTransformCounter;
 	int addGeometricNodeCounter;
 	int setNodeAttributesCounter;
 	int setTransformCounter;
+	int setUncertainTransformCounter;
 	int deleteNodeCounter;
 	int addParentCounter;
 	int removeParentCounter;
@@ -186,6 +200,7 @@ class SceneGraphNodesTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testSimpleVisitor );
 	CPPUNIT_TEST( testPathCollectorVisitor );
 	CPPUNIT_TEST( testTransformVisitor );
+	CPPUNIT_TEST( testUncertainTransformVisitor );
 	CPPUNIT_TEST( testGlobalTransformCalculation );
 	CPPUNIT_TEST( testAttributeFinder );
 	CPPUNIT_TEST( testOutdatedDataDeleter );
@@ -220,6 +235,7 @@ public:
 	void testSimpleVisitor();
 	void testPathCollectorVisitor();
 	void testTransformVisitor();
+	void testUncertainTransformVisitor();
 	void testGlobalTransformCalculation();
 	void testAttributeFinder();
 	void testOutdatedDataDeleter();
