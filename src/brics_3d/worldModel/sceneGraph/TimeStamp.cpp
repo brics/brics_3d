@@ -23,6 +23,22 @@ namespace brics_3d {
 
 namespace rsg {
 
+TimeStamp::TimeStamp(){
+	this->timeStamp = 0.0;
+}
+
+TimeStamp::TimeStamp(long double timeStamp, Units::TimeUnit unit){
+	if (unit != Units::Second) {
+		this->timeStamp = Units::timeToSeconds(timeStamp, unit);
+	} else {
+		this->timeStamp = timeStamp;
+	}
+}
+
+TimeStamp::~TimeStamp(){
+
+};
+
 TimeStamp TimeStamp::operator-(const TimeStamp &rhs) const {
 	return (TimeStamp(timeStamp - rhs.timeStamp));
 }
@@ -75,6 +91,10 @@ bool TimeStamp::operator<=(const TimeStamp &rhs) const {
 		return true;
 	}
 	return false;
+}
+
+double TimeStamp::getSeconds() const {
+	return timeStamp;
 }
 
 } // namespace brics_3d::RSG

@@ -75,6 +75,7 @@ SET (CORE_LIBRARY_SOURCES
     ./core/Version
     ./core/ParameterSet
     ./core/CovarianceMatrix66
+    ./core/Units
 )
 
 SET (ALGORITHM_LIBRARY_SOURCES
