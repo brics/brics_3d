@@ -2089,6 +2089,8 @@ void SceneGraphNodesTest::testAttributeFinder() {
 	Attribute testAttribute2("name","test1");
 	Attribute testAttribute3("name","test2");
 	Attribute testAttribute4("noName","test1");
+	Attribute testAttribute5;
+	const Attribute testAttribute6("name","const1");
 	cout << testAttribute1 << endl;
 
 	CPPUNIT_ASSERT(testAttribute1 == testAttribute2);
@@ -2098,6 +2100,10 @@ void SceneGraphNodesTest::testAttributeFinder() {
 	CPPUNIT_ASSERT(!(testAttribute1 != testAttribute2));
 	CPPUNIT_ASSERT(testAttribute1 != testAttribute3);
 	CPPUNIT_ASSERT(testAttribute1 != testAttribute4);
+	CPPUNIT_ASSERT(testAttribute1 != testAttribute5);
+	CPPUNIT_ASSERT(testAttribute5 != testAttribute6);
+
+
 
 	CPPUNIT_ASSERT(testAttribute1 == Attribute("name","test1"));
 

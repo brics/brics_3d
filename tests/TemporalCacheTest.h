@@ -24,6 +24,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <brics_3d/worldModel/sceneGraph/SceneGraphFacade.h>
+#include <brics_3d/worldModel/sceneGraph/TemporalCache.h>
 
 
 namespace unitTests {
@@ -39,6 +40,9 @@ class TemporalCacheTest : public CPPUNIT_NS::TestFixture {
 
 	CPPUNIT_TEST_SUITE( TemporalCacheTest );
 	CPPUNIT_TEST( testTimeStamps );
+	CPPUNIT_TEST( testSimpleCache );
+	CPPUNIT_TEST( testCacheInsertions );
+	CPPUNIT_TEST( testCacheConfiguration );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -46,6 +50,9 @@ public:
 	void tearDown();
 
 	void testTimeStamps();
+	void testSimpleCache();
+	void testCacheInsertions();
+	void testCacheConfiguration();
 
 private:
 

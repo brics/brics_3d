@@ -31,13 +31,29 @@ namespace rsg {
  *
  * Internally SI units are used. That means here: [s].
  *
+ * Some typical ways how to create time stamps are:
+ *
+ * @code
+ *
+ *		// All time stamps define a value of 10[s].
+ * 		TimeStamp stamp1(10); 					// No explicit unit type means SI units: 10[s]
+ * 		TimeStamp stamp2(10, Units::Second);
+ * 		TimeStamp stamp3(10e9, Units::NanoSecond);
+ * 		TimeStamp stamp4(10e6, Units::MicroSecond);
+ * 		TimeStamp stamp5(1e3, Units::MilliSecond);
+ * 		TimeStamp stamp6(10.0/60.0, Units::Minute);
+ * 		TimeStamp stamp7(10.0/3600.0, Units::Hour);
+ * 		TimeStamp stamp8(10.0/86400.0, Units::Day);
+ *
+ * @endcode
+ *
  * @ingroup sceneGraph
  */
 class TimeStamp {
   public:
 
 	/**
-	 * @brief Default constuctort that will crate a time stamp with a value of 0.
+	 * @brief Default constructor that will create a time stamp with a value of 0.
 	 */
 	TimeStamp();
 
@@ -51,7 +67,7 @@ class TimeStamp {
 	TimeStamp(long double timeStamp, Units::TimeUnit unit = Units::Second);
 
 	/**
-	 * @brief Default constuctor.
+	 * @brief Default destructor.
 	 */
 	virtual ~TimeStamp();
 

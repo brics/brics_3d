@@ -189,7 +189,8 @@ SET (WORLD_MODEL_LIBRARY_SOURCES
     ./worldModel/sceneGraph/PointCloudAccumulatorIdAware
     ./worldModel/sceneGraph/DotVisualizer
     ./worldModel/sceneGraph/SubGraphChecker
-    ./worldModel/sceneGraph/SceneGraphToUpdatesTraverser     
+    ./worldModel/sceneGraph/SceneGraphToUpdatesTraverser
+    ./worldModel/sceneGraph/TemporalCache         
 )
 
 #optional sources
