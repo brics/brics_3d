@@ -699,6 +699,10 @@ void SceneGraphNodesTest::testUncertainTransform() {
 	/* insertion */
 	CPPUNIT_ASSERT_EQUAL(0u, uncertainTransform1->getCurrentHistoryLenght());
 	CPPUNIT_ASSERT_EQUAL(0u, uncertainTransform1->getCurrentUncertaintyHistoryLength());
+	CPPUNIT_ASSERT(uncertainTransform1->getTransformUncertainty(TimeStamp(0.0)) == 0); //nullptr
+	CPPUNIT_ASSERT(uncertainTransform1->getLatestTransformUncertainty() == 0); //nullptr
+	CPPUNIT_ASSERT(uncertainTransform1->getLatestTransformUncertaintyTimeStamp() == TimeStamp(0.0));
+	CPPUNIT_ASSERT(uncertainTransform1->getOldestTransformUncertaintyTimeStamp() == TimeStamp(0.0));
 	uncertainTransform1->insertTransform(transform123, uncertainty123, TimeStamp(0));
 	CPPUNIT_ASSERT_EQUAL(1u, uncertainTransform1->getCurrentHistoryLenght());
 	CPPUNIT_ASSERT_EQUAL(1u, uncertainTransform1->getCurrentUncertaintyHistoryLength());
@@ -1073,6 +1077,11 @@ void SceneGraphNodesTest::testGeometricNode() {
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(4, tmpBox1->getSizeZ(), maxTolerance);
 
 	Cylinder::CylinderPtr cylinder1(new Cylinder(0.2,0.1));
+	Cylinder::CylinderPtr cylinder2(new Cylinder());
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.1, cylinder1->getHeight(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.2, cylinder1->getRadius(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, cylinder2->getHeight(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, cylinder2->getRadius(), maxTolerance);
 	geode1->setShape(cylinder1);
 
 	Cylinder::CylinderPtr tmpCylinder1;
@@ -3702,13 +3711,13 @@ void SceneGraphNodesTest::testSubGraphChecker() {
 	/* Graph structure: (remember: nodes can only serve as are leaves)
 	 *             root
 	 *              |
-	 *        ------+-------
-	 *        |             |
-	 *      group1        group2
-	 *        |             |
-	 *    ----+----  -------+-------
-	 *    |       |  |      |      |
-	 *   node3    node4  node5   group6
+	 *        ------+-------+--------------
+	 *        |             |             |
+	 *      group1        group2          tf7
+	 *        |             |             |
+	 *    ----+----  -------+-------      |
+	 *    |       |  |      |      |      |
+	 *   node3    node4  node5   group6   geode8
 	 */
 
 	unsigned const int rootId = 0;
@@ -3718,6 +3727,8 @@ void SceneGraphNodesTest::testSubGraphChecker() {
 	unsigned const int node4Id = 4;
 	unsigned const int node5Id = 5;
 	unsigned const int group6Id = 6;
+	unsigned const int tf7Id = 7;
+	unsigned const int geode8Id = 8;
 
 	Group::GroupPtr root(new Group());
 	root->setId(rootId);
@@ -3736,6 +3747,12 @@ void SceneGraphNodesTest::testSubGraphChecker() {
 	Group::GroupPtr group6(new Group());
 	group6->setId(group6Id);
 
+	rsg::Transform::TransformPtr tf7(new rsg::Transform());
+	tf7->setId(tf7Id);
+
+	rsg::GeometricNode::GeometricNodePtr geode8(new rsg::GeometricNode());
+	geode8->setId(geode8Id);
+
 	CPPUNIT_ASSERT_EQUAL(rootId, root->getId()); // preconditions:
 	CPPUNIT_ASSERT_EQUAL(group1Id, group1->getId());
 	CPPUNIT_ASSERT_EQUAL(group2Id, group2->getId());
@@ -3743,10 +3760,13 @@ void SceneGraphNodesTest::testSubGraphChecker() {
 	CPPUNIT_ASSERT_EQUAL(node4Id, node4->getId());
 	CPPUNIT_ASSERT_EQUAL(node5Id, node5->getId());
 	CPPUNIT_ASSERT_EQUAL(group6Id, group6->getId());
+	CPPUNIT_ASSERT_EQUAL(tf7Id, tf7->getId());
+	CPPUNIT_ASSERT_EQUAL(geode8Id, geode8->getId());
 
 	/* set up graph */
 	root->addChild(group1);
 	root->addChild(group2);
+	root->addChild(tf7);
 
 	group1->addChild(node3);
 	group1->addChild(node4);
@@ -3754,6 +3774,8 @@ void SceneGraphNodesTest::testSubGraphChecker() {
 	group2->addChild(node4);
 	group2->addChild(node5);
 	group2->addChild(group6);
+
+	tf7->addChild(geode8);
 
 	/* root chould be in all ...*/
 	SubGraphChecker checker(rootId);
@@ -3790,6 +3812,16 @@ void SceneGraphNodesTest::testSubGraphChecker() {
 
 	checker.reset(rootId);
 	group6->accept(&checker);
+	CPPUNIT_ASSERT(checker.nodeIsInSubGraph());
+	CPPUNIT_ASSERT_EQUAL(1u, checker.getPathCount());
+
+	checker.reset(rootId);
+	tf7->accept(&checker);
+	CPPUNIT_ASSERT(checker.nodeIsInSubGraph());
+	CPPUNIT_ASSERT_EQUAL(1u, checker.getPathCount());
+
+	checker.reset(rootId);
+	geode8->accept(&checker);
 	CPPUNIT_ASSERT(checker.nodeIsInSubGraph());
 	CPPUNIT_ASSERT_EQUAL(1u, checker.getPathCount());
 

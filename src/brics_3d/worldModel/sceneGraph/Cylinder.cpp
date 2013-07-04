@@ -24,7 +24,8 @@ namespace brics_3d {
 namespace rsg {
 
 Cylinder::Cylinder() {
-
+	this->radius = 0;
+	this->height = 0;
 }
 
 Cylinder::~Cylinder() {

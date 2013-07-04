@@ -191,7 +191,7 @@ bool ParameterSet::unpack(const std::string& param) {
 	std::string name = "";
 	std::string value = "";
 
-	while (offset < param.length() && offset != -1) {
+	while (offset < static_cast<int>(param.length()) && offset != -1) {
 		int next = param.find_first_of("<>/", offset);
 		if (next == -1)
 			break;

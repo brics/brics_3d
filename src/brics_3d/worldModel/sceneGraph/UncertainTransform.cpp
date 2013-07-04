@@ -117,7 +117,7 @@ TimeStamp UncertainTransform::getLatestTransformUncertaintyTimeStamp() {
 TimeStamp UncertainTransform::getOldestTransformUncertaintyTimeStamp() {
 	uncertaintyHistoryIterator = uncertaintyHistory.begin();
 	if(uncertaintyHistoryIterator == uncertaintyHistory.end()) {
-		LOG(WARNING) << "Transform uncertainty history for node " << this->getId() << " is empty. Cannot find latest time stamp.";// << timeStamp;
+		LOG(WARNING) << "Transform uncertainty history for node " << this->getId() << " is empty. Cannot find oldest time stamp.";// << timeStamp;
 		return TimeStamp(0.0);
 	}
 	return uncertaintyHistory.back().second;
