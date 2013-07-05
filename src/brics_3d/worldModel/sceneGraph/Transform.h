@@ -22,16 +22,22 @@
 
 #include "brics_3d/core/IHomogeneousMatrix44.h"
 #include "Group.h"
-#include "TimeStamp.h"
-#include <vector>
-using std::vector;
-using std::pair;
+#include "TemporalCache.h"
 
 namespace brics_3d {
 
 namespace rsg {
 
-typedef vector< pair<IHomogeneousMatrix44::IHomogeneousMatrix44Ptr, TimeStamp> >::iterator HistoryIterator;
+/**
+ * Specialaization for IHomogeneousMatrix44::IHomogeneousMatrix44Ptr type as
+ * error case is supposed to return a (shared) null pointer rather than 0.
+ */
+template<>
+inline IHomogeneousMatrix44::IHomogeneousMatrix44Ptr TemporalCache<IHomogeneousMatrix44::IHomogeneousMatrix44Ptr>::returnNullData() {
+	return IHomogeneousMatrix44::IHomogeneousMatrix44Ptr(); // should be kind of null...
+}
+
+typedef std::vector< std::pair<IHomogeneousMatrix44::IHomogeneousMatrix44Ptr, TimeStamp> >::iterator HistoryIterator;
 
 /**
  * @brief Determine the accumulated transform along a path of nodes.
@@ -71,8 +77,16 @@ class Transform : public Group {
 	typedef boost::shared_ptr<rsg::Transform> TransformPtr;
 	typedef boost::shared_ptr<rsg::Transform const> TransformConstPtr;
 
-    Transform();
+	/**
+	 * @brief Constructor.
+	 * @param maxHistoryDuration Optional parameter to define the temporal cache size.
+	 *        Default is 10[s].
+	 */
+    Transform(TimeStamp maxHistoryDuration = TimeStamp(10, Units::Second));
 
+    /**
+     * @brief Default destructor.
+     */
     virtual ~Transform();
 
     /**
@@ -101,7 +115,7 @@ class Transform : public Group {
     TimeStamp getMaxHistoryDuration();
 
     /**
-     * Setter for maxHistoryDuration
+     * @brief Setter for maxHistoryDuration wich defines the temporal cache size.
      */
     void setMaxHistoryDuration(TimeStamp maxHistoryDuration);
 
@@ -138,29 +152,10 @@ class Transform : public Group {
      */
     void deleteOutdatedTransforms(TimeStamp latestTimeStamp);
 
-  protected:
-
-    /// Maximum duration of storing the history of transforms.
-    TimeStamp maxHistoryDuration; //TODO: should be of some Duration type not a time stamp...
-
-    /// 10s in [ms] in case that the brics_3d::Timer is used, otherwise this number has no real meaning and should just serve as @p a default.
-    static const long double dafaultMaxHistoryDuration = 10000.0;
-
   private:
 
-    /**
-     * @brief Determine the position in the history cache whose time stamp matches best a given stamp.
-     * @param timeStamp Time stamp to wich the temporal closest data shall be found.
-     * @return Iterator to the transform with closest time stamp. In case timeStamp is exactly in between
-     * two times stamps of the cache the latest of both will be taken.
-     */
-    HistoryIterator getClosestTransform(TimeStamp timeStamp);
-
     /// History of transforms. Each transform has an associated time stamp.
-    vector< pair<IHomogeneousMatrix44::IHomogeneousMatrix44Ptr, TimeStamp> > history;
-
-    /// Iterator for the history data.
-    HistoryIterator historyIterator;
+    TemporalCache<IHomogeneousMatrix44::IHomogeneousMatrix44Ptr> history;
 
     /// Counter for how often this transform node has been updated via insertTransform.
     unsigned int updateCount;

@@ -34,7 +34,7 @@ WorldModel::~WorldModel() {
 }
 
 void WorldModel::getSceneObjects(vector<rsg::Attribute> attributes, vector<SceneObject>& results) {
-	TimeStamp currentTime(timer.getCurrentTime());
+	TimeStamp currentTime(timer.getCurrentTime(), Units::MilliSecond);
 	vector<unsigned int>resultIds;
 	results.clear();
 
@@ -83,12 +83,12 @@ void WorldModel::getCurrentTransform(unsigned int id, IHomogeneousMatrix44::IHom
 }
 
 void WorldModel::insertTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform) {
-	TimeStamp currentTime(timer.getCurrentTime());
+	TimeStamp currentTime(timer.getCurrentTime(), Units::MilliSecond);
 	scene.setTransform(id, transform, currentTime);
 }
 
 void WorldModel::addSceneObject(SceneObject newObject, unsigned int& assignedId) {
-	TimeStamp currentTime(timer.getCurrentTime());
+	TimeStamp currentTime(timer.getCurrentTime(), Units::MilliSecond);
 	unsigned int dummyResultID;
 	vector<Attribute> emptyAttributes;
 	emptyAttributes.clear();

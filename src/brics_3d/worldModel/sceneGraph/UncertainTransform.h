@@ -27,7 +27,16 @@ namespace brics_3d {
 
 namespace rsg {
 
-typedef vector< pair<ITransformUncertainty::ITransformUncertaintyPtr, TimeStamp> >::iterator UncertaintyHistoryIterator;
+typedef std::vector< std::pair<ITransformUncertainty::ITransformUncertaintyPtr, TimeStamp> >::iterator UncertaintyHistoryIterator;
+
+/**
+ * Specialaization for IHomogeneousMatrix44::IHomogeneousMatrix44Ptr type as
+ * error case is supposed to return a (shared) null pointer rather than 0.
+ */
+template<>
+inline ITransformUncertainty::ITransformUncertaintyPtr TemporalCache<ITransformUncertainty::ITransformUncertaintyPtr>::returnNullData() {
+	return ITransformUncertainty::ITransformUncertaintyPtr(); // should be kind of null...
+}
 
 /**
  * @brief A node that expresses a geometric transformation accompanied by uncertenty information between its parents and children.
@@ -49,9 +58,12 @@ public:
 	typedef boost::shared_ptr<rsg::UncertainTransform const> UncertainTransformConstPtr;
 
 	/**
-	 * @brief Default constructor
+	 * @brief Constructor.
+	 * @param maxHistoryDuration Optional parameter to define the temporal cache size.
+	 *        Default is 10[s]. This parameter will be feed forward to the Trnasform
+	 *        cache (super class) as well.
 	 */
-	UncertainTransform();
+	UncertainTransform(TimeStamp maxHistoryDuration = TimeStamp(10, Units::Second));
 
 	/**
 	 * @brief Default destructor
@@ -112,6 +124,16 @@ public:
      */
     unsigned int getCurrentUncertaintyHistoryLength();
 
+    /**
+     * @brief Setter for maxHistoryDuration wich defined the temporal cache size.
+     *
+     *
+     * We have to override the Trsnsform::setMaxHistoryDuration() function
+     * such that we dont miss new parameters for the second uncertainty cache.
+     * @param maxHistoryDuration New cache size for _both_ caches - the transform and
+     *        the uncertainty cache.
+     */
+    void setMaxHistoryDuration(TimeStamp maxHistoryDuration);
 
     /**
      * @brief Delete all data from the uncertainty history/cache that is older than the latestTimeStamp minus the duration of maxHistoryDuration.
@@ -130,10 +152,7 @@ private:
      * Cache for timestamped uncertainty data. The time stamps allow to associate the
      * uncertainty date with the transforms in the transsform cache-
      */
-    vector< pair<ITransformUncertainty::ITransformUncertaintyPtr, TimeStamp> > uncertaintyHistory;
-
-    /// Iterator for the cached uncertainty data.
-    UncertaintyHistoryIterator uncertaintyHistoryIterator;
+    TemporalCache<ITransformUncertainty::ITransformUncertaintyPtr> uncertaintyHistory;
 
     /**
      *  Counter for how often this uncertain transform node has been updated via insertTransform.
@@ -143,16 +162,6 @@ private:
      */
     unsigned int uncertaintyUpdateCount;
 
-
-    /**
-     * @brief Determine the position in the history cache whose time stamp matches best a given stamp.
-     * @param timeStamp Time stamp to wich the temporal closest data shall be found.
-     * @return Iterator to the transform uncertainty with closest time stamp. In case timeStamp is exactly in between
-     * two times stamps of the cache the latest of both will be taken.
-     *
-     * @todo: Proably we have to revise the semantics here, such that the result is always >= the timestamp
-     */
-    UncertaintyHistoryIterator getClosestTransformUncertainty(TimeStamp timeStamp);
 };
 
 }

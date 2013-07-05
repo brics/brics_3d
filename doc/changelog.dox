@@ -4,6 +4,10 @@
 
 @section version_0_5 0.5 ()
 
+ - Added generic temporal cache. 
+ - Transform and UncertainTransform refactored: they now use the generic temporal cache.
+ - Added support for (SI) units. TimeStamp can be also be specified via TimeUnits.
+ - Initial version of uncertain transform handling added. 
  - UncertainTransform node added. 
  - Imroved dot file generation. 
 

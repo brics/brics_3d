@@ -284,6 +284,10 @@ void TemporalCacheTest::testCacheInsertions() {
 		counter++;
 	}
 
+	shiftedCache.clear();
+	CPPUNIT_ASSERT_EQUAL(0u, shiftedCache.getNumberOfCacheEntries());
+	CPPUNIT_ASSERT(shiftedCache.getOldestTimeStamp() == TimeStamp(0.0, Units::Second));
+	CPPUNIT_ASSERT(shiftedCache.getLatestTimeStamp() == TimeStamp(0.0, Units::Second));
 
 }
 

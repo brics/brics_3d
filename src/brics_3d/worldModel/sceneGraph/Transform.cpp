@@ -24,8 +24,6 @@
 #include "brics_3d/core/Logger.h"
 #include "PathCollector.h"
 
-//#define STATIC_TRANSFORM
-
 namespace brics_3d {
 
 namespace rsg {
@@ -83,160 +81,53 @@ IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getTransformBetweenNodes(Node::Nod
 }
 
 
-Transform::Transform() : maxHistoryDuration(dafaultMaxHistoryDuration), updateCount(0) {
-#ifdef STATIC_TRANSFORM
-	history.resize(1);
-#else
+Transform::Transform(TimeStamp maxHistoryDuration) {
 	history.clear();
-#endif
+	history.setMaxHistoryDuration(maxHistoryDuration);
+	LOG(DEBUG) << "Creating a new Transform with maximal history duration of " << maxHistoryDuration.getSeconds() << "[s].";
+	updateCount = 0;
 }
 
 Transform::~Transform() {
-#ifdef STATIC_TRANSFORM
-	history.clear();
-#else
-	history.clear();
-#endif
+	history.clear();;
 }
 
 void Transform::insertTransform(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr newTransform, TimeStamp timeStamp) {
 	assert(newTransform != 0);
-#ifdef STATIC_TRANSFORM
-	history[0].first = newTransform;
-	history[0].second = timeStamp;
-#else
-
-	/* history policy: descending order of timestamps (the older the closer to the end - like humans...)
-	 *  latest              oldest
-	 *   |-------------------|
-	 *  begin               end
-	 */
-
-	historyIterator = history.begin();
-
-	/* insert new data at its correct place in time */
-	while(historyIterator != history.end()) { // loop over history
-		if (historyIterator->second <= timeStamp) {
-			break;
-		}
-		historyIterator++;
-	}
-	history.insert(historyIterator, std::make_pair(newTransform, timeStamp)); // fit into correct temporal place
-
-
-	/*
-	 * in this case the temporal reference is deduced from the stored data and not
-	 * from the current (real) time.
-	 */
-	historyIterator = history.begin(); // we already know that there is already one element...
-	TimeStamp latestTimeStamp = history.begin()->second;
-	deleteOutdatedTransforms(latestTimeStamp);
+	history.insertData(newTransform, timeStamp);
 	updateCount ++;
-#endif
 }
 
 void Transform::deleteOutdatedTransforms(TimeStamp latestTimeStamp) {
-	/*
-	 * delete all transforms where the durartion (delta between latestTime and stored) exeeds
-	 * the defined maximum history duration
-	 */
-	while(!history.empty() && (history.back().second + maxHistoryDuration < latestTimeStamp)) {
-		history.pop_back();
-	}
-}
-
-HistoryIterator Transform::getClosestTransform(TimeStamp timeStamp) {
-	HistoryIterator resultIterator;
-	HistoryIterator previousIterator; //remember: values have a decending order
-	resultIterator = history.begin();
-
-	if(getCurrentHistoryLenght() == 1) { // special case for first element -> just return it
-		return resultIterator;
-	}
-
-	while(resultIterator != history.end()) { // loop over history
-		if (timeStamp >= resultIterator->second) {
-			if(resultIterator != history.begin()) { // i.e. a previous element exists => copare wich is actually the closest
-				previousIterator = resultIterator - 1;
-				if ( (previousIterator->second - timeStamp) <= (timeStamp - resultIterator->second) ) {
-					return previousIterator;
-				} else {
-					return resultIterator;
-				}
-			} else {
-				return resultIterator;
-			}
-		}
-		resultIterator++;
-	}
-
-	/*
-	 * We might reach this line when timeStamp is older thant the oldest element in the history.
-	 * In that case we want to return the last/oldest element.
-	 */
-	if(getCurrentHistoryLenght() > 1) {
-		resultIterator = history.end() - 1;
-		assert(timeStamp < resultIterator->second); // just to be sure...
-	}
-	return resultIterator;
+	history.deleteOutdatedData(latestTimeStamp);
 }
 
 IHomogeneousMatrix44::IHomogeneousMatrix44Ptr  Transform::getTransform(TimeStamp timeStamp) {
-#ifdef STATIC_TRANSFORM
-	return history[0].first;
-#else
-	HistoryIterator closestTransform = getClosestTransform(timeStamp);
-	if(closestTransform == history.end()) {
-		LOG(WARNING) << "Transform history for node " << this->getId() << " is empty. Cannot find a transform for time stamp ";// << timeStamp;
-		return IHomogeneousMatrix44::IHomogeneousMatrix44Ptr(); // should be kind of null...
-		// TODO throw exception instead?
-	}
-	return closestTransform->first;
-#endif
+	return history.getData(timeStamp);
 }
 
 IHomogeneousMatrix44::IHomogeneousMatrix44Ptr Transform::getLatestTransform(){
-#ifdef STATIC_TRANSFORM
-	return history[0].first;
-#else
-	historyIterator = history.begin();
-	if(historyIterator == history.end()) {
-		LOG(WARNING) << "Transform history for node " << this->getId() << " is empty. Cannot find latest transform.";// << timeStamp;
-		return IHomogeneousMatrix44::IHomogeneousMatrix44Ptr(); // should be kind of null...
-		// TODO throw exception instead?
-	}
-	return historyIterator->first;
-#endif
+	return history.getData(history.getLatestTimeStamp());
 }
 
 TimeStamp Transform::getMaxHistoryDuration() {
-    return maxHistoryDuration;
+	return history.getMaxHistoryDuration();
 }
 
 void Transform::setMaxHistoryDuration(TimeStamp maxHistoryDuration) {
-    this->maxHistoryDuration = maxHistoryDuration;
+	history.setMaxHistoryDuration(maxHistoryDuration);
 }
 
 unsigned int Transform::getCurrentHistoryLenght() {
-	return static_cast<unsigned int>(history.size());
+	return history.getNumberOfCacheEntries();
 }
 
 TimeStamp Transform::getLatestTimeStamp() {
-	historyIterator = history.begin();
-	if(historyIterator == history.end()) {
-		LOG(WARNING) << "Transform history for node " << this->getId() << " is empty. Cannot find latest time stamp.";// << timeStamp;
-		return TimeStamp(0.0);
-	}
-	return history.front().second;
+	return history.getLatestTimeStamp();
 }
 
 TimeStamp Transform::getOldestTimeStamp() {
-	historyIterator = history.begin();
-	if(historyIterator == history.end()) {
-		LOG(WARNING) << "Transform history for node " << this->getId() << " is empty. Cannot find oldest time stamp.";// << timeStamp;
-		return TimeStamp(0.0);
-	}
-	return history.back().second;
+	return history.getOldestTimeStamp();
 }
 
 unsigned int Transform::getUpdateCount() {

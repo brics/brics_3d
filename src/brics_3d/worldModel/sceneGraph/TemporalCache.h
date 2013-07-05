@@ -176,7 +176,8 @@ public:
     	typename std::vector<std::pair<T, TimeStamp> >::iterator closestTransform = getClosestData(timeStamp);
     	if(closestTransform == history.end()) {
     		LOG(WARNING) << "TemporalCache is empty. Cannot find data for time stamp at "  << timeStamp.getSeconds() << " [s]";
-    		return 0;
+//    		return 0;
+    		return returnNullData();
     	}
     	return closestTransform->first;
     }
@@ -270,6 +271,13 @@ public:
     }
 
     /**
+     * @brief Completely flush the cache.
+     */
+    void clear() {
+    	history.clear();
+    }
+
+    /**
      * @brief Delete all data from the history/cache that is older than the latestTimeStamp minus the duration of maxHistoryDuration.
      * @param latestTimeStamp The time stamp the defines the "current" time. To this stamp the maximim duration will relate.
      *        Plase note that in case that you do not pass the timeStamp from the history cache via getLatestTimeStamp() the complete history might
@@ -336,6 +344,19 @@ protected:
     		assert(timeStamp < resultIterator->second); // just to be sure...
     	}
     	return resultIterator;
+    }
+
+    /**
+     * @brief Return a "null value".
+     *
+     * There might be further spacializations for this as "null value"
+     * might differ from type to type. E.g. More complex types might
+     * need to return some sort of null object.
+     *
+     * @return Null
+     */
+    T returnNullData() {
+    	return 0;
     }
 };
 
