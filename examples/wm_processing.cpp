@@ -18,7 +18,6 @@
 ******************************************************************************/
 
 /* BRICS_3D includes */
-#include <brics_3d/util/DepthImageLoader.h>
 #include <brics_3d/util/OSGPointCloudVisualizer.h>
 #include <brics_3d/util/OSGTriangleMeshVisualizer.h>
 #include <brics_3d/worldModel/sceneGraph/OSGVisualizer.h>
@@ -30,7 +29,6 @@
 #include <brics_3d/algorithm/filtering/Octree.h>
 #include <brics_3d/algorithm/filtering/BoxROIExtractor.h>
 #include <brics_3d/algorithm/registration/IterativeClosestPointFactory.h>
-#include <brics_3d/algorithm/depthPerception/DepthImageToPointCloudTransformation.h>
 #include <brics_3d/algorithm/meshGeneration/DelaunayTriangulationOSG.h>
 #include <brics_3d/worldModel/WorldModel.h>
 #include <brics_3d/worldModel/sceneGraph/PointCloud.h>
@@ -93,7 +91,7 @@ int main(int argc, char **argv) {
 	unsigned int groupReducedClouds;
 	unsigned int pcBoxROIId;
 	unsigned int pcResultId;
-	unsigned int tmpId;
+//	unsigned int tmpId;
 	vector<rsg::Attribute> tmpAttributes;
 
 	WorldModel* wm = new WorldModel();

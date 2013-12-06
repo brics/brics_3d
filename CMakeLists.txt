@@ -30,13 +30,7 @@ SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/external/cmake_modules")
 
 MESSAGE("Checking required prerequisites: ")
 
-# search for OpenCV library
-FIND_PACKAGE(OpenCV REQUIRED)
-IF (OpenCV_FOUND)
-  MESSAGE(STATUS "SUCCESSFUL: OpenCV found")
-ELSE (OpenCV_FOUND)
-  MESSAGE(SEND_ERROR "WARNING: OpenCV not found")
-ENDIF (OpenCV_FOUND)
+
 
 # search for Boost library (not yet necessary!)
 SET(Boost_USE_STATIC_LIBS ON)
@@ -110,6 +104,18 @@ ELSE (OPENSCENEGRAPH_FOUND)
 	SET(REMOVE_DEFINITIONS(-DBRICS_OSG_ENABLE))
 ENDIF (OPENSCENEGRAPH_FOUND)
 OPTION(USE_OSG "Enable Open Scene Graph" OFF)
+
+# search for OpenCV library
+OPTION(USE_OPENCV "Enable OpenCV Support" ON)
+IF(USE_OPENCV)  
+    FIND_PACKAGE(OpenCV REQUIRED)
+    IF (OpenCV_FOUND)
+      MESSAGE(STATUS "SUCCESSFUL: OpenCV found")
+      ADD_DEFINITIONS(-DBRICS_OPENCV_ENABLE)
+    ELSE (OpenCV_FOUND)
+      MESSAGE(SEND_ERROR "WARNING: OpenCV not found")
+    ENDIF (OpenCV_FOUND)
+ENDIF(USE_OPENCV)
 
 # search for PCL and related libraries
 OPTION(USE_PCL "Enable PCL Support" OFF)

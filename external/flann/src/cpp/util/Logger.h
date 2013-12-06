@@ -41,10 +41,9 @@ void log_params(int level, Params p);
 
 class Logger
 {
-    int logLevel;
-
     FILE* stream;
 
+    int logLevel;
 
 public:
 

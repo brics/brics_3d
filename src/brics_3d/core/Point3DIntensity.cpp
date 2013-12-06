@@ -49,6 +49,7 @@ Point3DIntensity::Point3DIntensity(const Point3DIntensity &point):
 Point3DIntensity& Point3DIntensity::operator=(const Point3DIntensity &point) {
 	Point3DDecorator::operator=(point);
 	this->intensity = point.intensity;
+	return *this;
 }
 
 Point3DIntensity::~Point3DIntensity() {

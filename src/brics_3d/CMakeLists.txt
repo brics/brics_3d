@@ -4,7 +4,7 @@
 SET(BRICS_3D_LIBRARIES_INCLUDE_DIRS 
 	${CMAKE_HOME_DIRECTORY}/src
 	${CMAKE_HOME_DIRECTORY}/external
-    ${OPENCV_INCLUDE_DIR}
+#    ${OPENCV_INCLUDE_DIR}
     ${Boost_INCLUDE_DIR}
     ${STANN_INCLUDE_DIRS}
 )
@@ -35,7 +35,7 @@ SET(ALGORITHM_LIBRARY_LIBS
 )
 
 SET(UTIL_LIBRARY_LIBS
-    ${OpenCV_LIBRARIES}
+#    ${OpenCV_LIBRARIES}
     ${Boost_LIBRARIES}
 )
 
@@ -48,7 +48,6 @@ IF(XERCES_INCLUDE_DIR)
 	list(APPEND BRICS_3D_LIBRARIES_INCLUDE_DIRS ${XERCES_INCLUDE_DIR})
 	list(APPEND UTIL_LIBRARY_LIBS               ${XERCES_LIBRARIES})
 ENDIF(XERCES_INCLUDE_DIR)	
-
 
 
 # define sources lists for libraries (cpp files)
@@ -80,7 +79,7 @@ SET (CORE_LIBRARY_SOURCES
 )
 
 SET (ALGORITHM_LIBRARY_SOURCES
-	./algorithm/depthPerception/DepthImageToPointCloudTransformation
+#	./algorithm/depthPerception/DepthImageToPointCloudTransformation
 	
 	./algorithm/featureExtraction/Centroid3D
     ./algorithm/featureExtraction/BoundingBox3DExtractor
@@ -154,9 +153,9 @@ SET (ALGORITHM_LIBRARY_SOURCES
 )
 
 SET (UTIL_LIBRARY_SOURCES
-	./util/DepthImageLoader
+#	./util/DepthImageLoader
 	./util/ConfigurationFileHandler
-	./util/IpaDatasetLoader
+#	./util/IpaDatasetLoader
 	./util/Timer
 	./util/Benchmark
 	./util/SimplePointCloudGeneratorCube
@@ -202,6 +201,17 @@ IF (USE_OSG)
     list(APPEND WORLD_MODEL_LIBRARY_SOURCES ./worldModel/sceneGraph/OSGVisualizer)
     list(APPEND BRICS_3D_LIBRARIES_INCLUDE_DIRS ${OSG_INCLUDE_DIR})
 ENDIF(USE_OSG)
+
+IF(USE_OPENCV)
+	list(APPEND BRICS_3D_LIBRARIES_INCLUDE_DIRS ${OPENCV_INCLUDE_DIR})
+	list(APPEND UTIL_LIBRARY_LIBS               ${OpenCV_LIBRARIES})
+	list(APPEND ALGORITHM_LIBRARY_SOURCES ./algorithm/depthPerception/DepthImageToPointCloudTransformation)
+	list(APPEND UTIL_LIBRARY_SOURCES ./util/DepthImageLoader)
+    list(APPEND UTIL_LIBRARY_SOURCES ./util/IpaDatasetLoader)
+    
+ENDIF(USE_OPENCV)	
+
+
 
 IF (USE_PCL AND USE_EIGEN3)
     list(APPEND UTIL_LIBRARY_SOURCES ./util/PCLTypecaster)

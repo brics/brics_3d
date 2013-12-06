@@ -50,6 +50,7 @@ Point3DNormal::Point3DNormal(const Point3DNormal &point):
 Point3DNormal& Point3DNormal::operator=(const Point3DNormal &point) {
 	Point3DDecorator::operator=(point);
 	normal = point.normal;
+	return *this;
 }
 
 Point3DNormal::~Point3DNormal() {

@@ -72,7 +72,7 @@ void Point3DDecoratorTest::testRecursiveDecoration() {
 	decoratedPointInner->decorate(point111); //this means real decoration without creation of a copy; actually overrides value from constructor
 	ColoredPoint3D* decoratedPointOuter = new ColoredPoint3D(decoratedPointInner,4,5,6); //decorator constructor
 	decoratedPointOuter->decorate(decoratedPointInner);
-	ColoredPoint3D* decoratedPointOuterCopy = new ColoredPoint3D(decoratedPointOuter); // _copy_ constructor
+//	ColoredPoint3D* decoratedPointOuterCopy = new ColoredPoint3D(decoratedPointOuter); // _copy_ constructor
 
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(point111->getX(), decoratedPointInner->getX(), maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(point111->getY(), decoratedPointInner->getY(), maxTolerance);
@@ -221,7 +221,7 @@ void Point3DDecoratorTest::testRecursiveDecoration() {
 void Point3DDecoratorTest::testRecursiveDecorationCopies() {
 	ColoredPoint3D* decoratedPointInner = new ColoredPoint3D(point111,1,2,3); //decorator constructor
 	ColoredPoint3D* decoratedPointOuter = new ColoredPoint3D(decoratedPointInner,4,5,6); //decorator constructor
-	ColoredPoint3D* decoratedPointOuterCopy = new ColoredPoint3D(decoratedPointOuter); // _copy_ constructor
+//	ColoredPoint3D* decoratedPointOuterCopy = new ColoredPoint3D(decoratedPointOuter); // _copy_ constructor
 
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(point111->getX(), decoratedPointInner->getX(), maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(point111->getY(), decoratedPointInner->getY(), maxTolerance);

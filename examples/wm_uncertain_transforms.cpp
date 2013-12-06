@@ -29,11 +29,14 @@
 #include <brics_3d/worldModel/sceneGraph/DotGraphGenerator.h>
 #include <brics_3d/worldModel/sceneGraph/OSGVisualizer.h>
 #include <brics_3d/worldModel/sceneGraph/DotVisualizer.h>
+#include <brics_3d/core/ParameterSet.h>
 
 
 /* general includes */
 #include <iostream>
 #include <cstring>
+#include <fstream>
+#include <sstream>
 
 using namespace std;
 using namespace brics_3d;
@@ -70,7 +73,7 @@ int main(int argc, char **argv) {
 	wm->scene.attachUpdateObserver(dbgObserver);
 
 	/* test data */
-	Eigen::AngleAxis<double> rotation(0.5 * M_PI, Eigen::Vector3d(0,1,0/*1*/));
+	Eigen::AngleAxis<double> rotation(0.25 * M_PI, Eigen::Vector3d(1,0,0/*1*/));
 	Transform3d transformation;
 	transformation = Eigen::Affine3d::Identity();
 	transformation.translate(Eigen::Vector3d(2,2,0));
@@ -78,7 +81,7 @@ int main(int argc, char **argv) {
 	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform234_b(new HomogeneousMatrix44(&transformation));
 	LOG(INFO) << "transform234_b" << std::endl << *transform234_b;
 
-	Eigen::AngleAxis<double> rotation2(0.0 * M_PI, Eigen::Vector3d(0,0,1));
+	Eigen::AngleAxis<double> rotation2(-0.25 * M_PI, Eigen::Vector3d(1,0,0/*0,0,1*/));
 	Transform3d transformation2;
 	transformation2 = Eigen::Affine3d::Identity();
 	transformation2.translate(Eigen::Vector3d(0,4,0));
@@ -86,7 +89,7 @@ int main(int argc, char **argv) {
 	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform345_b(new HomogeneousMatrix44(&transformation2));
 	LOG(INFO) << "transform345_b" << std::endl << *transform345_b;
 
-	Eigen::AngleAxis<double> rotation3(-0.4 * M_PI, Eigen::Vector3d(0,0,1));
+	Eigen::AngleAxis<double> rotation3(-0.0 * M_PI, Eigen::Vector3d(0,0,1));
 	Transform3d transformation3;
 	transformation3 = Eigen::Affine3d::Identity();
 	transformation3.translate(Eigen::Vector3d(0,3,0));
@@ -119,7 +122,13 @@ int main(int argc, char **argv) {
 	HomogeneousMatrix44::xyzRollPitchYawToMatrix(13,0.2,-0.1, 0.5,0,0, transform567);
 	double x,y,z,roll,pitch,yaw;
 	HomogeneousMatrix44::matrixToXyzRollPitchYaw(transform567, x,y,z,roll,pitch,yaw);
-	LOG(INFO) << "x,y,z,roll,pitch,yaw" << x << ", " << y<< ", " <<z<< ", " <<roll<< ", " <<pitch<< ", " <<yaw;
+	LOG(INFO) << "transform567: x,y,z,roll,pitch,yaw " << x << ", " << y<< ", " <<z<< ", " <<roll<< ", " <<pitch<< ", " <<yaw;
+
+	HomogeneousMatrix44::matrixToXyzRollPitchYaw(transform234_b, x,y,z,roll,pitch,yaw);
+	LOG(INFO) << "transform234_b: x,y,z,roll,pitch,yaw " << x << ", " << y<< ", " <<z<< ", " <<roll<< ", " <<pitch<< ", " <<yaw;
+
+	HomogeneousMatrix44::matrixToXyzRollPitchYaw(transform345_b, x,y,z,roll,pitch,yaw);
+	LOG(INFO) << "transform345_b: x,y,z,roll,pitch,yaw " << x << ", " << y<< ", " <<z<< ", " <<roll<< ", " <<pitch<< ", " <<yaw;
 
 //	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform567(new HomogeneousMatrix44(0.809017,-0.587785,0,  //Rotation coefficients
 //			                                                     0.587785,0.809017,0,
@@ -140,22 +149,26 @@ int main(int argc, char **argv) {
 	                                                             0,0,1,
 	                                                             14,-4,0)); //Translation coefficients
 
-	ITransformUncertainty::ITransformUncertaintyPtr uncertainty123(new CovarianceMatrix66(3, 0.001, 0.001, 0.0003, 0.000004, 0.00005));
+	ITransformUncertainty::ITransformUncertaintyPtr uncertainty123(new CovarianceMatrix66(3, 0.001, 0.001, 0.0000, 0.000000, 0.00000));
 //	ITransformUncertainty::ITransformUncertaintyPtr uncertainty234(new CovarianceMatrix66(0.001, 1, 0.01, 	0, 0, 0));
-	ITransformUncertainty::ITransformUncertaintyPtr uncertainty234(new CovarianceMatrix66(0.001, 0.1, 1.001, 	0.000, 0.000/*?*/, 0.00));
+	ITransformUncertainty::ITransformUncertaintyPtr uncertainty234(new CovarianceMatrix66(0.002, 0.002, 1.002, 	0.000, 0.000/*?*/, 0.00));
 	ITransformUncertainty::ITransformUncertaintyPtr uncertainty345(new CovarianceMatrix66(0.001, 0.001, 1, 	0, 0, 0));
 	ITransformUncertainty::ITransformUncertaintyPtr uncertainty456(new CovarianceMatrix66(0.1,0.002,2.003, 2.0,4.001,5.0)); // merged 1
 	ITransformUncertainty::ITransformUncertaintyPtr uncertainty567(new CovarianceMatrix66(0.1,1.0,2.001, 0.0003,0.0013,5.0)); // merged 2
 	ITransformUncertainty::ITransformUncertaintyPtr uncertainty678(new CovarianceMatrix66(0.1,0.1,3.0, 0.94,0.95,0.96));
 	ITransformUncertainty::ITransformUncertaintyPtr uncertainty789(new CovarianceMatrix66(0.41,0.42,0.73, 0.94,0.95,0.96)); //update
-	ITransformUncertainty::ITransformUncertaintyPtr uncertainty3(new CovarianceMatrix66(0.00, 0.00,0.00, 0,0,0)); //tf8
+	ITransformUncertainty::ITransformUncertaintyPtr uncertainty3(new CovarianceMatrix66(3.00, 0.00,0.00, 0,0,0)); //tf8
 
 	/* test compounding */
 	CovarianceMatrix66::CovarianceMatrix66Ptr compoundUncertainty;
-	compoundUncertainty = compoundCovariance(transform234_b,
-			/*uncertaintyCov234*/ boost::dynamic_pointer_cast<CovarianceMatrix66>(uncertainty234),
-			transform345_b,
-			/*uncertaintyCov345*/  boost::dynamic_pointer_cast<CovarianceMatrix66>(uncertainty123));
+//	compoundUncertainty = compoundCovariance(transform234_b,
+//			/*uncertaintyCov234*/ boost::dynamic_pointer_cast<CovarianceMatrix66>(uncertainty234),
+//			transform345_b,
+//			/*uncertaintyCov345*/  boost::dynamic_pointer_cast<CovarianceMatrix66>(uncertainty123));
+	compoundUncertainty = compoundCovariance(transform345_b,
+			/*uncertaintyCov234*/ boost::dynamic_pointer_cast<CovarianceMatrix66>(uncertainty123),
+					transform234_b,
+			/*uncertaintyCov345*/  boost::dynamic_pointer_cast<CovarianceMatrix66>(uncertainty234));
 	LOG(INFO) << "check: transform234_b" << std::endl << *transform234_b;
 	LOG(INFO) << "check: transform345_b" << std::endl << *transform345_b;
 
@@ -184,10 +197,14 @@ int main(int argc, char **argv) {
 	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr resultTransform;
 	wm->scene.getTransformForNode(tf3Id, wm->getRootNodeId(), rsg::TimeStamp(1.0), resultTransform);
 	CovarianceMatrix66::CovarianceMatrix66Ptr compoundUncertaintyAccumulated;
-	compoundUncertaintyAccumulated = compoundCovariance(resultTransform,
-			/*uncertaintyCov234*/ boost::dynamic_pointer_cast<CovarianceMatrix66>(compoundUncertainty),
-			transform3,
-			/*uncertaintyCov345*/  boost::dynamic_pointer_cast<CovarianceMatrix66>(uncertainty3));
+//	compoundUncertaintyAccumulated = compoundCovariance(resultTransform,
+//			/*uncertaintyCov234*/ boost::dynamic_pointer_cast<CovarianceMatrix66>(compoundUncertainty),
+//			transform3,
+//			/*uncertaintyCov345*/  boost::dynamic_pointer_cast<CovarianceMatrix66>(uncertainty3));
+	compoundUncertaintyAccumulated = compoundCovariance(transform3,
+			/*uncertaintyCov234*/ boost::dynamic_pointer_cast<CovarianceMatrix66>(uncertainty3),
+			resultTransform,
+			/*uncertaintyCov345*/  boost::dynamic_pointer_cast<CovarianceMatrix66>(compoundUncertainty));
 	wm->scene.addUncertainTransformNode(tf3Id, tf8Id, tmpAttributes, transform3, compoundUncertaintyAccumulated /*uncertainty345*/, rsg::TimeStamp(0.0));
 
 

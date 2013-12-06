@@ -60,6 +60,7 @@ ColoredPoint3D& ColoredPoint3D::operator=(const ColoredPoint3D &point) {
 	red = point.red;
 	green = point.green;
 	blue = point.blue;
+	return *this;
 }
 
 ColoredPoint3D::ColoredPoint3D(Point3D* point, unsigned char red, unsigned char green, unsigned char blue) :

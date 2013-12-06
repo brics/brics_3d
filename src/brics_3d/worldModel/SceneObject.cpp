@@ -55,6 +55,7 @@ SceneObject & SceneObject::operator=(SceneObject & source) {
     this->transform = source.transform;
     this->shape = source.shape;
     this->attributes = source.attributes;
+    return *this;
 }
 
 SceneObject & SceneObject::operator=(const SceneObject & source) {
@@ -63,11 +64,22 @@ SceneObject & SceneObject::operator=(const SceneObject & source) {
     this->transform = source.transform;
     this->shape = source.shape;
     this->attributes = source.attributes;
+    return *this;
 }
 
- ostream & operator<<(ostream & os, const SceneObject & x) {
-  // Bouml preserved body begin 0002D583
-  // Bouml preserved body end 0002D583
+ostream & operator<<(ostream & os, const SceneObject & x) {
+
+	os << "id: " << x.id << std::endl;
+	os << "parentId: " << x.parentId << std::endl;
+	os << "transform: " << x.transform << std::endl;
+	os << "transform: " << x.transform << std::endl;
+	os << "attributes: ";
+	for (unsigned int i = 0; i < x.attributes.size(); ++i) {
+		os <<  x.attributes[i];
+	}
+	os << std::endl;
+
+	return os;
 }
 
 

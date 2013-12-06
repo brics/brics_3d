@@ -25,7 +25,7 @@ bool SACMethodRANSAC::computeModel(){
 
 
      this->iterations = 0;
-     int noMaxInliersFound = -DBL_MAX;
+     int noMaxInliersFound = std::numeric_limits<int>::min();
      double k = 1.0;
 
      std::vector<int> bestModel;

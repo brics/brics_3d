@@ -92,6 +92,7 @@ public:
   
   bool is_element(double dist, long int p)
   {
+	  return false;
   }
   //! Point with largest distance
   /*!

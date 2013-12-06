@@ -9,6 +9,8 @@
 #ifndef IPADATASETLOADERTEST_H_
 #define IPADATASETLOADERTEST_H_
 
+#ifdef BRICS_OPENCV_ENABLE
+
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -49,6 +51,8 @@ public:
 	static const double maxTolerance = 0.00001;
 
 }
+
+#endif /* BRICS_OPENCV_ENABLE */
 
 #endif /* IPADATASETLOADERTEST_H_ */
 

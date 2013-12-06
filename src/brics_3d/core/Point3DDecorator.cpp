@@ -42,6 +42,7 @@ Point3DDecorator::Point3DDecorator(const Point3DDecorator &point) {
 
 Point3DDecorator& Point3DDecorator::operator=(Point3DDecorator &point) {
 	*(this->point) = point;
+	return *this;
 }
 
 Point3DDecorator::~Point3DDecorator() {

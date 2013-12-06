@@ -47,12 +47,12 @@ void WorldModelTest::testSimpleHanoiUseCase() {
 	myWM->addSceneObject(*targetArea, targetAreaID);
 
 	/* Move the added object a little bit */
-	IHomogeneousMatrix44* tmpTrasformation = new HomogeneousMatrix44(0,0,0,  //Rotation coefficients
-	                                                                 0,0,0,
-	                                                                 0,0,0,
-	                                                                 2,3,0); //Translation coefficients
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr tmpTransformation(new brics_3d::HomogeneousMatrix44(0,0,0,  //Rotation coefficients
+	                                                                                                  0,0,0,
+	                                                                                                  0,0,0,
+	                                                                                                  2,3,0)); //Translation coefficients
 	TimeStamp currentTimeStamp(timer->getCurrentTime());
-//	myWM->setTransform(targetAreaID, tmpTransform, currentTimeStamp);
+	myWM->insertTransform(targetAreaID, tmpTransformation);
 
 
 	/* Start perception */

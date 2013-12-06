@@ -6,6 +6,8 @@
  * @author: sblume
  */
 
+#ifdef BRICS_OPENCV_ENABLE
+
 #include "IpaDatasetLoaderTest.h"
 #include "brics_3d/util/OSGPointCloudVisualizer.h"
 
@@ -115,5 +117,7 @@ void IpaDatasetLoaderTest::testLoadPointCloud() {
 }
 
 }
+
+#endif /* BRICS_OPENCV_ENABLE */
 
 /* EOF */

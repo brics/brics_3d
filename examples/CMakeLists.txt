@@ -23,34 +23,40 @@ LINK_DIRECTORIES(
 )
 
 # compile and link the executables 
-ADD_EXECUTABLE(depth_image_stream_test depth_image_stream_test)
-TARGET_LINK_LIBRARIES(depth_image_stream_test brics3d_core brics3d_algorithm brics3d_util)
-
-ADD_EXECUTABLE(depth_image_transformation depth_image_transformation)
-TARGET_LINK_LIBRARIES(depth_image_transformation brics3d_core brics3d_algorithm brics3d_util)
+IF (USE_OPENCV)
+    ADD_EXECUTABLE(depth_image_stream_test depth_image_stream_test)
+    TARGET_LINK_LIBRARIES(depth_image_stream_test brics3d_core brics3d_algorithm brics3d_util)
+    
+    ADD_EXECUTABLE(depth_image_transformation depth_image_transformation)
+    TARGET_LINK_LIBRARIES(depth_image_transformation brics3d_core brics3d_algorithm brics3d_util)
+ENDIF(USE_OPENCV)
 
 IF (USE_OSG)
 
-    ADD_EXECUTABLE(BRICS_3D_Demo BRICS_3D_Demo)
-    TARGET_LINK_LIBRARIES(BRICS_3D_Demo 
-        brics3d_algorithm
-        brics3d_util
-        brics3d_core 
-    	${OSG_LIBRARY_DEBUG}
-    	${OSGGA_LIBRARY_DEBUG}
-    	${OSGVIEWER_LIBRARY_DEBUG}
-    	${OSGUTIL_LIBRARY_DEBUG}
-    )
+    IF (USE_OPENCV)
+        ADD_EXECUTABLE(BRICS_3D_Demo BRICS_3D_Demo)
+        TARGET_LINK_LIBRARIES(BRICS_3D_Demo 
+            brics3d_algorithm
+            brics3d_util
+            brics3d_core 
+        	${OSG_LIBRARY_DEBUG}
+        	${OSGGA_LIBRARY_DEBUG}
+        	${OSGVIEWER_LIBRARY_DEBUG}
+        	${OSGUTIL_LIBRARY_DEBUG}
+        )
+        
+        ADD_EXECUTABLE(osg_point_plotter osg_point_plotter)
+        TARGET_LINK_LIBRARIES(osg_point_plotter 
+            brics3d_algorithm
+            brics3d_util
+            brics3d_core 
+        	${OSG_LIBRARY_DEBUG}
+        	${OSGGA_LIBRARY_DEBUG}
+        	${OSGVIEWER_LIBRARY_DEBUG}
+        )       
+    ENDIF(USE_OPENCV)
 
-    ADD_EXECUTABLE(osg_point_plotter osg_point_plotter)
-    TARGET_LINK_LIBRARIES(osg_point_plotter 
-        brics3d_algorithm
-        brics3d_util
-        brics3d_core 
-    	${OSG_LIBRARY_DEBUG}
-    	${OSGGA_LIBRARY_DEBUG}
-    	${OSGVIEWER_LIBRARY_DEBUG}
-    )
+
     
     ADD_EXECUTABLE(osg_triangle_plotter osg_triangle_plotter)
     TARGET_LINK_LIBRARIES(osg_triangle_plotter 
@@ -136,26 +142,7 @@ IF (USE_OSG)
         	${OSGVIEWER_LIBRARY_DEBUG}
         	${PCL_IO_LIBRARY}
         )
-        
-        
-        INCLUDE_DIRECTORIES(${PCL_INCLUDE_DIRS} ${OPENNI_INCLUDE_DIRS})    
-        ADD_EXECUTABLE(detection_test detection_test) 
-        TARGET_LINK_LIBRARIES(detection_test 
-            brics3d_algorithm
-            brics3d_util
-            brics3d_core 
-            ${OSG_LIBRARY_DEBUG}
-        	${OSGGA_LIBRARY_DEBUG}
-        	${OSGVIEWER_LIBRARY_DEBUG}
-        	${PCL_IO_LIBRARY}
-        	${PCL_KDTREE_LIBRARY}
-        	${PCL_SEGMENTATION_LIBRARY} 
-#        	${PCL_SAMPLE_CONSENSUS_LIBRARY} 
-       	    ${PCL_FILTERS_LIBRARY} 
-        	${PCL_IO_LIBRARY} 
-        	${PCL_FEATURES_LIBRARY} 
-        )
-        
+               
         ADD_EXECUTABLE(wm_kinect_test wm_kinect_test) 
         TARGET_LINK_LIBRARIES(wm_kinect_test
             brics3d_world_model
@@ -194,7 +181,7 @@ IF (USE_OSG)
     	${OSGUTIL_LIBRARY_DEBUG}
     )
     
-     ADD_EXECUTABLE(wm_uncertain_transforms wm_uncertain_transforms)
+    ADD_EXECUTABLE(wm_uncertain_transforms wm_uncertain_transforms)
     TARGET_LINK_LIBRARIES(wm_uncertain_transforms 
         brics3d_world_model
         brics3d_algorithm
@@ -205,6 +192,18 @@ IF (USE_OSG)
     	${OSGVIEWER_LIBRARY_DEBUG}
     	${OSGUTIL_LIBRARY_DEBUG}
     )
+    
+#    ADD_EXECUTABLE(rsg_generated /home/sblume/eclipse_workspaces/runtime-EclipseXtext/WM/src-gen/rsg_main_generated.cpp)
+#    TARGET_LINK_LIBRARIES(rsg_generated 
+#        brics3d_world_model
+#        brics3d_algorithm
+#        brics3d_util
+#        brics3d_core 
+#    	${OSG_LIBRARY_DEBUG}
+#    	${OSGGA_LIBRARY_DEBUG}
+#    	${OSGVIEWER_LIBRARY_DEBUG}
+#    	${OSGUTIL_LIBRARY_DEBUG}
+#    )
 ENDIF(USE_OSG)
 
 ADD_EXECUTABLE(rigidTransformation_benchmark rigidTransformation_benchmark)

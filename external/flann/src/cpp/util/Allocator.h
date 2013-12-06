@@ -133,7 +133,7 @@ public:
 			wastedMemory += remaining;
 
 		/* Allocate new storage. */
-			blocksize = (size + sizeof(void*) + (WORDSIZE-1) > BLOCKSIZE) ?
+			blocksize = (static_cast<int>(size + sizeof(void*) + (WORDSIZE-1)) > BLOCKSIZE) ?
 						size + sizeof(void*) + (WORDSIZE-1) : BLOCKSIZE;
 
 			// use the standard C malloc to allocate memory
