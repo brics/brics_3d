@@ -58,6 +58,12 @@ public:
     unsigned int getMinHistoryLength() const;
     void setMinHistoryLength(unsigned int minHistoryLength);
 
+    bool getEnableTransformDeletions() const;
+    void setEnableTransformDeletions(bool enableTransformDeletions);
+
+    bool getEnableGeometricNodeDeletions() const;
+    void setEnableGeometricNodeDeletions(bool enableGeometricNodeDeletions);
+
     virtual void doDeleteNode(Node* node);
 
 private:
@@ -85,6 +91,12 @@ private:
 	 * However this is out of the scope of this class.
 	 */
 	unsigned int minHistoryLength;
+
+	/// Toggle weather GeometicNodes should be toched or not. The default is true.
+	bool enableTransformDeletions;
+
+	/// Toggle weather GeometicNodes should be toched or not. The default is true.
+	bool enableGeometricNodeDeletions;
 
 };
 

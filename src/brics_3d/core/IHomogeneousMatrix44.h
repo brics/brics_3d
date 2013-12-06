@@ -28,6 +28,37 @@ using std::istream;
 namespace brics_3d {
 
 /**
+ * column-row layout:
+ * 0 4 8  12
+ * 1 5 9  13
+ * 2 6 10 14
+ * 3 7 11 15
+ *
+ *  <=>
+ *
+ * r11 r12 r13  x
+ * r21 r22 r23  y
+ * r31 r32 r33  z
+ * 3    7   11  15
+ */
+namespace matrixEntry {
+	enum Entry {
+		r11 = 0,
+		r12 = 4,
+		r13 = 8,
+		r21 = 1,
+		r22 = 5,
+		r23 = 9,
+		r31 = 2,
+		r32 = 6,
+		r33 = 10,
+		x = 12,
+		y = 13,
+		z = 14
+	};
+}  // namespace natrixEntry
+
+/**
  * @brief An abstract class interface to represent a homogeneous 4x4 matrix.
  *
  * The intention of this class is that the Point3D representation
@@ -40,6 +71,9 @@ public:
 
 	typedef boost::shared_ptr<IHomogeneousMatrix44> IHomogeneousMatrix44Ptr;
 	typedef boost::shared_ptr<IHomogeneousMatrix44 const> IHomogeneousMatrix44ConstPtr;
+
+
+
 
 	/**
 	 * @brief Default constructor
@@ -96,14 +130,6 @@ public:
 	 * @brief Invert the matrix.
 	 */
 	virtual void inverse() = 0;
-
-	/**
-	 * @brief Retrieve roll pitch yaw values in radian from the rotational part of the homogenious matrix.
-	 * @param[out] roll Roll in [rad]
-	 * @param[out] pitch Pitch in [rad]
-	 * @param[out] yaw Yaw in [rad]
-	 */
-//	virtual void getRollPitchYaw(double& roll, double& pitch, double& yaw) = 0;s
 
 	/**
 	 * @brief Overridden << operator.

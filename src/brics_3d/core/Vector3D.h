@@ -164,7 +164,7 @@ public:
 	 */
 	friend ostream& operator<<(ostream &outStream, const Vector3D &point);
 
-private:
+protected:
 
 	/// X coordinate in Cartesian system
 	Coordinate x;

@@ -21,11 +21,12 @@
 #define BRICS_3D_WORLDMODEL_H
 
 #include "IWorldModelQuery.h"
+#include "IWorldModelUpdate.h"
+#include "IWorldModelCoordination.h"
 #include "sceneGraph/SceneGraphFacade.h"
 #include "sceneGraph/OutdatedDataDeleter.h"
 #include "sceneGraph/OutdatedDataIdAwareDeleter.h"
-#include "IWorldModelUpdate.h"
-#include "IWorldModelCoordination.h"
+#include "sceneGraph/TimeStamp.h"
 #include "brics_3d/util/Timer.h"
 
 namespace brics_3d {
@@ -61,6 +62,8 @@ class WorldModel : public IWorldModelQuery, public IWorldModelUpdate, public IWo
 
     /* Helper functions */
     unsigned int getRootNodeId();
+
+    brics_3d::rsg::TimeStamp now();
 
     brics_3d::rsg::SceneGraphFacade scene;
 

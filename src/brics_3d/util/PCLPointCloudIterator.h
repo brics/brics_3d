@@ -24,7 +24,10 @@
 #include "brics_3d/core/HomogeneousMatrix44.h"
 #include "brics_3d/core/ColorSpaceConvertor.h"
 #include "brics_3d/core/ColoredPoint3D.h"
+#include "brics_3d/core/Logger.h"
 #include "pcl/point_cloud.h"
+
+using brics_3d::Logger;
 
 namespace brics_3d {
 

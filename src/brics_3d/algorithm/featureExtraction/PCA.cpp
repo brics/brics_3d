@@ -83,6 +83,62 @@ void PCA::computePrincipleComponents(PointCloud3D* inputPointCloud, Eigen::Matri
 
 }
 
+void PCA::computePrincipleComponents(IPoint3DIterator::IPoint3DIteratorPtr inputPointCloud, Eigen::MatrixXd& eigenvectors, Eigen::VectorXd& eigenvalues) {
+
+	// Compute mean and covariance
+	Eigen::Matrix3d covariance;
+	Eigen::Vector3d centroid;
+
+	centroid = centroidExtractor.computeCentroid(inputPointCloud);
+
+	/*** compute covariance matrix  ***/
+	covariance.setZero ();
+	int pointCount  = 0;
+	for (inputPointCloud->begin(); !inputPointCloud->end(); inputPointCloud->next()) {
+		Eigen::Vector4d pt;
+		pt[0] = inputPointCloud->getX() - centroid[0];
+		pt[1] = inputPointCloud->getY() - centroid[1];
+		pt[2] = inputPointCloud->getZ() - centroid[2];
+		pt[3] = 1.0; //homogeneous point
+
+		covariance (1, 1) += pt.y () * pt.y (); //the non X parts
+		covariance (1, 2) += pt.y () * pt.z ();
+		covariance (2, 2) += pt.z () * pt.z ();
+
+		pt *= pt.x ();
+		covariance (0, 0) += pt.x (); //the X related parts
+		covariance (0, 1) += pt.y ();
+		covariance (0, 2) += pt.z ();
+
+		pointCount++;
+	}
+
+	//copy upper triangle to lower triangle as it is symmetric
+	covariance (1, 0) = covariance (0, 1);
+	covariance (2, 0) = covariance (0, 2);
+	covariance (2, 1) = covariance (1, 2);
+
+	/* normalize  */
+	covariance /= pointCount;
+
+	/* compute eigen vectors and values */
+	Eigen::SelfAdjointEigenSolver<Eigen::Matrix3d> evd (covariance);
+	eigenvalues = evd.eigenvalues().real (); //NOTE eigen values not ordered by absolute values!
+	eigenvectors = evd.eigenvectors().real ();
+
+	// sort to descending -> main component is first
+	Eigen::VectorXd eigenvaluesTmp = eigenvalues;
+	Eigen::MatrixXd eigenvectorsTmp = eigenvectors;
+	for (int i = 0; i < 3; ++i) {
+		eigenvalues[i] = eigenvaluesTmp[2-i];
+		eigenvectors.col (i) = eigenvectorsTmp.col(2-i);
+	}
+
+	LOG(DEBUG) << "eigenvalues " << eigenvalues;
+	LOG(DEBUG) << "eigenvectors " << eigenvectors;
+}
+
+
 void PCA::computeRotationMatrix(Eigen::MatrixXd eigenvectors, Eigen::VectorXd eigenvalues, IHomogeneousMatrix44* resultRotation) {
 	assert(resultRotation != 0);
 

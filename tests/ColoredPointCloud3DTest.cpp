@@ -216,7 +216,7 @@ void ColoredPointCloud3DTest::testStreaming() {
 	/* test output */
 	testStringStream0 << *pointCloudCube;
 	comparatorString = testStringStream0.str();
-	cout << "RGB pointCloudCube:" << endl << *pointCloudCube;
+//	cout << "RGB pointCloudCube:" << endl << *pointCloudCube;
 //	CPPUNIT_ASSERT_EQUAL(0, comparatorString.compare(referenceString)); //TODO
 
 	/* test input */
@@ -402,8 +402,8 @@ void ColoredPointCloud3DTest::testPolymorphPointCloud() {
 	CPPUNIT_ASSERT_EQUAL(point110->getB(), introspectionPoint->getB());
 
 	/* manual introsprection */
-	cout << "double decorated point " <<(*pointCloud->getPointCloud())[2] << endl;
-	cout << "double decorated point " <<(*pointCloud->getPointCloud())[3] << endl;
+//	cout << "double decorated point " <<(*pointCloud->getPointCloud())[2] << endl;
+//	cout << "double decorated point " <<(*pointCloud->getPointCloud())[3] << endl;
 	Point3DDecorator* manuelIntrospectionPoint1;
 	manuelIntrospectionPoint1 = dynamic_cast<Point3DDecorator*>(&(*pointCloud->getPointCloud())[2]);
 	CPPUNIT_ASSERT(manuelIntrospectionPoint1 != 0);

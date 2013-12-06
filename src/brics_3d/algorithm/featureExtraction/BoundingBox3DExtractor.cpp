@@ -155,6 +155,77 @@ void BoundingBox3DExtractor::computeOrientedBoundingBox(PointCloud3D* inputPoint
 //	matrixData[14]=resultBoxDimensions.getZ()/2+lowerBound.getZ();
 }
 
+
+void BoundingBox3DExtractor::computeOrientedBoundingBox(IPoint3DIterator::IPoint3DIteratorPtr inputPointCloud, IHomogeneousMatrix44* resultTransform, Vector3D& resultBoxDimensions) {
+	assert(resultTransform != 0);
+
+	lowerBound.setX(std::numeric_limits<brics_3d::Coordinate>::max());
+	lowerBound.setY(std::numeric_limits<brics_3d::Coordinate>::max());
+	lowerBound.setZ(std::numeric_limits<brics_3d::Coordinate>::max());
+	upperBound.setX(-std::numeric_limits<brics_3d::Coordinate>::max());
+	upperBound.setY(-std::numeric_limits<brics_3d::Coordinate>::max());
+	upperBound.setZ(-std::numeric_limits<brics_3d::Coordinate>::max());
+
+	Eigen::MatrixXd eigenvectors;
+	Eigen::VectorXd eigenvalues;
+	pcaExtractor.computePrincipleComponents(inputPointCloud, eigenvectors, eigenvalues); //actually we compute a centroid twice...
+	pcaExtractor.computeRotationMatrix(eigenvectors, eigenvalues, resultTransform);
+
+	/* get min/max for PCA rotated points */
+	HomogeneousMatrix44* inverseRotation = new HomogeneousMatrix44();
+	*inverseRotation = *(resultTransform);
+	inverseRotation->inverse();
+
+	for (inputPointCloud->begin(); !inputPointCloud->end(); inputPointCloud->next()) {
+		Point3D tmpPoint(inputPointCloud->getX(), inputPointCloud->getY(), inputPointCloud->getZ());
+		tmpPoint.homogeneousTransformation(inverseRotation); // move _all_ points to new frame
+		Point3D* currentPoint = &tmpPoint;
+
+		/* adjust lower bound if necessary */
+		if (currentPoint->getX() <= lowerBound.getX()) {
+			lowerBound.setX(currentPoint->getX());
+		}
+		if (currentPoint->getY() <= lowerBound.getY()) {
+			lowerBound.setY(currentPoint->getY());
+		}
+		if (currentPoint->getZ() <= lowerBound.getZ()) {
+			lowerBound.setZ(currentPoint->getZ());
+		}
+
+		/* adjust upper bound if necessary */
+		if ( currentPoint->getX() >= upperBound.getX()) {
+			upperBound.setX(currentPoint->getX());
+		}
+		if	(currentPoint->getY() >= upperBound.getY()) {
+			upperBound.setY(currentPoint->getY());
+		}
+		if	(currentPoint->getZ() >= upperBound.getZ()) {
+			upperBound.setZ(currentPoint->getZ());
+		}
+	}
+	delete inverseRotation;
+
+	/* get centroid */
+	Centroid3D centroidExtractor;
+	Eigen::Vector3d centroid;
+	centroid = centroidExtractor.computeCentroid(inputPointCloud);
+
+	/* as centroid as translation */
+	double* matrixData;
+	matrixData = resultTransform->setRawData();
+	//djd RC5 - don't use centroid as centre of bounding box if only returning dimensions - you will not be able to reconstruct it
+	matrixData[12] = centroid[0];
+	matrixData[13] = centroid[1];
+	matrixData[14] = centroid[2];
+
+	LOG(DEBUG) << "Estimated transform for oriented bounding box: "<< std::endl << *resultTransform;
+
+	resultBoxDimensions.setX(fabs(upperBound.getX() - lowerBound.getX()));
+	resultBoxDimensions.setY(fabs(upperBound.getY() - lowerBound.getY()));
+	resultBoxDimensions.setZ(fabs(upperBound.getZ() - lowerBound.getZ()));
+}
+
+
 }
 
 /* EOF */

@@ -35,20 +35,20 @@ HomogeneousMatrix44::HomogeneousMatrix44(double r0, double r1, double r2, double
 	 * 3 7 11 15
 	 */
 	/* rotation */
-	matrixData[0] = r0;
-	matrixData[4] = r1;
-	matrixData[8] = r2;
-	matrixData[1] = r3;
-	matrixData[5] = r4;
-	matrixData[9] = r5;
-	matrixData[2] = r6;
-	matrixData[6] = r7;
-	matrixData[10] = r8;
+	matrixData[matrixEntry::r11] = r0;
+	matrixData[matrixEntry::r12] = r1;
+	matrixData[matrixEntry::r13] = r2;
+	matrixData[matrixEntry::r21] = r3;
+	matrixData[matrixEntry::r22] = r4;
+	matrixData[matrixEntry::r23] = r5;
+	matrixData[matrixEntry::r31] = r6;
+	matrixData[matrixEntry::r32] = r7;
+	matrixData[matrixEntry::r33] = r8;
 
 	/* translation */
-	matrixData[12] = t0;
-	matrixData[13] = t1;
-	matrixData[14] = t2;
+	matrixData[matrixEntry::x] = t0;
+	matrixData[matrixEntry::y] = t1;
+	matrixData[matrixEntry::z] = t2;
 
 	//homogeneous coefficients
 	matrixData[3] = 0.0;
@@ -122,35 +122,6 @@ void HomogeneousMatrix44::inverse() { //could be refactored towards returning a 
 
 }
 
-//void HomogeneousMatrix44::getRollPitchYaw(double& roll, double& pitch, double& yaw) {
-//	/*
-//	 * column-row layout:
-//	 * 0 4 8  12
-//	 * 1 5 9  13
-//	 * 2 6 10 14
-//	 * 3 7 11 15
-//     *
-//     *  <=>
-//     *
-//	 * r11 r12 r13  12
-//	 * r21 r22 r23  13
-//	 * r31 r32 r33  14
-//	 * 3    7   11  15
-//	 */
-//
-//	//	  http://en.wikibooks.org/wiki/Robotics_Kinematics_and_Dynamics/Description_of_Position_and_Orientation
-//	//    r = \textrm{atan2}(R_{32}, R_{33})
-//	//    y = \textrm{atan2}(R_{21}, R_{11})
-//	//    p = \textrm{atan2}(-R_{31}, c_{y} R_{11} + s_{y} R_{21})
-//
-//	roll = atan2(matrixData[6], matrixData[10]);
-//	pitch = atan2(matrixData[1], matrixData[0]);
-//	yaw = atan2(-matrixData[2], (cos(matrixData[0]) + sin(matrixData[1])) );
-//
-//	// TODO Gimbal lock
-//	// Numerical instabilitiy for pitch around  PI/2 and -PI/2.
-//}
-
 ostream& operator<<(ostream &outStream, const IHomogeneousMatrix44 &matrix) {
 	const double *matrixData = matrix.getRawData();
 
@@ -170,9 +141,9 @@ void HomogeneousMatrix44::xyzRollPitchYawToMatrix(double x, double y, double z, 
 	double* matrixData = resultMatrix->setRawData();
 
 	/* Translation */
-	matrixData[12] = x;
-	matrixData[13] = y;
-	matrixData[14] = z;
+	matrixData[matrixEntry::x] = x;
+	matrixData[matrixEntry::y] = y;
+	matrixData[matrixEntry::z] = z;
 
 	/* Rotation */
 	/*
@@ -189,26 +160,26 @@ void HomogeneousMatrix44::xyzRollPitchYawToMatrix(double x, double y, double z, 
 	 * r31 r32 r33  14
 	 * 3    7   11  15
 	 */
-	matrixData[0] = cos(yaw)*cos(pitch);
-	matrixData[4] = cos(yaw)*sin(pitch)*sin(roll) - sin(yaw)*cos(roll);
-	matrixData[8] = cos(yaw)*sin(pitch)*cos(roll) + sin(yaw)*sin(roll);
+	matrixData[matrixEntry::r11] = cos(yaw)*cos(pitch);
+	matrixData[matrixEntry::r12] = cos(yaw)*sin(pitch)*sin(roll) - sin(yaw)*cos(roll);
+	matrixData[matrixEntry::r13] = cos(yaw)*sin(pitch)*cos(roll) + sin(yaw)*sin(roll);
 
-	matrixData[1] = sin(yaw)*cos(pitch);
-	matrixData[5] = sin(yaw)*sin(pitch)*sin(roll) + cos(yaw)*cos(roll);
-	matrixData[9] = sin(yaw)*sin(pitch)*cos(roll) - cos(yaw)*sin(roll);
+	matrixData[matrixEntry::r21] = sin(yaw)*cos(pitch);
+	matrixData[matrixEntry::r22] = sin(yaw)*sin(pitch)*sin(roll) + cos(yaw)*cos(roll);
+	matrixData[matrixEntry::r23] = sin(yaw)*sin(pitch)*cos(roll) - cos(yaw)*sin(roll);
 
-	matrixData[2] = -sin(pitch);
-	matrixData[6] = cos(pitch)*sin(roll);
-	matrixData[10] = cos(pitch)*cos(roll);
+	matrixData[matrixEntry::r31] = -sin(pitch);
+	matrixData[matrixEntry::r32] = cos(pitch)*sin(roll);
+	matrixData[matrixEntry::r33] = cos(pitch)*cos(roll);
 }
 
 
 void HomogeneousMatrix44::matrixToXyzRollPitchYaw(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr matrix, double& x, double& y, double& z, double& roll, double& pitch, double& yaw) {
 	const double* matrixData = matrix->getRawData();
 
-	x = matrixData[12];
-	y = matrixData[13];
-	z = matrixData[14];
+	x = matrixData[matrixEntry::x];
+	y = matrixData[matrixEntry::y];
+	z = matrixData[matrixEntry::z];
 
 	/*
 	 * column-row layout:
@@ -227,7 +198,7 @@ void HomogeneousMatrix44::matrixToXyzRollPitchYaw(IHomogeneousMatrix44::IHomogen
 
 	//cf. Craig pp. 43
 	// NOTE: Numerical instabilitiy for pitch around  PI/2 and -PI/2.
-	pitch = atan2(-matrixData[2], sqrt (matrixData[0]*matrixData[0] + matrixData[1]*matrixData[1]) ); // <- correct? (should be 2x more?)
+	pitch = atan2(-matrixData[matrixEntry::r31], sqrt (matrixData[matrixEntry::r11]*matrixData[matrixEntry::r11] + matrixData[matrixEntry::r21]*matrixData[matrixEntry::r21]) ); // <- correct? (should be 2x more?)
 
 	double c_pitch = cos(pitch);
 	double tolerance = 10e-5;
@@ -236,19 +207,130 @@ void HomogeneousMatrix44::matrixToXyzRollPitchYaw(IHomogeneousMatrix44::IHomogen
 		if (pitch > 0) { // case + PI/2
 			pitch = M_PI * 0.5;
 			yaw = 0;
-			roll = atan2(matrixData[1], matrixData[5]);
+			roll = atan2(matrixData[matrixEntry::r21], matrixData[matrixEntry::r22]);
 		} else { // case - PI/2
 			pitch = -M_PI * 0.5;
 			yaw = 0;
-			roll = -atan2(matrixData[1], matrixData[5]);
+			roll = -atan2(matrixData[matrixEntry::r21], matrixData[matrixEntry::r22]);
 		}
 		return;
 	}
 
-	roll = atan2(matrixData[6]/c_pitch, matrixData[10]/c_pitch);
-	yaw = atan2(matrixData[1]/c_pitch, matrixData[0]/c_pitch);
+	roll = atan2(matrixData[matrixEntry::r32]/c_pitch, matrixData[matrixEntry::r33]/c_pitch);
+	yaw = atan2(matrixData[matrixEntry::r21]/c_pitch, matrixData[matrixEntry::r11]/c_pitch);
 
 
+
+}
+
+//void HomogeneousMatrix44::xyzRollPitchYawToMatrixPaul(double x, double y, double z, double roll, double pitch, double yaw, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& resultMatrix) {
+//	double* matrixData = resultMatrix->setRawData();
+//
+//	/* Translation */
+//	matrixData[12] = x;
+//	matrixData[13] = y;
+//	matrixData[14] = z;
+//
+//	/* Rotation */
+//	/*
+//	 * column-row layout:
+//	 * 0 4 8  12
+//	 * 1 5 9  13
+//	 * 2 6 10 14
+//	 * 3 7 11 15
+//     *
+//     *  <=>
+//     *
+//	 * r11 r12 r13  12
+//	 * r21 r22 r23  13
+//	 * r31 r32 r33  14
+//	 * 3    7   11  15
+//	 */
+//	matrixData[0] = cos(roll)*cos(pitch);
+//	matrixData[4] = cos(roll)*sin(pitch)*sin(yaw) - sin(roll)*cos(yaw);
+//	matrixData[8] = cos(roll)*sin(pitch)*cos(yaw) + sin(roll)*sin(yaw);
+//
+//	matrixData[1] = sin(roll)*cos(pitch);
+//	matrixData[5] = sin(roll)*sin(pitch)*sin(yaw) + cos(roll)*cos(yaw);
+//	matrixData[9] = sin(roll)*sin(pitch)*cos(yaw) - cos(roll)*sin(yaw);
+//
+//	matrixData[2] = -sin(pitch);
+//	matrixData[6] = cos(pitch)*sin(yaw);
+//	matrixData[10] = cos(pitch)*cos(yaw);
+//}
+//
+//void HomogeneousMatrix44::matrixToXyzRollPitchYawPaul(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr matrix, double& x, double& y, double& z, double& roll, double& pitch, double& yaw) {
+//	const double* matrixData = matrix->getRawData();
+//
+//	x = matrixData[12];
+//	y = matrixData[13];
+//	z = matrixData[14];
+//
+//	/*
+//	 * column-row layout:
+//	 * 0 4 8  12
+//	 * 1 5 9  13
+//	 * 2 6 10 14
+//	 * 3 7 11 15
+//     *
+//     *  <=>
+//     *
+//	 * r11 r12 r13  12
+//	 * r21 r22 r23  13
+//	 * r31 r32 r33  14
+//	 * 3    7   11  15
+//	 */
+//
+//	pitch = atan2(-matrixData[3], sqrt(matrixData[0]*matrixData[0] + matrixData[1]*matrixData[1]));
+//	yaw = atan2(matrixData[1]/cos(pitch), matrixData[0]/cos(pitch));
+//	roll = atan2(matrixData[6]/cos(pitch), matrixData[10]/cos(pitch));
+//}
+
+void HomogeneousMatrix44::quaternionToMatrix(double x, double y, double z, double qx, double qy, double qz, double qw, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& resultMatrix) {
+		double* matrixData = resultMatrix->setRawData();
+
+		/* Translation */
+		matrixData[matrixEntry::x] = x;
+		matrixData[matrixEntry::y] = y;
+		matrixData[matrixEntry::z] = z;
+
+		// cf. Handbook of robotics, 2008
+		// e0 = qw
+		// e1 = qx
+		// e2 = qy
+		// e3 = qz
+
+		/* Rotation */
+		//r11 r12 r13
+		matrixData[matrixEntry::r11] = 1 - 2*(qy*qy + qz*qz);
+		matrixData[matrixEntry::r12] = 2  *  (qx*qy - qw*qz);
+		matrixData[matrixEntry::r13] = 2  *  (qx*qz + qw*qy);
+
+		//r21 r22 r23
+		matrixData[matrixEntry::r21] = 2  *  (qx*qy + qw*qz);
+		matrixData[matrixEntry::r22] = 1 - 2*(qx*qx + qz*qz);
+		matrixData[matrixEntry::r23] = 2  *  (qy*qz - qw*qx);
+
+		//r31 r32 r33
+		matrixData[matrixEntry::r31] = 2  *  (qx*qz - qw*qy);
+		matrixData[matrixEntry::r32] = 2  *  (qy*qz + qw*qx);
+		matrixData[matrixEntry::r33] = 1 - 2*(qx*qx + qy*qy);
+}
+
+void HomogeneousMatrix44::matrixToQuaternion(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr matrix, double& x, double& y, double& z, double& qx, double& qy, double& qz, double& qw) {
+	const double* matrixData = matrix->getRawData();
+
+	/* Translation */
+	x = matrixData[matrixEntry::x];
+	y = matrixData[matrixEntry::y];
+	z = matrixData[matrixEntry::z];
+
+	/* Rotation */
+	qw = 1/2.0 * (sqrt(1 + matrixData[matrixEntry::r11] + matrixData[matrixEntry::r22] + matrixData[matrixEntry::r33]));
+	assert (qw != 0.0);
+	qx = (matrixData[matrixEntry::r32] - matrixData[matrixEntry::r23]) / 4 * qw;
+	qy = (matrixData[matrixEntry::r13] - matrixData[matrixEntry::r31]) / 4 * qw;
+	qz = (matrixData[matrixEntry::r21] - matrixData[matrixEntry::r12]) / 4 * qw;
 
 }
 

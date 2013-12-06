@@ -37,6 +37,7 @@ class HomogeneousMatrixTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testInverse );
 	CPPUNIT_TEST( testIsIdentity );
 	CPPUNIT_TEST( testRPYConversions );
+	CPPUNIT_TEST( testMatrixEntries );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -53,6 +54,7 @@ public:
 	  void testInverse();
 	  void testIsIdentity();
 	  void testRPYConversions();
+	  void testMatrixEntries();
 
 	  EIGEN_MAKE_ALIGNED_OPERATOR_NEW //Required by Eigen2
 

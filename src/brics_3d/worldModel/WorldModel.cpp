@@ -122,6 +122,10 @@ unsigned int WorldModel::getRootNodeId() {
 	return scene.getRootId();
 }
 
+brics_3d::rsg::TimeStamp WorldModel::now() {
+	return TimeStamp(timer.getCurrentTime(), Units::MilliSecond);
+}
+
 } // namespace brics_3d
 
 /* EOF */

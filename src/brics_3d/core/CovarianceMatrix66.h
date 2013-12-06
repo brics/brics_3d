@@ -17,8 +17,8 @@
 *
 ******************************************************************************/
 
-#ifndef COVARIANCEMATRIX66_H_
-#define COVARIANCEMATRIX66_H_
+#ifndef BRICS_3D_COVARIANCEMATRIX66_H_
+#define BRICS_3D_COVARIANCEMATRIX66_H_
 
 #include "ITransformUncertainty.h"
 #include "IHomogeneousMatrix44.h" //for compound
@@ -96,6 +96,6 @@ extern bool mergeCovariance(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr mean1,
 
 }
 
-#endif /* COVARIANCEMATRIX66_H_ */
+#endif /* BRICS_3D_COVARIANCEMATRIX66_H_ */
 
 /* EOF */

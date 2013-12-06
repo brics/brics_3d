@@ -96,14 +96,37 @@ public:
 
 	void inverse();
 
-	//@depricated
-	//void getRollPitchYaw(double& roll, double& pitch, double& yaw);
-
 	friend ostream& operator<<(ostream &outStream, const IHomogeneousMatrix44 &matrix);
 
 	/* Some helper functions for conversions: */
+
+	/**
+	 * Conversion between x,y,z, roll, pitch, yaw (as defined for planes) to a matrix.
+	 *
+	 * Transformation is defined as fixes angles rotation in X-Y-Z order.
+	 * Cf. Craig, John J.: Introduction to robotics: mechanics and control, 2005.
+	 *
+	 * NOTE: Roll, Pitch, Yaw definitions might differ. Eg. Richard P. Paul: Robot Manipulators: Mathematics, Programming, and Control, 1981 pp. 45
+	 * uses: roll around z, pitch around y and yaw around x.
+	 *
+	 * @param x X coordinate.
+	 * @param y Y coordinate.
+	 * @param z R coordinate.
+	 * @param roll Rotation around X axis.
+	 * @param pitch Roatation around Y axis.
+	 * @param yaw Rotation around Z axis.
+	 * @param resultMatrix
+	 */
 	static void xyzRollPitchYawToMatrix(double x, double y, double z, double roll, double pitch, double yaw, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& resultMatrix);
 	static void matrixToXyzRollPitchYaw(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr matrix, double& x, double& y, double& z, double& roll, double& pitch, double& yaw);
+
+	static void quaternionToMatrix(double x, double y, double z, double qx, double qy, double qz, double qw, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& resultMatrix);
+	static void matrixToQuaternion(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr matrix, double& x, double& y, double& z, double& qx, double& qy, double& qz, double& qw);
+
+
+//	static void xyzRollPitchYawToMatrixPaul(double x, double y, double z, double roll, double pitch, double yaw, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& resultMatrix);
+//	static void matrixToXyzRollPitchYawPaul(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr matrix, double& x, double& y, double& z, double& roll, double& pitch, double& yaw);
+
 
 private:
 

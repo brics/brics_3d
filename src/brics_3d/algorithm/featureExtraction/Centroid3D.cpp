@@ -70,4 +70,43 @@ Eigen::Vector3d Centroid3D::computeCentroid(brics_3d::PointCloud3D *inCloud){
 	return centroid;
 }
 
+Eigen::Vector3d Centroid3D::computeCentroid(IPoint3DIterator::IPoint3DIteratorPtr inCloud){
+	Eigen::Vector3d centroid;
+	double tempX;
+	double tempY;
+	double tempZ;
+	int count = 0;
+
+	centroid[0] = 0;
+	centroid[1] = 0;
+	centroid[2] = 0;
+
+	for (inCloud->begin(); !inCloud->end(); inCloud->next()) {
+		tempX = inCloud->getX();
+		tempY = inCloud->getY();
+		tempZ = inCloud->getZ();
+
+		if(!isnan(tempX) && !isinf(tempX) && !isnan(tempY) && !isinf(tempY) &&
+				!isnan(tempZ) && !isinf(tempZ) ) {
+			centroid[0] = centroid[0] + tempX;
+			centroid[1] = centroid[1] + tempY;
+			centroid[2] = centroid[2] + tempZ;
+			count++;
+		}
+	}
+
+	if (count == 0) {
+		centroid[0] = 0;
+		centroid[1] = 0;
+		centroid[2] = 0;
+		LOG(WARNING) << "Centroid3D: point cloud is empty. Returning (0,0,0).";
+	} else {
+		centroid[0] = centroid[0] / count;
+		centroid[1] = centroid[1] / count;
+		centroid[2] = centroid[2] / count;
+	}
+
+	return centroid;
+}
+
 }

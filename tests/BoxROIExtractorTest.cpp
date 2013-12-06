@@ -140,8 +140,8 @@ void BoxROIExtractorTest::testBoxExtraction() {
 	boxFilter.setSizeZ(z);
 
 	boxFilter.filter(testCloud, resultPointCloud);
-	cout << "Box filtered coud"<< endl;
-	cout << *resultPointCloud << endl;
+//	cout << "Box filtered coud"<< endl;
+//	cout << *resultPointCloud << endl;
 	CPPUNIT_ASSERT_EQUAL(13u, testCloud->getSize()); //postcondiitons
 	CPPUNIT_ASSERT_EQUAL(7u, resultPointCloud->getSize());
 

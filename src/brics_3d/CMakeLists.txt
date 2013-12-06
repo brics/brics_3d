@@ -64,6 +64,7 @@ SET (CORE_LIBRARY_SOURCES
 	./core/Point3DDecorator
 	./core/ColoredPoint3D
 	./core/Point3DIntensity
+    ./core/Point3DNormal
 	./core/CorrespondenceIndexPair
 	./core/CorrespondencePoint3DPair
 	./core/Triangle

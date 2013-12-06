@@ -24,6 +24,7 @@
 #include "brics_3d/core/PointCloud3D.h"
 #include "brics_3d/core/Vector3D.h"
 #include "brics_3d/core/IHomogeneousMatrix44.h"
+#include "brics_3d/core/IPoint3DIterator.h"
 
 
 namespace brics_3d {
@@ -61,6 +62,9 @@ public:
 	 * @param[out] resultBoxDimensions 3D vector the represents the dimensions centered around the center.
 	 */
 	void computeOrientedBoundingBox(PointCloud3D* inputPointCloud, IHomogeneousMatrix44* resultTransform, Vector3D& resultBoxDimensions);
+
+	/// Same as above but with iterator as interface.
+	void computeOrientedBoundingBox(IPoint3DIterator::IPoint3DIteratorPtr inputPointCloud, IHomogeneousMatrix44* resultTransform, Vector3D& resultBoxDimensions);
 
 
 protected:

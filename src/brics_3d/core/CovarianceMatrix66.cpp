@@ -21,6 +21,7 @@
 #include "Logger.h"
 #include "HomogeneousMatrix44.h"
 #include <Eigen/Dense>
+#include <stdexcept>
 
 namespace brics_3d {
 
@@ -179,7 +180,7 @@ extern CovarianceMatrix66::CovarianceMatrix66Ptr compoundCovariance(IHomogeneous
 
 	/*
 	 *
-	 * Smith & Cheeseman rotation Matrix coneention:
+	 * Smith et al. rotation Matrix convention:
 	 * nx ox ax
 	 * ny oy ay
 	 * nz oz az
@@ -205,6 +206,8 @@ extern CovarianceMatrix66::CovarianceMatrix66Ptr compoundCovariance(IHomogeneous
 	double oz1 = matrixData[6];
 	double az1 = matrixData[10];
 	double roll1, pitch1, yaw1;
+	// Craig                                                          x(r)   y(p)   z(y)
+	// Paul                                                           z(r)   y(p)   x(y)
 	HomogeneousMatrix44::matrixToXyzRollPitchYaw(mean1, x1, y1, z1, roll1, pitch1, yaw1);
 
 
@@ -222,7 +225,6 @@ extern CovarianceMatrix66::CovarianceMatrix66Ptr compoundCovariance(IHomogeneous
 //	double oz2 = matrixData[6];
 //	double az2 = matrixData[10];
 	double roll2, pitch2, yaw2;
-//	mean2->getRollPitchYaw(roll2, pitch2, yaw2);
 	HomogeneousMatrix44::matrixToXyzRollPitchYaw(mean2, x2, y2, z2, roll2, pitch2, yaw2);
 
 
@@ -234,7 +236,6 @@ extern CovarianceMatrix66::CovarianceMatrix66Ptr compoundCovariance(IHomogeneous
 	double y3;// = matrixData[13];
 	double z3;// = matrixData[14];
 	double roll3, pitch3, yaw3;
-//	resultingMean->getRollPitchYaw(roll3, pitch3, yaw3);
 	HomogeneousMatrix44::matrixToXyzRollPitchYaw(resultingMean, x3, y3, z3, roll3, pitch3, yaw3);
 
 
@@ -262,7 +263,7 @@ extern CovarianceMatrix66::CovarianceMatrix66Ptr compoundCovariance(IHomogeneous
 	M(1,1) =  (z3 - z1) * sin(roll1);
 	M(1,2) =  (ay1*y2 - oy1*z2);
 	M(2,0) =  0;
-	M(2,1) =  (x2*cos(pitch1)) - (y2 * sin(pitch1) * sin(yaw1)) - (z2*sin(roll1)*cos(yaw1));
+	M(2,1) =  (x2*cos(pitch1)) - (y2 * sin(pitch1) * sin(yaw1)) - (z2*sin(pitch1)*cos(yaw1));
 	M(2,2) =  az1*y2 - oz1*z2;
 
 //	1 [sin 3 sin(3 − 1)]/ cos 3 [ox2 sin  3 + ax2 cos  3]/ cos 3
@@ -291,6 +292,7 @@ extern CovarianceMatrix66::CovarianceMatrix66Ptr compoundCovariance(IHomogeneous
 	K2(1,2) = 0;
 	K2(2,0) = (ax1 * cos(roll3) + ay1 * sin(roll3)) / cos(pitch3);
 	K2(2,1) = (sin(pitch3) * sin(yaw3 -  yaw2))/ cos(pitch3);
+	K2(2,2) = 1;
 
 	/*
 	 * assamble the jacobian:
@@ -332,8 +334,8 @@ extern CovarianceMatrix66::CovarianceMatrix66Ptr compoundCovariance(IHomogeneous
 	}
 
 	LOG(DEBUG) << "Compount jacobian:" << std::endl << jacobian;
-	LOG(DEBUG) << "Compount resultCovariance covariance:" << std::endl << resultCovariance;
-//	LOG(DEBUG) << "Compount result covariance:" << std::endl << *result;
+	LOG(DEBUG) << "Compount resultCovariance:" << std::endl << resultCovariance;
+	LOG(DEBUG) << "Compount resultingMean:" << std::endl << *resultingMean;
 
 	return result;
 }
@@ -383,7 +385,6 @@ extern CovarianceMatrix66::CovarianceMatrix66Ptr invertCovariance(IHomogeneousMa
 	double oz = matrixData[6];
 	double az = matrixData[10];
 	double roll, pitch, yaw;
-//	mean->getRollPitchYaw(roll, pitch, yaw);
 	HomogeneousMatrix44::matrixToXyzRollPitchYaw(mean, x, y, z, roll, pitch, yaw);
 
 
@@ -423,7 +424,8 @@ extern CovarianceMatrix66::CovarianceMatrix66Ptr invertCovariance(IHomogeneousMa
 	double ax2 = ax*ax;//?
 	double tolerance = 10e-6;
 	if( (fabs(1 - ax2) - fabs(1 -ax2)) <  tolerance) {
-		LOG(ERROR) << "Division by 0 detected.";
+		LOG(ERROR) << "Division by zero.";
+//		return false;
 	}
 	Q(0,0) = -az / (1-ax2);
 	Q(0,1) = (-ay*cos(roll)) / (1 - ax2);
@@ -494,32 +496,57 @@ extern bool mergeCovariance(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr mean1,
 	LOG(DEBUG) << "covariance_1 " << std::endl << covariance_1;
 	LOG(DEBUG) << "covariance_2 " << std::endl << covariance_2;
 
-	/* calculate the Kalmang gain -> this will give us a ratio whom to trust more */
+	/*
+	 * Calculate the Kalman gain -> this will give us a ratio whom to trust more
+	 */
 	Eigen::Matrix<double, 6, 6> addedCovariances = covariance_1 + covariance_2;
 	Eigen::Matrix<double, 6, 6> addedCovariancesInverse;
 	LOG(DEBUG) << "addedCovariances " << std::endl << addedCovariances;
+
 	Eigen::ColPivHouseholderQR<Eigen::Matrix<double, 6, 6> > tempCovariances(addedCovariances); // ColPivHouseholderQR Speed: +, Accuracy: ++
 	addedCovariancesInverse = tempCovariances.inverse();
-//	addedCovariancesInverse = addedCovariances.inverse();
 	LOG(DEBUG) << "addedCovariancesInverse " << std::endl << addedCovariancesInverse;
-	kalmanGain = covariance_1 * addedCovariancesInverse;
+
+	/* Handle singularities */
+	bool invertible = tempCovariances.isInvertible();
+	if(!invertible) {
+
+		bool covariance1IsZero = covariance_1.isApprox(Eigen::Matrix<double, 6, 6>::Zero());
+		bool covariance2IsZero = covariance_2.isApprox(Eigen::Matrix<double, 6, 6>::Zero());
+
+		if (covariance1IsZero && covariance2IsZero) { //50%
+			kalmanGain = Eigen::Matrix<double, 6, 6>::Identity();
+			kalmanGain = kalmanGain * 0.5; // no bias as both are perfectly certain
+			LOG(WARNING) << "Covariance 1 and 2 are zero. Setting Kalman gain to 0.5.";
+		} else if (covariance1IsZero) { //0%
+			kalmanGain = Eigen::Matrix<double, 6, 6>::Zero();
+			LOG(WARNING) << "Covariance 1 is zero. Setting Kalman gain to 0.";
+		} else if (covariance2IsZero) { //100%
+			kalmanGain = Eigen::Matrix<double, 6, 6>::Identity();
+			LOG(WARNING) << "Covariance 2 is zero. Setting Kalman gain to 1.";
+		} else {
+			LOG(ERROR) << "Covariance matrix is not invertible.";
+			kalmanGain = Eigen::Matrix<double, 6, 6>::Identity();
+			kalmanGain = kalmanGain * 0.5; // no bias as both are untrustable (?)
+//			throw std::runtime_error("Covariance matrix is not invertible.");
+			return false;
+		}
+
+	} else { // the regular case for the Kalman gain
+		kalmanGain = covariance_1 * addedCovariancesInverse;
+	}
 	LOG(DEBUG) << "kalmanGain " << std::endl << kalmanGain;
 
 	/* wieght the resulting covariance with he Kalman gain */
 	resultCovariance = covariance_1 - (covariance_1 * kalmanGain);
 
 	/* calculate the new mean:
-	 * X3 = X1 + K * (X 2- X1)
+	 * X3 = X1 + K * (X2- X1)
 	 * Note X contains of x,y,z,roll,pitch,yaw -> as in the covariance matrix
 	 */
-//	matrixData = mean1->setRawData();
-//	double x1 = matrixData[12];
-//	double y1 = matrixData[13];
-//	double z1 = matrixData[14];
 	double x1, y1, z1;
 	double roll1, pitch1, yaw1;
 	HomogeneousMatrix44::matrixToXyzRollPitchYaw(mean1, x1, y1, z1, roll1, pitch1, yaw1);
-	//mean1->getRollPitchYaw(roll1, pitch1, yaw1);
 	Eigen::Matrix<double, 6, 1> X1;
 	X1(0,0) = x1;
 	X1(1,0) = y1;
@@ -528,12 +555,6 @@ extern bool mergeCovariance(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr mean1,
 	X1(4,0) = pitch1;
 	X1(5,0) = yaw1;
 
-//	matrixData = mean2->setRawData();
-//	double x2 = matrixData[12];
-//	double y2 = matrixData[13];
-//	double z2 = matrixData[14];
-//	double roll2, pitch2, yaw2;
-//	mean2->getRollPitchYaw(roll2, pitch2, yaw2);
 	double x2, y2, z2;
 	double roll2, pitch2, yaw2;
 	HomogeneousMatrix44::matrixToXyzRollPitchYaw(mean2, x2, y2, z2, roll2, pitch2, yaw2);
@@ -549,13 +570,8 @@ extern bool mergeCovariance(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr mean1,
 	X3 = X1 + kalmanGain * (X2-X1);
 
 	/* prepate output: merged mean */
-//	matrixData = mergedMean->setRawData();
-//	matrixData[12] = X3(0,0);
-//	matrixData[13] = X3(1,0);
-//	matrixData[14] = X3(2,0);
 	LOG(DEBUG) << "Merged X3: " << std::endl << X3;
 	HomogeneousMatrix44::xyzRollPitchYawToMatrix(X3(0,0), X3(1,0), X3(2,0), X3(3,0), X3(4,0), X3(5,0), mergedMean);
-//	TODO rotation
 
 	/* prepate output: merged covariance */
 	matrixData = mergedUncertainty->setRawData();

@@ -23,6 +23,7 @@
 #include <Eigen/StdVector>
 #include "brics_3d/core/PointCloud3D.h"
 #include "brics_3d/core/IHomogeneousMatrix44.h"
+#include "brics_3d/core/IPoint3DIterator.h"
 #include "brics_3d/algorithm/featureExtraction/Centroid3D.h"
 
 namespace brics_3d {
@@ -51,6 +52,10 @@ public:
 	 * @param[out] eigenvalues Corresponding eingen values. Sorted in descending order.
 	 */
 	void computePrincipleComponents(PointCloud3D* inputPointCloud, Eigen::MatrixXd& eigenvectors, Eigen::VectorXd& eigenvalues);
+
+	/// Same as above but with iterator as interface.
+	void computePrincipleComponents(IPoint3DIterator::IPoint3DIteratorPtr inputPointCloud, Eigen::MatrixXd& eigenvectors, Eigen::VectorXd& eigenvalues);
+
 
 	/**
 	 * Given the principle components compute a transform.

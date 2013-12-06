@@ -28,6 +28,8 @@ namespace rsg {
 OutdatedDataDeleter::OutdatedDataDeleter() {
 	performAutomaticHistoryUpdates = true;
 	minHistoryLength = 1;
+	enableTransformDeletions = true;
+	enableGeometricNodeDeletions = true;
 }
 
 OutdatedDataDeleter::~OutdatedDataDeleter() {
@@ -44,26 +46,34 @@ void OutdatedDataDeleter::visit(Group* node){
 
 void OutdatedDataDeleter::visit(Transform* node){
 
-	bool isStaticTransform = false;
-	Attribute staticTransformTag("transformType","static");
-	isStaticTransform = attributeListContainsAttribute(node->getAttributes(), staticTransformTag);
+	if (enableTransformDeletions) {
+		bool isStaticTransform = false;
+		Attribute staticTransformTag("transformType","static");
+		isStaticTransform = attributeListContainsAttribute(node->getAttributes(), staticTransformTag);
 
-	if(!isStaticTransform) {
-		if (performAutomaticHistoryUpdates) {
-			/* optionally update history/cache */
-			node->deleteOutdatedTransforms(TimeStamp(timer.getCurrentTime()));
-		}
+		if(!isStaticTransform) {
+			if (performAutomaticHistoryUpdates) {
+				/* optionally update history/cache */
+				node->deleteOutdatedTransforms(TimeStamp(timer.getCurrentTime()));
+			}
 
-		/* check if node is outdated */
-		if (node->getCurrentHistoryLenght() < minHistoryLength) {
-			doDeleteNode(node);
+			/* check if node is outdated */
+			if (node->getCurrentHistoryLenght() < minHistoryLength) {
+				doDeleteNode(node);
+			}
 		}
 	}
-
 }
 
 void OutdatedDataDeleter::visit(GeometricNode* node){
-	//nothing to delete (yet)
+	Timer timer;
+	TimeStamp maxDuration(5, Units::Second);
+	TimeStamp now(timer.getCurrentTime(), Units::MilliSecond);
+	if (enableGeometricNodeDeletions) {
+		if (now > (node->getTimeStamp() + maxDuration)) {
+			doDeleteNode(node);
+		}
+	}
 }
 
 bool OutdatedDataDeleter::getPerformAutomaticHistoryUpdates() const {
@@ -81,6 +91,22 @@ unsigned int OutdatedDataDeleter::getMinHistoryLength() const {
 void OutdatedDataDeleter::setMinHistoryLength(unsigned int minHistoryLength) {
     this->minHistoryLength = minHistoryLength;
 }
+
+bool OutdatedDataDeleter::getEnableTransformDeletions() const {
+	return enableTransformDeletions;
+}
+
+void OutdatedDataDeleter::setEnableTransformDeletions(bool enableTransformDeletions) {
+	this->enableTransformDeletions = enableTransformDeletions;
+}
+
+bool OutdatedDataDeleter::getEnableGeometricNodeDeletions() const {
+	return enableGeometricNodeDeletions;
+}
+void OutdatedDataDeleter::setEnableGeometricNodeDeletions(bool enableGeometricNodeDeletions) {
+	this->enableGeometricNodeDeletions = enableGeometricNodeDeletions;
+}
+
 
 void OutdatedDataDeleter::doDeleteNode(Node* node) {
 		/* delete _this_ from the graph by deleting all handles that the parents have */

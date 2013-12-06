@@ -65,7 +65,7 @@ class SceneGraphFacade : public ISceneGraphQuery, public ISceneGraphUpdate {
     unsigned int getRootId();
 
     /* Implemented query interfaces */
-    bool getNodes(vector<Attribute> attributes, vector<unsigned int>& ids);
+    bool getNodes(vector<Attribute> attributes, vector<unsigned int>& ids); //subgraph?
     bool getNodeAttributes(unsigned int id, vector<Attribute>& attributes);
     bool getNodeParents(unsigned int id, vector<unsigned int>& parentIds);
     bool getGroupChildren(unsigned int id, vector<unsigned int>& childIds);

@@ -8,6 +8,8 @@
 
 #include "HomogeneousMatrixTest.h"
 
+using namespace brics_3d::matrixEntry;
+
 #include <sstream>
 
 namespace unitTests {
@@ -493,6 +495,41 @@ void HomogeneousMatrixTest::testRPYConversions() {
 	for (unsigned int i = 0; i < 16; ++i) {
 		CPPUNIT_ASSERT_DOUBLES_EQUAL(matrixData1[i], matrixData4[i], maxTolerance);
 	}
+}
+
+void HomogeneousMatrixTest::testMatrixEntries() {
+	CPPUNIT_ASSERT(0 == brics_3d::matrixEntry::r11);
+	CPPUNIT_ASSERT(4 == brics_3d::matrixEntry::r12);
+	CPPUNIT_ASSERT(8 == brics_3d::matrixEntry::r13);
+
+	CPPUNIT_ASSERT(1 == brics_3d::matrixEntry::r21);
+	CPPUNIT_ASSERT(5 == brics_3d::matrixEntry::r22);
+	CPPUNIT_ASSERT(9 == brics_3d::matrixEntry::r23);
+
+	CPPUNIT_ASSERT(2 == brics_3d::matrixEntry::r31);
+	CPPUNIT_ASSERT(6 == brics_3d::matrixEntry::r32);
+	CPPUNIT_ASSERT(10 == brics_3d::matrixEntry::r33);
+
+	CPPUNIT_ASSERT(12 == brics_3d::matrixEntry::x);
+	CPPUNIT_ASSERT(13 == brics_3d::matrixEntry::y);
+	CPPUNIT_ASSERT(14 == brics_3d::matrixEntry::z);
+
+	// check namespace clashes
+	CPPUNIT_ASSERT(0 == r11);
+	CPPUNIT_ASSERT(4 == r12);
+	CPPUNIT_ASSERT(8 == r13);
+
+	CPPUNIT_ASSERT(1 == r21);
+	CPPUNIT_ASSERT(5 == r22);
+	CPPUNIT_ASSERT(9 == r23);
+
+	CPPUNIT_ASSERT(2 == r31);
+	CPPUNIT_ASSERT(6 == r32);
+	CPPUNIT_ASSERT(10 == r33);
+
+	CPPUNIT_ASSERT(12 == x);
+	CPPUNIT_ASSERT(13 == y);
+	CPPUNIT_ASSERT(14 == z);
 }
 
 } // namespace unitTests

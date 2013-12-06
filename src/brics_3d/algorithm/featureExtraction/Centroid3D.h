@@ -21,6 +21,7 @@
 #define BRICS_3D_CENTROID3DESTIMATION_H_
 
 #include "brics_3d/core/PointCloud3D.h"
+#include "brics_3d/core/IPoint3DIterator.h"
 
 #include <Eigen/Dense>
 namespace brics_3d {
@@ -42,6 +43,8 @@ public:
 	 * @return 3D Verctor represeting the centroid.
 	 */
 	Eigen::Vector3d computeCentroid(brics_3d::PointCloud3D *inCloud);
+
+	Eigen::Vector3d computeCentroid(IPoint3DIterator::IPoint3DIteratorPtr inCloud);
 
 };
 

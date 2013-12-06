@@ -32,8 +32,34 @@ public:
 	Normal3D();
 	virtual ~Normal3D();
 
+	/**
+	 * @brief Constructor with full initialization
+	 * @param x X coordinate in Cartesian system
+	 * @param y Y coordinate in Cartesian system
+	 * @param z Z coordinate in Cartesian system (height)
+	 */
+	Normal3D(Coordinate x, Coordinate y, Coordinate z);
+
+	/**
+	 * @brief Copy constructor
+	 * @param[in] point Pointer to point that will be copied
+	 */
+	Normal3D(Normal3D* normal);
+
+	/**
+	 * @brief Applies a homogeneous transformation matrix to the normal. The translational part will be ignored.
+	 *
+	 * @param[in] transformation The homogeneous transformation matrix that will be applied
+	 */
+	virtual void homogeneousTransformation(IHomogeneousMatrix44 *transformation);
 
 
+	/**
+	 * @brief Overridden assign operator
+	 * @param point Reference to right operand
+	 * @return Reference to left operand
+	 */
+	virtual Normal3D& operator=(const Normal3D &normal);
 };
 
 }

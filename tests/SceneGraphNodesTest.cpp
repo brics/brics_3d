@@ -1109,7 +1109,7 @@ void SceneGraphNodesTest::testGeometricNode() {
 
 
 	/* traverse from root */
-	cout << "Traversing with GeometricNode:" << endl;
+//	cout << "Traversing with GeometricNode:" << endl;
 	IdCollector* idCollector = new IdCollector();
 	root->accept(idCollector); // traverse the graph downwards from root with the visitor
 
@@ -1363,7 +1363,7 @@ void SceneGraphNodesTest::testSimpleVisitor() {
 	group2->addChild(node4);
 
 	IdCollector* idCollector = new IdCollector();
-	cout << "testSimpleVisitor:" << endl;
+//	cout << "testSimpleVisitor:" << endl;
 
 	/* traverse from root */
 	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(idCollector->collectedIDs.size()));
@@ -1575,7 +1575,7 @@ void SceneGraphNodesTest::testTransformVisitor() {
 
 	IdCollector* idCollector = new IdCollector();
 
-	cout << "Graph with transforms" << endl;
+//	cout << "Graph with transforms" << endl;
 	root->accept(idCollector);
 
 	CPPUNIT_ASSERT_EQUAL(7u, static_cast<unsigned int>(idCollector->collectedIDs.size()));
@@ -1823,7 +1823,7 @@ void SceneGraphNodesTest::testUncertainTransformVisitor() {
 
 	IdCollector* idCollector = new IdCollector();
 
-	cout << "Graph with transforms" << endl;
+//	cout << "Graph with transforms" << endl;
 	root->accept(idCollector);
 
 	CPPUNIT_ASSERT_EQUAL(7u, static_cast<unsigned int>(idCollector->collectedIDs.size()));
