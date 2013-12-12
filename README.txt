@@ -21,7 +21,6 @@ overview you will need to satisfy (at least) the required dependencies:
 
    1. Boost 1.37 (or higher)
    2. Eigen2 2.0.13 (or higher, Eigen3 is recommended)
-   3. OpenCV 2.0 (or higher) 
 
 Then compile with:
 

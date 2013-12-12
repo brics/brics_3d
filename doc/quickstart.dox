@@ -10,7 +10,8 @@ As an overview you will need to satisfy (at least) the required dependencies:
 
    -# Boost 1.37 (or higher)
    -# Eigen2 2.0.13 (or higher, Eigen3 is recommended)
-   -# OpenCV 2.0 (or higher) 
+
+However it is highly recommended to enable OpenSceneGraph (optional) dependency as many examples use it for visualization.
 
 Then compile with:
 
@@ -144,7 +145,7 @@ a [label = algorithm color=red];
 w [label = world_model color=red];
 e [label = Eigen];
 b [label = Boost];
-cv [label = OpenCV]
+cv [label = OpenCV color=blue]
 o [label = OSG  color=blue]
 p [label = PCL color=blue]
 x [label = Xerces color=blue]
@@ -153,11 +154,11 @@ x [label = Xerces color=blue]
 c->e;
 c->b;
 a->c;
-a->cv;
 u->c;
 w->c;
 
 //optional dependencies
+a->cv[style=dotted];
 w->o[style=dotted];
 u->o[style=dotted];
 u->p[style=dotted];

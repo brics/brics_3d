@@ -31,14 +31,13 @@ In case you are asked for a SVN login take \e svnuser as username and \e svnuser
 Required libraries:	
    - Boost 1.37 (or higher)
    - Eigen2 2.0.13 (or higher, Eigen3 is recommended)
-   - OpenCV 2.0 (or higher) 
-
-Optional libraries
-   - XERCES
-   - OpenSceneGraph
-   - CPPUNIT
-   - CGAL
    
+Optional libraries
+   - OpenCV 2.0 (or higher) 
+   - XERCES
+   - OpenSceneGraph (highly recommended)
+   - CPPUNIT
+  
 
 
 @section install_preperation Preparation for installation
@@ -81,13 +80,14 @@ Eigen2/3:
  $ sudo apt-get install libeigen3-dev
  @endcode
 
+
+@section install_optional_birearies Installing optional libraries:
+
+
 OpenCV:
 @code
  $ sudo apt-get install libopencv2.3-dev
 @endcode
-
-@section install_optional_birearies Installing optional libraries:
-
 
 XERCES:
 
@@ -111,14 +111,6 @@ CppUnit:
  $ sudo apt-get install libcppunit-dev
 @endcode
 
-CGAL:
-
- - Download CGAL e.g. version 3.4 or higher:  http://gforge.inria.fr/frs/download.php/15692/CGAL-3.4.tar.gz 
- - Satisfy prerequisites with:
- 
-@code 
- $ sudo apt-get install libgmp3-dev libmpfr-dev  qt4-dev-tools libboost-dev geomview zlib1g-dev
-@endcode
 
  Compile and install with standard cmake procedure:
 

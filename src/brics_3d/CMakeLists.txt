@@ -4,7 +4,6 @@
 SET(BRICS_3D_LIBRARIES_INCLUDE_DIRS 
 	${CMAKE_HOME_DIRECTORY}/src
 	${CMAKE_HOME_DIRECTORY}/external
-#    ${OPENCV_INCLUDE_DIR}
     ${Boost_INCLUDE_DIR}
     ${STANN_INCLUDE_DIRS}
 )
@@ -35,7 +34,6 @@ SET(ALGORITHM_LIBRARY_LIBS
 )
 
 SET(UTIL_LIBRARY_LIBS
-#    ${OpenCV_LIBRARIES}
     ${Boost_LIBRARIES}
 )
 
@@ -78,9 +76,7 @@ SET (CORE_LIBRARY_SOURCES
     ./core/Units
 )
 
-SET (ALGORITHM_LIBRARY_SOURCES
-#	./algorithm/depthPerception/DepthImageToPointCloudTransformation
-	
+SET (ALGORITHM_LIBRARY_SOURCES	
 	./algorithm/featureExtraction/Centroid3D
     ./algorithm/featureExtraction/BoundingBox3DExtractor
 	./algorithm/featureExtraction/INormalEstimation
@@ -153,9 +149,7 @@ SET (ALGORITHM_LIBRARY_SOURCES
 )
 
 SET (UTIL_LIBRARY_SOURCES
-#	./util/DepthImageLoader
 	./util/ConfigurationFileHandler
-#	./util/IpaDatasetLoader
 	./util/Timer
 	./util/Benchmark
 	./util/SimplePointCloudGeneratorCube
