@@ -4146,26 +4146,26 @@ void SceneGraphNodesTest::testRemoveParents() {
 	/* check all relations */
 	resultIds.clear(); //check parents
 	CPPUNIT_ASSERT(scene.getNodeParents(scene.getRootId(), resultIds));
-	CPPUNIT_ASSERT_EQUAL(0u, resultIds.size());
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultIds.size()));
 	resultIds.clear();
 	CPPUNIT_ASSERT(scene.getNodeParents(group1Id, resultIds));
-	CPPUNIT_ASSERT_EQUAL(1u, resultIds.size());
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultIds.size()));
 	resultIds.clear();
 	CPPUNIT_ASSERT(scene.getNodeParents(group2Id, resultIds));
-	CPPUNIT_ASSERT_EQUAL(1u, resultIds.size());
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultIds.size()));
 	resultIds.clear();
 	CPPUNIT_ASSERT(scene.getNodeParents(node3Id, resultIds));
-	CPPUNIT_ASSERT_EQUAL(2u, resultIds.size());
+	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(resultIds.size()));
 
 	resultIds.clear();//check childs
 	CPPUNIT_ASSERT(scene.getGroupChildren(scene.getRootId(), resultIds));
-	CPPUNIT_ASSERT_EQUAL(2u, resultIds.size());
+	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(resultIds.size()));
 	resultIds.clear();
 	CPPUNIT_ASSERT(scene.getGroupChildren(group1Id, resultIds));
-	CPPUNIT_ASSERT_EQUAL(1u, resultIds.size());
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultIds.size()));
 	resultIds.clear();
 	CPPUNIT_ASSERT(scene.getGroupChildren(group2Id, resultIds));
-	CPPUNIT_ASSERT_EQUAL(1u, resultIds.size());
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultIds.size()));
 
 	/* remove one relation
 	 *                 root
@@ -4184,26 +4184,26 @@ void SceneGraphNodesTest::testRemoveParents() {
 	/* check again all relations */
 	resultIds.clear(); //check parents
 	CPPUNIT_ASSERT(scene.getNodeParents(scene.getRootId(), resultIds));
-	CPPUNIT_ASSERT_EQUAL(0u, resultIds.size());
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultIds.size()));
 	resultIds.clear();
 	CPPUNIT_ASSERT(scene.getNodeParents(group1Id, resultIds));
-	CPPUNIT_ASSERT_EQUAL(1u, resultIds.size());
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultIds.size()));
 	resultIds.clear();
 	CPPUNIT_ASSERT(scene.getNodeParents(group2Id, resultIds));
-	CPPUNIT_ASSERT_EQUAL(1u, resultIds.size());
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultIds.size()));
 	resultIds.clear();
 	CPPUNIT_ASSERT(scene.getNodeParents(node3Id, resultIds));
-	CPPUNIT_ASSERT_EQUAL(1u, resultIds.size());
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultIds.size()));
 
 	resultIds.clear();//check childs
 	CPPUNIT_ASSERT(scene.getGroupChildren(scene.getRootId(), resultIds));
-	CPPUNIT_ASSERT_EQUAL(2u, resultIds.size());
+	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(resultIds.size()));
 	resultIds.clear();
 	CPPUNIT_ASSERT(scene.getGroupChildren(group1Id, resultIds));
-	CPPUNIT_ASSERT_EQUAL(0u, resultIds.size());
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultIds.size()));
 	resultIds.clear();
 	CPPUNIT_ASSERT(scene.getGroupChildren(group2Id, resultIds));
-	CPPUNIT_ASSERT_EQUAL(1u, resultIds.size());
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultIds.size()));
 
 	/* those oprations should fail */
 	CPPUNIT_ASSERT(!scene.removeParent(node3Id, group1Id));	 // again the same
@@ -4219,26 +4219,26 @@ void SceneGraphNodesTest::testRemoveParents() {
 	/* check again all relations */
 	resultIds.clear(); //check parents
 	CPPUNIT_ASSERT(scene.getNodeParents(scene.getRootId(), resultIds));
-	CPPUNIT_ASSERT_EQUAL(0u, resultIds.size());
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultIds.size()));
 	resultIds.clear();
 	CPPUNIT_ASSERT(scene.getNodeParents(group1Id, resultIds));
-	CPPUNIT_ASSERT_EQUAL(1u, resultIds.size());
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultIds.size()));
 	resultIds.clear();
 	CPPUNIT_ASSERT(scene.getNodeParents(group2Id, resultIds));
-	CPPUNIT_ASSERT_EQUAL(1u, resultIds.size());
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultIds.size()));
 	resultIds.clear();
 	CPPUNIT_ASSERT(scene.getNodeParents(node3Id, resultIds));
-	CPPUNIT_ASSERT_EQUAL(1u, resultIds.size());
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultIds.size()));
 
 	resultIds.clear();//check childs
 	CPPUNIT_ASSERT(scene.getGroupChildren(scene.getRootId(), resultIds));
-	CPPUNIT_ASSERT_EQUAL(2u, resultIds.size());
+	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(resultIds.size()));
 	resultIds.clear();
 	CPPUNIT_ASSERT(scene.getGroupChildren(group1Id, resultIds));
-	CPPUNIT_ASSERT_EQUAL(0u, resultIds.size());
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultIds.size()));
 	resultIds.clear();
 	CPPUNIT_ASSERT(scene.getGroupChildren(group2Id, resultIds));
-	CPPUNIT_ASSERT_EQUAL(1u, resultIds.size());
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultIds.size()));
 
 	/* remove another relation
 	 *                 root
@@ -4257,10 +4257,10 @@ void SceneGraphNodesTest::testRemoveParents() {
 	/* check again all relations */
 	resultIds.clear(); //check parents
 	CPPUNIT_ASSERT(scene.getNodeParents(scene.getRootId(), resultIds));
-	CPPUNIT_ASSERT_EQUAL(0u, resultIds.size());
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultIds.size()));
 	resultIds.clear();
 	CPPUNIT_ASSERT(scene.getNodeParents(group1Id, resultIds));
-	CPPUNIT_ASSERT_EQUAL(1u, resultIds.size());
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultIds.size()));
 	resultIds.clear();
 	CPPUNIT_ASSERT(!scene.getNodeParents(group2Id, resultIds));
 	resultIds.clear();
@@ -4269,10 +4269,10 @@ void SceneGraphNodesTest::testRemoveParents() {
 
 	resultIds.clear();//check childs
 	CPPUNIT_ASSERT(scene.getGroupChildren(scene.getRootId(), resultIds));
-	CPPUNIT_ASSERT_EQUAL(1u, resultIds.size());
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultIds.size()));
 	resultIds.clear();
 	CPPUNIT_ASSERT(scene.getGroupChildren(group1Id, resultIds));
-	CPPUNIT_ASSERT_EQUAL(0u, resultIds.size());
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultIds.size()));
 	resultIds.clear();
 	CPPUNIT_ASSERT(!scene.getGroupChildren(group2Id, resultIds));
 

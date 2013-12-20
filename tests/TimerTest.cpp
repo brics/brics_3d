@@ -28,6 +28,7 @@ void TimerTest::testSimpleTiming() {
 	long double timeStamp0 = timer.getCurrentTime();
 	for (int i = 0; i < maxDummyLoop; ++i) {
 		dummy = i + 1;
+		dummy = dummy; // trick -Werror=unused-but-set-variable
 	}
 	CPPUNIT_ASSERT(timer.getCurrentTime() > 0);
 

@@ -268,8 +268,8 @@ void Point3DTest::testIdentity() {
 
 	/* check HomogeneousMatrix44 default constructor  */
 	HomogeneousMatrix44 *homogeneousTransformation2 = new HomogeneousMatrix44();
-	const double* matrixData;
-	matrixData = homogeneousTransformation2->getRawData();
+//	const double* matrixData;
+//	matrixData = homogeneousTransformation2->getRawData();
 	point111->homogeneousTransformation(homogeneousTransformation2);
 //	cout << *point111 << endl; // actual
 

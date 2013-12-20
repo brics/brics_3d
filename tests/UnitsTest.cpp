@@ -33,8 +33,8 @@ void UnitsTest::tearDown() {
 }
 
 void UnitsTest::testTimeUnits() {
-	Units::TimeUnit unit;
-	unit = Units::Second;
+//	Units::TimeUnit unit;
+//	unit = Units::Second;
 
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, 1e9 * 1e-9, maxTolerance);
 
