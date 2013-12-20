@@ -31,7 +31,7 @@ PROJECT_NAME = BRICS_3D_Perception_and_Modeling_Library (BRICS_3D)
 # This could be handy for archiving the generated documentation or 
 # if some version control system is used.
 
-PROJECT_NUMBER = 0.3
+PROJECT_NUMBER = 0.5
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) 
 # base path where the generated documentation will be put. 
@@ -641,7 +641,7 @@ EXAMPLE_RECURSIVE = NO
 # directories that contain image that are included in the documentation (see 
 # the \image command).
 
-IMAGE_PATH = 
+IMAGE_PATH = doc/images
 
 # The INPUT_FILTER tag can be used to specify a program that doxygen should 
 # invoke to filter for each input file. Doxygen will invoke the filter program 

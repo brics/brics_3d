@@ -28,12 +28,17 @@ namespace brics_3d {
  */
 class IWorldModelCoordination {
   public:
+
+	///@deprecated
     virtual void initPerception() = 0;
 
+	///@deprecated
     virtual void runPerception() = 0;
 
+	///@deprecated
     virtual void runOncePerception() = 0;
 
+	///@deprecated
     virtual void stopPerception() = 0;
 
 };

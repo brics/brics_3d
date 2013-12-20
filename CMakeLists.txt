@@ -42,18 +42,18 @@ ELSE (NOT Boost_INCLUDE_DIR)
   MESSAGE(STATUS "SUCCESSFUL: Boost found")
 ENDIF()
 
-# search for GGAL >= 3.4 library
-OPTION(USE_CGAL "Enable CGAL" OFF)
-IF (USE_CGAL)
-    FIND_PACKAGE(CGAL)
-    IF (NOT CGAL_FOUND)
-      MESSAGE(SEND_ERROR "WARNING: CGAL not found")
-    ELSE (NOT CGAL_FOUND) 
-      MESSAGE(STATUS "SUCCESSFUL: CGAL found")
-    ENDIF()
-    #MESSAGE(STATUS "INFO: "${CGAL_DIR} , ${CGAL_INCLUDE_DIRS})
-    #MESSAGE("CGAL lib: "${CGAL_LIBRARY})
-ENDIF (USE_CGAL)    
+## search for GGAL >= 3.4 library
+#OPTION(USE_CGAL "Enable CGAL" OFF)
+#IF (USE_CGAL)
+#    FIND_PACKAGE(CGAL)
+#    IF (NOT CGAL_FOUND)
+#      MESSAGE(SEND_ERROR "WARNING: CGAL not found")
+#    ELSE (NOT CGAL_FOUND) 
+#      MESSAGE(STATUS "SUCCESSFUL: CGAL found")
+#    ENDIF()
+#    #MESSAGE(STATUS "INFO: "${CGAL_DIR} , ${CGAL_INCLUDE_DIRS})
+#    #MESSAGE("CGAL lib: "${CGAL_LIBRARY})
+#ENDIF (USE_CGAL)    
 
 
 OPTION(USE_EIGEN3 "Enable Eigen version 3 " ON)
@@ -148,6 +148,18 @@ IF (USE_XERCES)
     ENDIF (XERCES_INCLUDE_DIR)
 ENDIF(USE_XERCES)
 
+
+# search for Microblx
+OPTION(USE_MICROBLX "Enable Microblx Support" OFF)
+IF(USE_MICROBLX)  
+    FIND_PACKAGE(Microblx REQUIRED)
+    IF (MICROBLX_FOUND)
+      MESSAGE(STATUS "SUCCESSFUL: MICROBLX found")
+      ADD_DEFINITIONS(-DBRICS_MICROBLX_ENABLE)
+    ELSE (MICROBLX_FOUND)
+      MESSAGE(SEND_ERROR "WARNING: MICROBLX not found. You might need to set the MICROBLX_DIR environment variable.")
+    ENDIF (MICROBLX_FOUND)
+ENDIF(USE_MICROBLX)
 
 ## perform platform dependant configurations
 IF (WIN32)   # windows

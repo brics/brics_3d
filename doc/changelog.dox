@@ -2,8 +2,13 @@
 
 @page changelog Change log
 
-@section version_0_5 0.5 ()
+@section version_0_5 0.5 (2013-12-20)
 
+ - OpenCV can be used optionally 
+ - Improved iterator support in algorithms.
+ - Improved normal support: Normal filtering based on iterator possible.
+ - Timer added to WorldModel API.
+ - Added more policies for graph deletions. 
  - Added generic temporal cache. 
  - Transform and UncertainTransform refactored: they now use the generic temporal cache.
  - Added support for (SI) units. TimeStamp can be also be specified via TimeUnits.

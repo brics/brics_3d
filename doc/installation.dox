@@ -29,16 +29,14 @@ In case you are asked for a SVN login take \e svnuser as username and \e svnuser
 @section external_libraries External libraries 
 
 Required libraries:	
-   - Boost 1.37 (or higher)
+   - Boost 1.37 (or higher)  
    - Eigen2 2.0.13 (or higher, Eigen3 is recommended)
    
 Optional libraries
-   - OpenCV 2.0 (or higher) 
-   - XERCES
    - OpenSceneGraph (highly recommended)
+   - OpenCV 2.0 (or higher) 
    - CPPUNIT
-  
-
+   - XERCES
 
 @section install_preperation Preparation for installation
 
@@ -55,11 +53,23 @@ Install build-essential and cmake package.
 
 Boost: 
 @code
- $ sudo apt-get install libboost-dev
+ $ sudo apt-get install libboost-dev libboost-thread-dev
 @endcode
 
-Eigen2/3: 
+Eigen3/2: 
 
+ @code
+ $ sudo apt-get install libeigen3-dev
+ @endcode
+
+ or use 
+ 
+ @code
+ $ sudo apt-get install libeigen2-dev
+ @endcode
+ 
+ or
+ 
  - Download Eigen 2.0.13:  http://bitbucket.org/eigen/eigen2/get/2.0.13.tar.gz 
  - Compile and install with standard cmake procedure
 
@@ -69,33 +79,10 @@ Eigen2/3:
  $ cmake ..
  $ make   
  $ sudo make install 
- @endcode
+@endcode
  
- or use 
- @code
- $ sudo apt-get install libeigen2-dev
- @endcode
- or
- @code
- $ sudo apt-get install libeigen3-dev
- @endcode
-
 
 @section install_optional_birearies Installing optional libraries:
-
-
-OpenCV:
-@code
- $ sudo apt-get install libopencv2.3-dev
-@endcode
-
-XERCES:
-
-@code
- $ sudo apt-get install libxerces-c-dev
-@endcode
-
- NOTE: enable the USE_XERCES cmake variable during invocation of cmake for BRICS_3D 
 
 OpenSceneGraph (OSG):
 
@@ -105,24 +92,30 @@ OpenSceneGraph (OSG):
 
  NOTE: enable the USE_OSG cmake variable during invocation of cmake for BRICS_3D 
 
+OpenCV:
+@code
+ $ sudo apt-get install libopencv2.3-dev
+@endcode
+
+ NOTE: enable the USE_OPENCV cmake variable during invocation of cmake for BRICS_3D 
+
 CppUnit:
 
 @code
  $ sudo apt-get install libcppunit-dev
 @endcode
+ 
+  NOTE: enable the USE_CPPUNIT cmake variable during invocation of cmake for BRICS_3D 
 
 
- Compile and install with standard cmake procedure:
+XERCES:
 
 @code
- $ mkdir build
- $ cd build
- $ cmake ..
- $ make   
- $ sudo make install 
+ $ sudo apt-get install libxerces-c-dev
 @endcode
- 
-  NOTE: enable the USE_OSG cmake variable during invocation of cmake for BRICS_3D 
+
+ NOTE: enable the USE_XERCES cmake variable during invocation of cmake for BRICS_3D 
+
 
 @section brics_3d_compilation Compilation of BRICS_3D
 
@@ -164,12 +157,19 @@ If you want to install BRICS_3D as a system wide library you can type:
 @section doxygen_generation Generating the latest documentation with Doxygen
 
 To generate the latest version of the accompanied documentation go the BRICS_3D folder and
-use the doxygen tool. Then open the html files with your favorite web browser. Then type:
+use the doxygen tool. Then open the html files with your favorite web browser. If not alredy done you need to install doxygen:
+
+@code
+ $ sudo apt-get install doxygen
+@endcode 
+
+To generate the documentation invoke:
 
 @code
  $ doxygen BRICS_3D.doxyfile
  $ firefox ./doc/html/index.html
 @endcode
+
 
 
 After sucesfully installing the BRICS_3D library you can continue with @ref quickstart.

@@ -21,6 +21,13 @@
 #include "brics_3d/core/Logger.h"
 #include "brics_3d/core/HomogeneousMatrix44.h"
 
+#ifdef BRICS_MICROBLX_ENABLE
+#include "ubx.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <dlfcn.h>
+#endif
+
 using namespace brics_3d::rsg;
 
 namespace brics_3d {
@@ -116,6 +123,63 @@ void WorldModel::runOncePerception() {
 
 void WorldModel::stopPerception() {
 
+}
+
+bool WorldModel::loadFunctionBlock(std::string name) {
+#ifdef BRICS_MICROBLX_ENABLE
+	LOG(INFO) << "WorldModel::loadFunctionBlock: Loading a new function block to the world model with name " << name;
+	/* In a nutshell: you'll need to dlopen(1) the
+	 * block or type library and register it with a node, the create the block
+	 * instances, configure and start them.
+	 */
+
+	/* load dll */
+	void* functionBlockHandle;
+	functionBlockHandle = dlopen(name.c_str(), RTLD_LAZY);
+	if (!functionBlockHandle) {
+		LOG(ERROR) << "WorldModel::loadFunctionBlock: Cannot load shared library for the function block: " << dlerror();
+		return false;
+	}
+
+	/* retieve microblock from dll */
+	ubx_block_t* block = new ubx_block_t();
+
+	/* init microblx */
+	ubx_node_info_t* microBlxNodeHandle = new ubx_node_info_t(); // holds all microblx
+	std::string microBlxNodeName = "functionBlocks";
+
+	if (ubx_node_init(microBlxNodeHandle, microBlxNodeName.c_str()) != 0 ) {
+		LOG(ERROR) << "WorldModel::loadFunctionBlock: Cannot initialize the Microblx node handle.";
+		return false;
+	}
+
+	/* register function block to microblx "node" */
+	if (ubx_block_register(microBlxNodeHandle, block) != 0 ) {
+		LOG(ERROR) << "WorldModel::loadFunctionBlock: Cannot register the function block to the microblx node handle.";
+		return false;
+	}
+
+	LOG(DEBUG) << "WorldModel::loadFunctionBlock: function block " << name << " is initialized.";
+	return true;
+
+#endif
+	LOG(ERROR) << "Microblx support not enabled. Cannot load a function block.";
+	return false;
+
+}
+
+bool WorldModel::executeFunctionBlock(std::string name, std::vector<unsigned int>& input, std::vector<unsigned int>& output) {
+#ifdef BRICS_MICROBLX_ENABLE
+	LOG(ERROR) << "Microblx support not enabled. Cannot load a function block.";
+#endif
+	return false;
+}
+
+bool WorldModel::getloadedFunctionBlocks(std::vector<std::string>& functionBlocks) {
+#ifdef BRICS_MICROBLX_ENABLE
+	LOG(ERROR) << "Microblx support not enabled. Cannot load a function block.";
+#endif
+	return false;
 }
 
 unsigned int WorldModel::getRootNodeId() {

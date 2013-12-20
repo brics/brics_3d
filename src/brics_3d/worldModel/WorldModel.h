@@ -60,6 +60,12 @@ class WorldModel : public IWorldModelQuery, public IWorldModelUpdate, public IWo
 
     void stopPerception();
 
+    /* Function block interface */
+    bool loadFunctionBlock(std::string name);
+    bool executeFunctionBlock(std::string name, std::vector<unsigned int>& input, std::vector<unsigned int>& output);
+    bool getloadedFunctionBlocks(std::vector<std::string>& functionBlocks);
+
+
     /* Helper functions */
     unsigned int getRootNodeId();
 
