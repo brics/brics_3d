@@ -91,7 +91,7 @@ IF(USE_CPPUNIT)
 ENDIF(USE_CPPUNIT)
 
 # search for open scene graph (OSG) visualization library 
-FIND_PACKAGE(OpenSceneGraph COMPONENTS osgGA osgUtil osgViewer)
+FIND_PACKAGE(OpenSceneGraph COMPONENTS osgGA osgUtil osgViewer osgText)
 IF (OPENSCENEGRAPH_FOUND)
 	message(STATUS "SUCCESSFUL: OpenSceneGraph found")
 	ADD_DEFINITIONS(-DBRICS_OSG_ENABLE)	
@@ -106,7 +106,7 @@ ENDIF (OPENSCENEGRAPH_FOUND)
 OPTION(USE_OSG "Enable Open Scene Graph" OFF)
 
 # search for OpenCV library
-OPTION(USE_OPENCV "Enable OpenCV Support" ON)
+OPTION(USE_OPENCV "Enable OpenCV Support" OFF)
 IF(USE_OPENCV)  
     FIND_PACKAGE(OpenCV REQUIRED)
     IF (OpenCV_FOUND)

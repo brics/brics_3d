@@ -179,6 +179,7 @@ IF (USE_OSG)
     	${OSGGA_LIBRARY_DEBUG}
     	${OSGVIEWER_LIBRARY_DEBUG}
     	${OSGUTIL_LIBRARY_DEBUG}
+    	${OSGTEXT_LIBRARY_DEBUG}
     )
     
     ADD_EXECUTABLE(wm_uncertain_transforms wm_uncertain_transforms)
@@ -191,6 +192,7 @@ IF (USE_OSG)
     	${OSGGA_LIBRARY_DEBUG}
     	${OSGVIEWER_LIBRARY_DEBUG}
     	${OSGUTIL_LIBRARY_DEBUG}
+    	${OSGTEXT_LIBRARY_DEBUG}
     )
     
 #    ADD_EXECUTABLE(rsg_generated /home/sblume/eclipse_workspaces/runtime-EclipseXtext/WM/src-gen/rsg_main_generated.cpp)
