@@ -504,7 +504,7 @@ public:
     void findNeighbors(ResultSet& result, float* vec, Params searchParams)
     {
         int maxChecks;
-        float cb_index;
+//        float cb_index;
         if (searchParams.find("checks") == searchParams.end()) {
             maxChecks = -1;
         }

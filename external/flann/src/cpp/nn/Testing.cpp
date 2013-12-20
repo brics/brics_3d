@@ -166,7 +166,7 @@ float test_index_precision(NNIndex& index, const Dataset<float>& inputData, cons
     int c2 = 1;
     float p2;
     int c1;
-    float p1;
+//    float p1;
     float time;
     float dist;
 
@@ -180,7 +180,7 @@ float test_index_precision(NNIndex& index, const Dataset<float>& inputData, cons
 
     while (p2<precision) {
         c1 = c2;
-        p1 = p2;
+//        p1 = p2;
         c2 *=2;
         p2 = search_with_ground_truth(index, inputData, testData, matches, nn, c2, time, dist, skipMatches);
     }
@@ -240,7 +240,7 @@ float test_index_precisions(NNIndex& index, const Dataset<float>& inputData, con
     float p2;
 
     int c1;
-    float p1;
+//    float p1;
 
     float time;
     float dist;
@@ -264,7 +264,7 @@ float test_index_precisions(NNIndex& index, const Dataset<float>& inputData, con
         precision = precisions[i];
         while (p2<precision) {
             c1 = c2;
-            p1 = p2;
+//            p1 = p2;
             c2 *=2;
             p2 = search_with_ground_truth(index, inputData, testData, matches, nn, c2, time, dist, skipMatches);
             if (maxTime> 0 && time > maxTime && p2<precision) return time;

@@ -185,7 +185,7 @@ void Comparator::generateParametericPlots(vector<string> *vecMetrics, int noOfMe
 	vecParametersOfComparison.push_back("Standard deviation");
 
 	for(int i=1; i<noOfMetrics; i++){
-		double mean,median,variance,stdDeviation;
+		double mean,median,/*variance,*/stdDeviation;
 		double *values;
 		int yrange=1;
 		//create temporary file to create the histogram data
@@ -211,7 +211,7 @@ void Comparator::generateParametericPlots(vector<string> *vecMetrics, int noOfMe
 			//Calculate Median
 			median = calculateMedian(values,noOfRegions);
 			//Calculate Variance
-			variance = calculateVariance(values,noOfRegions);
+//			variance = calculateVariance(values,noOfRegions);
 			//calculate Standard Deviation
 			stdDeviation = calculateStdDeviation(values,noOfRegions);
 			//find the yRange of the plot

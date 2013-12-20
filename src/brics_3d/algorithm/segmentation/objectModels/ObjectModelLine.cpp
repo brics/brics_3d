@@ -125,7 +125,7 @@ void ObjectModelLine::optimizeModelCoefficients (const std::vector<int> &inliers
 	// Extract the eigenvalues and eigenvectors
 	//cloud_geometry::eigen_cov (covariance_matrix, eigen_values, eigen_vectors);
 	Eigen::SelfAdjointEigenSolver<Eigen::Matrix3d> ei_symm (covariance_matrix);
-	EIGEN_ALIGN_MEMORY Eigen::Vector3d eigen_values  = ei_symm.eigenvalues ();
+//	EIGEN_ALIGN_MEMORY Eigen::Vector3d eigen_values  = ei_symm.eigenvalues ();
 	EIGEN_ALIGN_MEMORY Eigen::Matrix3d eigen_vectors = ei_symm.eigenvectors ();
 
 #ifdef EIGEN3

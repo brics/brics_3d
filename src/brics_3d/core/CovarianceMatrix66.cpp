@@ -327,8 +327,8 @@ extern CovarianceMatrix66::CovarianceMatrix66Ptr compoundCovariance(IHomogeneous
 	resultCovariance = jacobian * tmpAggregatedCovariances * jacobian.transpose();
 
 	matrixData = result->setRawData();
-	double *tmpMatrix;
-	tmpMatrix = resultCovariance.data(); //get data in column-row order
+//	double *tmpMatrix;
+//	tmpMatrix = resultCovariance.data(); //get data in column-row order
 	for (int i = 0; i < result->getDimension(); ++i) {
 		matrixData[i] = resultCovariance(i);
 	}
@@ -455,8 +455,8 @@ extern CovarianceMatrix66::CovarianceMatrix66Ptr invertCovariance(IHomogeneousMa
 	resultCovariance = jacobian * covariance_ij * jacobian.transpose();
 
 	matrixData = result->setRawData();
-	double *tmpMatrix;
-	tmpMatrix = resultCovariance.data(); //get data in column-row order
+//	double *tmpMatrix;
+//	tmpMatrix = resultCovariance.data(); //get data in column-row order
 	for (int i = 0; i < result->getDimension(); ++i) {
 		matrixData[i] = resultCovariance(i);
 	}
