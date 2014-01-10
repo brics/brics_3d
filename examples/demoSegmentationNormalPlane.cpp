@@ -21,7 +21,7 @@
 #include "brics_3d/core/PointCloud3D.h"
 #include "brics_3d/core/Point3D.h"
 #include <iostream>
-#include "brics_3d/algorithm/segmentation/features/NormalEstimation.h"
+#include "brics_3d/algorithm/featureExtraction/NormalEstimation.h"
 #include "brics_3d/algorithm/nearestNeighbor/NearestNeighborANN.h"
 
 int main(){
@@ -41,6 +41,7 @@ int main(){
 	//Please modify the path if there is a file read error.
 	//FIXME do not use absolute path
 	cloud.readFromTxtFile("./src/brics_3d/algorithm/segmentation/evaluation/data/demoCloud.txt");
+//	cloud.readFromTxtFile("./data/demoCloud.txt");
 
 	if (cloud.getSize()>0){
 	cout<< "INFO: Current PointCloud Size: " <<cloud.getSize()<<endl;
@@ -83,7 +84,7 @@ int main(){
 
 	if (inliers.size() == 0)
 	{
-		cout<<"Could not estimate a cylindrical model for the given dataset."<<endl;
+		cout<<"Could not estimate a model for the given dataset."<<endl;
 		return (-1);
 	}else {
 		cout<<"Found Inliers: " << inliers.size()<<endl;

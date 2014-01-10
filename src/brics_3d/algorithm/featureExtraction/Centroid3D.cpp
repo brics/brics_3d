@@ -30,7 +30,6 @@ Centroid3D::~Centroid3D() {
 
 }
 
-
 Eigen::Vector3d Centroid3D::computeCentroid(brics_3d::PointCloud3D *inCloud){
 	Eigen::Vector3d centroid;
 	double tempX;
@@ -108,5 +107,32 @@ Eigen::Vector3d Centroid3D::computeCentroid(IPoint3DIterator::IPoint3DIteratorPt
 
 	return centroid;
 }
+
+Eigen::Vector4d Centroid3D::computeCentroid (PointCloud3D *inCloud, const std::vector<int> &indices) {
+	Eigen::Vector4d centroid;
+	centroid.setZero ();
+
+	if (indices.size () == 0) {
+		return Eigen::Vector4d(0,0,0,0);
+	}
+
+	// For each point in the cloud
+	int cp = 0;
+	for (size_t i = 0; i < indices.size (); ++i) {
+		// Check if the point is invalid
+		if ( isnan( (*inCloud->getPointCloud())[indices[i]].getX() ) || isnan( (*inCloud->getPointCloud())[indices[i]].getY() ) || isnan( (*inCloud->getPointCloud())[indices[i]].getZ() ))
+			continue;
+
+		centroid[0] += (*inCloud->getPointCloud())[indices[i]].getX();
+		centroid[1] += (*inCloud->getPointCloud())[indices[i]].getY();
+		centroid[2] += (*inCloud->getPointCloud())[indices[i]].getZ();
+		cp++;
+	}
+
+	centroid /= cp;
+	return centroid;
+}
+
+
 
 }

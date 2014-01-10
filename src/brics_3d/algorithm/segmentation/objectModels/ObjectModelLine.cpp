@@ -114,10 +114,11 @@ void ObjectModelLine::optimizeModelCoefficients (const std::vector<int> &inliers
 	optimized_coefficients.resize (6);
 
 	// Compute the 3x3 covariance matrix
-	Eigen::Vector4d centroid;
-	compute3DCentroid (this->inputPointCloud, inliers, centroid);
+	Eigen::Vector4d centroid = Centroid3D::computeCentroid(this->inputPointCloud, inliers);
+//	compute3DCentroid (this->inputPointCloud, inliers, centroid);
 	Eigen::Matrix3d covariance_matrix;
-	computeCovarianceMatrix (inputPointCloud, inliers, centroid, covariance_matrix);
+//	computeCovarianceMatrix (inputPointCloud, inliers, centroid, covariance_matrix);
+	 covariance_matrix = Covariance3D::computeCovarianceMatrix (inputPointCloud, inliers, centroid);
 	optimized_coefficients[0] = centroid[0];
 	optimized_coefficients[1] = centroid[1];
 	optimized_coefficients[2] = centroid[2];

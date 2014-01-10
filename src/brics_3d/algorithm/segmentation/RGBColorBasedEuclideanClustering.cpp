@@ -142,29 +142,20 @@ int RGBColorBasedEuclideanClustering::getMaxClusterSize() const
 					uint32_t current_rgb = *reinterpret_cast<int*> (&rgbVal24Bit);
 
 					if(isSimilar(seed_rgb, current_rgb)){	//colors are similar
-						//        	      ROS_INFO("Error = %f, RGB_1: [%d, %d, %d], RGB_2: [%d, %d, %d]",
-						//     error, rgb_first[0], rgb_first[1], rgb_first[2], rgb_second[0], rgb_second[1], rgb_second[2]);
 						seed_queue.push_back (nn_indices[j]);
 						processed[nn_indices[j]] = true;
 					}
 				}
 			}
 
-			//        ROS_INFO("Similar color found for : %d neighbors, out of %d popints", count, nn_indices.size());
 			sq_idx++;
 		}
 
 		// If this queue is satisfactory, add to the clusters
 		if (seed_queue.size () >= minClusterSize && seed_queue.size () <= maxClusterSize)
 		{
-//			std::cout << "[CHEAT][EuclideanClustering3D] found one cluster, size="<< seed_queue.size() << std::endl;
-
-//	        std::cout << "ChekPOINT!! : " << inCloud->getSize() << std::endl;
 
 			seed_queue.erase(std::unique(seed_queue.begin(), seed_queue.end()),seed_queue.end());
-
-//	        std::cout << "ChekPOINT!! : " << inCloud->getSize() << std::endl;
-
 			brics_3d::PointCloud3D *tempPointCloud =  new brics_3d::PointCloud3D();
 
 			for (size_t j = 0; j < seed_queue.size (); ++j) {

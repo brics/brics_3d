@@ -308,7 +308,7 @@ public:
 		}
 		case SAC_RANSAC:
 		{
-			cout<< "[SAC Segmentation] Using a method of type: SAC_RANSAC_ROS with a model threshold of "<<threshold<<endl;
+			cout<< "[SAC Segmentation] Using a method of type: SAC_RANSAC with a model threshold of "<<threshold<<endl;
 			if (sacMethod == 0){
 				sacMethod = new SACMethodRANSAC();
 			}
@@ -318,7 +318,7 @@ public:
 			break;
 		}
 		case SAC_LMEDS: {
-			cout<<"[SAC Segmentation] Using a method of type: SAC_LMeDS_ROS with a model threshold of "<<threshold<<endl;
+			cout<<"[SAC Segmentation] Using a method of type: SAC_LMeDS with a model threshold of "<<threshold<<endl;
 			if (sacMethod == 0){
 				sacMethod = new SACMethodLMeDS();
 			}
@@ -328,7 +328,7 @@ public:
 			break;
 		}
 		case SAC_MSAC: {
-			cout<<"[SAC Segmentation] Using a method of type: SAC_MSAC_ROS with a model threshold of "<<threshold<<endl;
+			cout<<"[SAC Segmentation] Using a method of type: SAC_MSAC with a model threshold of "<<threshold<<endl;
 			if (sacMethod == 0){
 				sacMethod = new SACMethodMSAC();
 			}
@@ -338,7 +338,7 @@ public:
 			break;
 		}
 		case SAC_MLESAC: {
-			cout<<"[SAC Segmentation] Using a method of type: SAC_MLESAC_ROS with a model threshold of "<<threshold<<endl;
+			cout<<"[SAC Segmentation] Using a method of type: SAC_MLESAC with a model threshold of "<<threshold<<endl;
 			if (sacMethod == 0){
 				sacMethod = new SACMethodMLESAC();
 			}

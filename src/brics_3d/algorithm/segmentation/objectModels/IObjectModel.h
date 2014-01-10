@@ -20,18 +20,18 @@
 #ifndef BRICS_3D_IOBJECTMODEL_H_
 #define BRICS_3D_IOBJECTMODEL_H_
 
-
 #include <Eigen/Geometry>
 #include <set>
-#include "brics_3d/algorithm/segmentation/features/ROSnormal3D.h"
+#include <float.h>
+
 #include "brics_3d/core/Point3D.h"
 #include "brics_3d/core/PointCloud3D.h"
-#include <float.h>
+#include "brics_3d/algorithm/featureExtraction/NormalEstimation.h"
 
 
 using namespace std;
 
-namespace brics_3d{
+namespace brics_3d {
 
 /**
  * @brief Base class for representing 3D shapes.
