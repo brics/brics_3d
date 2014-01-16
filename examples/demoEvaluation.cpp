@@ -43,7 +43,8 @@ using namespace std;
 
 int main(){
 
-//ToDo Complete the description
+	//NOTE: before using this demo please execute the get_segmentation_data.sh script
+	//in the data folder to retrieve the segmentation data sets!
 
 	//Create the necessary objects
 	brics_3d::Evaluator evaluator;
@@ -52,9 +53,8 @@ int main(){
 	brics_3d::FileReader fileReader;
 
 	//Evaluator Initialization
-	//ToDo set the ground truth file path properly
 	stringstream baseName;
-	string folderPath = "../src/brics_3d/algorithm/segmentation/evaluation/groundTruthData/";
+	string folderPath = "../data/segmentation_data/groundTruthData/";
 	string scenarioName = "bureau3/";
 	string prefix ="bureau3_gt_";
 
@@ -66,7 +66,7 @@ int main(){
 	evaluator.setGtBaseName(baseName.str());
 
 	//set the machne segmented file names.
-	folderPath = "../src/brics_3d/algorithm/segmentation/evaluation/data/MSAC_results/";
+	folderPath = "../data/segmentation_data/data/MSAC_results/";
 	prefix="bureau3_plane_msac_";
 	baseName.str("");
 	baseName.clear();
@@ -89,6 +89,7 @@ int main(){
 	//Saving the evaluation results into files.
 
 		//HTML version to view the evaluation result
+		fileWriter.setOutputDirectory("../data/segementation_data/");
 		fileWriter.WriteToHTML(metricCalculator,"MSAC_result");
 
 		//CSV version to be used for comparison of different algorithms

@@ -19,24 +19,39 @@
 
 #include <brics_3d/core/PointCloud3D.h>
 #include <brics_3d/core/Point3D.h>
+#include <brics_3d/core/Logger.h>
 #include <brics_3d/algorithm/segmentation/RegionBasedSACSegmentation.h>
 #include <brics_3d/algorithm/filtering/MaskROIExtractor.h>
 #include <brics_3d/util/OSGPointCloudVisualizer.h>
 
 #include <iostream>
 
+using brics_3d::Logger;
+
 using namespace std;
-int main(){
+int main(int argc, char **argv) {
+
+	//Configure the logger
+	brics_3d::Logger::setMinLoglevel(brics_3d::Logger::INFO);
+
+	//Cofigure input
+	string filename;
+	if (argc == 2) {
+		filename = argv[1];
+	} else {
+		filename = "../data/segmentation_data/groundTruthData/bureau3/bureau3.txt";
+		LOG(INFO) << "No parameter given. Using default data set file: " << filename;
+	}
+
 	//Create a pointcloud object
 	brics_3d::PointCloud3D cloud;
 	brics_3d::PointCloud3D planeCloud;
 
 	//read the points into the pointcloud
 	//Please modify the path if there is a file read error.
-//	cloud.readFromTxtFile("./src/brics_3d/algorithm/segmentation/evaluation/data/demoCloud.txt");
-	cloud.readFromTxtFile("./src/brics_3d/algorithm/segmentation/evaluation/groundTruthData/bureau3/bureau3.txt");
+	cloud.readFromTxtFile(filename);
 
-	cout<< "INFO: Current PointCloud Size: " <<cloud.getSize()<<endl;
+	LOG(INFO) << "INFO: Current PointCloud Size: " <<cloud.getSize();
 
 	//Create the vector to hold the model coefficients
 	Eigen::VectorXd modelCoefficients;
@@ -62,14 +77,14 @@ int main(){
 
 	if (inliers.size() == 0)
 	{
-		cout<<"Could not estimate a planar model for the given dataset."<<endl;
+		LOG(INFO) <<"Could not estimate a planar model for the given dataset.";
 		return (-1);
 	}else {
-		cout<<"Found Inliers: " << inliers.size()<<endl;
+		LOG(INFO) <<"Found Inliers: " << inliers.size();
 	}
 
-	cout<<"The model-coefficients are: (" << modelCoefficients[0]<<", " << modelCoefficients[1]<<
-			", " << modelCoefficients[2]<<", " << modelCoefficients[3]<<")" <<endl;
+	LOG(INFO) <<"The model-coefficients are: (" << modelCoefficients[0]<<", " << modelCoefficients[1]<<
+			", " << modelCoefficients[2]<<", " << modelCoefficients[3]<<")";
 
 	brics_3d::MaskROIExtractor extractor;
 	extractor.extractIndexedPointCloud(&cloud, inliers, &planeCloud);

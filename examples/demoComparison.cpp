@@ -43,6 +43,8 @@ using namespace std;
 
 int main(){
 
+	//NOTE: before using this demo please execute the get_segmentation_data.sh script
+	//in the data folder to retrieve the segmentation data sets!
 
 	//Create a string vector containing the names of the methods. These names will be used
 	//to fetch the metric files so they should be consistent with the filenames. For more help
@@ -59,7 +61,7 @@ int main(){
 	//If the naming conventions are different for storing the evaluation metrics then it
 	//should be modified
 	comparatorObject.setMethods(methodNames);
-	comparatorObject.setPath("../src/brics_3d/algorithm/segmentation/evaluation/data/");
+	comparatorObject.setPath("../data/segmentation_data/data/");
 	comparatorObject.setGtMetricsBaseName("_result_GtMetrics.csv");
 	comparatorObject.setMsMetricsBaseName("_result_MsMetrics.csv");
 	comparatorObject.setOverlapBaseName("_result_overlapMatrix.csv");

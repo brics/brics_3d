@@ -28,6 +28,7 @@
 - @ref Algorithms for perception
  - @ref depth_perception
  - @ref filtering
+ - @ref featureExtraction
  - @ref registration
  - @ref segmentation 
  - @ref nearestNeighbor

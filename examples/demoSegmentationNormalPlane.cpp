@@ -20,13 +20,28 @@
 #include "brics_3d/algorithm/segmentation/RegionBasedSACSegmentationUsingNormals.h"
 #include "brics_3d/core/PointCloud3D.h"
 #include "brics_3d/core/Point3D.h"
+#include "brics_3d/core/Logger.h"
 #include <iostream>
 #include "brics_3d/algorithm/featureExtraction/NormalEstimation.h"
 #include "brics_3d/algorithm/nearestNeighbor/NearestNeighborANN.h"
 
-int main(){
+using brics_3d::Logger;
+
+int main(int argc, char **argv) {
 
 //This is not a working copy. Will be updated once normal extraction is done.
+
+	//Configure the logger
+	brics_3d::Logger::setMinLoglevel(brics_3d::Logger::INFO);
+
+	//Cofigure input
+	string filename;
+	if (argc == 2) {
+		filename = argv[1];
+	} else {
+		filename = "../data/segmentation_data/data/demoCloud.txt";
+		LOG(INFO) << "No parameter given. Using default data set file: " << filename;
+	}
 
 	//Create a pointcloud object
 	brics_3d::PointCloud3D cloud;
@@ -39,14 +54,12 @@ int main(){
 
 	//read the points into the pointcloud
 	//Please modify the path if there is a file read error.
-	//FIXME do not use absolute path
-	cloud.readFromTxtFile("./src/brics_3d/algorithm/segmentation/evaluation/data/demoCloud.txt");
-//	cloud.readFromTxtFile("./data/demoCloud.txt");
+	cloud.readFromTxtFile(filename);
 
 	if (cloud.getSize()>0){
-	cout<< "INFO: Current PointCloud Size: " <<cloud.getSize()<<endl;
+		LOG(INFO)<< "Current PointCloud Size: " <<cloud.getSize();
 	} else {
-		cout<< "INFO: Current PointCloud Size: " <<cloud.getSize()<<endl;
+		LOG(INFO) << "Current PointCloud Size: " <<cloud.getSize();
 		return 0;
 	}
 
@@ -84,14 +97,14 @@ int main(){
 
 	if (inliers.size() == 0)
 	{
-		cout<<"Could not estimate a model for the given dataset."<<endl;
+		LOG(INFO) << "Could not estimate a model for the given dataset.";
 		return (-1);
 	}else {
 		cout<<"Found Inliers: " << inliers.size()<<endl;
 	}
 
-	cout<<"The model-coefficients are: (" << modelCoefficients[0]<<", " << modelCoefficients[1]<<
-			", " << modelCoefficients[2]<<", " << modelCoefficients[3]<<")" <<endl;
+	LOG(INFO) <<"The model-coefficients are: (" << modelCoefficients[0]<<", " << modelCoefficients[1]<<
+			", " << modelCoefficients[2]<<", " << modelCoefficients[3]<<")";
 
 	return(1);
 }

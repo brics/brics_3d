@@ -21,7 +21,9 @@
 #include "MetricCalculator.h"
 namespace brics_3d{
 
-FileWriter::FileWriter() {}
+FileWriter::FileWriter() {
+	outputDirectory = "../data/segmentation_data/"; // just a default
+}
 
 FileWriter::~FileWriter() {}
 
@@ -36,7 +38,7 @@ void FileWriter::WriteToHTML(MetricCalculator metricCalculatorObject,string pref
 
 	filename.str("");
 	filename.clear();
-	filename << "../src/brics_3d/algorithm/segmentation/evaluation/data/" << prefix <<".html";
+	filename << outputDirectory << prefix <<".html";
 	ofstream result_stream;
 	result_stream.precision(5);
 	result_stream.open(filename.str().c_str(), ios::out);
@@ -160,7 +162,7 @@ void FileWriter::WriteToCsv(MetricCalculator metricCalculatorObject,string prefi
 	//writing overlap matrix
 	filename.str("");
 	filename.clear();
-	filename<< "../src/brics_3d/algorithm/segmentation/evaluation/data/"<<prefix<<"_overlapMatrix.csv";
+	filename<< outputDirectory <<prefix<<"_overlapMatrix.csv";
 	result_stream.precision(5);
 	result_stream.open(filename.str().c_str(), ios::out);
 	cout<< filename.str() <<"\n Wrting Success(0/1): "<<result_stream.is_open()<<endl;
@@ -182,7 +184,7 @@ void FileWriter::WriteToCsv(MetricCalculator metricCalculatorObject,string prefi
 	//Writing GT based metrics
 	filename.str("");
 	filename.clear();
-	filename<< "../src/brics_3d/algorithm/segmentation/evaluation/data/"<<prefix<<"_GtMetrics.csv";
+	filename<< outputDirectory <<prefix<<"_GtMetrics.csv";
 	result_stream.precision(5);
 	result_stream.open(filename.str().c_str(), ios::out);
 	cout<< filename.str() <<"\n Wrting Success(0/1): "<<result_stream.is_open()<<endl;
@@ -205,7 +207,7 @@ void FileWriter::WriteToCsv(MetricCalculator metricCalculatorObject,string prefi
 	//Writing GT based metrics
 	filename.str("");
 	filename.clear();
-	filename<< "../src/brics_3d/algorithm/segmentation/evaluation/data/"<<prefix<<"_MsMetrics.csv";
+	filename<< outputDirectory <<prefix<<"_MsMetrics.csv";
 	result_stream.precision(5);
 	result_stream.open(filename.str().c_str(), ios::out);
 	cout<< filename.str() <<"\n Wrting Success(0/1): "<<result_stream.is_open()<<endl;

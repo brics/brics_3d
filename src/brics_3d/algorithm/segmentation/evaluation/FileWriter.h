@@ -39,6 +39,19 @@ public:
 	 *@param  "prefix" : the prefix to be used for the filename
 	 */
 	void WriteToCsv(MetricCalculator m,string prefix);
+
+	const std::string& getOutputDirectory() const {
+		return outputDirectory;
+	}
+
+	void setOutputDirectory(const std::string& outputDirectory) {
+		this->outputDirectory = outputDirectory;
+	}
+
+private:
+
+	std::string outputDirectory;
+
 };
 }
 #endif /* BRICS_3D_FILEWRITER_H_ */
