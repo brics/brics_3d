@@ -52,49 +52,6 @@ Folder structure
 "build" for out-of-source build with cmake
 
 
-How to build your own application
----------------------------------
-
-1.) Create new .cpp with main method in examples folder
-2.) Edit CMakeLists.txt in examples folder e.i. add (at least) the following lines
-   (of course without < and > ):
-ADD_EXECUTABLE(<your_application> <your_application.cpp>) # compile application
-TARGET_LINK_LIBRARIES(<your_application> brics3d_core brics3d_algorithm brics3d_util) 
-
-
-Integration into Eclipse (with CDT)
------------------------------------
-
-1.) Build in Eclipse GUI (follow instructions in "Compilation" section first)
-Open the project's properties -> "C/C++ Build" and _disable_:
-* Use default builder command
-* Generate makefiles automatically  
-
-Fill "Build command" field with:
-make -C ${workspace_loc:}/BRICS_3D/build
-
-
-2.) Run in Eclipse GUI
-Open the "Run Configurations" window and manually add in the "C/C++ Application"
-field: bin/<your_application>
-
-Optionally the check box "Connect process input _output to a terminal." can be 
-enabled (recommended).
-
-
-3.) Debug in Eclipse GUI
-Follow the previous step and make sure the following line exists in the main 
-CMakeLists.txt (located in root folder): SET(CMAKE_BUILD_TYPE DEBUG)
-or use make VERBOSE=1 -C ${workspace_loc:}/BRICS_3D/build as build command.
-
-
-4.) Additional Plug-ins
-The following Eclipse plug-ins might be of interest for you:
-* ECLOX - for doxygen documentation generation (http://download.gna.org/eclox/update/)
-* cmake editor - to have a nicer visual appearance of CMake files (but still requires 
-  manual editing)(http://cmakeed.sourceforge.net/updates)
-
-
 Documentation
 -------------
 
@@ -116,6 +73,6 @@ called LGPL-2.1 and BSDlicense.
 Impressum
 ---------
 
-Written by Sebastian Blumenthal (blumenthal@gps-stuttgart.de)
-Last update: 04.11.2011
+Written by Sebastian Blumenthal (blumenthal@locomotec.com)
+Last update: 17.01.2014
 
