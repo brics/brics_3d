@@ -13,6 +13,14 @@ world modeling approach to maintain the processed 3D data over a longer period o
 This library is biased towards 3D perception and modeling for mobile manipulation applications. 
 
 
+Project website
+---------------
+
+For the latest documentation pages please go to:
+
+http://www.best-of-robotics.org/brics_3d/
+
+
 Installation
 ------------
 
