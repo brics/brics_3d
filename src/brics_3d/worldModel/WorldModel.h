@@ -46,11 +46,11 @@ class WorldModel : public IWorldModelQuery, public IWorldModelUpdate, public IWo
 
     void getSceneObjects(vector<rsg::Attribute> attributes, vector<SceneObject>& results);
 
-    void getCurrentTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform);
+    void getCurrentTransform(rsg::Id id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform);
 
-    void insertTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform);
+    void insertTransform(rsg::Id id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform);
 
-    void addSceneObject(SceneObject newObject, unsigned int& assignedId);
+    void addSceneObject(SceneObject newObject, rsg::Id& assignedId);
 
     void initPerception();
 
@@ -62,12 +62,12 @@ class WorldModel : public IWorldModelQuery, public IWorldModelUpdate, public IWo
 
     /* Function block interface */
     bool loadFunctionBlock(std::string name);
-    bool executeFunctionBlock(std::string name, std::vector<unsigned int>& input, std::vector<unsigned int>& output);
+    bool executeFunctionBlock(std::string name, std::vector<rsg::Id>& input, std::vector<rsg::Id>& output);
     bool getloadedFunctionBlocks(std::vector<std::string>& functionBlocks);
 
 
     /* Helper functions */
-    unsigned int getRootNodeId();
+    rsg::Id getRootNodeId();
 
     brics_3d::rsg::TimeStamp now();
 

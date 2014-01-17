@@ -22,6 +22,7 @@
 
 #include "brics_3d/core/IHomogeneousMatrix44.h"
 #include <vector>
+#include "brics_3d/worldModel/sceneGraph/Id.h"
 using std::vector;
 
 namespace brics_3d { namespace rsg { class Attribute; }  } 
@@ -38,7 +39,7 @@ class IWorldModelQuery {
   public:
     virtual void getSceneObjects(vector<rsg::Attribute> attributes, vector<SceneObject>& results) = 0;
 
-    virtual void getCurrentTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform)= 0;
+    virtual void getCurrentTransform(rsg::Id id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform)= 0;
 
 };
 

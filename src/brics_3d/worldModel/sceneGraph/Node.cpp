@@ -40,7 +40,7 @@ vector<Attribute> Node::getAttributes()
     return attributes;
 }
 
-unsigned int Node::getId() const
+Id Node::getId() const
 {
     return id;
 }
@@ -50,7 +50,7 @@ void Node::setAttributes(vector<Attribute> attributes)
     this->attributes = attributes;
 }
 
-void Node::setId(unsigned int id)
+void Node::setId(Id id)
 {
     this->id = id;
 }

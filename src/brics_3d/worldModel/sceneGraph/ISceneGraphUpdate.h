@@ -23,9 +23,11 @@
 #include "brics_3d/core/IHomogeneousMatrix44.h"
 #include "brics_3d/core/ITransformUncertainty.h"
 #include <vector>
-using std::vector;
+#include "Id.h"
 #include "TimeStamp.h"
 #include "Shape.h"
+
+using std::vector;
 
 namespace brics_3d { namespace rsg { class Attribute; }  } 
 
@@ -53,7 +55,7 @@ class ISceneGraphUpdate {
 	 *                     in particular useful if distibuted scene graphs propagate updates and ensures IDs are not re-created.
 	 * @return True if a new Node was sucessfully added to the scene graph.
 	 */
-	virtual bool addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, bool forcedId = false) = 0;
+	virtual bool addNode(Id parentId, Id& assignedId, vector<Attribute> attributes, bool forcedId = false) = 0;
 
     /**
      * @brief Add a Group node to the robot scenegraph.
@@ -70,7 +72,7 @@ class ISceneGraphUpdate {
 	 *                     in particular useful if distibuted scene graphs propagate updates and ensures IDs are not re-created.
 	 * @return True if a new Group was sucessfully added to the scene graph.
 	 */
-	virtual bool addGroup(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, bool forcedId = false) = 0;
+	virtual bool addGroup(Id parentId, Id& assignedId, vector<Attribute> attributes, bool forcedId = false) = 0;
 
     /**
      * @brief Add a new Transform node the the robot scene graph.
@@ -89,9 +91,9 @@ class ISceneGraphUpdate {
 	 *                     in particular useful if distibuted scene graphs propagate updates and ensures IDs are not re-created.
 	 * @return True if a new Transform was sucessfully added to the scene graph.
 	 */
-	virtual bool addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp, bool forcedId = false) = 0;
+	virtual bool addTransformNode(Id parentId, Id& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp, bool forcedId = false) = 0;
 
-	virtual bool addUncertainTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp, bool forcedId = false) = 0;
+	virtual bool addUncertainTransformNode(Id parentId, Id& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp, bool forcedId = false) = 0;
 
     /**
      * @brief Add a GeometricNode that contains 3D data to the robot scene graph.
@@ -108,7 +110,7 @@ class ISceneGraphUpdate {
 	 *                     in particular useful if distibuted scene graphs propagate updates and ensures IDs are not re-created.
 	 * @return True if a new GeometricNode was sucessfully added to the scen egraph.
 	 */
-	virtual bool addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp, bool forcedId = false) = 0;
+	virtual bool addGeometricNode(Id parentId, Id& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp, bool forcedId = false) = 0;
 
     /**
      * @brief Override the attributes of a node.
@@ -117,7 +119,7 @@ class ISceneGraphUpdate {
 	 * @param newAttributes The new attributes. THe old one will be overidden by tis
 	 * @return True on success.
 	 */
-	virtual bool setNodeAttributes(unsigned int id, vector<Attribute> newAttributes) = 0;
+	virtual bool setNodeAttributes(Id id, vector<Attribute> newAttributes) = 0;
 
     /**
      * @brief Update the transformation of an existing Transform node.
@@ -127,9 +129,9 @@ class ISceneGraphUpdate {
 	 * @param timeStamp Time stamp associated with the transform.
 	 * @return True on success.
 	 */
-	virtual bool setTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp) = 0;
+	virtual bool setTransform(Id id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp) = 0;
 
-	virtual bool setUncertainTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp) = 0;
+	virtual bool setUncertainTransform(Id id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp) = 0;
 
 
     /**
@@ -138,7 +140,7 @@ class ISceneGraphUpdate {
 	 * @param id ID the defines the node to be deleted.
 	 * @return True on success.
 	 */
-	virtual bool deleteNode(unsigned int id) = 0;
+	virtual bool deleteNode(Id id) = 0;
 
     /**
      * @brief Add a new parent-child relation between two nodes.
@@ -147,7 +149,7 @@ class ISceneGraphUpdate {
 	 * @param parentId ID of the parent node. Must not be a <b>leave</b> like a Node or a GeometricNode
 	 * @return True on success.
 	 */
-	virtual bool addParent(unsigned int id, unsigned int parentId) = 0;
+	virtual bool addParent(Id id, Id parentId) = 0;
 
     /**
      * @brief Remove an existing parent-child relation between two nodes.
@@ -156,7 +158,7 @@ class ISceneGraphUpdate {
 	 * @param parentId ID of the parent node.
 	 * @return True on success.
 	 */
-    virtual bool removeParent(unsigned int id, unsigned int parentId) = 0;
+    virtual bool removeParent(Id id, Id parentId) = 0;
 
 };
 

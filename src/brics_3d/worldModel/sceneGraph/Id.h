@@ -1,6 +1,6 @@
 /******************************************************************************
 * BRICS_3D - 3D Perception and Modeling Library
-* Copyright (c) 2011, GPS GmbH
+* Copyright (c) 2014, KU Leuven
 *
 * Author: Sebastian Blumenthal
 *
@@ -17,30 +17,17 @@
 *
 ******************************************************************************/
 
-#ifndef BRICS_3D_IWORLDMODELUPDATE_H
-#define BRICS_3D_IWORLDMODELUPDATE_H
-
-#include "SceneObject.h"
-
-namespace brics_3d { namespace rsg { class GeometricNode; }  } 
+#ifndef RSG_ID_H_
+#define RSG_ID_H_
 
 namespace brics_3d {
+namespace rsg {
 
-/**
- * @brief Interface to get update elements in the 3D model.
- * @ingroup sceneGraph
- */
-class IWorldModelUpdate {
-  public:
-    /**
-     * @brief Adds a new SceneObject to the world model representation. Internally it will be added to the root node.
-     */
-    virtual void addSceneObject(SceneObject newObject, rsg::Id& assignedId) = 0;
+/// The Id uniquely identifies a node in the scene graph.
+typedef unsigned int Id;
 
-};
 
-} // namespace brics_3d
-#endif
+} /* namespace rsg */
+} /* namespace brics_3d */
 
-/* EOF */
-
+#endif /* RSG_ID_H_ */

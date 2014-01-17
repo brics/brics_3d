@@ -40,12 +40,12 @@ public:
 
 	virtual void configure(brics_3d::ParameterSet parameters) = 0;
 
-	virtual void setData(std::vector<unsigned int>& inputDataIds) {
+	virtual void setData(std::vector<Id>& inputDataIds) {
 		this->inputDataIds = inputDataIds;
 	}
 	virtual void execute() = 0;
 
-	virtual void getData(std::vector<unsigned int>& newDataIds) {
+	virtual void getData(std::vector<Id>& newDataIds) {
 		newDataIds = this->outputDataIds;
 	}
 
@@ -54,8 +54,8 @@ protected:
 	/// Handle to the world model that stores all 3D data.
 	brics_3d::WorldModel* wm;
 
-	std::vector<unsigned int> inputDataIds;
-	std::vector<unsigned int> outputDataIds;
+	std::vector<Id> inputDataIds;
+	std::vector<Id> outputDataIds;
 
 private:
 	IFunctionBlock(){};

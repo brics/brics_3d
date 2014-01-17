@@ -23,9 +23,11 @@
 #include "brics_3d/core/IHomogeneousMatrix44.h"
 #include "brics_3d/core/ITransformUncertainty.h"
 #include <vector>
-using std::vector;
+#include "Id.h"
 #include "TimeStamp.h"
 #include "Shape.h"
+
+using std::vector;
 
 namespace brics_3d { namespace rsg { class Attribute; }  } 
 
@@ -42,38 +44,38 @@ class ISceneGraphQuery {
     /**
      * @brief Find all nodes that have at least the specified attributes.
      */
-	virtual bool getNodes(vector<Attribute> attributes, vector<unsigned int>& ids) = 0;
+	virtual bool getNodes(vector<Attribute> attributes, vector<Id>& ids) = 0;
 
     /**
      * @brief Get the attributes of a node.
      */
-	virtual bool getNodeAttributes(unsigned int id, vector<Attribute>& attributes) = 0;
+	virtual bool getNodeAttributes(Id id, vector<Attribute>& attributes) = 0;
 
     /**
      * @brief Get all the parent IDs of a certain node.
      */
-    virtual bool getNodeParents(unsigned int id, vector<unsigned int>& parentIds) = 0;
+    virtual bool getNodeParents(Id id, vector<Id>& parentIds) = 0;
 
     /**
      * @brief Gett all cild IDs for a certain group node.
      */
-    virtual bool getGroupChildren(unsigned int id, vector<unsigned int>& childIds) = 0;
+    virtual bool getGroupChildren(Id id, vector<Id>& childIds) = 0;
 
     /**
      * @brief Get the transform of a TransformNode at a certain time.
      */
-    virtual bool getTransform(unsigned int id, TimeStamp timeStamp, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform) = 0;
+    virtual bool getTransform(Id id, TimeStamp timeStamp, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform) = 0;
 
     /**
      * @brief Get the transform and uncertainty data of an UncertainTransformNode at a certain time.
      */
-    virtual bool getUncertainTransform(unsigned int id, TimeStamp timeStamp, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform, ITransformUncertainty::ITransformUncertaintyPtr &uncertainty) = 0;
+    virtual bool getUncertainTransform(Id id, TimeStamp timeStamp, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform, ITransformUncertainty::ITransformUncertaintyPtr &uncertainty) = 0;
 
 
     /**
      * @brief Get the data of a GeometryNode.
      */
-    virtual bool getGeometry(unsigned int id, Shape::ShapePtr& shape, TimeStamp& timeStamp) = 0;
+    virtual bool getGeometry(Id id, Shape::ShapePtr& shape, TimeStamp& timeStamp) = 0;
 
 };
 

@@ -23,6 +23,7 @@
 #include <vector>
 #include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
+#include "Id.h"
 #include "Attribute.h"
 #include "INodeVisitor.h"
 
@@ -61,10 +62,10 @@ public:
 	virtual ~Node();
 
 	vector<Attribute> getAttributes();
-	unsigned int getId() const;
+	Id getId() const;
 
 	void setAttributes(vector<Attribute> attributes);
-	void setId(unsigned int id);
+	void setId(Id id);
 
 
 	vector<Node*> getParents(); //TODO dangerous as it reveals the pointers?!?
@@ -83,7 +84,7 @@ private:
 	friend class brics_3d::rsg::Group; //only this one will be allowed to add parent-child relations
 
 	/// Unique ID that will help to identify a certain node.
-	unsigned int id;
+	Id id;
 
 	/// List of attributes for each node. Can be used to attach (semantic) tags.
 	vector<Attribute> attributes;

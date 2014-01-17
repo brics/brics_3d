@@ -22,6 +22,7 @@
 
 #include "brics_3d/core/IHomogeneousMatrix44.h"
 #include "sceneGraph/Shape.h"
+#include "sceneGraph/Id.h"
 #include <vector>
 using std::vector;
 
@@ -53,9 +54,9 @@ class SceneObject {
     friend  ostream & operator<<(ostream & os, const SceneObject & x);
 
 
-    unsigned int id;
+    rsg::Id id;
 
-    unsigned int parentId;
+    rsg::Id parentId;
 
     IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform;
 

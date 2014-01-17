@@ -42,15 +42,15 @@ WorldModel::~WorldModel() {
 
 void WorldModel::getSceneObjects(vector<rsg::Attribute> attributes, vector<SceneObject>& results) {
 	TimeStamp currentTime(timer.getCurrentTime(), Units::MilliSecond);
-	vector<unsigned int>resultIds;
+	vector<rsg::Id>resultIds;
 	results.clear();
 
 	scene.getNodes(attributes, resultIds);
-	for (unsigned int i = 0; i < static_cast<unsigned int>(resultIds.size()); ++i) {
+	for (rsg::Id i = 0; i < static_cast<unsigned int>(resultIds.size()); ++i) {
 		SceneObject tmpSceneObject;
 		tmpSceneObject.id = resultIds[i];
 
-		vector<unsigned int> parentIds;
+		vector<rsg::Id> parentIds;
 		scene.getNodeParents(resultIds[i], parentIds);
 		if (static_cast<unsigned int>(parentIds.size()) < 1) {
 			tmpSceneObject.parentId = 0; // not initialized
@@ -66,9 +66,9 @@ void WorldModel::getSceneObjects(vector<rsg::Attribute> attributes, vector<Scene
 		}
 		tmpSceneObject.transform = tmpTransform;
 
-		vector<unsigned int> childIds;
+		vector<rsg::Id> childIds;
 		scene.getGroupChildren(resultIds[i], childIds);
-		for (unsigned int j = 0; j < static_cast<unsigned int>(childIds.size()); ++j) {
+		for (rsg::Id j = 0; j < static_cast<unsigned int>(childIds.size()); ++j) {
 			Shape::ShapePtr tmpShape;
 			if (scene.getGeometry(childIds[j], tmpShape, currentTime) == true) {
 				tmpSceneObject.shape = tmpShape;
@@ -85,18 +85,18 @@ void WorldModel::getSceneObjects(vector<rsg::Attribute> attributes, vector<Scene
 	}
 }
 
-void WorldModel::getCurrentTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform) {
+void WorldModel::getCurrentTransform(rsg::Id id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform) {
 
 }
 
-void WorldModel::insertTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform) {
+void WorldModel::insertTransform(rsg::Id id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform) {
 	TimeStamp currentTime(timer.getCurrentTime(), Units::MilliSecond);
 	scene.setTransform(id, transform, currentTime);
 }
 
-void WorldModel::addSceneObject(SceneObject newObject, unsigned int& assignedId) {
+void WorldModel::addSceneObject(SceneObject newObject, rsg::Id& assignedId) {
 	TimeStamp currentTime(timer.getCurrentTime(), Units::MilliSecond);
-	unsigned int dummyResultID;
+	rsg::Id dummyResultID;
 	vector<Attribute> emptyAttributes;
 	emptyAttributes.clear();
 
@@ -168,7 +168,7 @@ bool WorldModel::loadFunctionBlock(std::string name) {
 
 }
 
-bool WorldModel::executeFunctionBlock(std::string name, std::vector<unsigned int>& input, std::vector<unsigned int>& output) {
+bool WorldModel::executeFunctionBlock(std::string name, std::vector<rsg::Id>& input, std::vector<rsg::Id>& output) {
 #ifdef BRICS_MICROBLX_ENABLE
 	LOG(ERROR) << "Microblx support not enabled. Cannot load a function block.";
 #endif
@@ -182,7 +182,7 @@ bool WorldModel::getloadedFunctionBlocks(std::vector<std::string>& functionBlock
 	return false;
 }
 
-unsigned int WorldModel::getRootNodeId() {
+rsg::Id WorldModel::getRootNodeId() {
 	return scene.getRootId();
 }
 
