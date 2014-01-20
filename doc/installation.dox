@@ -14,10 +14,19 @@
 
 @section latest_version The Latest Version
 
-The latest version can be found on the project page under 
-https://svn.best-of-robotics.org/brics/BROCRE/BRICS_3D/trunk
+\b Update(2014-01-20): The source code has moved to github.
+
+The \b latest version can be found on the brics github page under: 
+
+https://github.com/brics/brics_3d
 
 To get the code invoke:
+@code
+	git clone https://github.com/brics/brics_3d.git
+@endcode
+
+
+The \b old svn repository is still active and contains the library until version @ref version_0_5. However the git repository on github containts all older versions as well. To get the code from the svn repository invoke:
 @code
 	svn co https://svn.best-of-robotics.org/brics/BROCRE/BRICS_3D/trunk brics_3d
 @endcode
