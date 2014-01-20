@@ -23,11 +23,14 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "brics_3d/core/HomogeneousMatrix44.h"
+#include "brics_3d/core/Logger.h"
 #include "brics_3d/worldModel/sceneGraph/Id.h"
+#include "brics_3d/worldModel/sceneGraph/Uuid.h"
 
 using namespace std;
 using namespace brics_3d;
 using namespace brics_3d::rsg;
+using brics_3d::Logger;
 
 namespace unitTests {
 

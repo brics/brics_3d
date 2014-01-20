@@ -166,6 +166,7 @@ SET (WORLD_MODEL_LIBRARY_SOURCES
     ./worldModel/WorldModel
     
     ./worldModel/sceneGraph/
+    ./worldModel/sceneGraph/Uuid
     ./worldModel/sceneGraph/Attribute
     ./worldModel/sceneGraph/Box
     ./worldModel/sceneGraph/Cylinder
