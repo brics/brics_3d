@@ -6,3 +6,4 @@ bin
 .autotools
 .settings
 .externalToolBuilders
+doc/html/
