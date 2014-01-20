@@ -1838,7 +1838,7 @@ void SceneGraphNodesTest::testUncertainTransformVisitor() {
 	PathCollector* pathCollector = new PathCollector();
 	node5->accept(pathCollector);
 
-	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(pathCollector->getIdsize()));
+	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(pathCollector->getNodePaths().size()));
 	CPPUNIT_ASSERT_EQUAL(3u, static_cast<unsigned int>(pathCollector->getNodePaths()[0].size()));
 	CPPUNIT_ASSERT_EQUAL(3u, static_cast<unsigned int>(pathCollector->getNodePaths()[1].size()));
 
