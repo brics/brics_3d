@@ -27,8 +27,8 @@ void SceneGraphNodesTest::testNode() {
 	Node testNode1;
 	Node* testNode2 = new Node();
 
-	unsigned int defaultId = 0;
-	unsigned int testId = 42;
+	Id defaultId = 0;
+	Id testId = 42;
 
 	CPPUNIT_ASSERT_EQUAL(defaultId, testNode1.getId());
 	CPPUNIT_ASSERT_EQUAL(defaultId, testNode2->getId());
@@ -1838,7 +1838,7 @@ void SceneGraphNodesTest::testUncertainTransformVisitor() {
 	PathCollector* pathCollector = new PathCollector();
 	node5->accept(pathCollector);
 
-	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(pathCollector->getNodePaths().size()));
+	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(pathCollector->getIdsize()));
 	CPPUNIT_ASSERT_EQUAL(3u, static_cast<unsigned int>(pathCollector->getNodePaths()[0].size()));
 	CPPUNIT_ASSERT_EQUAL(3u, static_cast<unsigned int>(pathCollector->getNodePaths()[1].size()));
 
@@ -2285,11 +2285,11 @@ void SceneGraphNodesTest::testOutdatedDataDeleter() {
 	 *            |  |
 	 *             tf4
 	 */
-	unsigned int rootId = 0;
-	unsigned int tf1Id = 1;
-	unsigned int tf2Id = 2;
-	unsigned int tf3Id = 3;
-	unsigned int tf4Id = 4;
+	Id rootId = 0;
+	Id tf1Id = 1;
+	Id tf2Id = 2;
+	Id tf3Id = 3;
+	Id tf4Id = 4;
 
 	Group::GroupPtr root(new Group());
 	root->setId(rootId);
@@ -2459,17 +2459,17 @@ void SceneGraphNodesTest::testSceneGraphFacade(){
 	 */
 
 	/* will be assigned later */
-	unsigned int rootId = 0;
-	unsigned int tf1Id = 0;
-	unsigned int group2Id = 0;
-	unsigned int node3Id = 0;
-	unsigned int geode4Id = 0;
+	Id rootId = 0;
+	Id tf1Id = 0;
+	Id group2Id = 0;
+	Id node3Id = 0;
+	Id geode4Id = 0;
 	unsigned const int invalidId = 100000000;
 
 	SceneGraphFacade scene;
 	vector<Attribute> tmpAttributes;
-	vector<unsigned int> resultParentIds;
-	vector<unsigned int> resultChildIds;
+	vector<Id> resultParentIds;
+	vector<Id> resultChildIds;
 
 	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform123(new HomogeneousMatrix44(1,0,0,  	//Rotation coefficients
 	                                                             0,1,0,
@@ -2520,13 +2520,13 @@ void SceneGraphNodesTest::testSceneGraphFacade(){
 	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultParentIds.size()) );
 	CPPUNIT_ASSERT(scene.getNodeParents(tf1Id, resultParentIds));
 	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultParentIds.size()));
-	CPPUNIT_ASSERT_EQUAL(rootId, static_cast<unsigned int>(resultParentIds[0]));
+	CPPUNIT_ASSERT_EQUAL(rootId, static_cast<Id>(resultParentIds[0]));
 	CPPUNIT_ASSERT(!scene.getNodeParents(invalidId, resultParentIds));
 
 	resultChildIds.clear();
 	CPPUNIT_ASSERT(scene.getGroupChildren(rootId, resultChildIds));
 	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultChildIds.size()));
-	CPPUNIT_ASSERT_EQUAL(tf1Id, static_cast<unsigned int>(resultChildIds[0]));
+	CPPUNIT_ASSERT_EQUAL(tf1Id, static_cast<Id>(resultChildIds[0]));
 
 
 	/* group2Id */
@@ -2535,20 +2535,20 @@ void SceneGraphNodesTest::testSceneGraphFacade(){
 	CPPUNIT_ASSERT(scene.addGroup(rootId, group2Id, tmpAttributes));
 	CPPUNIT_ASSERT(group2Id != 0);
 
-	unsigned int tmpId = group2Id;
+	Id tmpId = group2Id;
 	resultParentIds.clear();
 	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultParentIds.size()) );
 	CPPUNIT_ASSERT(scene.getNodeParents(group2Id, resultParentIds));
 	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultParentIds.size()));
-	CPPUNIT_ASSERT_EQUAL(rootId, static_cast<unsigned int>(resultParentIds[0]));
+	CPPUNIT_ASSERT_EQUAL(rootId, static_cast<Id>(resultParentIds[0]));
 	CPPUNIT_ASSERT(!scene.addGroup(invalidId, group2Id, tmpAttributes));
 	CPPUNIT_ASSERT_EQUAL(tmpId, group2Id); // check if there is a side effect
 
 	resultChildIds.clear();
 	CPPUNIT_ASSERT(scene.getGroupChildren(rootId, resultChildIds));
 	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(resultChildIds.size()));
-	CPPUNIT_ASSERT_EQUAL(tf1Id, static_cast<unsigned int>(resultChildIds[0]));
-	CPPUNIT_ASSERT_EQUAL(group2Id, static_cast<unsigned int>(resultChildIds[1]));
+	CPPUNIT_ASSERT_EQUAL(tf1Id, static_cast<Id>(resultChildIds[0]));
+	CPPUNIT_ASSERT_EQUAL(group2Id, static_cast<Id>(resultChildIds[1]));
 
 	/* node3Id */
 	tmpAttributes.clear();
@@ -2560,14 +2560,14 @@ void SceneGraphNodesTest::testSceneGraphFacade(){
 	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultParentIds.size()) );
 	CPPUNIT_ASSERT(scene.getNodeParents(node3Id, resultParentIds));
 	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultParentIds.size()));
-	CPPUNIT_ASSERT_EQUAL(rootId, static_cast<unsigned int>(resultParentIds[0]));
+	CPPUNIT_ASSERT_EQUAL(rootId, static_cast<Id>(resultParentIds[0]));
 
 	resultChildIds.clear();
 	CPPUNIT_ASSERT(scene.getGroupChildren(rootId, resultChildIds));
 	CPPUNIT_ASSERT_EQUAL(3u, static_cast<unsigned int>(resultChildIds.size()));
-	CPPUNIT_ASSERT_EQUAL(tf1Id, static_cast<unsigned int>(resultChildIds[0]));
-	CPPUNIT_ASSERT_EQUAL(group2Id, static_cast<unsigned int>(resultChildIds[1]));
-	CPPUNIT_ASSERT_EQUAL(node3Id, static_cast<unsigned int>(resultChildIds[2]));
+	CPPUNIT_ASSERT_EQUAL(tf1Id, static_cast<Id>(resultChildIds[0]));
+	CPPUNIT_ASSERT_EQUAL(group2Id, static_cast<Id>(resultChildIds[1]));
+	CPPUNIT_ASSERT_EQUAL(node3Id, static_cast<Id>(resultChildIds[2]));
 
 	CPPUNIT_ASSERT(!scene.addNode(invalidId, node3Id, tmpAttributes));
 
@@ -2583,12 +2583,12 @@ void SceneGraphNodesTest::testSceneGraphFacade(){
 	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultParentIds.size()) );
 	CPPUNIT_ASSERT(scene.getNodeParents(geode4Id, resultParentIds));
 	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultParentIds.size()));
-	CPPUNIT_ASSERT_EQUAL(tf1Id, static_cast<unsigned int>(resultParentIds[0]));
+	CPPUNIT_ASSERT_EQUAL(tf1Id, static_cast<Id>(resultParentIds[0]));
 
 	resultChildIds.clear();
 	CPPUNIT_ASSERT(scene.getGroupChildren(tf1Id, resultChildIds));
 	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultChildIds.size()));
-	CPPUNIT_ASSERT_EQUAL(geode4Id, static_cast<unsigned int>(resultChildIds[0]));
+	CPPUNIT_ASSERT_EQUAL(geode4Id, static_cast<Id>(resultChildIds[0]));
 
 	CPPUNIT_ASSERT(!scene.getGroupChildren(geode4Id, resultChildIds));
 	CPPUNIT_ASSERT(!scene.addGeometricNode(invalidId, geode4Id, tmpAttributes, cylinder1, dummyTime));
@@ -2600,17 +2600,17 @@ void SceneGraphNodesTest::testSceneGraphFacade(){
 	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultParentIds.size()) );
 	CPPUNIT_ASSERT(scene.getNodeParents(geode4Id, resultParentIds));
 	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(resultParentIds.size()));
-	CPPUNIT_ASSERT_EQUAL(tf1Id, static_cast<unsigned int>(resultParentIds[0]));
-	CPPUNIT_ASSERT_EQUAL(group2Id, static_cast<unsigned int>(resultParentIds[1]));
+	CPPUNIT_ASSERT_EQUAL(tf1Id, static_cast<Id>(resultParentIds[0]));
+	CPPUNIT_ASSERT_EQUAL(group2Id, static_cast<Id>(resultParentIds[1]));
 
 	resultChildIds.clear();
 	CPPUNIT_ASSERT(scene.getGroupChildren(tf1Id, resultChildIds));
 	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultChildIds.size()));
-	CPPUNIT_ASSERT_EQUAL(geode4Id, static_cast<unsigned int>(resultChildIds[0]));
+	CPPUNIT_ASSERT_EQUAL(geode4Id, static_cast<Id>(resultChildIds[0]));
 	resultChildIds.clear();
 	CPPUNIT_ASSERT(scene.getGroupChildren(group2Id, resultChildIds));
 	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultChildIds.size()));
-	CPPUNIT_ASSERT_EQUAL(geode4Id, static_cast<unsigned int>(resultChildIds[0]));
+	CPPUNIT_ASSERT_EQUAL(geode4Id, static_cast<Id>(resultChildIds[0]));
 
 	CPPUNIT_ASSERT(!scene.getGroupChildren(node3Id, resultChildIds));
 
@@ -2666,7 +2666,7 @@ void SceneGraphNodesTest::testSceneGraphFacade(){
 	CPPUNIT_ASSERT(!scene.getTransform(node3Id, dummyTime, resultTransform));
 
 	/* find nodes by attributes */
-	vector<unsigned int> resultIds;
+	vector<Id> resultIds;
 
 	tmpAttributes.clear();
 	tmpAttributes.push_back(Attribute("name","root"));
@@ -2727,9 +2727,9 @@ void SceneGraphNodesTest::testSceneGraphFacade(){
 	resultChildIds.clear();
 	CPPUNIT_ASSERT(scene.getGroupChildren(rootId, resultChildIds));
 	CPPUNIT_ASSERT_EQUAL(3u, static_cast<unsigned int>(resultChildIds.size()));
-	CPPUNIT_ASSERT_EQUAL(tf1Id, static_cast<unsigned int>(resultChildIds[0]));
-	CPPUNIT_ASSERT_EQUAL(group2Id, static_cast<unsigned int>(resultChildIds[1]));
-	CPPUNIT_ASSERT_EQUAL(node3Id, static_cast<unsigned int>(resultChildIds[2]));
+	CPPUNIT_ASSERT_EQUAL(tf1Id, static_cast<Id>(resultChildIds[0]));
+	CPPUNIT_ASSERT_EQUAL(group2Id, static_cast<Id>(resultChildIds[1]));
+	CPPUNIT_ASSERT_EQUAL(node3Id, static_cast<Id>(resultChildIds[2]));
 
 
 	/* deletion of tf1: preconditions */
@@ -2762,8 +2762,8 @@ void SceneGraphNodesTest::testSceneGraphFacade(){
 	resultChildIds.clear();
 	CPPUNIT_ASSERT(scene.getGroupChildren(rootId, resultChildIds));
 	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(resultChildIds.size()));
-	CPPUNIT_ASSERT_EQUAL(group2Id, static_cast<unsigned int>(resultChildIds[0]));
-	CPPUNIT_ASSERT_EQUAL(node3Id, static_cast<unsigned int>(resultChildIds[1]));
+	CPPUNIT_ASSERT_EQUAL(group2Id, static_cast<Id>(resultChildIds[0]));
+	CPPUNIT_ASSERT_EQUAL(node3Id, static_cast<Id>(resultChildIds[1]));
 
 	/* deletion of group2: preconditions */
 	resultParentIds.clear();
@@ -2791,7 +2791,7 @@ void SceneGraphNodesTest::testSceneGraphFacade(){
 	resultChildIds.clear();
 	CPPUNIT_ASSERT(scene.getGroupChildren(rootId, resultChildIds));
 	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultChildIds.size()));
-	CPPUNIT_ASSERT_EQUAL(node3Id, static_cast<unsigned int>(resultChildIds[0]));
+	CPPUNIT_ASSERT_EQUAL(node3Id, static_cast<Id>(resultChildIds[0]));
 
 
 	/* deletion of node3: preconditions */
@@ -2840,11 +2840,11 @@ void SceneGraphNodesTest::testSceneGraphFacadeTransforms() {
 	 *            |  |
 	 *            node5
 	 */
-	unsigned int tf1Id = 0;
-	unsigned int tf2Id = 0;
-	unsigned int tf3Id = 0;
-	unsigned int group4Id = 0;
-	unsigned int node5Id = 0;
+	Id tf1Id = 0;
+	Id tf2Id = 0;
+	Id tf3Id = 0;
+	Id group4Id = 0;
+	Id node5Id = 0;
 
 	const double* desiredMatrixData;
 	const double* resultMatrixData;
@@ -3000,10 +3000,10 @@ void SceneGraphNodesTest::testPointCloud() {
 	 *                            pc3
 	 *
 	 */
-	unsigned int rootId = 0;
-	unsigned int pc1Id = 1;
-	unsigned int tf2Id = 2;
-	unsigned int pc3Id = 3;
+	Id rootId = 0;
+	Id pc1Id = 1;
+	Id tf2Id = 2;
+	Id pc3Id = 3;
 
 	Group::GroupPtr root(new Group());
 	root->setId(rootId);
@@ -3095,12 +3095,12 @@ void SceneGraphNodesTest::testPointCloud() {
 
 void SceneGraphNodesTest::testUpdateObserver() {
 	SceneGraphFacade scene;
-	unsigned int dymmyId = 0;
-	unsigned int tfId = 0;
-	unsigned int geodeId = 0;
+	Id dymmyId = 0;
+	Id tfId = 0;
+	Id geodeId = 0;
 	TimeStamp dummyTime(20);
 	vector<Attribute> tmpAttributes;
-	vector<unsigned int> resultParentIds;
+	vector<Id> resultParentIds;
 	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform123(new HomogeneousMatrix44(1,0,0,  	//Rotation coefficients
 	                                                             0,1,0,
 	                                                             0,0,1,
@@ -3305,18 +3305,18 @@ void SceneGraphNodesTest::testDotGraphGenerator() {
 	vector<Attribute> attributes;	// with this one we can attach attibutes / tags to the nodes
 
 	/* Some node Ids we would like to remember */
-	unsigned int dummyId = 0;
-	unsigned int tfId = 0; // We will use this multible times
-	unsigned int pointCloudId = 0;
-	unsigned int sensorGroupId = 0;
-	unsigned int filteredGroupId = 0;
-	unsigned int sceneObjectGroupId = 0;
-	unsigned int robotGroupId = 0;
-	unsigned int tableGroupId = 0;
-	unsigned int plateGroupId = 0;
-	unsigned int boxGroupId1 = 0;
-	unsigned int boxGroupId2 = 0;
-	unsigned int geometryId = 0;
+	Id dummyId = 0;
+	Id tfId = 0; // We will use this multible times
+	Id pointCloudId = 0;
+	Id sensorGroupId = 0;
+	Id filteredGroupId = 0;
+	Id sceneObjectGroupId = 0;
+	Id robotGroupId = 0;
+	Id tableGroupId = 0;
+	Id plateGroupId = 0;
+	Id boxGroupId1 = 0;
+	Id boxGroupId2 = 0;
+	Id geometryId = 0;
 
 	/* Some (dummy) data to be use within the scenegraph */
 	brics_3d::rsg::TimeStamp dummyTime(0);
@@ -3642,10 +3642,10 @@ void SceneGraphNodesTest::testScenePointIterator() {
 	 *                            pc3
 	 *
 	 */
-	unsigned int rootId = 0;
-	unsigned int pc1Id = 1;
-	unsigned int tf2Id = 2;
-	unsigned int pc3Id = 3;
+	Id rootId = 0;
+	Id pc1Id = 1;
+	Id tf2Id = 2;
+	Id pc3Id = 3;
 
 	Group::GroupPtr root(new Group());
 	root->setId(rootId);
@@ -3874,16 +3874,16 @@ void SceneGraphNodesTest::testForcedIds() {
 
 
 	/* will be assigned later */
-//	unsigned int rootId = 0;
-	unsigned int tf1Id = 0;
-	unsigned int tf1IdForced = 0;
-	unsigned int group2Id = 0;
-	unsigned int group2IdForced = 0;
-	unsigned int node3Id = 0;
-	unsigned int node3IdForced = 0;
-	unsigned int geode4Id = 0;
-	unsigned int geode4IdForced = 0;
-	const unsigned int invalidId = 1000001;
+//	Id rootId = 0;
+	Id tf1Id = 0;
+	Id tf1IdForced = 0;
+	Id group2Id = 0;
+	Id group2IdForced = 0;
+	Id node3Id = 0;
+	Id node3IdForced = 0;
+	Id geode4Id = 0;
+	Id geode4IdForced = 0;
+	const Id invalidId = 1000001;
 
 	SceneGraphFacade scene; //assumes SimpleIdGenerator
 	vector<Attribute> attributes;
@@ -3977,15 +3977,15 @@ void SceneGraphNodesTest::testSceneGraphToUpdates() {
 	 *           group9
 	 */
 
-	unsigned int group1Id = 0;
-	unsigned int group2Id = 0;
-	unsigned int node3Id = 0;
-	unsigned int group4Id = 0;
-	unsigned int tf5Id = 0;
-	unsigned int geom6Id = 0;
-	unsigned int group7Id = 0;
-	unsigned int group8Id = 0;
-	unsigned int group9Id = 0;
+	Id group1Id = 0;
+	Id group2Id = 0;
+	Id node3Id = 0;
+	Id group4Id = 0;
+	Id tf5Id = 0;
+	Id geom6Id = 0;
+	Id group7Id = 0;
+	Id group8Id = 0;
+	Id group9Id = 0;
 
 	brics_3d::rsg::SceneGraphFacade scene;			// The 3D world model handle
 	vector<Attribute> attributes;	// with this one we can attach attibutes / tags to the nodes
@@ -4125,13 +4125,13 @@ void SceneGraphNodesTest::testRemoveParents() {
 	 *                 node3
 	 */
 
-	unsigned int group1Id = 0;
-	unsigned int group2Id = 0;
-	unsigned int node3Id = 0;
+	Id group1Id = 0;
+	Id group2Id = 0;
+	Id node3Id = 0;
 
 	brics_3d::rsg::SceneGraphFacade scene;
 	std::vector<Attribute> attributes;
-	std::vector<unsigned int> resultIds;
+	std::vector<Id> resultIds;
 
 	attributes.clear(); //empty dummy
 	CPPUNIT_ASSERT(scene.addGroup(scene.getRootId(), group1Id, attributes));

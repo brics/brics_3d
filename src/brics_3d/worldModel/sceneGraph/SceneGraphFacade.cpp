@@ -52,11 +52,11 @@ void SceneGraphFacade::initialize() {
 	updateObservers.clear();
 }
 
-unsigned int SceneGraphFacade::getRootId() {
+Id SceneGraphFacade::getRootId() {
 	return idGenerator->getRootId();
 }
 
-bool SceneGraphFacade::getNodes(vector<Attribute> attributes, vector<unsigned int>& ids) {
+bool SceneGraphFacade::getNodes(vector<Attribute> attributes, vector<Id>& ids) {
 	LOG(DEBUG) << " Current idLookUpTable lenght = " << idLookUpTable.size();
 	ids.clear();
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(getRootId());
@@ -75,7 +75,7 @@ bool SceneGraphFacade::getNodes(vector<Attribute> attributes, vector<unsigned in
 	return false;
 }
 
-bool SceneGraphFacade::getNodeAttributes(unsigned int id, vector<Attribute>& attributes) {
+bool SceneGraphFacade::getNodeAttributes(Id id, vector<Attribute>& attributes) {
 	attributes.clear();
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();
@@ -90,7 +90,7 @@ bool SceneGraphFacade::getNodeAttributes(unsigned int id, vector<Attribute>& att
 	return false;
 }
 
-bool SceneGraphFacade::getNodeParents(unsigned int id, vector<unsigned int>& parentIds) {
+bool SceneGraphFacade::getNodeParents(Id id, vector<Id>& parentIds) {
 	parentIds.clear();
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();
@@ -103,7 +103,7 @@ bool SceneGraphFacade::getNodeParents(unsigned int id, vector<unsigned int>& par
 	return false;
 }
 
-bool SceneGraphFacade::getGroupChildren(unsigned int id, vector<unsigned int>& childIds) {
+bool SceneGraphFacade::getGroupChildren(Id id, vector<Id>& childIds) {
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();
 	Group::GroupPtr group = boost::dynamic_pointer_cast<Group>(node);
@@ -117,7 +117,7 @@ bool SceneGraphFacade::getGroupChildren(unsigned int id, vector<unsigned int>& c
 	return false;
 }
 
-bool SceneGraphFacade::getTransform(unsigned int id, TimeStamp timeStamp, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform) {
+bool SceneGraphFacade::getTransform(Id id, TimeStamp timeStamp, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform) {
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();
 	rsg::Transform::TransformPtr transformNode = boost::dynamic_pointer_cast<rsg::Transform>(node);
@@ -129,7 +129,7 @@ bool SceneGraphFacade::getTransform(unsigned int id, TimeStamp timeStamp, IHomog
 	return false;
 }
 
-bool SceneGraphFacade::getUncertainTransform(unsigned int id, TimeStamp timeStamp, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform, ITransformUncertainty::ITransformUncertaintyPtr &uncertainty) {
+bool SceneGraphFacade::getUncertainTransform(Id id, TimeStamp timeStamp, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform, ITransformUncertainty::ITransformUncertaintyPtr &uncertainty) {
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();
 	rsg::UncertainTransform::UncertainTransformPtr transformNode = boost::dynamic_pointer_cast<rsg::UncertainTransform>(node);
@@ -142,7 +142,7 @@ bool SceneGraphFacade::getUncertainTransform(unsigned int id, TimeStamp timeStam
 	return false;
 }
 
-bool SceneGraphFacade::getGeometry(unsigned int id, Shape::ShapePtr& shape, TimeStamp& timeStamp) {
+bool SceneGraphFacade::getGeometry(Id id, Shape::ShapePtr& shape, TimeStamp& timeStamp) {
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();
 	GeometricNode::GeometricNodePtr geometricNode = boost::dynamic_pointer_cast<GeometricNode>(node);
@@ -155,7 +155,7 @@ bool SceneGraphFacade::getGeometry(unsigned int id, Shape::ShapePtr& shape, Time
 	return false;
 }
 
-bool SceneGraphFacade::getTransformForNode (unsigned int id, unsigned int idReferenceNode, TimeStamp timeStamp, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform) {
+bool SceneGraphFacade::getTransformForNode (Id id, Id idReferenceNode, TimeStamp timeStamp, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform) {
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();
 	Node::NodeWeakPtr tmpReferenceNode = findNodeRecerence(idReferenceNode);
@@ -169,10 +169,10 @@ bool SceneGraphFacade::getTransformForNode (unsigned int id, unsigned int idRefe
 }
 
 
-bool SceneGraphFacade::addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, bool forcedId) {
+bool SceneGraphFacade::addNode(Id parentId, Id& assignedId, vector<Attribute> attributes, bool forcedId) {
 	bool operationSucceeded = false;
 	bool idIsOk = false;
-	unsigned int id;
+	Id id;
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(parentId);
 	Node::NodePtr node = tmpNode.lock();
 	Group::GroupPtr parentGroup = boost::dynamic_pointer_cast<Group>(node);
@@ -205,7 +205,7 @@ bool SceneGraphFacade::addNode(unsigned int parentId, unsigned int& assignedId, 
 	/* Call all observers regardless if an error occured or not */
 	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
 	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
-		unsigned int assignedIdcopy = assignedId; // prevent that observer might change this....
+		Id assignedIdcopy = assignedId; // prevent that observer might change this....
 		(*observerIterator)->addNode(parentId, assignedIdcopy, attributes);
 	}
 
@@ -219,10 +219,10 @@ bool SceneGraphFacade::addNode(unsigned int parentId, unsigned int& assignedId, 
 	}
 }
 
-bool SceneGraphFacade::addGroup(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, bool forcedId) {
+bool SceneGraphFacade::addGroup(Id parentId, Id& assignedId, vector<Attribute> attributes, bool forcedId) {
 	bool operationSucceeded = false;
 	bool idIsOk = false;
-	unsigned int id;
+	Id id;
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(parentId);
 	Node::NodePtr node = tmpNode.lock();
 	Group::GroupPtr parentGroup = boost::dynamic_pointer_cast<Group>(node);
@@ -256,7 +256,7 @@ bool SceneGraphFacade::addGroup(unsigned int parentId, unsigned int& assignedId,
 	/* Call all observers regardless if an error occured or not */
 	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
 	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
-		unsigned int assignedIdcopy = assignedId; // prevent that observer might change this....
+		Id assignedIdcopy = assignedId; // prevent that observer might change this....
 		(*observerIterator)->addGroup(parentId, assignedIdcopy, attributes, forcedId);
 	}
 
@@ -270,10 +270,10 @@ bool SceneGraphFacade::addGroup(unsigned int parentId, unsigned int& assignedId,
 	}
 }
 
-bool SceneGraphFacade::addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp, bool forcedId) {
+bool SceneGraphFacade::addTransformNode(Id parentId, Id& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp, bool forcedId) {
 	bool operationSucceeded = false;
 	bool idIsOk = false;
-	unsigned int id;
+	Id id;
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(parentId);
 	Node::NodePtr node = tmpNode.lock();
 
@@ -308,7 +308,7 @@ bool SceneGraphFacade::addTransformNode(unsigned int parentId, unsigned int& ass
 	/* Call all observers regardless if an error occured or not */
 	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
 	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
-		unsigned int assignedIdcopy = assignedId; // prevent that observer might change this....
+		Id assignedIdcopy = assignedId; // prevent that observer might change this....
 		(*observerIterator)->addTransformNode(parentId, assignedIdcopy, attributes, transform, timeStamp);
 	}
 
@@ -322,10 +322,10 @@ bool SceneGraphFacade::addTransformNode(unsigned int parentId, unsigned int& ass
 	}
 }
 
-bool SceneGraphFacade::addUncertainTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp, bool forcedId) {
+bool SceneGraphFacade::addUncertainTransformNode(Id parentId, Id& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp, bool forcedId) {
 	bool operationSucceeded = false;
 	bool idIsOk = false;
-	unsigned int id;
+	Id id;
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(parentId);
 	Node::NodePtr node = tmpNode.lock();
 
@@ -358,7 +358,7 @@ bool SceneGraphFacade::addUncertainTransformNode(unsigned int parentId, unsigned
 	/* Call all observers regardless if an error occured or not */
 	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
 	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
-		unsigned int assignedIdcopy = assignedId; // prevent that observer might change this....
+		Id assignedIdcopy = assignedId; // prevent that observer might change this....
 		(*observerIterator)->addUncertainTransformNode(parentId, assignedIdcopy, attributes, transform, uncertainty, timeStamp);
 	}
 
@@ -373,10 +373,10 @@ bool SceneGraphFacade::addUncertainTransformNode(unsigned int parentId, unsigned
 	return false;
 }
 
-bool SceneGraphFacade::addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp, bool forcedId) {
+bool SceneGraphFacade::addGeometricNode(Id parentId, Id& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp, bool forcedId) {
 	bool operationSucceeded = false;
 	bool idIsOk = false;
-	unsigned int id;
+	Id id;
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(parentId);
 	Node::NodePtr node = tmpNode.lock();
 	Group::GroupPtr parentGroup = boost::dynamic_pointer_cast<Group>(node);
@@ -411,7 +411,7 @@ bool SceneGraphFacade::addGeometricNode(unsigned int parentId, unsigned int& ass
 	/* Call all observers regardless if an error occured or not */
 	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
 	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
-		unsigned int assignedIdcopy = assignedId; // prevent that observer might change this....
+		Id assignedIdcopy = assignedId; // prevent that observer might change this....
 		(*observerIterator)->addGeometricNode(parentId, assignedIdcopy, attributes, shape, timeStamp);
 	}
 
@@ -426,7 +426,7 @@ bool SceneGraphFacade::addGeometricNode(unsigned int parentId, unsigned int& ass
 }
 
 
-bool SceneGraphFacade::setNodeAttributes(unsigned int id, vector<Attribute> newAttributes) {
+bool SceneGraphFacade::setNodeAttributes(Id id, vector<Attribute> newAttributes) {
 	bool operationSucceeded = false;
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();
@@ -449,7 +449,7 @@ bool SceneGraphFacade::setNodeAttributes(unsigned int id, vector<Attribute> newA
 	}
 }
 
-bool SceneGraphFacade::setTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp) {
+bool SceneGraphFacade::setTransform(Id id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp) {
 	bool operationSucceeded = false;
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();
@@ -473,7 +473,7 @@ bool SceneGraphFacade::setTransform(unsigned int id, IHomogeneousMatrix44::IHomo
 	}
 }
 
-bool SceneGraphFacade::setUncertainTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp) {
+bool SceneGraphFacade::setUncertainTransform(Id id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp) {
 	bool operationSucceeded = false;
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();
@@ -498,7 +498,7 @@ bool SceneGraphFacade::setUncertainTransform(unsigned int id, IHomogeneousMatrix
 	return false;
 }
 
-bool SceneGraphFacade::deleteNode(unsigned int id) {
+bool SceneGraphFacade::deleteNode(Id id) {
 	bool operationSucceeded = false;
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();
@@ -515,7 +515,7 @@ bool SceneGraphFacade::deleteNode(unsigned int id) {
 			 * the according delete function for every parent
 			 */
 			while (node->getNumberOfParents() > 0) { //NOTE: node->getNumberOfParents() will decrease within every iteration...
-				unsigned int i = 0;
+				Id i = 0;
 				rsg::Node* parentNode;
 				parentNode = node->getParent(i);
 				Group* parentGroup =  dynamic_cast<Group*>(parentNode);
@@ -544,7 +544,7 @@ bool SceneGraphFacade::deleteNode(unsigned int id) {
 	}
 }
 
-bool SceneGraphFacade::addParent(unsigned int id, unsigned int parentId) {
+bool SceneGraphFacade::addParent(Id id, Id parentId) {
 	bool operationSucceeded = false;
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();
@@ -571,7 +571,7 @@ bool SceneGraphFacade::addParent(unsigned int id, unsigned int parentId) {
 	}
 }
 
-bool SceneGraphFacade::removeParent(unsigned int id, unsigned int parentId) {
+bool SceneGraphFacade::removeParent(Id id, Id parentId) {
 	bool operationSucceeded = false;
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();
@@ -636,7 +636,7 @@ bool SceneGraphFacade::detachUpdateObserver(ISceneGraphUpdateObserver* observer)
 	return false;
 }
 
-bool SceneGraphFacade::executeGraphTraverser(INodeVisitor* visitor, unsigned int subgraphId) {
+bool SceneGraphFacade::executeGraphTraverser(INodeVisitor* visitor, Id subgraphId) {
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(subgraphId);
 	Node::NodePtr node = tmpNode.lock();
 	if (node != 0) {
@@ -646,7 +646,7 @@ bool SceneGraphFacade::executeGraphTraverser(INodeVisitor* visitor, unsigned int
 	return false;
 }
 
-Node::NodeWeakPtr SceneGraphFacade::findNodeRecerence(unsigned int id) {
+Node::NodeWeakPtr SceneGraphFacade::findNodeRecerence(Id id) {
 	nodeIterator = idLookUpTable.find(id);
 	if (nodeIterator != idLookUpTable.end()) { //TODO multiple IDs?
 		Node::NodePtr tmpNodeHandle = nodeIterator->second.lock();
@@ -660,7 +660,7 @@ Node::NodeWeakPtr SceneGraphFacade::findNodeRecerence(unsigned int id) {
 	return Node::NodeWeakPtr(); // should be kind of null...
 }
 
-bool SceneGraphFacade::doesIdExist(unsigned int id) {
+bool SceneGraphFacade::doesIdExist(Id id) {
 	nodeIterator = idLookUpTable.find(id);
 	if (nodeIterator != idLookUpTable.end()) {
 		return true;

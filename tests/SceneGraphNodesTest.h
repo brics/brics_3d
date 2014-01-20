@@ -92,7 +92,7 @@ public:
 		collectedIDs.push_back(node->getId());
 	};
 
-	std::vector<unsigned int> collectedIDs;
+	std::vector<Id> collectedIDs;
 };
 
 /*
@@ -115,57 +115,57 @@ public:
 		removeParentCounter = 0;
 	}
 
-	bool addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, bool forceId = false) {
+	bool addNode(Id parentId, Id& assignedId, vector<Attribute> attributes, bool forceId = false) {
 		addNodeCounter++;
 		return true;
 	}
 
-	bool addGroup(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, bool forceId = false) {
+	bool addGroup(Id parentId, Id& assignedId, vector<Attribute> attributes, bool forceId = false) {
 		addGroupCounter++;
 		return true;
 	}
 
-	bool addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp, bool forceId = false) {
+	bool addTransformNode(Id parentId, Id& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp, bool forceId = false) {
 		addTransformCounter++;
 		return true;
 	}
 
-	bool addUncertainTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp, bool forceId = false) {
+	bool addUncertainTransformNode(Id parentId, Id& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp, bool forceId = false) {
 		addUncertainTransformCounter++;
 		return true;
 	}
 
-	bool addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp, bool forceId = false) {
+	bool addGeometricNode(Id parentId, Id& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp, bool forceId = false) {
 		addGeometricNodeCounter++;
 		return true;
 	}
 
-	bool setNodeAttributes(unsigned int id, vector<Attribute> newAttributes) {
+	bool setNodeAttributes(Id id, vector<Attribute> newAttributes) {
 		setNodeAttributesCounter++;
 		return true;
 	}
 
-	bool setTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp) {
+	bool setTransform(Id id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp) {
 		setTransformCounter++;
 		return true;
 	}
 
-	bool setUncertainTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp) {
+	bool setUncertainTransform(Id id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp) {
 		setUncertainTransformCounter++;
 		return true;
 	}
 
-	bool deleteNode(unsigned int id) {
+	bool deleteNode(Id id) {
 		deleteNodeCounter++;
 		return true;
 	}
 
-	bool addParent(unsigned int id, unsigned int parentId) {
+	bool addParent(Id id, Id parentId) {
 		addParentCounter++;
 		return true;
 	}
 
-	bool removeParent(unsigned int id, unsigned int parentId) {
+	bool removeParent(Id id, Id parentId) {
 		removeParentCounter++;
 		return true;
 	}

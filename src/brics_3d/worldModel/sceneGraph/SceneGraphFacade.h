@@ -36,10 +36,6 @@
 using std::map;
 
 
-//namespace brics_3d { namespace rsg { class Attribute; }  }
-//namespace brics_3d { class WorldModel; }
-//namespace brics_3d { namespace rsg { class IIdGenerator; }  }
-
 namespace brics_3d {
 
 namespace rsg {
@@ -62,38 +58,38 @@ class SceneGraphFacade : public ISceneGraphQuery, public ISceneGraphUpdate {
     virtual ~SceneGraphFacade();
 
     /* Facade specific methods */
-    unsigned int getRootId();
+    Id getRootId();
 
     /* Implemented query interfaces */
-    bool getNodes(vector<Attribute> attributes, vector<unsigned int>& ids); //subgraph?
-    bool getNodeAttributes(unsigned int id, vector<Attribute>& attributes);
-    bool getNodeParents(unsigned int id, vector<unsigned int>& parentIds);
-    bool getGroupChildren(unsigned int id, vector<unsigned int>& childIds);
-    bool getTransform(unsigned int id, TimeStamp timeStamp, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform);
-    bool getUncertainTransform(unsigned int id, TimeStamp timeStamp, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform, ITransformUncertainty::ITransformUncertaintyPtr &uncertainty);
-    bool getGeometry(unsigned int id, Shape::ShapePtr& shape, TimeStamp& timeStamp);
+    bool getNodes(vector<Attribute> attributes, vector<Id>& ids); //subgraph?
+    bool getNodeAttributes(Id id, vector<Attribute>& attributes);
+    bool getNodeParents(Id id, vector<Id>& parentIds);
+    bool getGroupChildren(Id id, vector<Id>& childIds);
+    bool getTransform(Id id, TimeStamp timeStamp, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform);
+    bool getUncertainTransform(Id id, TimeStamp timeStamp, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform, ITransformUncertainty::ITransformUncertaintyPtr &uncertainty);
+    bool getGeometry(Id id, Shape::ShapePtr& shape, TimeStamp& timeStamp);
 
-    bool getTransformForNode (unsigned int id, unsigned int idReferenceNode, TimeStamp timeStamp, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform);
+    bool getTransformForNode (Id id, Id idReferenceNode, TimeStamp timeStamp, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform);
 
     /* Implemented update interfaces */
-    bool addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, bool forcedId = false);
-    bool addGroup(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, bool forcedId = false);
-    bool addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp, bool forcedId = false);
-    bool addUncertainTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp, bool forcedId = false);
-    bool addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp, bool forcedId = false);
-    bool setNodeAttributes(unsigned int id, vector<Attribute> newAttributes);
-    bool setTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp);
-    bool setUncertainTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp);
-	bool deleteNode(unsigned int id);
-    bool addParent(unsigned int id, unsigned int parentId);
-    bool removeParent(unsigned int id, unsigned int parentId);
+    bool addNode(Id parentId, Id& assignedId, vector<Attribute> attributes, bool forcedId = false);
+    bool addGroup(Id parentId, Id& assignedId, vector<Attribute> attributes, bool forcedId = false);
+    bool addTransformNode(Id parentId, Id& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp, bool forcedId = false);
+    bool addUncertainTransformNode(Id parentId, Id& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp, bool forcedId = false);
+    bool addGeometricNode(Id parentId, Id& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp, bool forcedId = false);
+    bool setNodeAttributes(Id id, vector<Attribute> newAttributes);
+    bool setTransform(Id id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp);
+    bool setUncertainTransform(Id id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp);
+	bool deleteNode(Id id);
+    bool addParent(Id id, Id parentId);
+    bool removeParent(Id id, Id parentId);
 
     /* Configuration */
     bool attachUpdateObserver(ISceneGraphUpdateObserver* observer);
     bool detachUpdateObserver(ISceneGraphUpdateObserver* observer);
 
     /* Coordination methods */
-	bool executeGraphTraverser(INodeVisitor* visitor, unsigned int subgraphId);
+	bool executeGraphTraverser(INodeVisitor* visitor, Id subgraphId);
 
   private:
 
@@ -105,23 +101,23 @@ class SceneGraphFacade : public ISceneGraphQuery, public ISceneGraphUpdate {
      * @param id The ID.
      * @return The reference. Will be NULL in case no reference could be found.
      */
-    Node::NodeWeakPtr findNodeRecerence(unsigned int id);
+    Node::NodeWeakPtr findNodeRecerence(Id id);
 
     /**
      * @brief Test if an ID is in the idLookUpTable.
      * @param id The ID.
      * @return True if ID is in table, otherwise false.
      */
-    bool doesIdExist(unsigned int id);
+    bool doesIdExist(Id id);
 
     /// The root of all evil...
     Group::GroupPtr rootNode;
 
     /// Table that maps IDs to references.
-    map<unsigned int, Node::NodeWeakPtr > idLookUpTable;
+    map<Id, Node::NodeWeakPtr > idLookUpTable;
 
     /// Iterator for idLookUpTable
-    map<unsigned int, Node::NodeWeakPtr >::const_iterator nodeIterator;
+    map<Id, Node::NodeWeakPtr >::const_iterator nodeIterator;
 
     /// Handle to ID generator. Can be optionally specified at creation.
     IIdGenerator* idGenerator;

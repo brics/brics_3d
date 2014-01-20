@@ -46,7 +46,7 @@ void WorldModel::getSceneObjects(vector<rsg::Attribute> attributes, vector<Scene
 	results.clear();
 
 	scene.getNodes(attributes, resultIds);
-	for (rsg::Id i = 0; i < static_cast<unsigned int>(resultIds.size()); ++i) {
+	for (unsigned int i = 0; i < static_cast<unsigned int>(resultIds.size()); ++i) {
 		SceneObject tmpSceneObject;
 		tmpSceneObject.id = resultIds[i];
 
