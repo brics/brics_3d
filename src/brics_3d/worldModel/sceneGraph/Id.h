@@ -22,12 +22,18 @@
 
 #include "Uuid.h"
 
+#define NO_UUID
+
 namespace brics_3d {
 namespace rsg {
 
 /// The Id uniquely identifies a node in the scene graph.
-typedef unsigned int Id;
-//typedef Uuid Id;
+#ifdef NO_UUID
+	///@deprecated
+	typedef unsigned int Id;
+#else
+	typedef Uuid Id;
+#endif
 
 } /* namespace rsg */
 } /* namespace brics_3d */

@@ -26,6 +26,7 @@
 #include "brics_3d/core/Logger.h"
 #include "brics_3d/worldModel/sceneGraph/Id.h"
 #include "brics_3d/worldModel/sceneGraph/Uuid.h"
+#include "brics_3d/worldModel/sceneGraph/UuidGenerator.h"
 
 using namespace std;
 using namespace brics_3d;
@@ -39,6 +40,8 @@ class IdTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST_SUITE( IdTest );
 	CPPUNIT_TEST( testIds );
 	CPPUNIT_TEST( testUuids );
+	CPPUNIT_TEST( testIdGenerator );
+	CPPUNIT_TEST( testUuidGenerator );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -48,6 +51,8 @@ public:
 
 	void testIds();
 	void testUuids();
+	void testIdGenerator();
+	void testUuidGenerator();
 
 };
 

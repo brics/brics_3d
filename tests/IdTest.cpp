@@ -154,6 +154,48 @@ void IdTest::testUuids() {
 	CPPUNIT_ASSERT_EQUAL(idValue, node6IdAsInt);
 }
 
+void IdTest::testUuidGenerator() {
+	UuidGenerator idGenerator;
+
+	Uuid rootID = idGenerator.getRootId();
+	Uuid nullId = 0;
+	CPPUNIT_ASSERT(rootID != nullId);
+
+	Uuid id1 = idGenerator.getNextValidId();
+	Uuid id2 = idGenerator.getNextValidId();
+	Uuid id3 = idGenerator.getNextValidId();
+
+	LOG(DEBUG) << "id1 as UUID = " << id1;
+	CPPUNIT_ASSERT(id1 != id2);
+	CPPUNIT_ASSERT(id1 != id3);
+	CPPUNIT_ASSERT(id2 != id1);
+	CPPUNIT_ASSERT(id2 != id3);
+	CPPUNIT_ASSERT(id3 != id1);
+	CPPUNIT_ASSERT(id3 != id2);
+
+}
+
+void IdTest::testIdGenerator() {
+	UuidGenerator idGenerator;
+
+	Id rootID = idGenerator.getRootId();
+	Id nullId = 0;
+	CPPUNIT_ASSERT(rootID != nullId);
+
+	Id id1 = idGenerator.getNextValidId();
+	Id id2 = idGenerator.getNextValidId();
+	Id id3 = idGenerator.getNextValidId();
+
+	LOG(DEBUG) << "id1 as UUID = " << id1;
+	CPPUNIT_ASSERT(id1 != id2);
+	CPPUNIT_ASSERT(id1 != id3);
+	CPPUNIT_ASSERT(id2 != id1);
+	CPPUNIT_ASSERT(id2 != id3);
+	CPPUNIT_ASSERT(id3 != id1);
+	CPPUNIT_ASSERT(id3 != id2);
+
+}
+
 } /* namespace unitTests */
 
 /* EOF */

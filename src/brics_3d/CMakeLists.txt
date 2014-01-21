@@ -178,6 +178,7 @@ SET (WORLD_MODEL_LIBRARY_SOURCES
     ./worldModel/sceneGraph/SceneGraphFacade
     ./worldModel/sceneGraph/Shape
     ./worldModel/sceneGraph/SimpleIdGenerator
+    ./worldModel/sceneGraph/UuidGenerator
     ./worldModel/sceneGraph/TimeStamp
     ./worldModel/sceneGraph/Transform
     ./worldModel/sceneGraph/UncertainTransform
