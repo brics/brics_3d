@@ -70,6 +70,9 @@ int main(int argc, char **argv) {
 	wm->scene.attachUpdateObserver(wmObserver); //enable visualization
 
 	rsg::DotVisualizer* dbgObserver = new rsg::DotVisualizer(&wm->scene);
+	rsg::VisualizationConfiguration configuration; // optional configuration
+	configuration.abbreviateIds = true;
+	dbgObserver->setConfig(configuration);
 	wm->scene.attachUpdateObserver(dbgObserver);
 
 	/* test data */

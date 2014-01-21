@@ -98,10 +98,15 @@ void DotGraphGenerator::doHandleNode(Node* node) {
 		aggregatedAttributes << "\\n";
 	}
 
-//	nodes << node->getId() << ";" << std::endl;
-	nodes << node->getId();
-    nodes << " [label = \"";
-    nodes << "ID [" << node->getId() << "]\\n";
+    if(config.abbreviateIds) {
+    	nodes << uuidToUnsignedInt(node->getId());
+        nodes << " [label = \"";
+    	nodes << "ID [" << uuidToUnsignedInt(node->getId()) << "]\\n";
+    } else {
+    	nodes << node->getId();
+        nodes << " [label = \"";
+    	nodes << "ID [" << node->getId() << "]\\n";
+	}
     nodes << aggregatedAttributes.str();
     nodes << "\"]";
 	nodes << ";" << std::endl;
@@ -124,10 +129,15 @@ void DotGraphGenerator::doHandleTransform(Transform* node) {
 	double z = matrixPtr[14];
 
 
-//	nodes << node->getId() << ";" << std::endl;
-	nodes << node->getId();
-    nodes << " [label = \"";
-    nodes << "ID [" << node->getId() << "]\\n";
+    if(config.abbreviateIds) {
+    	nodes << uuidToUnsignedInt(node->getId());
+        nodes << " [label = \"";
+    	nodes << "ID [" << uuidToUnsignedInt(node->getId()) << "]\\n";
+    } else {
+    	nodes << node->getId();
+        nodes << " [label = \"";
+    	nodes << "ID [" << node->getId() << "]\\n";
+	}
     nodes << "T = (" << x << ", " << y <<", " << z << ")\\n";
     nodes << "Updates: " << node->getUpdateCount() << "\\n";
     nodes << aggregatedAttributes.str();
@@ -150,9 +160,15 @@ void DotGraphGenerator::doHandleGeometricNode(GeometricNode* node) {
 		aggregatedAttributes << "\\n";
 	}
 
-	nodes << node->getId();
-    nodes << " [label = \"";
-    nodes << "ID [" << node->getId() << "]\\n";
+    if(config.abbreviateIds) {
+    	nodes << uuidToUnsignedInt(node->getId());
+        nodes << " [label = \"";
+    	nodes << "ID [" << uuidToUnsignedInt(node->getId()) << "]\\n";
+    } else {
+    	nodes << node->getId();
+        nodes << " [label = \"";
+    	nodes << "ID [" << node->getId() << "]\\n";
+	}
     nodes << aggregatedAttributes.str();
     nodes << "\"";
     nodes << "style=\"filled\" ";
@@ -168,7 +184,11 @@ void DotGraphGenerator::doHandleEdges(Group* node){
 	// An egde has the following format: 3 -> 4;
 
 	for (unsigned int childIndex = 0; childIndex < node->getNumberOfChildren(); ++childIndex) {
-		edges << node->getId() << " -> " << (*node->getChild(childIndex)).getId() << ";" << std::endl;
+	    if(config.abbreviateIds) {
+	    	edges << uuidToUnsignedInt(node->getId()) << " -> " << uuidToUnsignedInt((*node->getChild(childIndex)).getId()) << ";" << std::endl;
+	    } else {
+	    	edges << node->getId() << " -> " << (*node->getChild(childIndex)).getId() << ";" << std::endl;
+		}
 	}
 }
 

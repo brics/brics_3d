@@ -96,6 +96,7 @@ bool DotVisualizer::removeParent(Id id, Id parentId) {
 
 void DotVisualizer::printGraph(){
 	LOG(DEBUG) << "DotVisualizer: Printing graph to file.";
+	graphPrinter.setConfig(config);
 	scene->executeGraphTraverser(&graphPrinter, scene->getRootId());
 //	std::cout << graphPrinter.getDotGraph() << std::endl << std::endl;
 

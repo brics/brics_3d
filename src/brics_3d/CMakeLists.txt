@@ -192,7 +192,8 @@ SET (WORLD_MODEL_LIBRARY_SOURCES
     ./worldModel/sceneGraph/DotVisualizer
     ./worldModel/sceneGraph/SubGraphChecker
     ./worldModel/sceneGraph/SceneGraphToUpdatesTraverser
-    ./worldModel/sceneGraph/TemporalCache         
+    ./worldModel/sceneGraph/TemporalCache
+    ./worldModel/sceneGraph/VisualizationConfiguration         
 )
 
 #optional sources

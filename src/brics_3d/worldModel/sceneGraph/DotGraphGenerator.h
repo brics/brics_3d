@@ -25,6 +25,7 @@
 #include "Transform.h"
 #include "GeometricNode.h"
 #include "INodeVisitor.h"
+#include "VisualizationConfiguration.h"
 
 #include <sstream>
 
@@ -50,6 +51,14 @@ public:
 
 	std::string getDotGraph();
 
+	const VisualizationConfiguration& getConfig() const {
+		return config;
+	}
+
+	void setConfig(const VisualizationConfiguration& config) {
+		this->config = config;
+	}
+
 protected:
 
 	virtual void doHandleNode(Node* node); //could be overidden by more advanced/beautiful handlers
@@ -63,7 +72,7 @@ protected:
 
 	std::vector< Node* > alreadyVisitedNodes;
 
-
+	VisualizationConfiguration config;
 };
 
 }

@@ -26,6 +26,7 @@
 #include "ISceneGraphUpdateObserver.h"
 #include "DotGraphGenerator.h"
 #include "SceneGraphFacade.h"
+#include "VisualizationConfiguration.h"
 
 namespace brics_3d {
 
@@ -64,12 +65,23 @@ public:
         this->keepHistory = keepHistory;
     }
 
+	const brics_3d::rsg::VisualizationConfiguration& getConfig() const {
+		return config;
+	}
+
+	void setConfig(const brics_3d::rsg::VisualizationConfiguration& config) {
+		this->config = config;
+	}
+
 private:
 	///Handle the to the scene to be observed
 	brics_3d::rsg::SceneGraphFacade* scene;
 
 	/// Traverser to produce a dot file
 	brics_3d::rsg::DotGraphGenerator graphPrinter;
+
+	/// The generic visualization configuration
+	brics_3d::rsg::VisualizationConfiguration config;
 
 	std::ofstream output;
 
