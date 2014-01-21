@@ -50,17 +50,17 @@ public:
 	virtual ~OSGVisualizer();
 
 	/* implemetntations of observer interface */
-	bool addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, bool forceId = false);
-	bool addGroup(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, bool forceId = false);
-	bool addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp, bool forceId = false);
-	bool addUncertainTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp, bool forcedId = false);
-	bool addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp, bool forceId = false);
-	bool setNodeAttributes(unsigned int id, vector<Attribute> newAttributes);
-	bool setTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp);
-	bool setUncertainTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp);
-	bool deleteNode(unsigned int id);
-	bool addParent(unsigned int id, unsigned int parentId);
-	bool removeParent(unsigned int id, unsigned int parentId);
+	bool addNode(Id parentId, Id& assignedId, vector<Attribute> attributes, bool forcedId = false);
+	bool addGroup(Id parentId, Id& assignedId, vector<Attribute> attributes, bool forcedId = false);
+	bool addTransformNode(Id parentId, Id& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp, bool forcedId = false);
+    bool addUncertainTransformNode(Id parentId, Id& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp, bool forcedId = false);
+	bool addGeometricNode(Id parentId, Id& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp, bool forcedId = false);
+	bool setNodeAttributes(Id id, vector<Attribute> newAttributes);
+	bool setTransform(Id id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp);
+    bool setUncertainTransform(Id id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp);
+	bool deleteNode(Id id);
+	bool addParent(Id id, Id parentId);
+    bool removeParent(Id id, Id parentId);
 
     /**
      * Return true if  viewer's work is done and should exit the frame loop.
@@ -77,10 +77,10 @@ private:
 	void threadFunction(OSGVisualizer* obj);
 
 	/// get intranl root ID
-    unsigned int getRootId();
+    Id getRootId();
 
     /// map IDs to real references
-    osg::ref_ptr<osg::Node> findNodeRecerence(unsigned int id);
+    osg::ref_ptr<osg::Node> findNodeRecerence(Id id);
 
     /// Helper function to visualize coordinate frame
     osg::ref_ptr<osg::Node> createFrameAxis(double axisLength = 1.0);
@@ -89,7 +89,7 @@ private:
     osg::ref_ptr<osg::Node> createUncertaintyVisualization(double radiusX, double radiusY, double radiusZ);
 
     /// Helper function to visualize attributes as text
-    osg::ref_ptr<osg::Node> createAttributeVisualization(vector<Attribute> attributes, unsigned int id = 0);
+    osg::ref_ptr<osg::Node> createAttributeVisualization(vector<Attribute> attributes, Id id = 0);
 
 	/// OSG viewer object
 	osgViewer::Viewer viewer;
@@ -106,8 +106,8 @@ private:
 	friend class OSGOperationUpdateTransform;
 
 	///ID management for OSG
-    std::map<unsigned int, osg::ref_ptr<osg::Node> > idLookUpTable;
-    std::map<unsigned int, osg::ref_ptr<osg::Node> >::const_iterator nodeIterator;
+    std::map<Id, osg::ref_ptr<osg::Node> > idLookUpTable;
+    std::map<Id, osg::ref_ptr<osg::Node> >::const_iterator nodeIterator;
 
     /// Determines dimensions of visualizazion of the frames axis. Default is 1.0
     double frameAxisVisualisationScale;

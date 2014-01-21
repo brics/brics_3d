@@ -28,7 +28,7 @@ namespace brics_3d {
 
 namespace rsg {
 
-PointCloudAccumulatorIdAware::PointCloudAccumulatorIdAware(SceneGraphFacade* facadeHandle, unsigned int referenceNodeId) : PointCloudAccumulator(Node::NodePtr()) {
+PointCloudAccumulatorIdAware::PointCloudAccumulatorIdAware(SceneGraphFacade* facadeHandle, Id referenceNodeId) : PointCloudAccumulator(Node::NodePtr()) {
 	assert(facadeHandle != 0);
 	this->facadeHandle = facadeHandle;
 	this->referenceNodeId = referenceNodeId;

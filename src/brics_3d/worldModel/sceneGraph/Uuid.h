@@ -58,6 +58,7 @@ public:
 	Uuid();
 	Uuid(Uuid & other);
 	Uuid(const Uuid & other);
+	Uuid(unsigned int id);
 	virtual ~Uuid();
 
 	/* Assignment */
@@ -101,10 +102,10 @@ public:
 	 * Writes a UUId to a stream
 	 *
 	 * @param outStream The output stream
-	 * @param point Reference to UUID which data is forwarded to output stream
+	 * @param id Reference to UUID which data is forwarded to output stream
 	 * @return Output stream
 	 */
-	friend std::ostream& operator<<(std::ostream &outStream, const Uuid &id);
+	friend std::ostream& operator<<(std::ostream& outStream, const Uuid& id);
 
 private:
 
@@ -114,7 +115,7 @@ private:
 	/**
 	 * @brief Array holding the 128 bit value for an UUID
 	 *
-	 * The semantics is decribed in detail here: http://www.ietf.org/rfc/rfc4122.txt
+	 * The semantics is described in detail here: http://www.ietf.org/rfc/rfc4122.txt
 	 *
 	 * @code
 	 *    0                   1                   2                   3
@@ -163,7 +164,20 @@ private:
 
 };
 
+/** Helper function for backward compatibility
+ *
+ * The function will take the last four bytes and reinterpret them as
+ * an unsigned integer. The other bytes are ignored.
+ *
+ * @note This function will cause loss of information. Use with care.
+ *
+ * @param id The Uuid to be converted
+ * @return The last 4 bytes of the UUID but interpreted as unsigend int
+ */
+extern unsigned int uuidToUnsignedInt (Uuid id);
 
+/// Only for backward compatibility
+extern unsigned int uuidToUnsignedInt (unsigned int id);
 
 } /* namespace rsg */
 } /* namespace brics_3d */

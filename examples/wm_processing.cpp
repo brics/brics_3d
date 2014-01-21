@@ -85,13 +85,13 @@ int main(int argc, char **argv) {
 	 *       			 |
 	 *       		    pc2
 	 */
-	unsigned int pc1Id;
-	unsigned int pc2Id;
-	unsigned int pcReducedId;
-	unsigned int groupReducedClouds;
-	unsigned int pcBoxROIId;
-	unsigned int pcResultId;
-//	unsigned int tmpId;
+	rsg::Id pc1Id;
+	rsg::Id pc2Id;
+	rsg::Id pcReducedId;
+	rsg::Id groupReducedClouds;
+	rsg::Id pcBoxROIId;
+	rsg::Id pcResultId;
+//	rsg::Id tmpId;
 	vector<rsg::Attribute> tmpAttributes;
 
 	WorldModel* wm = new WorldModel();
@@ -107,7 +107,7 @@ int main(int argc, char **argv) {
 	LOG(INFO) << "assigend ID for first point cloud: " << pc1Id;
 
 	HomogeneousMatrix44::IHomogeneousMatrix44Ptr tfPc2(new HomogeneousMatrix44(1,0,0, 0,1,0, 0,0,1, 0.0,0.0,0.0));
-	unsigned int tfPc2Id = 0;
+	rsg::Id tfPc2Id = 0;
 	tmpAttributes.clear();
 	wm->scene.addTransformNode(wm->getRootNodeId(), tfPc2Id, tmpAttributes, tfPc2, TimeStamp(0.0));
 	PointCloud<brics_3d::PointCloud3D>::PointCloudPtr pc2Container(new rsg::PointCloud<brics_3d::PointCloud3D>());
@@ -127,7 +127,7 @@ int main(int argc, char **argv) {
 	brics_3d::PointCloud3D::PointCloud3DPtr reducedPointCloud2(new brics_3d::PointCloud3D());
 
 	/* query world model for relevant data */
-	vector<unsigned int> resultIds;
+	vector<rsg::Id> resultIds;
 	tmpAttributes.clear();
 	tmpAttributes.push_back(Attribute("name","point_cloud_1"));
 	wm->scene.getNodes(tmpAttributes, resultIds);
@@ -203,12 +203,12 @@ int main(int argc, char **argv) {
 	LOG(INFO) << "BoundingBox: center = " << resultBoxCenter << " dimensions = " << resultBoxDimensions;
 
 	/* add TF + Box */
-	unsigned int tfBBoxId = 0;
+	rsg::Id tfBBoxId = 0;
 	tmpAttributes.clear();
 	tmpAttributes.push_back(Attribute("name","cluster_tf"));
 	wm->scene.addTransformNode(wm->scene.getRootId(), tfBBoxId, tmpAttributes, clusterTransform, brics_3d::rsg::TimeStamp(0.1));
 
-	unsigned int bBoxId = 0;
+	rsg::Id bBoxId = 0;
 	tmpAttributes.clear();
 	tmpAttributes.push_back(Attribute("name","cluster_bbox"));
 	tmpAttributes.push_back(Attribute("debugInfo","no_visualization"));
@@ -218,7 +218,7 @@ int main(int argc, char **argv) {
 
 	/* Add a transformation node to wm */
 //	HomogeneousMatrix44::IHomogeneousMatrix44Ptr offsetTransform(new HomogeneousMatrix44(1,0,0, 0,1,0, 0,0,1, 0,0.001,0));
-//	unsigned int tfId = 0;
+//	rsg::Id tfId = 0;
 //	tmpAttributes.clear();
 //	tmpAttributes.push_back(Attribute("name","offset_transform"));
 //	wm->scene.addTransformNode(wm->getRootNodeId(), tfId, tmpAttributes, offsetTransform, TimeStamp(0.2));
@@ -246,9 +246,9 @@ int main(int argc, char **argv) {
 	/*
 	 * Some further capabilities of the world model:
 	 */
-	unsigned int dummyId = 0;
-	unsigned int groupId = 0;
-	unsigned int nodeId = 0;
+	rsg::Id dummyId = 0;
+	rsg::Id groupId = 0;
+	rsg::Id nodeId = 0;
 	TimeStamp dummyTime(1.0);
 	tmpAttributes.clear();
 
@@ -264,20 +264,20 @@ int main(int argc, char **argv) {
 
 	/* add some more shapes and transforms */
 	HomogeneousMatrix44::IHomogeneousMatrix44Ptr tf1(new HomogeneousMatrix44(1,0,0, 0,1,0, 0,0,1, 0.1,0.1,0));
-	unsigned int tfBox1Id = 0;
+	rsg::Id tfBox1Id = 0;
 	wm->scene.addTransformNode(groupId, tfBox1Id, tmpAttributes, transform, dummyTime);
 	rsg::Box::BoxPtr box1(new rsg::Box(0.2,0.015,0.2));
 	wm->scene.addGeometricNode(tfBox1Id, dummyId, tmpAttributes, box1, dummyTime);
 
 //	HomogeneousMatrix44::IHomogeneousMatrix44Ptr tf2(new HomogeneousMatrix44(1,0,0, 0,1,0, 0,0,1, 0.1,0.05,0));
-//	unsigned int tfCylinder1Id = 0;
+//	rsg::Id tfCylinder1Id = 0;
 //	wm->scene.addTransformNode(groupId, tfCylinder1Id, tmpAttributes, tf2, dummyTime);
 //	rsg::Cylinder::CylinderPtr cylinder1(new rsg::Cylinder(0.02,0.2));
 //	wm->scene.addGeometricNode(tfCylinder1Id, dummyId, tmpAttributes, cylinder1, dummyTime);
 
 
 //	HomogeneousMatrix44::IHomogeneousMatrix44Ptr tfReference1(new HomogeneousMatrix44(1,0,0, 0,1,0, 0,0,1, 0.1,0.1,0.1));
-//	unsigned int tfReference1Id = 0;
+//	rsg::Id tfReference1Id = 0;
 //	wm->scene.addTransformNode(wm->scene.getRootId(), tfReference1Id, tmpAttributes, tfReference1, dummyTime);
 //	HomogeneousMatrix44::IHomogeneousMatrix44Ptr tfReference2(new HomogeneousMatrix44(1,0,0, 0,1,0, 0,0,1, -0.1,0.0,0.0));
 //	wm->scene.addTransformNode(tfReference1Id, dummyId, tmpAttributes, tfReference2, dummyTime);

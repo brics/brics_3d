@@ -53,9 +53,9 @@ void SceneGraphNodesTest::testGroup() {
 	Node::NodePtr child1(new Node());
 	Node::NodePtr child2(new Node());
 
-	unsigned const int rootId = 1;
-	unsigned const int child1testId = 42;
-	unsigned const int child2testId = 123;
+	const Id rootId = 1;
+	const Id child1testId = 42;
+	const Id child2testId = 123;
 
 	root.setId(rootId);
 	child1->setId(child1testId);
@@ -129,8 +129,8 @@ void SceneGraphNodesTest::testTransform() {
 	Group::GroupPtr root(new Group);
 	rsg::Transform::TransformPtr transform1 (new rsg::Transform);
 
-	unsigned const int rootId = 1;
-	unsigned const int transform1Id = 2;
+	const Id rootId = 1;
+	const Id transform1Id = 2;
 
 	root->setId(rootId);
 	transform1->setId(transform1Id);
@@ -237,8 +237,8 @@ void SceneGraphNodesTest::testTemporalTransform() {
 	rsg::Transform::TransformPtr transform1 (new rsg::Transform);
 	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr resultTransform;
 
-	unsigned const int rootId = 1;
-	unsigned const int transform1Id = 2;
+	const Id rootId = 1;
+	const Id transform1Id = 2;
 
 	root->setId(rootId);
 	transform1->setId(transform1Id);
@@ -423,10 +423,10 @@ void SceneGraphNodesTest::testTemporalTransformAccess() {
 	rsg::Transform::TransformPtr transform3 (new rsg::Transform);
 	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr resultTransform;
 
-	unsigned const int rootId = 1;
-	unsigned const int transform1Id = 2;
-	unsigned const int transform2Id = 3;
-	unsigned const int transform3Id = 4;
+	const Id rootId = 1;
+	const Id transform1Id = 2;
+	const Id transform2Id = 3;
+	const Id transform3Id = 4;
 
 	root->setId(rootId);
 	transform1->setId(transform1Id);
@@ -635,8 +635,8 @@ void SceneGraphNodesTest::testUncertainTransform() {
 	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr resultTransform;
 	ITransformUncertainty::ITransformUncertaintyPtr resultUncertainty;
 
-	unsigned const int rootId = 1;
-	unsigned const int uncertainTransform1Id = 2;
+	const Id rootId = 1;
+	const Id uncertainTransform1Id = 2;
 
 	root->setId(rootId);
 	uncertainTransform1->setId(uncertainTransform1Id);
@@ -813,8 +813,8 @@ void SceneGraphNodesTest::testTemporalUncertainTransform() {
 	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr resultTransform;
 	ITransformUncertainty::ITransformUncertaintyPtr resultUncertainty;
 
-	unsigned const int rootId = 1;
-	unsigned const int uncertainTransform1Id = 2;
+	const Id rootId = 1;
+	const Id uncertainTransform1Id = 2;
 
 	root->setId(rootId);
 	uncertainTransform1->setId(uncertainTransform1Id);
@@ -1039,8 +1039,8 @@ void SceneGraphNodesTest::testGeometricNode() {
 	 *        |
 	 *      geode1
 	 */
-	unsigned const int rootId = 0;
-	unsigned const int geode1Id = 1;
+	const Id rootId = 0;
+	const Id geode1Id = 1;
 
 
 	rsg::Transform::TransformPtr root(new rsg::Transform());
@@ -1142,9 +1142,9 @@ void SceneGraphNodesTest::testOwnership() {
 	Group::GroupPtr root(new Group());
 	boost::weak_ptr<Group> testWeakPtr;
 
-	unsigned const int group1Id = 1;
-	unsigned const int group2Id = 2;
-	unsigned const int group3Id = 3;
+	const Id group1Id = 1;
+	const Id group2Id = 2;
+	const Id group3Id = 3;
 
 	{
 		Group::GroupPtr group1(new Group());
@@ -1209,13 +1209,13 @@ void SceneGraphNodesTest::testSimpleGraph() {
 	 *   node3    node4  node5   group6
 	 */
 
-	unsigned const int rootId = 0;
-	unsigned const int group1Id = 1;
-	unsigned const int group2Id = 2;
-	unsigned const int node3Id = 3;
-	unsigned const int node4Id = 4;
-	unsigned const int node5Id = 5;
-	unsigned const int group6Id = 6;
+	const Id rootId = 0;
+	const Id  group1Id = 1;
+	const Id  group2Id = 2;
+	const Id  node3Id = 3;
+	const Id  node4Id = 4;
+	const Id  node5Id = 5;
+	const Id  group6Id = 6;
 
 	Group::GroupPtr root(new Group());
 	root->setId(rootId);
@@ -1330,11 +1330,11 @@ void SceneGraphNodesTest::testSimpleVisitor() {
 	 *            |  |
 	 *            node4
 	 */
-	unsigned const int rootId = 0;
-	unsigned const int group1Id = 1;
-	unsigned const int group2Id = 2;
-	unsigned const int node3Id = 3;
-	unsigned const int node4Id = 4;
+	const Id rootId = 0;
+	const Id group1Id = 1;
+	const Id group2Id = 2;
+	const Id node3Id = 3;
+	const Id node4Id = 4;
 
 	Group::GroupPtr root(new Group());
 	root->setId(rootId);
@@ -1433,11 +1433,11 @@ void SceneGraphNodesTest::testPathCollectorVisitor() {
 	 *            |  |
 	 *            node4
 	 */
-	unsigned const int rootId = 0;
-	unsigned const int group1Id = 1;
-	unsigned const int group2Id = 2;
-	unsigned const int node3Id = 3;
-	unsigned const int node4Id = 4;
+	const Id rootId = 0;
+	const Id group1Id = 1;
+	const Id group2Id = 2;
+	const Id node3Id = 3;
+	const Id node4Id = 4;
 
 	Group::GroupPtr root(new Group());
 	root->setId(rootId);
@@ -1517,12 +1517,12 @@ void SceneGraphNodesTest::testTransformVisitor() {
 	 *            |  |
 	 *            node5
 	 */
-	unsigned const int rootId = 0;
-	unsigned const int tf1Id = 1;
-	unsigned const int tf2Id = 2;
-	unsigned const int tf3Id = 3;
-	unsigned const int group4Id = 4;
-	unsigned const int node5Id = 5;
+	const Id rootId = 0;
+	const Id tf1Id = 1;
+	const Id tf2Id = 2;
+	const Id tf3Id = 3;
+	const Id group4Id = 4;
+	const Id node5Id = 5;
 
 	Group::GroupPtr root(new Group());
 	root->setId(rootId);
@@ -1761,12 +1761,12 @@ void SceneGraphNodesTest::testUncertainTransformVisitor() {
 	 *            |  |
 	 *            node5
 	 */
-	unsigned const int rootId = 0;
-	unsigned const int tf1Id = 1;
-	unsigned const int utf2Id = 2;
-	unsigned const int utf3Id = 3;
-	unsigned const int group4Id = 4;
-	unsigned const int node5Id = 5;
+	const Id rootId = 0;
+	const Id tf1Id = 1;
+	const Id utf2Id = 2;
+	const Id utf3Id = 3;
+	const Id group4Id = 4;
+	const Id node5Id = 5;
 
 	Group::GroupPtr root(new Group());
 	root->setId(rootId);
@@ -1927,12 +1927,12 @@ void SceneGraphNodesTest::testGlobalTransformCalculation() {
 	 *            |  |
 	 *            node5
 	 */
-	unsigned const int rootId = 0;
-	unsigned const int tf1Id = 1;
-	unsigned const int tf2Id = 2;
-	unsigned const int tf3Id = 3;
-	unsigned const int group4Id = 4;
-	unsigned const int node5Id = 5;
+	const Id rootId = 0;
+	const Id tf1Id = 1;
+	const Id tf2Id = 2;
+	const Id tf3Id = 3;
+	const Id group4Id = 4;
+	const Id node5Id = 5;
 
 	rsg::Transform::TransformPtr root(new rsg::Transform());
 	root->setId(rootId);
@@ -2088,11 +2088,11 @@ void SceneGraphNodesTest::testAttributeFinder() {
 	 *            |  |
 	 *            geode4
 	 */
-	unsigned const int rootId = 0;
-	unsigned const int tf1Id = 1;
-	unsigned const int group2Id = 2;
-	unsigned const int node3Id = 3;
-	unsigned const int geode4Id = 4;
+	const Id rootId = 0;
+	const Id tf1Id = 1;
+	const Id group2Id = 2;
+	const Id node3Id = 3;
+	const Id geode4Id = 4;
 
 	Attribute testAttribute1("name","test1");
 	Attribute testAttribute2("name","test1");
@@ -2417,13 +2417,22 @@ void SceneGraphNodesTest::testOutdatedDataDeleter() {
 void SceneGraphNodesTest::testIdGenerator(){
 	IIdGenerator* idGenerator = new SimpleIdGenerator();
 
-	CPPUNIT_ASSERT_EQUAL(1u, idGenerator->getRootId());
-	CPPUNIT_ASSERT_EQUAL(2u, idGenerator->getNextValidId());
-	CPPUNIT_ASSERT_EQUAL(1u, idGenerator->getRootId());
-	CPPUNIT_ASSERT_EQUAL(3u, idGenerator->getNextValidId());
-	CPPUNIT_ASSERT_EQUAL(4u, idGenerator->getNextValidId());
-	CPPUNIT_ASSERT_EQUAL(5u, idGenerator->getNextValidId());
-	CPPUNIT_ASSERT_EQUAL(6u, idGenerator->getNextValidId());
+	Id rootId = 1u;
+	Id id2 = 2u;
+	Id id3 = 3u;
+	Id id4 = 4u;
+	Id id5 = 5u;
+	Id id6 = 6u;
+	Id id7 = 7u;
+	Id id9 = 9u;
+
+	CPPUNIT_ASSERT_EQUAL(rootId, idGenerator->getRootId());
+	CPPUNIT_ASSERT_EQUAL(id2, idGenerator->getNextValidId());
+	CPPUNIT_ASSERT_EQUAL(rootId, idGenerator->getRootId());
+	CPPUNIT_ASSERT_EQUAL(id3, idGenerator->getNextValidId());
+	CPPUNIT_ASSERT_EQUAL(id4, idGenerator->getNextValidId());
+	CPPUNIT_ASSERT_EQUAL(id5, idGenerator->getNextValidId());
+	CPPUNIT_ASSERT_EQUAL(id6, idGenerator->getNextValidId());
 
 	CPPUNIT_ASSERT(!idGenerator->removeIdFromPool(1u));
 	CPPUNIT_ASSERT(!idGenerator->removeIdFromPool(2u));
@@ -2432,12 +2441,12 @@ void SceneGraphNodesTest::testIdGenerator(){
 	CPPUNIT_ASSERT(!idGenerator->removeIdFromPool(5u));
 	CPPUNIT_ASSERT(!idGenerator->removeIdFromPool(6u));
 
-	CPPUNIT_ASSERT_EQUAL(7u, idGenerator->getNextValidId());
+	CPPUNIT_ASSERT_EQUAL(id7, idGenerator->getNextValidId());
 
 	CPPUNIT_ASSERT(!idGenerator->removeIdFromPool(7u));
 	CPPUNIT_ASSERT(idGenerator->removeIdFromPool(8u)); // this should work
 
-	CPPUNIT_ASSERT_EQUAL(9u, idGenerator->getNextValidId());
+	CPPUNIT_ASSERT_EQUAL(id9, idGenerator->getNextValidId());
 	CPPUNIT_ASSERT(!idGenerator->removeIdFromPool(9u));
 
 	CPPUNIT_ASSERT(idGenerator->removeIdFromPool(123u)); // this should work too
@@ -2464,7 +2473,7 @@ void SceneGraphNodesTest::testSceneGraphFacade(){
 	Id group2Id = 0;
 	Id node3Id = 0;
 	Id geode4Id = 0;
-	unsigned const int invalidId = 100000000;
+	const Id invalidId = 100000000;
 
 	SceneGraphFacade scene;
 	vector<Attribute> tmpAttributes;
@@ -2478,7 +2487,8 @@ void SceneGraphNodesTest::testSceneGraphFacade(){
 	TimeStamp dummyTime(20);
 
 	/* test root */
-	CPPUNIT_ASSERT_EQUAL(1u, scene.getRootId()); //assumption: uses SimpleIdGenerator
+	Id expecetedRootId = 1u;
+	CPPUNIT_ASSERT_EQUAL(expecetedRootId, scene.getRootId()); //assumption: uses SimpleIdGenerator
 	rootId = scene.getRootId();
 
 	resultParentIds.clear();
@@ -3720,15 +3730,15 @@ void SceneGraphNodesTest::testSubGraphChecker() {
 	 *   node3    node4  node5   group6   geode8
 	 */
 
-	unsigned const int rootId = 0;
-	unsigned const int group1Id = 1;
-	unsigned const int group2Id = 2;
-	unsigned const int node3Id = 3;
-	unsigned const int node4Id = 4;
-	unsigned const int node5Id = 5;
-	unsigned const int group6Id = 6;
-	unsigned const int tf7Id = 7;
-	unsigned const int geode8Id = 8;
+	const Id rootId = 0;
+	const Id group1Id = 1;
+	const Id group2Id = 2;
+	const Id node3Id = 3;
+	const Id node4Id = 4;
+	const Id node5Id = 5;
+	const Id group6Id = 6;
+	const Id tf7Id = 7;
+	const Id geode8Id = 8;
 
 	Group::GroupPtr root(new Group());
 	root->setId(rootId);
@@ -3883,6 +3893,18 @@ void SceneGraphNodesTest::testForcedIds() {
 	Id node3IdForced = 0;
 	Id geode4Id = 0;
 	Id geode4IdForced = 0;
+	const Id id2 = 2;
+	const Id id3 = 3;
+	const Id id4 = 4;
+	const Id id6 = 6;
+	const Id id7 = 7;
+	const Id id8 = 8;
+	const Id id10 = 10;
+	const Id id11 = 11;
+	const Id id12 = 12;
+	const Id id14 = 14;
+	const Id id15 = 15;
+	const Id id16 = 16;
 	const Id invalidId = 1000001;
 
 	SceneGraphFacade scene; //assumes SimpleIdGenerator
@@ -3897,14 +3919,14 @@ void SceneGraphNodesTest::testForcedIds() {
 	CPPUNIT_ASSERT(!scene.addTransformNode(scene.getRootId(), tf1IdForced, attributes, dummyTransform, dummyTime, true)); //this would override root
 	tf1IdForced = 2;
 	CPPUNIT_ASSERT(scene.addTransformNode(scene.getRootId(), tf1IdForced, attributes, dummyTransform, dummyTime, true));
-	CPPUNIT_ASSERT_EQUAL(2u, tf1IdForced);
+	CPPUNIT_ASSERT_EQUAL(id2, tf1IdForced);
 	CPPUNIT_ASSERT(scene.addTransformNode(scene.getRootId(), tf1Id, attributes, dummyTransform, dummyTime, false));
-	CPPUNIT_ASSERT_EQUAL(3u, tf1Id);
+	CPPUNIT_ASSERT_EQUAL(id3, tf1Id);
 	tf1IdForced = 4; // ok, but invalid parent:
 	CPPUNIT_ASSERT(!scene.addTransformNode(invalidId, tf1IdForced, attributes, dummyTransform, dummyTime, true)); //does not work but wastes an ID
-	CPPUNIT_ASSERT_EQUAL(4u, tf1IdForced);
+	CPPUNIT_ASSERT_EQUAL(id4, tf1IdForced);
 	CPPUNIT_ASSERT(!scene.addTransformNode(invalidId, tf1Id, attributes, dummyTransform, dummyTime, false)); //does not work but wastes an ID
-	CPPUNIT_ASSERT_EQUAL(3u, tf1Id);
+	CPPUNIT_ASSERT_EQUAL(id3, tf1Id);
 
 	group2IdForced = 0;
 	CPPUNIT_ASSERT(!scene.addGroup(scene.getRootId(), group2IdForced, attributes, true)); //this would override root
@@ -3920,40 +3942,40 @@ void SceneGraphNodesTest::testForcedIds() {
 	CPPUNIT_ASSERT(!scene.addGroup(scene.getRootId(), group2IdForced, attributes, true));
 	group2IdForced = 6;
 	CPPUNIT_ASSERT(scene.addGroup(scene.getRootId(), group2IdForced, attributes, true));
-	CPPUNIT_ASSERT_EQUAL(6u, group2IdForced);
+	CPPUNIT_ASSERT_EQUAL(id6, group2IdForced);
 	CPPUNIT_ASSERT(scene.addGroup(scene.getRootId(), group2Id, attributes, false)); // automatic generated
-	CPPUNIT_ASSERT_EQUAL(7u, group2Id);
+	CPPUNIT_ASSERT_EQUAL(id7, group2Id);
 	group2IdForced = 8; // ok, but invalid parent:
 	CPPUNIT_ASSERT(!scene.addGroup(invalidId, group2IdForced, attributes, true)); //does not work but wastes an ID
-	CPPUNIT_ASSERT_EQUAL(8u, group2IdForced);
+	CPPUNIT_ASSERT_EQUAL(id8, group2IdForced);
 	CPPUNIT_ASSERT(!scene.addGroup(invalidId, group2Id, attributes, false)); //does not work but wastes an ID
-	CPPUNIT_ASSERT_EQUAL(7u, group2Id);
+	CPPUNIT_ASSERT_EQUAL(id7, group2Id);
 
 	node3IdForced = 1;
 	CPPUNIT_ASSERT(!scene.addNode(scene.getRootId(), node3IdForced, attributes, true));
 	node3IdForced = 10;
 	CPPUNIT_ASSERT(scene.addNode(scene.getRootId(), node3IdForced, attributes, true));
-	CPPUNIT_ASSERT_EQUAL(10u, node3IdForced);
+	CPPUNIT_ASSERT_EQUAL(id10, node3IdForced);
 	CPPUNIT_ASSERT(scene.addNode(scene.getRootId(), node3Id, attributes, false));
-	CPPUNIT_ASSERT_EQUAL(11u, node3Id);
+	CPPUNIT_ASSERT_EQUAL(id11, node3Id);
 	node3IdForced = 12;  // ok, but invalid parent:
 	CPPUNIT_ASSERT(!scene.addNode(invalidId, node3IdForced, attributes, true));
-	CPPUNIT_ASSERT_EQUAL(12u, node3IdForced);
+	CPPUNIT_ASSERT_EQUAL(id12, node3IdForced);
 	CPPUNIT_ASSERT(!scene.addNode(invalidId, node3Id, attributes, false));
-	CPPUNIT_ASSERT_EQUAL(11u, node3Id);
+	CPPUNIT_ASSERT_EQUAL(id11, node3Id);
 
 	geode4IdForced = 1;
 	CPPUNIT_ASSERT(!scene.addGeometricNode(scene.getRootId(), geode4IdForced, attributes, dummyBox, dummyTime, true));
 	geode4IdForced = 14;
 	CPPUNIT_ASSERT(scene.addGeometricNode(scene.getRootId(), geode4IdForced, attributes, dummyBox, dummyTime, true));
-	CPPUNIT_ASSERT_EQUAL(14u, geode4IdForced);
+	CPPUNIT_ASSERT_EQUAL(id14, geode4IdForced);
 	CPPUNIT_ASSERT(scene.addGeometricNode(scene.getRootId(), geode4Id, attributes, dummyBox, dummyTime, false));
-	CPPUNIT_ASSERT_EQUAL(15u, geode4Id);
+	CPPUNIT_ASSERT_EQUAL(id15, geode4Id);
 	geode4IdForced = 16; // ok, but invalid parent:
 	CPPUNIT_ASSERT(!scene.addGeometricNode(invalidId, geode4IdForced, attributes, dummyBox, dummyTime, true));
-	CPPUNIT_ASSERT_EQUAL(16u, geode4IdForced);
+	CPPUNIT_ASSERT_EQUAL(id16, geode4IdForced);
 	CPPUNIT_ASSERT(!scene.addGeometricNode(invalidId, geode4IdForced, attributes, dummyBox, dummyTime, false));
-	CPPUNIT_ASSERT_EQUAL(15u, geode4Id);
+	CPPUNIT_ASSERT_EQUAL(id15, geode4Id);
 
 }
 

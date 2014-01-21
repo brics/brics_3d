@@ -55,14 +55,14 @@ int main(int argc, char **argv) {
 	 *       		    tf3         + ---+----+
 	 *                                  tf6
 	 */
-	unsigned int tf1Id;
-	unsigned int tf2Id;
-	unsigned int tf3Id;
-	unsigned int tf4Id;
-	unsigned int tf5Id;
-	unsigned int tf6Id;
-	unsigned int tf7Id;
-	unsigned int tf8Id;
+	rsg::Id tf1Id;
+	rsg::Id tf2Id;
+	rsg::Id tf3Id;
+	rsg::Id tf4Id;
+	rsg::Id tf5Id;
+	rsg::Id tf6Id;
+	rsg::Id tf7Id;
+	rsg::Id tf8Id;
 	vector<rsg::Attribute> tmpAttributes;
 
 	WorldModel* wm = new WorldModel();

@@ -43,7 +43,7 @@ void WorldModelTest::testSimpleHanoiUseCase() {
 	targetArea->parentId =  myWM->getRootNodeId(); // hook in after root node
 	targetArea->attributes.push_back(Attribute("shapeType","Cylinder")); //here we choose some meaning full tags; theses tags will help us to formulate queries later
 	targetArea->attributes.push_back(Attribute("taskType","targetArea"));
-	uint targetAreaID; //Stores the ID assigned by the world model, so we can later reference to the object.
+	Id targetAreaID; //Stores the ID assigned by the world model, so we can later reference to the object.
 	myWM->addSceneObject(*targetArea, targetAreaID);
 
 	/* Move the added object a little bit */
@@ -78,7 +78,7 @@ void WorldModelTest::testSimpleHanoiUseCase() {
 	}
 
 	if (resultObjects.size() >= 1) {
-		uint intrestingID;
+		Id intrestingID;
 		intrestingID = resultObjects[0].id;
 
 		/* See if object's pose changes */
@@ -116,7 +116,7 @@ void WorldModelTest::testTowerOfHanoi() {
 	tmpSceneObject.attributes.push_back(Attribute("taskType","targetArea"));
 	tmpSceneObject.attributes.push_back(Attribute("name","startArea"));
 
-	uint goalId;
+	Id goalId;
 	myWM.addSceneObject(tmpSceneObject, goalId);
 
 	vector<Attribute> queryArributes;

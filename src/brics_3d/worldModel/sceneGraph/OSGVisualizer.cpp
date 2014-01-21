@@ -164,7 +164,7 @@ struct DrawCallback: public osg::Drawable::DrawCallback {
 	mutable osg::Matrix _previousModelViewMatrix;
 };
 
-bool OSGVisualizer::addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, bool forcedId) {
+bool OSGVisualizer::addNode(Id parentId, Id& assignedId, vector<Attribute> attributes, bool forcedId) {
 	LOG(DEBUG) << "OSGVisualizer: adding node";
 	osg::ref_ptr<osg::Node> node = findNodeRecerence(parentId);
 	osg::ref_ptr<osg::Group> parentGroup = 0;
@@ -181,7 +181,7 @@ bool OSGVisualizer::addNode(unsigned int parentId, unsigned int& assignedId, vec
 	return false;
 }
 
-bool OSGVisualizer::addGroup(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, bool forcedId) {
+bool OSGVisualizer::addGroup(Id parentId, Id& assignedId, vector<Attribute> attributes, bool forcedId) {
 	LOG(DEBUG) << "OSGVisualizer: adding group";
 
 	osg::ref_ptr<osg::Node> node = findNodeRecerence(parentId);
@@ -199,7 +199,7 @@ bool OSGVisualizer::addGroup(unsigned int parentId, unsigned int& assignedId, ve
 	return false;
 }
 
-bool OSGVisualizer::addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp, bool forcedId) {
+bool OSGVisualizer::addTransformNode(Id parentId, Id& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp, bool forcedId) {
 	LOG(DEBUG) << "OSGVisualizer: adding transform node";
 
 	bool noVisualisation = false;
@@ -229,7 +229,7 @@ bool OSGVisualizer::addTransformNode(unsigned int parentId, unsigned int& assign
 	return false;
 }
 
-bool OSGVisualizer::addUncertainTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp, bool forcedId) {
+bool OSGVisualizer::addUncertainTransformNode(Id parentId, Id& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp, bool forcedId) {
 	LOG(DEBUG) << "OSGVisualizer: adding uncertain transform node";
 	//return addTransformNode(parentId, assignedId, attributes, transform, timeStamp, forcedId);
 
@@ -267,7 +267,7 @@ bool OSGVisualizer::addUncertainTransformNode(unsigned int parentId, unsigned in
 }
 
 
-bool OSGVisualizer::addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp, bool forcedId) {
+bool OSGVisualizer::addGeometricNode(Id parentId, Id& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp, bool forcedId) {
 	LOG(DEBUG) << "OSGVisualizer: adding geode";
 
 	osg::ref_ptr<osg::Node> node = findNodeRecerence(parentId);
@@ -370,12 +370,12 @@ bool OSGVisualizer::addGeometricNode(unsigned int parentId, unsigned int& assign
 }
 
 
-bool OSGVisualizer::setNodeAttributes(unsigned int id, vector<Attribute> newAttributes) {
+bool OSGVisualizer::setNodeAttributes(Id id, vector<Attribute> newAttributes) {
 	LOG(DEBUG) << "OSGVisualizer: setting attributes";
 	return true;
 }
 
-bool OSGVisualizer::setTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp) {
+bool OSGVisualizer::setTransform(Id id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp) {
 	LOG(DEBUG) << "OSGVisualizer: updating transform data";
 
 	osg::ref_ptr<osg::Node> node = findNodeRecerence(id);
@@ -397,7 +397,7 @@ bool OSGVisualizer::setTransform(unsigned int id, IHomogeneousMatrix44::IHomogen
 	return true;
 }
 
-bool OSGVisualizer::setUncertainTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp) {
+bool OSGVisualizer::setUncertainTransform(Id id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp) {
 	LOG(DEBUG) << "OSGVisualizer: updating uncertain transform data";
 	//return setTransform(id, transform, timeStamp);
 
@@ -421,7 +421,7 @@ bool OSGVisualizer::setUncertainTransform(unsigned int id, IHomogeneousMatrix44:
 }
 
 
-bool OSGVisualizer::deleteNode(unsigned int id) {
+bool OSGVisualizer::deleteNode(Id id) {
 	LOG(DEBUG) << "OSGVisualizer: deleting node";
 
 	osg::ref_ptr<osg::Node> node = findNodeRecerence(id);
@@ -433,12 +433,12 @@ bool OSGVisualizer::deleteNode(unsigned int id) {
 	return false;
 }
 
-bool OSGVisualizer::addParent(unsigned int id, unsigned int parentId) {
+bool OSGVisualizer::addParent(Id id, Id parentId) {
 	LOG(DEBUG) << "OSGVisualizer: ignoring new parent ";
 	return true;
 }
 
-bool OSGVisualizer::removeParent(unsigned int id, unsigned int parentId) {
+bool OSGVisualizer::removeParent(Id id, Id parentId) {
 	LOG(DEBUG) << "OSGVisualizer: ignoring remove parent ";
 
 	/* We ignore it unlesse deletion is required */
@@ -470,11 +470,12 @@ void OSGVisualizer::threadFunction(OSGVisualizer* obj) {
 	LOG(INFO) << "OSGVisualizer: Done.";
 }
 
-unsigned int OSGVisualizer::getRootId() {
-	return 1u; //TODO ask the observed scene (for now: 1u is the same as the gerenerated on in the SimpleIDGenerator)
+Id OSGVisualizer::getRootId() {
+	Id rootId = 1u;
+	return rootId; //TODO ask the observed scene (for now: 1u is the same as the gerenerated on in the SimpleIDGenerator)
 }
 
-osg::ref_ptr<osg::Node> OSGVisualizer::findNodeRecerence(unsigned int id) {
+osg::ref_ptr<osg::Node> OSGVisualizer::findNodeRecerence(Id id) {
 	nodeIterator = idLookUpTable.find(id);
 	if (nodeIterator != idLookUpTable.end()) { //TODO multiple IDs?
 		osg::ref_ptr<osg::Node> tmpNodeHandle = nodeIterator->second;
@@ -556,7 +557,7 @@ osg::ref_ptr<osg::Node> OSGVisualizer::createUncertaintyVisualization(double rad
 //	//TODO
 //}
 
-osg::ref_ptr<osg::Node> OSGVisualizer::createAttributeVisualization(vector<Attribute> attributes, unsigned int id) {
+osg::ref_ptr<osg::Node> OSGVisualizer::createAttributeVisualization(vector<Attribute> attributes, Id id) {
 	osg::ref_ptr<osg::Group> textNode = new osg::Group();
 	if (id!= 0) {
 		osg::Geode* textGeode = new osg::Geode();

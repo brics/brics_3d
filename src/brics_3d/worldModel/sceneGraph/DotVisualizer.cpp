@@ -36,59 +36,59 @@ DotVisualizer::~DotVisualizer() {
 }
 
 
-bool DotVisualizer::addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, bool forcedId) {
+bool DotVisualizer::addNode(Id parentId, Id& assignedId, vector<Attribute> attributes, bool forcedId) {
 	printGraph();
 	return true;
 }
 
-bool DotVisualizer::addGroup(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, bool forcedId) {
+bool DotVisualizer::addGroup(Id parentId, Id& assignedId, vector<Attribute> attributes, bool forcedId) {
 	printGraph();
 	return true;
 }
 
-bool DotVisualizer::addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, brics_3d::rsg::TimeStamp timeStamp, bool forcedId) {
+bool DotVisualizer::addTransformNode(Id parentId, Id& assignedId, vector<Attribute> attributes, brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, brics_3d::rsg::TimeStamp timeStamp, bool forcedId) {
 	printGraph();
 	return true;
 }
 
-bool DotVisualizer::addUncertainTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp, bool forcedId) {
-	printGraph();
-	return true;
-}
-
-
-bool DotVisualizer::addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp, bool forcedId) {
-	printGraph();
-	return true;
-}
-
-bool DotVisualizer::setNodeAttributes(unsigned int id, vector<Attribute> newAttributes) {
-	printGraph();
-	return true;
-}
-
-bool DotVisualizer::setTransform(unsigned int id, brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform,  brics_3d::rsg::TimeStamp timeStamp) {
-	printGraph();
-	return true;
-}
-
-bool DotVisualizer::setUncertainTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp) {
+bool DotVisualizer::addUncertainTransformNode(Id parentId, Id& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp, bool forcedId) {
 	printGraph();
 	return true;
 }
 
 
-bool DotVisualizer::deleteNode(unsigned int id) {
+bool DotVisualizer::addGeometricNode(Id parentId, Id& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp, bool forcedId) {
 	printGraph();
 	return true;
 }
 
-bool DotVisualizer::addParent(unsigned int id, unsigned int parentId) {
+bool DotVisualizer::setNodeAttributes(Id id, vector<Attribute> newAttributes) {
 	printGraph();
 	return true;
 }
 
-bool DotVisualizer::removeParent(unsigned int id, unsigned int parentId) {
+bool DotVisualizer::setTransform(Id id, brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform,  brics_3d::rsg::TimeStamp timeStamp) {
+	printGraph();
+	return true;
+}
+
+bool DotVisualizer::setUncertainTransform(Id id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp) {
+	printGraph();
+	return true;
+}
+
+
+bool DotVisualizer::deleteNode(Id id) {
+	printGraph();
+	return true;
+}
+
+bool DotVisualizer::addParent(Id id, Id parentId) {
+	printGraph();
+	return true;
+}
+
+bool DotVisualizer::removeParent(Id id, Id parentId) {
 	printGraph();
 	return true;
 }

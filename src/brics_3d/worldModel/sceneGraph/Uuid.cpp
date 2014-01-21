@@ -39,6 +39,10 @@ Uuid::Uuid(const Uuid& other) {
 	*this = other;
 }
 
+Uuid::Uuid(unsigned int id) {
+	*this = id;
+}
+
 Uuid& Uuid::operator =(Uuid& other) {
 	std::copy(other.begin(), other.end(), this->begin());
 	return *this;
@@ -54,7 +58,7 @@ Uuid& Uuid::operator =(unsigned int other) {
 	data[15] = other >> 0;
 	data[14] = other >> 8;
 	data[13] = other >> 16;
-	data[16] = other >> 24;
+	data[12] = other >> 24;
 	return *this;
 }
 
@@ -132,7 +136,30 @@ std::ostream& operator<<(std::ostream &outStream, const Uuid &id) {
 	return outStream;
 }
 
+unsigned int uuidToUnsignedInt(Uuid id) {
+	unsigned int uuidAsInt = 0u;
+	const int startByte = 12; // Cut away the first 12 bytes (0-11)
+
+//	unsigned int value = (unsigned int)*p <<24 |
+//	                     (unsigned int)*(p+1) << 16 |
+//	                     (unsigned int)*(p+2) << 8 |
+//	                     (unsigned int)*(p+3);
+
+	int bitShift = 24; // 24, 16, 8, 0
+	for (Uuid::const_iterator i_data = id.begin()+startByte; i_data!=id.end(); ++i_data) {
+		uuidAsInt = uuidAsInt | (unsigned int)*i_data << bitShift;
+		bitShift -= 8;
+	}
+
+	return uuidAsInt;
+}
+
+unsigned int uuidToUnsignedInt (unsigned int id) {
+	return id;
+}
+
 } /* namespace rsg */
 } /* namespace brics_3d */
+
 
 /* EOF */

@@ -68,7 +68,7 @@ void WorldModel::getSceneObjects(vector<rsg::Attribute> attributes, vector<Scene
 
 		vector<rsg::Id> childIds;
 		scene.getGroupChildren(resultIds[i], childIds);
-		for (rsg::Id j = 0; j < static_cast<unsigned int>(childIds.size()); ++j) {
+		for (unsigned int j = 0; j < static_cast<unsigned int>(childIds.size()); ++j) {
 			Shape::ShapePtr tmpShape;
 			if (scene.getGeometry(childIds[j], tmpShape, currentTime) == true) {
 				tmpSceneObject.shape = tmpShape;

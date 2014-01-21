@@ -26,7 +26,10 @@ To get the code invoke:
 @endcode
 
 
-The \b old svn repository is still active and contains the library until version @ref version_0_5. However the git repository on github containts all older versions as well. To get the code from the svn repository invoke:
+The \b old svn repository is still active and contains the library until version
+@ref version_0_5. However the git repository on github contains all older versions as well. 
+To get the code from the svn repository invoke:
+
 @code
 	svn co https://svn.best-of-robotics.org/brics/BROCRE/BRICS_3D/trunk brics_3d
 @endcode

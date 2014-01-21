@@ -23,7 +23,7 @@ namespace brics_3d {
 
 namespace rsg {
 
-SubGraphChecker::SubGraphChecker(unsigned int subGraphNodeId) : INodeVisitor(upwards) {
+SubGraphChecker::SubGraphChecker(Id subGraphNodeId) : INodeVisitor(upwards) {
 	reset(subGraphNodeId);
 }
 
@@ -54,7 +54,7 @@ void SubGraphChecker::visit(GeometricNode* node){
 	this->visit(dynamic_cast<Node*>(node)); //just feed forward to be handled as node
 }
 
-void SubGraphChecker::reset(unsigned int subGraphNodeId) {
+void SubGraphChecker::reset(Id subGraphNodeId) {
 	this->subGraphNodeId = subGraphNodeId;
 	isInSubGraph = false;
 	pathCount = 0;

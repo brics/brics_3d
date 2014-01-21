@@ -103,6 +103,8 @@ void IdTest::testUuids() {
 	CPPUNIT_ASSERT(anotherId.isNil());
 	anotherId = 1;
 	CPPUNIT_ASSERT(!anotherId.isNil());
+	Uuid nullId = 0;
+	CPPUNIT_ASSERT(nullId.isNil());
 
 	Uuid anotherIdCopy (anotherId);
 	CPPUNIT_ASSERT(anotherIdCopy == anotherIdCopy);
@@ -121,10 +123,10 @@ void IdTest::testUuids() {
 	CPPUNIT_ASSERT(node2Id >= node3Id);
 
 	/* test swapping */
-	Uuid node4Id;
-	Uuid node5Id;
-	node4Id = 4;
-	node5Id = 5;
+	Uuid node4Id = 4;
+	Uuid node5Id = 5;
+//	node4Id = 4;
+//	node5Id = 5;
 	Uuid node4IdCopy(node4Id);
 	Uuid node5IdCopy(node5Id);
 
@@ -143,9 +145,13 @@ void IdTest::testUuids() {
 	LOG(DEBUG) << "node3Id as UUID = " << node3Id.toString();
 	LOG(DEBUG) << "node4Id as UUID = " << node4Id;
 	LOG(DEBUG) << "node5Id as UUID = " << node5Id;
+
 	Uuid node6Id;
-	node6Id = 513;
+	unsigned int idValue = 513;
+	node6Id = idValue;
 	LOG(DEBUG) << "node6Id as UUID = " << node6Id;
+	unsigned int node6IdAsInt = uuidToUnsignedInt(node6Id);
+	CPPUNIT_ASSERT_EQUAL(idValue, node6IdAsInt);
 }
 
 } /* namespace unitTests */

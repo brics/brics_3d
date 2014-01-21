@@ -41,7 +41,7 @@ public:
 	 * @brief Contuctor.
 	 * @param subGraphNodeId Same as in brics_3d::rsg::SubGraphChecker::subGraphNodeId
 	 */
-	SubGraphChecker(unsigned int subGraphNodeId);
+	SubGraphChecker(Id subGraphNodeId);
 
 	/**
 	 * @brief Default constructor.
@@ -58,7 +58,7 @@ public:
 	 * @brief Resets the query.
 	 * @param subGraphNodeId Same as in brics_3d::rsg::SubGraphChecker::subGraphNodeId
 	 */
-	virtual void reset(unsigned int subGraphNodeId);
+	virtual void reset(Id subGraphNodeId);
 
     unsigned int getPathCount()
     {
@@ -73,7 +73,7 @@ public:
 protected:
 
 	/// Specifies the "root" node of the subgraph of intrest.
-	unsigned int subGraphNodeId;
+	Id subGraphNodeId;
 
 	/**
 	 * Result of traversal. Will be true if the node where the traveral was started is

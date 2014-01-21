@@ -82,7 +82,7 @@ private:
 	 * @return True if node exists and was sucessfully handeled or false if node could not be handled
 	 * and needs to be treated as a new node.
 	 */
-	bool handleExistingNode(Node* node, unsigned int& parentId);
+	bool handleExistingNode(Node* node, Id& parentId);
 
 	/**
 	 * This is the reciever of all updates.

@@ -38,16 +38,16 @@ SceneGraphToUpdatesTraverser::~SceneGraphToUpdatesTraverser() {
 }
 
 void SceneGraphToUpdatesTraverser::visit(Node* node) {
-	unsigned int nodeId = node->getId();
-	unsigned int parentId;
+	Id nodeId = node->getId();
+	Id parentId;
 	if(!handleExistingNode(node, parentId)) {
 		updatesRecieverHandle->addNode(parentId, nodeId, node->getAttributes(), enableForcedIds);
 	}
 }
 
 void SceneGraphToUpdatesTraverser::visit(Group* node) {
-	unsigned int nodeId = node->getId();
-	unsigned int parentId;
+	Id nodeId = node->getId();
+	Id parentId;
 	if(!handleExistingNode(node, parentId)) {
 		updatesRecieverHandle->addGroup(parentId, nodeId, node->getAttributes(), enableForcedIds);
 //		alreadyVisitedNodes.push_back(node);
@@ -55,16 +55,16 @@ void SceneGraphToUpdatesTraverser::visit(Group* node) {
 }
 
 void SceneGraphToUpdatesTraverser::visit(Transform* node) {
-	unsigned int nodeId = node->getId();
-	unsigned int parentId;
+	Id nodeId = node->getId();
+	Id parentId;
 	if(!handleExistingNode(node, parentId)) {
 		updatesRecieverHandle->addTransformNode(parentId, nodeId, node->getAttributes(), node->getLatestTransform(), node->getLatestTimeStamp(), enableForcedIds);
 	}
 }
 
 void SceneGraphToUpdatesTraverser::visit(GeometricNode* node) {
-	unsigned int nodeId = node->getId();
-	unsigned int parentId;
+	Id nodeId = node->getId();
+	Id parentId;
 	if(!handleExistingNode(node, parentId)) {
 		updatesRecieverHandle->addGeometricNode(parentId, nodeId, node->getAttributes(), node->getShape(), node->getTimeStamp(), enableForcedIds);
 	}
@@ -83,8 +83,8 @@ void SceneGraphToUpdatesTraverser::setEnableForcedIds(bool enableForcedIds) {
 }
 
 
-bool SceneGraphToUpdatesTraverser::handleExistingNode(Node* node, unsigned int& parentId) {
-	unsigned int nodeId = node->getId();
+bool SceneGraphToUpdatesTraverser::handleExistingNode(Node* node, Id& parentId) {
+	Id nodeId = node->getId();
 	vector<Node*> parents;
 
 

@@ -37,15 +37,15 @@ public:
 	SimpleIdGenerator();
 	virtual ~SimpleIdGenerator();
 
-	unsigned int getNextValidId();
-	unsigned int getRootId();
-    bool removeIdFromPool(unsigned int id);
+	Id getNextValidId();
+	Id getRootId();
+    bool removeIdFromPool(Id id);
 
 private:
 	unsigned int runningNumber;
-	unsigned int rootId;
+	Id rootId;
 
-	std::vector<unsigned int> idPool;
+	std::vector<Id> idPool;
 };
 
 } // namespace brics_3d::rsg

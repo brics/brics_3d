@@ -438,8 +438,8 @@ bool SceneGraphFacade::setNodeAttributes(Id id, vector<Attribute> newAttributes)
 	/* Call all observers regardless if an error occured or not */
 	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
 	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
-		unsigned idCopy = id; // prevent that observer might change this....
-		(*observerIterator)->setNodeAttributes(idCopy, newAttributes);
+		Id assignedIdcopy = id; // prevent that observer might change this....
+		(*observerIterator)->setNodeAttributes(assignedIdcopy, newAttributes);
 	}
 
 	if (operationSucceeded) {
@@ -515,7 +515,7 @@ bool SceneGraphFacade::deleteNode(Id id) {
 			 * the according delete function for every parent
 			 */
 			while (node->getNumberOfParents() > 0) { //NOTE: node->getNumberOfParents() will decrease within every iteration...
-				Id i = 0;
+				unsigned int i = 0;
 				rsg::Node* parentNode;
 				parentNode = node->getParent(i);
 				Group* parentGroup =  dynamic_cast<Group*>(parentNode);

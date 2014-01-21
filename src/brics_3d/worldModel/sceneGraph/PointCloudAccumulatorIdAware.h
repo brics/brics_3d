@@ -43,7 +43,7 @@ public:
 	 * @param facadeHandle Hande to the scene graph facade as it manages the IDs.
 	 * @param referenceNodeId The Cartesian frame that is valid for the node will be used as reference to interpret the 3D points.
 	 */
-	PointCloudAccumulatorIdAware(SceneGraphFacade* facadeHandle, unsigned int referenceNodeId);
+	PointCloudAccumulatorIdAware(SceneGraphFacade* facadeHandle, Id referenceNodeId);
 
 	/**
 	 * @brief Default destructor.
@@ -57,7 +57,7 @@ public:
 
 private:
 	SceneGraphFacade* facadeHandle;
-	unsigned int referenceNodeId;
+	Id referenceNodeId;
 };
 
 }

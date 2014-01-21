@@ -26,9 +26,10 @@ namespace rsg {
 
 SimpleIdGenerator::SimpleIdGenerator() {
 	rootId = 1u; //just an arbitrary choice here
-	runningNumber = rootId + 1;
+	runningNumber = uuidToUnsignedInt(rootId) + 1;
 	idPool.clear();
-	idPool.push_back(0u);
+	Id nullId = 0;
+	idPool.push_back(nullId);
 	idPool.push_back(rootId);
 }
 
@@ -36,24 +37,25 @@ SimpleIdGenerator::~SimpleIdGenerator(){
 
 }
 
-unsigned int SimpleIdGenerator::getNextValidId(){
-	unsigned int NextValidId = runningNumber++;
-	removeIdFromPool(NextValidId);
-	return NextValidId;
+Id SimpleIdGenerator::getNextValidId(){
+	Id nextValidId;
+	nextValidId = runningNumber++;
+	removeIdFromPool(nextValidId);
+	return nextValidId;
 }
 
-unsigned int SimpleIdGenerator::getRootId(){
+Id SimpleIdGenerator::getRootId(){
 	return rootId;
 }
 
-bool SimpleIdGenerator::removeIdFromPool(unsigned int id) {
-	std::vector<unsigned int>::iterator lookUpResult = 	std::find(idPool.begin(), idPool.end(), id);
+bool SimpleIdGenerator::removeIdFromPool(Id id) {
+	std::vector<Id>::iterator lookUpResult = 	std::find(idPool.begin(), idPool.end(), id);
 //	if (id < runningNumber) {
 	if (lookUpResult != idPool.end()) {
 		return false;
 	}
 	idPool.push_back(id);
-	runningNumber = id + 1; //Generated IDs might not be continous, but that does not really matters...
+	runningNumber = uuidToUnsignedInt(id) + 1; //Generated IDs might not be continuous, but that does not really matters...
 	return true;
 }
 

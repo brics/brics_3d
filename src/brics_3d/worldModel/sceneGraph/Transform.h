@@ -29,7 +29,7 @@ namespace brics_3d {
 namespace rsg {
 
 /**
- * Specialaization for IHomogeneousMatrix44::IHomogeneousMatrix44Ptr type as
+ * Specialization for IHomogeneousMatrix44::IHomogeneousMatrix44Ptr type as
  * error case is supposed to return a (shared) null pointer rather than 0.
  */
 template<>
