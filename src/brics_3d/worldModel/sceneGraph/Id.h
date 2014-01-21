@@ -22,7 +22,7 @@
 
 #include "Uuid.h"
 
-#define NO_UUID
+//#define NO_UUID
 
 namespace brics_3d {
 namespace rsg {
