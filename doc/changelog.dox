@@ -2,6 +2,14 @@
 
 @page changelog Change log
 
+@section version_0_5_1 0.5.1 (2014-01-21)
+
+ - Repository converted from svn to git. 
+ - Added UUID representation and generator.
+ - Refactord towards explicit Id type for scene graph.
+ - Removed compiler warnings for gcc 4.6.3.
+ - Bugfixes for Ubuntu 12.04.
+
 @section version_0_5 0.5 (2013-12-20)
 
  - OpenCV can be used optionally 
@@ -14,7 +22,7 @@
  - Added support for (SI) units. TimeStamp can be also be specified via TimeUnits.
  - Initial version of uncertain transform handling added. 
  - UncertainTransform node added. 
- - Imroved dot file generation. 
+ - Improved dot file generation. 
 
 @section version_0_4 0.4 (2013-15-03)
 
