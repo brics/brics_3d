@@ -51,10 +51,23 @@ namespace rsg {
 class SceneGraphFacade : public ISceneGraphQuery, public ISceneGraphUpdate {
 
   public:
+
+	/**
+	 * @brief Default constructor.
+	 * Uses the UuidGenerator as default.
+	 */
 	SceneGraphFacade();
 
+	/**
+	 * @brief Constructor with specific Id generator.
+	 * @param idGenerator Handle to generator that will be used.
+	 *        Ownership is passed to this class!
+	 */
     SceneGraphFacade(IIdGenerator* idGenerator);
 
+    /**
+     * @brief Default destructor.
+     */
     virtual ~SceneGraphFacade();
 
     /* Facade specific methods */

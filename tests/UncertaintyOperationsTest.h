@@ -42,8 +42,8 @@ class UncertaintyOperationsTest :  public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST_SUITE( UncertaintyOperationsTest );
 	CPPUNIT_TEST( testIdentityCompounding );
 	CPPUNIT_TEST( testCompounding );
-	CPPUNIT_TEST( testRelativeCompounding );
-	CPPUNIT_TEST( testAggregatedCompounding );
+//	CPPUNIT_TEST( testRelativeCompounding );
+//	CPPUNIT_TEST( testAggregatedCompounding );
 	CPPUNIT_TEST( testIdentityMerging );
 	CPPUNIT_TEST_SUITE_END();
 

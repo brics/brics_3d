@@ -3907,7 +3907,8 @@ void SceneGraphNodesTest::testForcedIds() {
 	const Id id16 = 16;
 	const Id invalidId = 1000001;
 
-	SceneGraphFacade scene; //assumes SimpleIdGenerator
+	SimpleIdGenerator* idGenerator = new SimpleIdGenerator; // Will be deleted by scene automatically.
+	SceneGraphFacade scene(idGenerator); //assumes SimpleIdGenerator
 	vector<Attribute> attributes;
 	TimeStamp dummyTime;
 	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr dummyTransform(new HomogeneousMatrix44());
