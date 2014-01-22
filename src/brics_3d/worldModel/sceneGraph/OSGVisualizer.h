@@ -26,6 +26,7 @@
 #include "brics_3d/worldModel/sceneGraph/Box.h"
 #include "brics_3d/worldModel/sceneGraph/Cylinder.h"
 #include "brics_3d/worldModel/sceneGraph/Attribute.h"
+#include "brics_3d/worldModel/sceneGraph/VisualizationConfiguration.h"
 #include "brics_3d/util/OSGPointCloudVisualizer.h" //unfortunately libbrics3d_world_model depends now on libbrics3d_util
 #include "brics_3d/util/OSGTriangleMeshVisualizer.h"
 
@@ -67,6 +68,13 @@ public:
      */
     bool done();
 
+	const brics_3d::rsg::VisualizationConfiguration& getConfig() const {
+		return config;
+	}
+
+	void setConfig(const brics_3d::rsg::VisualizationConfiguration& config) {
+		this->config = config;
+	}
 
 private:
 
@@ -112,6 +120,8 @@ private:
     /// Determines dimensions of visualizazion of the frames axis. Default is 1.0
     double frameAxisVisualisationScale;
 
+	/// The generic visualization configuration
+	brics_3d::rsg::VisualizationConfiguration config;
 
 };
 

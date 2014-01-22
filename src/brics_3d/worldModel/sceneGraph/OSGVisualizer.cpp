@@ -220,6 +220,9 @@ bool OSGVisualizer::addTransformNode(Id parentId, Id& assignedId, vector<Attribu
 			LOG(DEBUG) << "OSGVisualizer: transform has no_visualization debug tag. Skipping visualization.";
 		} else {
 			newTransformNode->addChild(createFrameAxis(frameAxisVisualisationScale)); //optionally for visualization
+			if(config.visualizeAttributes) {
+				newTransformNode->addChild(createAttributeVisualization(attributes, assignedId));
+			}
 		}
 		viewer.addUpdateOperation(new OSGOperationAdd(this, newTransformNode, parentGroup));
 		idLookUpTable.insert(std::make_pair(assignedId, newTransformNode));
@@ -255,8 +258,12 @@ bool OSGVisualizer::addUncertainTransformNode(Id parentId, Id& assignedId, vecto
 			double radiusY;
 			double radiusZ;
 			uncertainty->getVisualizationDimensions(radiusX, radiusY, radiusZ);
-			newTransformNode->addChild(createUncertaintyVisualization(radiusX, radiusY, radiusZ));
-			newTransformNode->addChild(createAttributeVisualization(attributes, assignedId));
+			if(config.visualizePoseUncertainty) {
+				newTransformNode->addChild(createUncertaintyVisualization(radiusX, radiusY, radiusZ));
+			}
+			if(config.visualizeAttributes || config.visualizeIds || config.visualizeNameTag) {
+				newTransformNode->addChild(createAttributeVisualization(attributes, assignedId));
+			}
 		}
 		viewer.addUpdateOperation(new OSGOperationAdd(this, newTransformNode, parentGroup));
 		idLookUpTable.insert(std::make_pair(assignedId, newTransformNode));
@@ -441,7 +448,7 @@ bool OSGVisualizer::addParent(Id id, Id parentId) {
 bool OSGVisualizer::removeParent(Id id, Id parentId) {
 	LOG(DEBUG) << "OSGVisualizer: ignoring remove parent ";
 
-	/* We ignore it unlesse deletion is required */
+	/* We ignore it unless deletion is required */
 	osg::ref_ptr<osg::Node> node = findNodeRecerence(id);
 	if (node != 0) {
 		if (node->getNumParents() <= 1) { //
@@ -570,7 +577,26 @@ osg::ref_ptr<osg::Node> OSGVisualizer::createAttributeVisualization(vector<Attri
 		text->setColor(osg::Vec4(1.0f, 1.0f, 0.0f, 1.0f));
 		std::stringstream message;
 		message.str("");
-		message << "ID = " << id;
+		if(config.visualizeIds) {
+			if(config.abbreviateIds) {
+				message << "ID = " << uuidToUnsignedInt(id) << std::endl;
+			} else {
+				message << "ID = " << id << std::endl;;
+			}
+		}
+		if(config.visualizeNameTag) {
+			const std::string nameTag = "name";
+			std::vector<std::string> names;
+			if(getValuesFromAttributeList(attributes, nameTag, names)) {
+				assert(names.size() >= 1u);
+				message << "name = " << names[0] << std::endl;
+			}
+		}
+		if (config.visualizeAttributes) {
+			for(std::vector<Attribute>::iterator it = attributes.begin(); it != attributes.end() ;++it) {
+				message << "(" << it->key << ", " << it->value << ")" << std::endl;
+			}
+		}
 		text->setText(message.str());
 		textGeode->addDrawable(text);
 		textNode->addChild(textGeode);

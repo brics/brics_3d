@@ -53,17 +53,8 @@ class Attribute {
 
     string value;
 
-//     operator<<();
 
     Attribute (string key, string value);
-//
-//    Attribute(Attribute & source);
-//
-//    Attribute(const Attribute & source);
-//
-//    Attribute & operator=(Attribute & source);
-//
-//    Attribute & operator=(const Attribute & source);
 
     bool operator==(Attribute& other);
 
@@ -84,10 +75,19 @@ class Attribute {
 /**
  * Helper tool to check if a certain attribute is included in an attribute list.
  * @param attributeList The list to be checked.
- * @param queryAttribute THe attribute of intrest.
+ * @param queryAttribute The attribute of interest.
  * @return True if list contains the attribute otherwise false.
  */
 extern bool attributeListContainsAttribute(vector<Attribute> attributeList, Attribute queryAttribute);
+
+/**
+ * Helper tool to retrieve all values from an attribute list specified by a key tag
+ * @param attributeList The list to be processed.
+ * @param key All values of Attributes that have the same key will be stored in the resultValues list.
+ * @param[out] resultValues List with zero or more corresponding values.
+ * @return True if list contains at least one value otherwise false.
+ */
+extern bool getValuesFromAttributeList(vector<Attribute> attributeList, std::string key, vector<std::string>& resultValues);
 
 } // namespace brics_3d::RSG
 

@@ -67,12 +67,19 @@ int main(int argc, char **argv) {
 
 	WorldModel* wm = new WorldModel();
 	rsg::OSGVisualizer* wmObserver = new rsg::OSGVisualizer();
+	rsg::VisualizationConfiguration osgConfiguration; // optional configuration
+	osgConfiguration.visualizeAttributes = true;
+	osgConfiguration.visualizeIds = true;
+	osgConfiguration.visualizeNameTag = true;
+	osgConfiguration.abbreviateIds = true;
+	osgConfiguration.visualizePoseUncertainty = true;
+	wmObserver->setConfig(osgConfiguration);
 	wm->scene.attachUpdateObserver(wmObserver); //enable visualization
 
 	rsg::DotVisualizer* dbgObserver = new rsg::DotVisualizer(&wm->scene);
-	rsg::VisualizationConfiguration configuration; // optional configuration
-	configuration.abbreviateIds = true;
-	dbgObserver->setConfig(configuration);
+	rsg::VisualizationConfiguration dotConfiguration; // optional configuration
+	dotConfiguration.abbreviateIds = true;
+	dbgObserver->setConfig(dotConfiguration);
 	wm->scene.attachUpdateObserver(dbgObserver);
 
 	/* test data */
@@ -186,8 +193,11 @@ int main(int argc, char **argv) {
 			mergedMean,
 			mergedUncertainty);
 
-	/* consruct the scene graph */
+	/* construct the scene graph */
+	tmpAttributes.push_back(rsg::Attribute("name","transform123"));
+	tmpAttributes.push_back(rsg::Attribute("dbgInfo","u_transform"));
 	wm->scene.addUncertainTransformNode(wm->getRootNodeId(), tf1Id, tmpAttributes, transform123, uncertainty123, rsg::TimeStamp(0.0));
+	tmpAttributes.clear();
 	wm->scene.addUncertainTransformNode(wm->getRootNodeId(), tf2Id, tmpAttributes, transform234_b, uncertainty234, rsg::TimeStamp(0.0));
 	wm->scene.addUncertainTransformNode(tf2Id, tf3Id, tmpAttributes, transform345_b, compoundUncertainty /*uncertainty345*/, rsg::TimeStamp(0.0));
 	wm->scene.addUncertainTransformNode(wm->getRootNodeId(), tf4Id, tmpAttributes, transform456, uncertainty456, rsg::TimeStamp(0.0));
@@ -196,7 +206,7 @@ int main(int argc, char **argv) {
 	wm->scene.addParent(tf6Id, tf5Id);
 	wm->scene.addTransformNode(wm->getRootNodeId(), tf7Id, tmpAttributes, transform890, rsg::TimeStamp(0.0));
 
-	/* test accumulatede compounding */
+	/* test accumulated compounding */
 	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr resultTransform;
 	wm->scene.getTransformForNode(tf3Id, wm->getRootNodeId(), rsg::TimeStamp(1.0), resultTransform);
 	CovarianceMatrix66::CovarianceMatrix66Ptr compoundUncertaintyAccumulated;

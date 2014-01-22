@@ -23,37 +23,8 @@ namespace brics_3d {
 
 namespace rsg {
 
-
-
-
-// Attribute::operator<<() {
-//  // Bouml preserved body begin 00025E83
-//  // Bouml preserved body end 00025E83
-//}
-
-//Attribute::Attribute(Attribute & source) {
-//  // Bouml preserved body begin 0002CF83
-//  // Bouml preserved body end 0002CF83
-//}
-//
-//Attribute::Attribute(const Attribute & source) {
-//  // Bouml preserved body begin 0002D003
-//  // Bouml preserved body end 0002D003
-//}
-//
-//Attribute & Attribute::operator=(Attribute & source) {
-//  // Bouml preserved body begin 0002D083
-//  // Bouml preserved body end 0002D083
-//}
-//
-//Attribute & Attribute::operator=(const Attribute & source) {
-//  // Bouml preserved body begin 0002D103
-//  // Bouml preserved body end 0002D103
-//}
-
 Attribute::Attribute() {
-  // Bouml preserved body begin 0002DC03
-  // Bouml preserved body end 0002DC03
+
 }
 
 Attribute::Attribute(string key, string value) {
@@ -78,8 +49,7 @@ bool Attribute::operator!=(const Attribute& other){
 }
 
 Attribute::~Attribute() {
-  // Bouml preserved body begin 0002DC83
-  // Bouml preserved body end 0002DC83
+
 }
 
 ostream& operator<<(ostream &outStream, const Attribute &attribute) {
@@ -97,6 +67,21 @@ extern bool attributeListContainsAttribute(vector<Attribute> attributeList, Attr
 	return false;
 }
 
+extern bool getValuesFromAttributeList(vector<Attribute> attributeList, std::string key, vector<std::string>& resultValues) {
+	resultValues.clear();
+	for(std::vector<Attribute>::iterator it = attributeList.begin(); it != attributeList.end() ;++it) {
+		if(it->key.compare(key) == 0) {
+			resultValues.push_back(it->value);
+		}
+	}
+
+	if (resultValues.begin() == resultValues.end()) {
+		return false;
+	} else {
+		return true;
+	}
+
+}
 
 } // namespace brics_3d::RSG
 
