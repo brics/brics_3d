@@ -23,7 +23,7 @@ namespace brics_3d {
 namespace rsg {
 
 UuidGenerator::UuidGenerator() {
-	rootId = getNextValidId();
+	rootId = 1u; //getNextValidId();
 	removeIdFromPool(rootId);
 	Id nullId = 0;
 	removeIdFromPool(nullId);

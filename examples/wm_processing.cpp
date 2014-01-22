@@ -96,6 +96,10 @@ int main(int argc, char **argv) {
 
 	WorldModel* wm = new WorldModel();
 	rsg::OSGVisualizer* wmObserver = new rsg::OSGVisualizer();
+	rsg::VisualizationConfiguration osgConfiguration; // optional configuration
+	osgConfiguration.visualizeIds = false;
+	osgConfiguration.visualizeAttributes = false;
+	wmObserver->setConfig(osgConfiguration);
 	wm->scene.attachUpdateObserver(wmObserver); //enable visualization
 
 	/* Hook in the point clouds */

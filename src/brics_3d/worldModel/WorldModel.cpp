@@ -40,6 +40,11 @@ WorldModel::~WorldModel() {
 
 }
 
+WorldModel::WorldModel(rsg::IIdGenerator* idGenerator) : scene(idGenerator) {
+
+}
+
+
 void WorldModel::getSceneObjects(vector<rsg::Attribute> attributes, vector<SceneObject>& results) {
 	TimeStamp currentTime(timer.getCurrentTime(), Units::MilliSecond);
 	vector<rsg::Id>resultIds;

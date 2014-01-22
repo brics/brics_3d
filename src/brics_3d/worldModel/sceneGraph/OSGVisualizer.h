@@ -48,6 +48,7 @@ namespace rsg {
 class OSGVisualizer : public ISceneGraphUpdateObserver {
 public:
 	OSGVisualizer();
+
 	virtual ~OSGVisualizer();
 
 	/* implemetntations of observer interface */

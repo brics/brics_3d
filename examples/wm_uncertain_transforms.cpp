@@ -29,6 +29,8 @@
 #include <brics_3d/worldModel/sceneGraph/DotGraphGenerator.h>
 #include <brics_3d/worldModel/sceneGraph/OSGVisualizer.h>
 #include <brics_3d/worldModel/sceneGraph/DotVisualizer.h>
+#include <brics_3d/worldModel/sceneGraph/UuidGenerator.h>
+#include <brics_3d/worldModel/sceneGraph/SimpleIdGenerator.h>
 #include <brics_3d/core/ParameterSet.h>
 
 
@@ -65,7 +67,9 @@ int main(int argc, char **argv) {
 	rsg::Id tf8Id;
 	vector<rsg::Attribute> tmpAttributes;
 
-	WorldModel* wm = new WorldModel();
+	rsg::IIdGenerator* idGenerator = new rsg::SimpleIdGenerator();//rsg::UuidGenerator();
+	WorldModel* wm = new WorldModel(idGenerator);
+
 	rsg::OSGVisualizer* wmObserver = new rsg::OSGVisualizer();
 	rsg::VisualizationConfiguration osgConfiguration; // optional configuration
 	osgConfiguration.visualizeAttributes = true;

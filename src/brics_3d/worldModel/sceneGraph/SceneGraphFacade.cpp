@@ -19,6 +19,7 @@
 
 #include "SceneGraphFacade.h"
 #include "SimpleIdGenerator.h"
+#include "UuidGenerator.h"
 #include "brics_3d/core/Logger.h"
 #include "AttributeFinder.h"
 
@@ -27,7 +28,8 @@ namespace brics_3d {
 namespace rsg {
 
 SceneGraphFacade::SceneGraphFacade() {
-	this->idGenerator = new SimpleIdGenerator();
+//	this->idGenerator = new SimpleIdGenerator();
+	this->idGenerator = new UuidGenerator();
 	initialize();
 }
 

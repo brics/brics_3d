@@ -40,6 +40,8 @@ class WorldModel : public IWorldModelQuery, public IWorldModelUpdate, public IWo
   public:
     WorldModel();
 
+    WorldModel(rsg::IIdGenerator* idGenerator);
+
     virtual ~WorldModel();
 
     /* Implemented interfaces: */
