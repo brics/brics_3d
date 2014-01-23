@@ -16,7 +16,9 @@ CPPUNIT_TEST_SUITE_REGISTRATION( FunctionBlockTest );
 
 void FunctionBlockTest::setUp() {
 	wm = new brics_3d::WorldModel();
-	functionBlockFile = "/home/sblume/brics_sandbox/microblx/microblx/std_blocks/cppdemo/cppdemo.so";
+//	functionBlockFile = "/home/sblume/brics_sandbox/microblx/microblx/std_blocks/cppdemo/cppdemo.so";
+	functionBlockFile = "cppdemo";
+
 	brics_3d::Logger::setMinLoglevel(brics_3d::Logger::LOGDEBUG);
 }
 
@@ -31,7 +33,16 @@ void FunctionBlockTest::testFunctionBlockLoader() {
 }
 
 void FunctionBlockTest::testFunctionBlockExecution() {
-	CPPUNIT_FAIL("TODO");
+	CPPUNIT_ASSERT(wm->loadFunctionBlock(functionBlockFile));
+
+	vector<brics_3d::rsg::Id> input;
+	input.push_back(wm->getRootNodeId()); // input hook
+	input.push_back(wm->getRootNodeId()); // output hook
+	vector<brics_3d::rsg::Id> output;
+	CPPUNIT_ASSERT(!wm->executeFunctionBlock("wrongFileName", input, output));
+	CPPUNIT_ASSERT(wm->executeFunctionBlock(functionBlockFile, input, output));
+	CPPUNIT_ASSERT(wm->executeFunctionBlock(functionBlockFile, input, output));
+	CPPUNIT_ASSERT(wm->executeFunctionBlock(functionBlockFile, input, output));
 }
 
 }  // namespace unitTests

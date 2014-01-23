@@ -22,7 +22,7 @@
 #include "brics_3d/core/HomogeneousMatrix44.h"
 
 #ifdef BRICS_MICROBLX_ENABLE
-#include "ubx.h"
+#include <ubx.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <dlfcn.h>
@@ -33,10 +33,34 @@ using namespace brics_3d::rsg;
 namespace brics_3d {
 
 WorldModel::WorldModel() {
+	this->functionBlockPath = "/home/sblume/sandbox/microblx/microblx/";
 
+#ifdef BRICS_MICROBLX_ENABLE
+
+	/* init microblx */
+	microBlxNodeHandle = new ubx_node_info_t(); // holds all microblx
+	std::string microBlxNodeName = "functionBlocks";
+
+	if (ubx_node_init(microBlxNodeHandle, microBlxNodeName.c_str()) != 0 ) {
+		LOG(ERROR) << "WorldModel::initialize: Cannot initialize the microblx node handle.";
+		microBlxNodeHandle = 0;
+	}
+
+	/* load the standard types */
+	std::string moduleFile = functionBlockPath + "std_types/stdtypes/stdtypes.so";
+	if(ubx_module_load(microBlxNodeHandle, moduleFile.c_str()) != 0){
+		LOG(ERROR) << "WorldModel::initialize: Cannot load the stdtypes.";
+	}
+
+#endif
 }
 
 WorldModel::~WorldModel() {
+
+#ifdef BRICS_MICROBLX_ENABLE
+	ubx_node_cleanup(microBlxNodeHandle);
+	LOG(DEBUG) << "Shutting down world model. Goodbye.";
+#endif
 
 }
 
@@ -132,39 +156,55 @@ void WorldModel::stopPerception() {
 
 bool WorldModel::loadFunctionBlock(std::string name) {
 #ifdef BRICS_MICROBLX_ENABLE
-	LOG(INFO) << "WorldModel::loadFunctionBlock: Loading a new function block to the world model with name " << name;
+
+	std::string moduleFile;
+	ubx_block_t* block;
+
+	LOG(DEBUG) << "WorldModel::loadFunctionBlock: Loading a new function block to the world model with name " << name;
 	/* In a nutshell: you'll need to dlopen(1) the
 	 * block or type library and register it with a node, the create the block
 	 * instances, configure and start them.
 	 */
 
-	/* load dll */
-	void* functionBlockHandle;
-	functionBlockHandle = dlopen(name.c_str(), RTLD_LAZY);
-	if (!functionBlockHandle) {
-		LOG(ERROR) << "WorldModel::loadFunctionBlock: Cannot load shared library for the function block: " << dlerror();
+	/* check if node is initialized */
+	if (microBlxNodeHandle == 0) {
+		LOG(ERROR) << "WorldModel::loadFunctionBlock: microblx node handle not initialized. Cannot load function block "<< name;
 		return false;
 	}
 
-	/* retieve microblock from dll */
-	ubx_block_t* block = new ubx_block_t();
-
-	/* init microblx */
-	ubx_node_info_t* microBlxNodeHandle = new ubx_node_info_t(); // holds all microblx
-	std::string microBlxNodeName = "functionBlocks";
-
-	if (ubx_node_init(microBlxNodeHandle, microBlxNodeName.c_str()) != 0 ) {
-		LOG(ERROR) << "WorldModel::loadFunctionBlock: Cannot initialize the Microblx node handle.";
+	/* load the block */
+	moduleFile = functionBlockPath + "std_blocks/" + name  + "/"  + name + ".so";
+	if(ubx_module_load(microBlxNodeHandle, moduleFile.c_str()) != 0) {
+		LOG(ERROR) << "WorldModel::loadFunctionBlock: Cannot load the module "<< name;
 		return false;
 	}
 
-	/* register function block to microblx "node" */
-	if (ubx_block_register(microBlxNodeHandle, block) != 0 ) {
-		LOG(ERROR) << "WorldModel::loadFunctionBlock: Cannot register the function block to the microblx node handle.";
+	/* create the block */
+	std::string blockName = name  + "/"  + name; // e.g. "cppdemo/cppdemo"
+	if((block = ubx_block_create(microBlxNodeHandle, blockName.c_str(), name.c_str())) == 0){
+		LOG(ERROR) << "WorldModel::loadFunctionBlock: Cannot create the module "<< name;
+		return false;
+	}
+	LOG(DEBUG) << "WorldModel::loadFunctionBlock: Created block with name = " << block->name;
+
+	/* initialize the block */
+	if(ubx_block_init(block) != 0){
+		LOG(ERROR) << "WorldModel::loadFunctionBlock: Cannot initialize the module "<< name;
 		return false;
 	}
 
-	LOG(DEBUG) << "WorldModel::loadFunctionBlock: function block " << name << " is initialized.";
+	/* start the block */
+	if(ubx_block_start(block) != 0){
+		LOG(ERROR) << "WorldModel::loadFunctionBlock: Cannot start the module "<< name;
+		return false;
+	}
+
+	LOG(DEBUG) << "WorldModel::loadFunctionBlock: The are currently loaded: " << std::endl
+			<< "\t" << ubx_num_blocks(microBlxNodeHandle) << " block(s)"  << std::endl
+			<< "\t" << ubx_num_types(microBlxNodeHandle) << " type(s)"  << std::endl
+			<< "\t" << ubx_num_modules(microBlxNodeHandle)<< " module(s)";
+
+	LOG(INFO) << "WorldModel::loadFunctionBlock: function block " << name << " has been successfully loaded.";
 	return true;
 
 #endif
@@ -175,8 +215,38 @@ bool WorldModel::loadFunctionBlock(std::string name) {
 
 bool WorldModel::executeFunctionBlock(std::string name, std::vector<rsg::Id>& input, std::vector<rsg::Id>& output) {
 #ifdef BRICS_MICROBLX_ENABLE
-	LOG(ERROR) << "Microblx support not enabled. Cannot load a function block.";
+
+	/* check if node is initialized */
+	if (microBlxNodeHandle == 0) {
+		LOG(ERROR) << "WorldModel::executeFunctionBlock: microblx node handle not initialized. Cannot execute function block "<< name;
+		return false;
+	}
+
+//	LOG(DEBUG) << "WorldModel::executeFunctionBlock: The are currently loaded: " << std::endl
+//			<< "\t" << ubx_num_blocks(microBlxNodeHandle) << " block(s)"  << std::endl
+//			<< "\t" << ubx_num_types(microBlxNodeHandle) << " type(s)"  << std::endl
+//			<< "\t" << ubx_num_modules(microBlxNodeHandle)<< " module(s)";
+
+	/* resolve name to block handle */
+	ubx_block_t* block = ubx_block_get(microBlxNodeHandle, name.c_str());
+	if (block == 0) {
+		LOG(ERROR) << "WorldModel::executeFunctionBlock: function block " << name << " does not exist.";
+		return false;
+	}
+
+	/* Translate inputs */
+
+	/* Execute now! */
+	if (ubx_cblock_step(block) != 0) {
+		LOG(ERROR) << "WorldModel::executeFunctionBlock: cannot execute function block " << name;
+		return false;
+	}
+
+	/* Translate outputs */
+
+	return true;
 #endif
+	LOG(ERROR) << "Microblx support not enabled. Cannot load a function block.";
 	return false;
 }
 

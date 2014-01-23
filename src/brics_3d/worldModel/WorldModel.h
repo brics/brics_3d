@@ -29,6 +29,8 @@
 #include "sceneGraph/TimeStamp.h"
 #include "brics_3d/util/Timer.h"
 
+struct ubx_node_info; // forward declaration to hide microblx internals from wm users
+
 namespace brics_3d {
 
 /**
@@ -78,6 +80,15 @@ class WorldModel : public IWorldModelQuery, public IWorldModelUpdate, public IWo
   private:
 
     Timer timer; //TODO unfortunately here we introduce a dependency to the brics_3d_util lib...
+
+    /// Root path to function blocks
+    std::string functionBlockPath;
+
+#ifdef BRICS_MICROBLX_ENABLE
+    /// THE handle that handles all function blocks
+    ubx_node_info* microBlxNodeHandle;
+#endif
+
 };
 
 } // namespace brics_3d
