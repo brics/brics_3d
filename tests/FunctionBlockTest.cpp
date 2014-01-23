@@ -15,9 +15,13 @@ namespace unitTests {
 CPPUNIT_TEST_SUITE_REGISTRATION( FunctionBlockTest );
 
 void FunctionBlockTest::setUp() {
+#ifdef BRICS_MICROBLX_ENABLE
 	CPPUNIT_ASSERT(brics_3d::WorldModel::microBlxWmHandle == 0);
+#endif
 	wm = new brics_3d::WorldModel();
+#ifdef BRICS_MICROBLX_ENABLE
 	CPPUNIT_ASSERT(brics_3d::WorldModel::microBlxWmHandle == wm);
+#endif
 //	functionBlockFile = "/home/sblume/brics_sandbox/microblx/microblx/std_blocks/cppdemo/cppdemo.so";
 	functionBlockFile = "cppdemo";
 
