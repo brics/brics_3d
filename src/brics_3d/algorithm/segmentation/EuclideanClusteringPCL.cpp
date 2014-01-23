@@ -55,7 +55,8 @@ void EuclideanClusteringPCL::extractClusters(brics_3d::PointCloud3D *inCloud){
 	std::cout << "Ecledian: inCloud size =" << inCloud->getSize() << " inCloudPclPtr size = " << inCloudPclPtr->points.size() << std::endl;
 
 	// Creating the KdTree object for the search method of the extraction
-	pcl::KdTree<pcl::PointXYZ>::Ptr tree (new pcl::KdTreeFLANN<pcl::PointXYZ>);
+	//pcl::KdTree<pcl::PointXYZ>::Ptr tree (new pcl::KdTreeFLANN<pcl::PointXYZ>); //1.1
+	pcl::search::KdTree<pcl::PointXYZ>::Ptr tree (new pcl::search::KdTree<pcl::PointXYZ>); //1.5
 	tree->setInputCloud (inCloudPclPtr);
 	std::vector<pcl::PointIndices> cluster_indices;
 	pcl::EuclideanClusterExtraction<pcl::PointXYZ> euclideanClusterExtractor;

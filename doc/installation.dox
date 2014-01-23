@@ -128,6 +128,36 @@ XERCES:
 
  NOTE: enable the USE_XERCES cmake variable during invocation of cmake for BRICS_3D 
 
+MICROBLX:
+
+- Install dependencies clang an luajit:
+
+ @code 
+		sudo apt-get install clang
+
+		wget luajit.org/download/LuaJIT-2.0.2.tar.gz
+		tar -xvf LuaJIT-2.0.2.tar.gz 
+		cd LuaJIT-2.0.2
+		make
+		sudo make install
+		sudo ln -s /usr/local/bin/luajit /usr/local/bin/lua
+		sudo ldconfig
+ @endcode
+
+- Install latest version of the microblx library:
+ 
+ @code 
+		git clone https://github.com/kmarkus/microblx.git
+		git checkout dev # you might want to skip this step
+		cd microblx
+		source env.sh 
+		make
+
+		echo "export MICROBLX_DIR=$PWD" >> ~/.bashrc
+ @endcode
+
+ NOTE: enable the USE_MICROBLX cmake variable during invocation of cmake for BRICS_3D and makke sure
+ that the MICROBLX_DIR environment varialbe is set up properly.  
 
 @section brics_3d_compilation Compilation of BRICS_3D
 
