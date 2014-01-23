@@ -26,6 +26,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <dlfcn.h>
+
+brics_3d::WorldModel* brics_3d::WorldModel::microBlxWmHandle = 0;
+
 #endif
 
 using namespace brics_3d::rsg;
@@ -52,12 +55,15 @@ WorldModel::WorldModel() {
 		LOG(ERROR) << "WorldModel::initialize: Cannot load the stdtypes.";
 	}
 
+	WorldModel::microBlxWmHandle = this;
+
 #endif
 }
 
 WorldModel::~WorldModel() {
 
 #ifdef BRICS_MICROBLX_ENABLE
+	WorldModel::microBlxWmHandle = 0;
 	ubx_node_cleanup(microBlxNodeHandle);
 	LOG(DEBUG) << "Shutting down world model. Goodbye.";
 #endif

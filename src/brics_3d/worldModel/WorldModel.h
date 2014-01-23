@@ -87,6 +87,9 @@ class WorldModel : public IWorldModelQuery, public IWorldModelUpdate, public IWo
 #ifdef BRICS_MICROBLX_ENABLE
     /// THE handle that handles all function blocks
     ubx_node_info* microBlxNodeHandle;
+  public:
+
+    static WorldModel* microBlxWmHandle; //workaround for wm as a shared resource among the microblx
 #endif
 
 };
