@@ -36,7 +36,7 @@ using namespace brics_3d::rsg;
 namespace brics_3d {
 
 WorldModel::WorldModel() {
-	this->functionBlockPath = "/home/sblume/sandbox/microblx/microblx/";
+	this->microBlxPath = "/home/sblume/sandbox/microblx/microblx/";
 
 #ifdef BRICS_MICROBLX_ENABLE
 
@@ -50,7 +50,7 @@ WorldModel::WorldModel() {
 	}
 
 	/* load the standard types */
-	std::string moduleFile = functionBlockPath + "std_types/stdtypes/stdtypes.so";
+	std::string moduleFile = microBlxPath + "std_types/stdtypes/stdtypes.so";
 	if(ubx_module_load(microBlxNodeHandle, moduleFile.c_str()) != 0){
 		LOG(ERROR) << "WorldModel::initialize: Cannot load the stdtypes.";
 	}
@@ -161,6 +161,12 @@ void WorldModel::stopPerception() {
 }
 
 bool WorldModel::loadFunctionBlock(std::string name) {
+	/* provide a reasonable default value */
+	std::string pathToBlock = microBlxPath + "std_blocks/" + name  + "/";
+	return loadFunctionBlock(name, pathToBlock);
+}
+
+bool WorldModel::loadFunctionBlock(std::string name, std::string path) {
 #ifdef BRICS_MICROBLX_ENABLE
 
 	std::string moduleFile;
@@ -179,7 +185,7 @@ bool WorldModel::loadFunctionBlock(std::string name) {
 	}
 
 	/* load the block */
-	moduleFile = functionBlockPath + "std_blocks/" + name  + "/"  + name + ".so";
+	moduleFile = path + name + ".so";
 	if(ubx_module_load(microBlxNodeHandle, moduleFile.c_str()) != 0) {
 		LOG(ERROR) << "WorldModel::loadFunctionBlock: Cannot load the module "<< name;
 		return false;

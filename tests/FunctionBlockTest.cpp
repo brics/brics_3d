@@ -22,7 +22,7 @@ void FunctionBlockTest::setUp() {
 #ifdef BRICS_MICROBLX_ENABLE
 	CPPUNIT_ASSERT(brics_3d::WorldModel::microBlxWmHandle == wm);
 #endif
-//	functionBlockFile = "/home/sblume/brics_sandbox/microblx/microblx/std_blocks/cppdemo/cppdemo.so";
+//	functionBlockFile = "/home/sblume/sandbox/microblx/microblx/std_blocks/cppdemo/cppdemo.so";
 	functionBlockFile = "cppdemo";
 
 	brics_3d::Logger::setMinLoglevel(brics_3d::Logger::LOGDEBUG);
@@ -49,6 +49,23 @@ void FunctionBlockTest::testFunctionBlockExecution() {
 	CPPUNIT_ASSERT(wm->executeFunctionBlock(functionBlockFile, input, output));
 	CPPUNIT_ASSERT(wm->executeFunctionBlock(functionBlockFile, input, output));
 	CPPUNIT_ASSERT(wm->executeFunctionBlock(functionBlockFile, input, output));
+}
+
+void FunctionBlockTest::testExternalFunctionBlockExecution() {
+//	string blockName = "cppdemo";
+//	string blockPath = "/home/sblume/sandbox/microblx/microblx/std_blocks/cppdemo/";
+	string blockName = "testblock";
+	string blockPath = "/home/sblume/sandbox/brics_3d_function_blocks/lib/lib"; //it is actually called libfunctionblock.so ...
+
+	CPPUNIT_ASSERT(wm->loadFunctionBlock(blockName, blockPath));
+
+	vector<brics_3d::rsg::Id> input;
+	input.push_back(wm->getRootNodeId()); // input hook
+	input.push_back(wm->getRootNodeId()); // output hook
+	vector<brics_3d::rsg::Id> output;
+	CPPUNIT_ASSERT(wm->executeFunctionBlock(blockName, input, output));
+	CPPUNIT_ASSERT(wm->executeFunctionBlock(blockName, input, output));
+	CPPUNIT_ASSERT(wm->executeFunctionBlock(blockName, input, output));
 }
 
 }  // namespace unitTests

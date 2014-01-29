@@ -24,6 +24,7 @@ class FunctionBlockTest : public CPPUNIT_NS::TestFixture {
 #ifdef BRICS_MICROBLX_ENABLE
 	CPPUNIT_TEST( testFunctionBlockLoader );
 	CPPUNIT_TEST( testFunctionBlockExecution );
+	CPPUNIT_TEST( testExternalFunctionBlockExecution );
 #endif
 	CPPUNIT_TEST_SUITE_END();
 
@@ -34,6 +35,7 @@ public:
 
 	void testFunctionBlockLoader();
 	void testFunctionBlockExecution();
+	void testExternalFunctionBlockExecution();
 
 private:
 

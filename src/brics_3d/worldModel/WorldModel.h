@@ -65,7 +65,8 @@ class WorldModel : public IWorldModelQuery, public IWorldModelUpdate, public IWo
     void stopPerception();
 
     /* Function block interface */
-    bool loadFunctionBlock(std::string name);
+    bool loadFunctionBlock(std::string name); //default path
+    bool loadFunctionBlock(std::string name, std::string path);
     bool executeFunctionBlock(std::string name, std::vector<rsg::Id>& input, std::vector<rsg::Id>& output);
     bool getloadedFunctionBlocks(std::vector<std::string>& functionBlocks);
 
@@ -81,8 +82,8 @@ class WorldModel : public IWorldModelQuery, public IWorldModelUpdate, public IWo
 
     Timer timer; //TODO unfortunately here we introduce a dependency to the brics_3d_util lib...
 
-    /// Root path to function blocks
-    std::string functionBlockPath;
+    /// Root path to micro blocks
+    std::string microBlxPath;
 
 #ifdef BRICS_MICROBLX_ENABLE
     /// THE handle that handles all function blocks
