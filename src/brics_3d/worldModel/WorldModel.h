@@ -30,6 +30,7 @@
 #include "brics_3d/util/Timer.h"
 
 struct ubx_node_info; // forward declaration to hide microblx internals from wm users
+struct ubx_block;
 
 namespace brics_3d {
 
@@ -88,6 +89,9 @@ class WorldModel : public IWorldModelQuery, public IWorldModelUpdate, public IWo
 #ifdef BRICS_MICROBLX_ENABLE
     /// THE handle that handles all function blocks
     ubx_node_info* microBlxNodeHandle;
+
+	ubx_block* inputBlock;
+
   public:
 
     static WorldModel* microBlxWmHandle; //workaround for wm as a shared resource among the microblx

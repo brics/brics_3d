@@ -29,6 +29,9 @@
 
 brics_3d::WorldModel* brics_3d::WorldModel::microBlxWmHandle = 0;
 
+//def_read_fun(read_uint, unsigned int)
+def_write_fun(write_uint, unsigned int)
+
 #endif
 
 using namespace brics_3d::rsg;
@@ -53,6 +56,56 @@ WorldModel::WorldModel() {
 	std::string moduleFile = microBlxPath + "std_types/stdtypes/stdtypes.so";
 	if(ubx_module_load(microBlxNodeHandle, moduleFile.c_str()) != 0){
 		LOG(ERROR) << "WorldModel::initialize: Cannot load the stdtypes.";
+	}
+
+	/* load a standard interaction block for sending data */
+	moduleFile = microBlxPath + "std_blocks/lfds_buffers/lfds_cyclic.so";
+	if(ubx_module_load(microBlxNodeHandle, moduleFile.c_str()) != 0){
+		LOG(ERROR) << "WorldModel::initialize: Cannot load the lfds_buffer.";
+	}
+
+	/*
+	 * Create a single (dummy) fifo interaction block to be used
+	 * as default input for any function block
+	 */
+
+	/* create the fifo block */
+	std::string name = "inputFifo";
+	std::string inputModuleName = "lfds_buffers/cyclic";
+	if((inputBlock = ubx_block_create(microBlxNodeHandle, inputModuleName.c_str(), name.c_str())) == 0){
+		LOG(ERROR) << "WorldModel::loadFunctionBlock: Cannot create the module "<< name;
+		return;
+	}
+	LOG(DEBUG) << "WorldModel::initialize: Created block with name = " << inputBlock->name;
+
+	/* configure the fifo block */
+//	{ .name="type_name", .type_name = "char", .doc="name of registered microblx type to transport" },
+//	{ .name="data_len", .type_name = "uint32_t", .doc="array length (multiplier) of data (default: 1)" },
+//	{ .name="buffer_len", .type_name = "uint32_t", .doc="max. number of data elements the buffer shall hold" },
+	uint32_t dataSize = sizeof(uint32_t);
+	uint32_t bufferSize = 4;
+
+	ubx_data_t* fifoData = ubx_config_get_data(inputBlock, "data_len");
+	memcpy(fifoData->data, &dataSize, sizeof(dataSize));
+
+	fifoData = ubx_config_get_data(inputBlock, "buffer_len");
+	memcpy(fifoData->data, &bufferSize, sizeof(bufferSize));
+
+	fifoData = ubx_config_get_data(inputBlock, "type_name");
+	int len = strlen("unsigned int")+1;
+	ubx_data_resize(fifoData, len);
+	strncpy((char*)fifoData->data, "unsigned int", len);
+
+	/* initialize the block */
+	if(ubx_block_init(inputBlock) != 0){
+		LOG(ERROR) << "WorldModel::initialize: Cannot initialize the module "<< name;
+		return;
+	}
+
+	/* start the block */
+	if(ubx_block_start(inputBlock) != 0){
+		LOG(ERROR) << "WorldModel::initialize: Cannot start the module "<< name;
+		return;
 	}
 
 	WorldModel::microBlxWmHandle = this;
@@ -211,6 +264,19 @@ bool WorldModel::loadFunctionBlock(std::string name, std::string path) {
 		return false;
 	}
 
+	ubx_port_t* port = ubx_port_get(block, "inputDataIds");
+	if(port == 0) {
+		LOG(WARNING) << "WorldModel::loadFunctionBlock: function block " << name << " has no inputDataIds port";
+		// return false ?
+	} else {
+
+		/* connect to default input */
+		if(ubx_port_connect_in(port, inputBlock)) {
+			LOG(ERROR) << "WorldModel::loadFunctionBlock: Cannot connect the module "<< name << "to the default input port.";
+			return false;
+		}
+	}
+
 	LOG(DEBUG) << "WorldModel::loadFunctionBlock: The are currently loaded: " << std::endl
 			<< "\t" << ubx_num_blocks(microBlxNodeHandle) << " block(s)"  << std::endl
 			<< "\t" << ubx_num_types(microBlxNodeHandle) << " type(s)"  << std::endl
@@ -247,6 +313,22 @@ bool WorldModel::executeFunctionBlock(std::string name, std::vector<rsg::Id>& in
 	}
 
 	/* Translate inputs */
+	ubx_port_t* port = ubx_port_get(block, "inputDataIds");
+	if(port == 0) {
+		LOG(WARNING) << "WorldModel::executeFunctionBlock: function block " << name << " has no inputDataIds port";
+		//		return false;
+	} else { // Only write input if it can be read...
+
+		ubx_type_t* type =  ubx_type_get(microBlxNodeHandle, "unsigned int");
+		unsigned int inputPointCloudId = uuidToUnsignedInt(input[0]);
+		ubx_data_t val;
+		val.type = type;
+		val.len=sizeof(inputPointCloudId);
+		val.data = &inputPointCloudId;
+
+		inputBlock->write(inputBlock, &val);
+		inputBlock->stat_num_writes++;
+	}
 
 	/* Execute now! */
 	if (ubx_cblock_step(block) != 0) {
