@@ -86,7 +86,7 @@ int main(int argc, char **argv) {
 	 *       		    pc2
 	 */
 	rsg::Id pc1Id;
-	rsg::Id pc2Id;
+	rsg::Id pc2Id = 41; // just fot now
 	rsg::Id pcReducedId;
 	rsg::Id groupReducedClouds;
 	rsg::Id pcBoxROIId;
@@ -118,7 +118,7 @@ int main(int argc, char **argv) {
 	pc2Container->data = pointCloud2;
 	tmpAttributes.clear();
 	tmpAttributes.push_back(Attribute("name","point_cloud_2"));
-	wm->scene.addGeometricNode(tfPc2Id, pc2Id, tmpAttributes, pc2Container, TimeStamp(0.0));
+	wm->scene.addGeometricNode(tfPc2Id, pc2Id, tmpAttributes, pc2Container, TimeStamp(0.0), true); //force - just for now
 	LOG(INFO) << "assigend ID for second point cloud: " << pc2Id;
 
 	/* reduce point cloud with Octree filter */
@@ -322,6 +322,19 @@ int main(int argc, char **argv) {
 	brics_3d::rsg::DotGraphGenerator dotGraphTraverser;
 	wm->scene.executeGraphTraverser(&dotGraphTraverser, wm->scene.getRootId());
 	cout << "GRAPH: "<< endl << dotGraphTraverser.getDotGraph() << endl;
+
+
+	/* processing with function blocks */
+	string blockName = "roifilter";//"testblock";
+	string blockPath = "/home/sblume/sandbox/brics_3d_function_blocks/lib/";
+
+	wm->loadFunctionBlock(blockName, blockPath);
+
+	vector<brics_3d::rsg::Id> input;
+	input.push_back(pc2Id); // input hook
+	input.push_back(wm->getRootNodeId()); // output hook
+	vector<brics_3d::rsg::Id> output;
+	wm->executeFunctionBlock(blockName, input, output);
 
 	/* clean up */
 	delete octreeFilter;

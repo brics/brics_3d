@@ -154,6 +154,20 @@ void IdTest::testUuids() {
 	CPPUNIT_ASSERT_EQUAL(idValue, node6IdAsInt);
 }
 
+void IdTest::testUuidConstructor() {
+
+	std::vector<brics_3d::rsg::Id> inputDataIds;
+	unsigned int inputPointCloudId;
+
+	inputDataIds.clear();
+	inputPointCloudId = 41;
+	inputDataIds.push_back(inputPointCloudId);
+
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(inputDataIds.size()));
+}
+
+
+
 void IdTest::testUuidGenerator() {
 	UuidGenerator idGenerator;
 

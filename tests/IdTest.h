@@ -40,6 +40,7 @@ class IdTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST_SUITE( IdTest );
 	CPPUNIT_TEST( testIds );
 	CPPUNIT_TEST( testUuids );
+	CPPUNIT_TEST( testUuidConstructor );
 	CPPUNIT_TEST( testIdGenerator );
 	CPPUNIT_TEST( testUuidGenerator );
 	CPPUNIT_TEST_SUITE_END();
@@ -51,6 +52,7 @@ public:
 
 	void testIds();
 	void testUuids();
+	void testUuidConstructor();
 	void testIdGenerator();
 	void testUuidGenerator();
 

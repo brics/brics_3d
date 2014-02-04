@@ -107,10 +107,10 @@ public:
 	 */
 	friend std::ostream& operator<<(std::ostream& outStream, const Uuid& id);
 
-private:
-
 	/// Size of array is 16. 16 * 8 = 128 bits as required by RFC 4122
     const static size_t arraySize = 16;
+
+private:
 
 	/**
 	 * @brief Array holding the 128 bit value for an UUID

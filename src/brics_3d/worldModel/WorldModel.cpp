@@ -27,10 +27,15 @@
 #include <stdlib.h>
 #include <dlfcn.h>
 
+/* microblx types for the robot scene graph */
+#include "brics_3d/util/UbxTypecaster.h"
+
 brics_3d::WorldModel* brics_3d::WorldModel::microBlxWmHandle = 0;
 
 //def_read_fun(read_uint, unsigned int)
-def_write_fun(write_uint, unsigned int)
+//def_write_fun(write_uint, unsigned int)
+
+
 
 #endif
 
@@ -58,6 +63,12 @@ WorldModel::WorldModel() {
 		LOG(ERROR) << "WorldModel::initialize: Cannot load the stdtypes.";
 	}
 
+	/* load the standard types */
+	moduleFile = "/home/sblume/sandbox/brics_3d_function_blocks/lib/rsg_types.so";
+	if(ubx_module_load(microBlxNodeHandle, moduleFile.c_str()) != 0){
+		LOG(ERROR) << "WorldModel::initialize: Cannot load the rsgtypes.";
+	}
+
 	/* load a standard interaction block for sending data */
 	moduleFile = microBlxPath + "std_blocks/lfds_buffers/lfds_cyclic.so";
 	if(ubx_module_load(microBlxNodeHandle, moduleFile.c_str()) != 0){
@@ -82,7 +93,7 @@ WorldModel::WorldModel() {
 //	{ .name="type_name", .type_name = "char", .doc="name of registered microblx type to transport" },
 //	{ .name="data_len", .type_name = "uint32_t", .doc="array length (multiplier) of data (default: 1)" },
 //	{ .name="buffer_len", .type_name = "uint32_t", .doc="max. number of data elements the buffer shall hold" },
-	uint32_t dataSize = sizeof(uint32_t);
+	uint32_t dataSize = sizeof(struct rsg_ids); // sizeof(uint32_t); //  sizeof(struct rsg_ids);
 	uint32_t bufferSize = 4;
 
 	ubx_data_t* fifoData = ubx_config_get_data(inputBlock, "data_len");
@@ -92,9 +103,9 @@ WorldModel::WorldModel() {
 	memcpy(fifoData->data, &bufferSize, sizeof(bufferSize));
 
 	fifoData = ubx_config_get_data(inputBlock, "type_name");
-	int len = strlen("unsigned int")+1;
+	int len = strlen("struct rsg_ids")+1;
 	ubx_data_resize(fifoData, len);
-	strncpy((char*)fifoData->data, "unsigned int", len);
+	strncpy((char*)fifoData->data, "struct rsg_ids", len);
 
 	/* initialize the block */
 	if(ubx_block_init(inputBlock) != 0){
@@ -319,13 +330,18 @@ bool WorldModel::executeFunctionBlock(std::string name, std::vector<rsg::Id>& in
 		//		return false;
 	} else { // Only write input if it can be read...
 
-		ubx_type_t* type =  ubx_type_get(microBlxNodeHandle, "unsigned int");
-		unsigned int inputPointCloudId = uuidToUnsignedInt(input[0]);
+		/* prepare rsg type */
+		rsg_ids tmpIds;
+		ubx_type_t* type =  ubx_type_get(microBlxNodeHandle, "struct rsg_ids");
+		brics_3d::rsg::UbxTypecaster::convertIdsToUbx(input, tmpIds); // rsg -> ubx type (structs)
+
+		/* stuff everything into generic ubx_data_t struct */
 		ubx_data_t val;
 		val.type = type;
-		val.len=sizeof(inputPointCloudId);
-		val.data = &inputPointCloudId;
+		val.len = 1;// because 1* ids struct ...  sizeof(tmpIds);//inputPointCloudId);
+		val.data = &tmpIds;
 
+		/* push data into the port */
 		inputBlock->write(inputBlock, &val);
 		inputBlock->stat_num_writes++;
 	}
