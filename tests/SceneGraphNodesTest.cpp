@@ -4301,6 +4301,47 @@ void SceneGraphNodesTest::testRemoveParents() {
 
 }
 
+void SceneGraphNodesTest::testNodeStorage() {
+	brics_3d::rsg::SceneGraphFacade scene;
+
+    std::vector<brics_3d::rsg::Attribute> attributes;
+    attributes.clear();
+	brics_3d::rsg::Id boxId = 234;
+
+	{
+	    brics_3d::rsg::Box::BoxPtr someBox(new brics_3d::rsg::Box(2, 3, 4));
+	    attributes.clear();
+	    attributes.push_back(brics_3d::rsg::Attribute("name","some_box"));
+	    scene.addGeometricNode(scene.getRootId(), boxId, attributes, someBox, TimeStamp(0.0), true);
+	} // let box ptr get out of scope....
+
+	{
+		brics_3d::rsg::Id resultId;
+		vector<Id> results;
+		scene.getNodes(attributes, results);
+		CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(results.size()));
+		resultId = results[0];
+		CPPUNIT_ASSERT(resultId == boxId);
+	}
+
+	{
+	    brics_3d::rsg::Shape::ShapePtr inputShape;
+	    brics_3d::rsg::TimeStamp inputTime;
+	    scene.getGeometry(boxId, inputShape, inputTime);
+
+	    brics_3d::rsg::PointCloud<brics_3d::PointCloud3D>::PointCloudPtr inputPointCloudContainer(new brics_3d::rsg::PointCloud<brics_3d::PointCloud3D>());
+	    inputPointCloudContainer = boost::dynamic_pointer_cast<brics_3d::rsg::PointCloud<brics_3d::PointCloud3D> >(inputShape);
+
+
+	    brics_3d::rsg::Box::BoxPtr someOtherBox(new brics_3d::rsg::Box());
+	    someOtherBox = boost::dynamic_pointer_cast<brics_3d::rsg::Box>(inputShape);
+
+	    CPPUNIT_ASSERT(someOtherBox->getSizeX() == 2);
+
+	}
+
+}
+
 }  // namespace unitTests
 
 /* EOF */

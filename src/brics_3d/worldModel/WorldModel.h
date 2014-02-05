@@ -69,7 +69,7 @@ class WorldModel : public IWorldModelQuery, public IWorldModelUpdate, public IWo
     bool loadFunctionBlock(std::string name); //default path
     bool loadFunctionBlock(std::string name, std::string path);
     bool executeFunctionBlock(std::string name, std::vector<rsg::Id>& input, std::vector<rsg::Id>& output);
-    bool getloadedFunctionBlocks(std::vector<std::string>& functionBlocks);
+    bool getLoadedFunctionBlocks(std::vector<std::string>& functionBlocks);
 
 
     /* Helper functions */
@@ -91,6 +91,7 @@ class WorldModel : public IWorldModelQuery, public IWorldModelUpdate, public IWo
     ubx_node_info* microBlxNodeHandle;
 
 	ubx_block* inputBlock;
+	ubx_block* outputBlock;
 
   public:
 

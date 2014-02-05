@@ -32,9 +32,8 @@
 
 brics_3d::WorldModel* brics_3d::WorldModel::microBlxWmHandle = 0;
 
-//def_read_fun(read_uint, unsigned int)
-//def_write_fun(write_uint, unsigned int)
-
+def_read_fun(read_rsg_ids, rsg_ids)
+//def_write_fun(write_rsg_ids, rsg_ids)
 
 
 #endif
@@ -80,7 +79,7 @@ WorldModel::WorldModel() {
 	 * as default input for any function block
 	 */
 
-	/* create the fifo block */
+	/* create the input fifo block */
 	std::string name = "inputFifo";
 	std::string inputModuleName = "lfds_buffers/cyclic";
 	if((inputBlock = ubx_block_create(microBlxNodeHandle, inputModuleName.c_str(), name.c_str())) == 0){
@@ -119,6 +118,45 @@ WorldModel::WorldModel() {
 		return;
 	}
 
+	/*
+	 * Create a second  (dummy) fifo interaction block to be used
+	 * as default output for any function block
+	 */
+
+	/* create the output fifo block */
+	name = "outputFifo";
+	inputModuleName = "lfds_buffers/cyclic";
+	if((outputBlock = ubx_block_create(microBlxNodeHandle, inputModuleName.c_str(), name.c_str())) == 0){
+		LOG(ERROR) << "WorldModel::loadFunctionBlock: Cannot create the module "<< name;
+		return;
+	}
+	LOG(DEBUG) << "WorldModel::initialize: Created block with name = " << outputBlock->name;
+	dataSize = sizeof(struct rsg_ids);
+	bufferSize = 4;
+
+	ubx_data_t* outputFifoData = ubx_config_get_data(outputBlock, "data_len");
+	memcpy(outputFifoData->data, &dataSize, sizeof(dataSize));
+
+	outputFifoData = ubx_config_get_data(outputBlock, "buffer_len");
+	memcpy(outputFifoData->data, &bufferSize, sizeof(bufferSize));
+
+	outputFifoData = ubx_config_get_data(outputBlock, "type_name");
+	len = strlen("struct rsg_ids")+1;
+	ubx_data_resize(outputFifoData, len);
+	strncpy((char*)outputFifoData->data, "struct rsg_ids", len);
+
+	/* initialize the block */
+	if(ubx_block_init(outputBlock) != 0){
+		LOG(ERROR) << "WorldModel::initialize: Cannot initialize the module "<< name;
+		return;
+	}
+
+	/* start the block */
+	if(ubx_block_start(outputBlock) != 0){
+		LOG(ERROR) << "WorldModel::initialize: Cannot start the module "<< name;
+		return;
+	}
+
 	WorldModel::microBlxWmHandle = this;
 
 #endif
@@ -128,7 +166,7 @@ WorldModel::~WorldModel() {
 
 #ifdef BRICS_MICROBLX_ENABLE
 	WorldModel::microBlxWmHandle = 0;
-	ubx_node_cleanup(microBlxNodeHandle);
+	//ubx_node_cleanup(microBlxNodeHandle); // FIXME causes segfault
 	LOG(DEBUG) << "Shutting down world model. Goodbye.";
 #endif
 
@@ -288,6 +326,19 @@ bool WorldModel::loadFunctionBlock(std::string name, std::string path) {
 		}
 	}
 
+	ubx_port_t* outputPort = ubx_port_get(block, "outputDataIds");
+	if(outputPort == 0) {
+		LOG(WARNING) << "WorldModel::loadFunctionBlock: function block " << name << " has no outputDataIds port";
+		// return false ?
+	} else {
+
+		/* connect to default input */
+		if(ubx_port_connect_out(outputPort, outputBlock)) {
+			LOG(ERROR) << "WorldModel::loadFunctionBlock: Cannot connect the module "<< name << "to the default output port.";
+			return false;
+		}
+	}
+
 	LOG(DEBUG) << "WorldModel::loadFunctionBlock: The are currently loaded: " << std::endl
 			<< "\t" << ubx_num_blocks(microBlxNodeHandle) << " block(s)"  << std::endl
 			<< "\t" << ubx_num_types(microBlxNodeHandle) << " type(s)"  << std::endl
@@ -324,15 +375,16 @@ bool WorldModel::executeFunctionBlock(std::string name, std::vector<rsg::Id>& in
 	}
 
 	/* Translate inputs */
-	ubx_port_t* port = ubx_port_get(block, "inputDataIds");
-	if(port == 0) {
+	ubx_port_t* inputPort = ubx_port_get(block, "inputDataIds");
+	ubx_type_t* type =  ubx_type_get(microBlxNodeHandle, "struct rsg_ids");
+	if(inputPort == 0) {
 		LOG(WARNING) << "WorldModel::executeFunctionBlock: function block " << name << " has no inputDataIds port";
 		//		return false;
 	} else { // Only write input if it can be read...
 
 		/* prepare rsg type */
 		rsg_ids tmpIds;
-		ubx_type_t* type =  ubx_type_get(microBlxNodeHandle, "struct rsg_ids");
+//		ubx_type_t* type =  ubx_type_get(microBlxNodeHandle, "struct rsg_ids");
 		brics_3d::rsg::UbxTypecaster::convertIdsToUbx(input, tmpIds); // rsg -> ubx type (structs)
 
 		/* stuff everything into generic ubx_data_t struct */
@@ -353,6 +405,30 @@ bool WorldModel::executeFunctionBlock(std::string name, std::vector<rsg::Id>& in
 	}
 
 	/* Translate outputs */
+	output.clear();
+	ubx_port_t* outputPort = ubx_port_get(block, "outputDataIds");
+	if(outputPort == 0) {
+		LOG(WARNING) << "WorldModel::executeFunctionBlock: function block " << name << " has no outputDataIds port";
+
+	} else {
+		rsg_ids recievedOutputDataIds;
+		recievedOutputDataIds.numberOfIds = 0u;
+
+//		int ret = read_rsg_ids(outputPort, &recievedOutputDataIds);
+//		if (ret < 1) {
+//			LOG(WARNING) << "WorldModel::executeFunctionBlock: No output IDs given.";
+//		}
+
+		ubx_data_t val;
+		val.type = type;
+		val.len = 1;// because 1* ids struct ...  sizeof(tmpIds);//inputPointCloudId);
+		val.data = &recievedOutputDataIds;
+
+		outputBlock->read(outputBlock, &val);
+		outputBlock->stat_num_reads++;
+
+		brics_3d::rsg::UbxTypecaster::convertIdsFromUbx(recievedOutputDataIds, output);
+	}
 
 	return true;
 #endif
@@ -360,9 +436,13 @@ bool WorldModel::executeFunctionBlock(std::string name, std::vector<rsg::Id>& in
 	return false;
 }
 
-bool WorldModel::getloadedFunctionBlocks(std::vector<std::string>& functionBlocks) {
+bool WorldModel::getLoadedFunctionBlocks(std::vector<std::string>& functionBlocks) {
 #ifdef BRICS_MICROBLX_ENABLE
-	LOG(ERROR) << "Microblx support not enabled. Cannot load a function block.";
+	LOG(INFO) << "WorldModel::executeFunctionBlock: The are currently loaded: " << std::endl
+			<< "\t" << ubx_num_blocks(microBlxNodeHandle) << " block(s)"  << std::endl
+			<< "\t" << ubx_num_types(microBlxNodeHandle) << " type(s)"  << std::endl
+			<< "\t" << ubx_num_modules(microBlxNodeHandle)<< " module(s)";
+	return false;
 #endif
 	return false;
 }

@@ -25,6 +25,12 @@
 #include "Shape.h"
 #include "Attribute.h"
 
+// Some default shapes
+#include "Box.h"
+#include "Cylinder.h"
+#include "PointCloud.h"
+#include "Mesh.h"
+
 namespace brics_3d {
 
 namespace rsg {

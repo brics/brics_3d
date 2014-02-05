@@ -13,6 +13,8 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "brics_3d/worldModel/WorldModel.h"
+#include <brics_3d/worldModel/sceneGraph/PointCloud.h>
+#include <brics_3d/core/PointCloud3D.h>
 
 namespace unitTests {
 

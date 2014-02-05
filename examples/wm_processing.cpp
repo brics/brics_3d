@@ -331,8 +331,8 @@ int main(int argc, char **argv) {
 	wm->loadFunctionBlock(blockName, blockPath);
 
 	vector<brics_3d::rsg::Id> input;
-	input.push_back(pc2Id); // input hook
 	input.push_back(wm->getRootNodeId()); // output hook
+	input.push_back(pc2Id); // input  hook
 	vector<brics_3d::rsg::Id> output;
 	wm->executeFunctionBlock(blockName, input, output);
 
