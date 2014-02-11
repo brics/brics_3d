@@ -182,6 +182,19 @@ IF (USE_OSG)
     	${OSGTEXT_LIBRARY_DEBUG}
     )
     
+    ADD_EXECUTABLE(wm_function_blocks wm_function_blocks)
+    TARGET_LINK_LIBRARIES(wm_function_blocks 
+        brics3d_world_model
+        brics3d_algorithm
+        brics3d_util
+        brics3d_core 
+    	${OSG_LIBRARY_DEBUG}
+    	${OSGGA_LIBRARY_DEBUG}
+    	${OSGVIEWER_LIBRARY_DEBUG}
+    	${OSGUTIL_LIBRARY_DEBUG}
+    	${OSGTEXT_LIBRARY_DEBUG}
+    )
+    
     ADD_EXECUTABLE(wm_uncertain_transforms wm_uncertain_transforms)
     TARGET_LINK_LIBRARIES(wm_uncertain_transforms 
         brics3d_world_model
