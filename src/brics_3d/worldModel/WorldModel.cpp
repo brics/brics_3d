@@ -43,7 +43,7 @@ using namespace brics_3d::rsg;
 namespace brics_3d {
 
 WorldModel::WorldModel() {
-	this->microBlxPath = "/home/sblume/sandbox/microblx/microblx/";
+	this->microBlxPath = MICROBLX_ROOT_DIR;
 
 #ifdef BRICS_MICROBLX_ENABLE
 

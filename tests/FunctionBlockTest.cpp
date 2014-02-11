@@ -23,7 +23,6 @@ void FunctionBlockTest::setUp() {
 #ifdef BRICS_MICROBLX_ENABLE
 	CPPUNIT_ASSERT(brics_3d::WorldModel::microBlxWmHandle == wm);
 #endif
-//	functionBlockFile = "/home/sblume/sandbox/microblx/microblx/std_blocks/cppdemo/cppdemo.so";
 	functionBlockFile = "cppdemo";
 
 	brics_3d::Logger::setMinLoglevel(brics_3d::Logger::LOGDEBUG);
