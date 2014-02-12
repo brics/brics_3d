@@ -301,6 +301,20 @@ bool WorldModel::loadFunctionBlock(std::string name, std::string path) {
 	}
 	LOG(DEBUG) << "WorldModel::loadFunctionBlock: Created block with name = " << block->name;
 
+	/* configure the block - i.e. pass the world model handle */
+	//{ .name="wm_handle", .type_name = "struct rsg_wm_handle", doc="Handle to the world wodel instance. This parameter is mandatory."},
+	ubx_data_t* configData = ubx_config_get_data(block, "wm_handle");
+	if (configData != 0) {
+		rsg_wm_handle tmpUbxWorldModleHandle; // Ubx and Lua parsable verison of a world model handle.
+		tmpUbxWorldModleHandle.wm = reinterpret_cast<void*>(this);
+		memcpy(configData->data, &tmpUbxWorldModleHandle, sizeof(tmpUbxWorldModleHandle));
+	} else {
+		LOG(ERROR) << "WorldModel::loadFunctionBlock: Cannot configure the module "<< name
+				<< ", because its configuration paremeter with name wmHandle is missing.";
+		return false;
+	}
+
+
 	/* initialize the block */
 	if(ubx_block_init(block) != 0){
 		LOG(ERROR) << "WorldModel::loadFunctionBlock: Cannot initialize the module "<< name;
