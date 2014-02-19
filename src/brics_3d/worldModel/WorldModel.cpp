@@ -43,18 +43,21 @@ using namespace brics_3d::rsg;
 namespace brics_3d {
 
 WorldModel::WorldModel() {
-	this->microBlxPath = MICROBLX_ROOT_DIR;
-
+	this->microBlxPath = "MICROBLX_ROOT_DIR-NOT-FOUND";
+	return;
 #ifdef BRICS_MICROBLX_ENABLE
+	this->microBlxPath = MICROBLX_ROOT_DIR;
 
 	/* init microblx */
 	microBlxNodeHandle = new ubx_node_info_t(); // holds all microblx
 	std::string microBlxNodeName = "functionBlocks";
 
-	if (ubx_node_init(microBlxNodeHandle, microBlxNodeName.c_str()) != 0 ) {
+//	LOG(DEBUG) << "WorldModel::initialize: 1";
+	if (ubx_node_init(microBlxNodeHandle, microBlxNodeName.c_str()) != 0 ) { //segfaults if started from ubx lua
 		LOG(ERROR) << "WorldModel::initialize: Cannot initialize the microblx node handle.";
 		microBlxNodeHandle = 0;
 	}
+//	LOG(DEBUG) << "WorldModel::initialize: 2";
 
 	/* load the standard types */
 	std::string moduleFile = microBlxPath + "std_types/stdtypes/stdtypes.so";
