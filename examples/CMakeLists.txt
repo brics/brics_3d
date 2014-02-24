@@ -245,3 +245,4 @@ TARGET_LINK_LIBRARIES(demoComparison brics3d_algorithm)
 ADD_EXECUTABLE(demoSegmentationNormalPlane demoSegmentationNormalPlane)
 TARGET_LINK_LIBRARIES(demoSegmentationNormalPlane brics3d_algorithm)
 
+ADD_SUBDIRECTORY(wm_tutorial_1)
