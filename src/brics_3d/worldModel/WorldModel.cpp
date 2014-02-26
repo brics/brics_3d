@@ -44,7 +44,10 @@ namespace brics_3d {
 
 WorldModel::WorldModel() {
 	this->microBlxPath = "MICROBLX_ROOT_DIR-NOT-FOUND";
-	return;
+	microBloxIsInitialized = false;
+}
+
+void WorldModel::initializeMicroblx() {
 #ifdef BRICS_MICROBLX_ENABLE
 	this->microBlxPath = MICROBLX_ROOT_DIR;
 
@@ -176,7 +179,7 @@ WorldModel::~WorldModel() {
 }
 
 WorldModel::WorldModel(rsg::IIdGenerator* idGenerator) : scene(idGenerator) {
-
+	microBloxIsInitialized = false;
 }
 
 
@@ -273,6 +276,15 @@ bool WorldModel::loadFunctionBlock(std::string name) {
 
 bool WorldModel::loadFunctionBlock(std::string name, std::string path) {
 #ifdef BRICS_MICROBLX_ENABLE
+
+	/* initialize on first load
+	 * This is basically a workaround for the segfault caused by crweatin a world model
+	 * via the lua bindings. In Lua you cannot call loadFunctionBlock right now...
+	 */
+	if (!microBloxIsInitialized) {
+		initializeMicroblx();
+		microBloxIsInitialized = true;
+	}
 
 	std::string moduleFile;
 	ubx_block_t* block;

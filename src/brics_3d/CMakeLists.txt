@@ -271,3 +271,11 @@ INSTALL (DIRECTORY ../external
     FILES_MATCHING PATTERN "*.h"
     PATTERN .svn EXCLUDE
 )
+
+SET(BRICS_3D_LIBRARIES
+    brics3d_world_model
+    brics3d_algorithm scanlib 6dslam_core newmat_cmake flann_s ANN
+    brics3d_util
+    brics3d_core  
+    CACHE STRING "Accumulated BRICS_3D libraries."
+)

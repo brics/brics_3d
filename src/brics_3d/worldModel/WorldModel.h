@@ -86,12 +86,18 @@ class WorldModel : public IWorldModelQuery, public IWorldModelUpdate, public IWo
     /// Root path to micro blocks
     std::string microBlxPath;
 
+	bool microBloxIsInitialized;
+
+    void initializeMicroblx();
+
 #ifdef BRICS_MICROBLX_ENABLE
     /// THE handle that handles all function blocks
     ubx_node_info* microBlxNodeHandle;
 
 	ubx_block* inputBlock;
 	ubx_block* outputBlock;
+
+
 
   public:
 
