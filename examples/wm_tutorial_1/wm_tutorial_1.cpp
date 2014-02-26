@@ -22,12 +22,12 @@
 
 using namespace brics_3d::rsg;
 
-/**
+/*
  * This tutorial covers basic creation and deletion of nodes for the robot scene graph.
  */
 int main(int argc, char **argv) {
 
-	/* Create a WM handle */
+	/* Create a world model handle */
 	brics_3d::WorldModel* wm = new brics_3d::WorldModel();
 
 	/* Graph structure:
@@ -40,10 +40,10 @@ int main(int argc, char **argv) {
 	Id rootId = wm->getRootNodeId(); // Get the "root" node of the world model.
 	Id group1Id = 0; // This in an output parameter. The world model itself will
 	                 // generated these IDs.
-    std::vector<Attribute> attributes; // Attributes are essentially
+	std::vector<Attribute> attributes; // Attributes are essentially
                                                       // key value pair that can
                                                       // be attached to any node.
-    attributes.push_back(Attribute("name","my_group1")); // Just an (arbitrary) example for an attribute.
+	attributes.push_back(Attribute("name","my_group1")); // Just an (arbitrary) example for an attribute.
 	wm->scene.addGroup(rootId, group1Id, attributes); // Add a new group node with
 	                                                  // rootId as parent. The ID of the
 	                                                  // new group is stored in the
@@ -63,7 +63,7 @@ int main(int argc, char **argv) {
 	Id group2Id;
 	attributes.clear(); // We re-use the attributes vector, but we have to clean it
 	                    // unless we want to previous attributes to the new group.
-    attributes.push_back(Attribute("name","my_group2"));
+	attributes.push_back(Attribute("name","my_group2"));
 	wm->scene.addGroup(wm->getRootNodeId(), group2Id, attributes);
 
 
@@ -80,10 +80,10 @@ int main(int argc, char **argv) {
 	 * We add a new node that is _relative_ to the previously generated group1 node.
 	 */
 
-	Id node1Id = 3;
+	Id node1Id;
 	attributes.clear();
-    attributes.push_back(Attribute("name","my_node1"));
-	wm->scene.addNode(group2Id, node1Id, attributes); // Note that group2Id is the parent.
+	attributes.push_back(Attribute("name","my_node1"));
+	wm->scene.addNode(group1Id, node1Id, attributes); // Note that group1Id is the parent.
 
 	/* Graph structure:
 	 *                 root
@@ -118,6 +118,12 @@ int main(int argc, char **argv) {
 
 
 	/* Clean up */
+
+	/*
+	 * Deletion of the world model handle will internally delete the root node.
+	 * That means all node in the graph will be automatically deleted in a
+	 * cascaded fashion and the resources are freed.
+	 */
 	delete wm;
 }
 

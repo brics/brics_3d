@@ -25,6 +25,8 @@
   - @ref transformation_tutorial
   - @ref triangle_mesh_tutorial
   - @ref visualizer_tutorial
+  - @ref wm_tutorial_1
+  - @ref wm_tutorial_2
 - @ref Algorithms for perception
  - @ref depth_perception
  - @ref filtering
