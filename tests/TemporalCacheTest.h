@@ -43,6 +43,8 @@ class TemporalCacheTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testSimpleCache );
 	CPPUNIT_TEST( testCacheInsertions );
 	CPPUNIT_TEST( testCacheConfiguration );
+	CPPUNIT_TEST( testGetPrecedingAccessPolicy );
+	CPPUNIT_TEST( testGetClosetAccessPolicy );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -53,6 +55,8 @@ public:
 	void testSimpleCache();
 	void testCacheInsertions();
 	void testCacheConfiguration();
+	void testGetPrecedingAccessPolicy();
+	void testGetClosetAccessPolicy();
 
 private:
 

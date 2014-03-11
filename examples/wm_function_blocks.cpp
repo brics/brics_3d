@@ -78,7 +78,7 @@ int main(int argc, char **argv) {
 	 */
 	//string blockName = "roifilter";
 	string blockPath = pathToFunctionBlocksRepository + "/lib/";
-	wm->loadFunctionBlock("roifilter", blockPath);
+	wm->loadFunctionBlock("pointcloudloader", blockPath);
 	wm->loadFunctionBlock("octreefilter", blockPath);
 
 	/*
@@ -91,7 +91,7 @@ int main(int argc, char **argv) {
 	input.push_back(inputHook); // input hook
 	vector<brics_3d::rsg::Id> output;
 	vector<brics_3d::rsg::Id> output2;
-	wm->executeFunctionBlock("roifilter", input, output);
+	wm->executeFunctionBlock("pointcloudloader", input, output);
 	wm->executeFunctionBlock("octreefilter", output, output2); // "stack them together"
 
 	/* Wait until user closes the GUI */

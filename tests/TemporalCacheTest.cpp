@@ -102,21 +102,21 @@ void TemporalCacheTest::testSimpleCache() {
 
 	double data;
 
-	CPPUNIT_ASSERT_EQUAL(0u, simpleCache.getNumberOfCacheEntries());
+	CPPUNIT_ASSERT_EQUAL(0u, simpleCache.size());
 	simpleCache.insertData(324.8, TimeStamp(0.0, Units::Second));
-	CPPUNIT_ASSERT_EQUAL(1u, simpleCache.getNumberOfCacheEntries());
+	CPPUNIT_ASSERT_EQUAL(1u, simpleCache.size());
 	data = simpleCache.getData(TimeStamp(0.0, Units::Second));
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(324.8, data, maxTolerance);
 
 	TemporalCache<double> simpleCache2(simpleCache); // copy constructor
-	CPPUNIT_ASSERT_EQUAL(1u, simpleCache2.getNumberOfCacheEntries());
+	CPPUNIT_ASSERT_EQUAL(1u, simpleCache2.size());
 	data = simpleCache2.getData(TimeStamp(0.0, Units::Second));
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(324.8, data, maxTolerance);
 
 	/* flush the first cache */
 	simpleCache.deleteOutdatedData(TimeStamp (1, Units::Minute));
-	CPPUNIT_ASSERT_EQUAL(0u, simpleCache.getNumberOfCacheEntries());
-	CPPUNIT_ASSERT_EQUAL(1u, simpleCache2.getNumberOfCacheEntries());
+	CPPUNIT_ASSERT_EQUAL(0u, simpleCache.size());
+	CPPUNIT_ASSERT_EQUAL(1u, simpleCache2.size());
 	data = simpleCache2.getData(TimeStamp(0.0, Units::Second));
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(324.8, data, maxTolerance);
 }
@@ -126,16 +126,16 @@ void TemporalCacheTest::testCacheInsertions() {
 	int cacheEntry = 0; // We will put values in ascending order in the cache: 0,1,2,...
 
 	/* initial condition */
-	CPPUNIT_ASSERT_EQUAL(0u, cache.getNumberOfCacheEntries());
+	CPPUNIT_ASSERT_EQUAL(0u, cache.size());
 	CPPUNIT_ASSERT(TimeStamp(0.0, Units::Second) == cache.getLatestTimeStamp()-cache.getOldestTimeStamp());
 
 	/* insert some data */
 	cache.insertData(cacheEntry, TimeStamp(-2, Units::Second)); // entry = 0
-	CPPUNIT_ASSERT_EQUAL(1u, cache.getNumberOfCacheEntries());
+	CPPUNIT_ASSERT_EQUAL(1u, cache.size());
 	cache.insertData(++cacheEntry, TimeStamp(0, Units::Second)); // entry = 1
 	cache.insertData(++cacheEntry, TimeStamp(10.0, Units::Second)); // entry = 2
 	cache.insertData(++cacheEntry, TimeStamp(15.0, Units::Second)); // entry = 3
-	CPPUNIT_ASSERT_EQUAL(4u, cache.getNumberOfCacheEntries());
+	CPPUNIT_ASSERT_EQUAL(4u, cache.size());
 
 	CPPUNIT_ASSERT(TimeStamp(20.0, Units::Second) == cache.getMaxHistoryDuration());
 	CPPUNIT_ASSERT(cache.getOldestTimeStamp() == TimeStamp(-2, Units::Second));
@@ -193,7 +193,7 @@ void TemporalCacheTest::testCacheInsertions() {
 
 	/* insertion that will delete oldest entry */
 	cache.insertData(++cacheEntry, TimeStamp(20.0, Units::Second)); // entry = 4
-	CPPUNIT_ASSERT_EQUAL(4u, cache.getNumberOfCacheEntries());
+	CPPUNIT_ASSERT_EQUAL(4u, cache.size());
 	CPPUNIT_ASSERT(cache.getOldestTimeStamp() == TimeStamp(0, Units::Second));
 	CPPUNIT_ASSERT(cache.getLatestTimeStamp() == TimeStamp(20, Units::Second));
 	CPPUNIT_ASSERT_EQUAL(1, cache.getData(TimeStamp(-2, Units::Second))); // entry 0 is deleted so it will be redirected to 1
@@ -222,20 +222,20 @@ void TemporalCacheTest::testCacheInsertions() {
 
 	/* insertion that will delete all entrys  except for latest */
 	cache.insertData(++cacheEntry, TimeStamp(100.0, Units::Second)); // entry = 5
-	CPPUNIT_ASSERT_EQUAL(1u, cache.getNumberOfCacheEntries());
+	CPPUNIT_ASSERT_EQUAL(1u, cache.size());
 	CPPUNIT_ASSERT_EQUAL(5, cache.getData(TimeStamp(100, Units::Second)));
 
 	/* allign cache with "current time" */
 	cache.deleteOutdatedData(TimeStamp(101, Units::Second)); // no effect
-	CPPUNIT_ASSERT_EQUAL(1u, cache.getNumberOfCacheEntries());
+	CPPUNIT_ASSERT_EQUAL(1u, cache.size());
 	CPPUNIT_ASSERT_EQUAL(5, cache.getData(TimeStamp(100, Units::Second)));
 
 	/* flush cache */
 	cache.deleteOutdatedData(cache.getLatestTimeStamp() + cache.getMaxHistoryDuration()); // limit case
-	CPPUNIT_ASSERT_EQUAL(1u, cache.getNumberOfCacheEntries());
+	CPPUNIT_ASSERT_EQUAL(1u, cache.size());
 	CPPUNIT_ASSERT_EQUAL(5, cache.getData(TimeStamp(100, Units::Second)));
 	cache.deleteOutdatedData(cache.getLatestTimeStamp() + cache.getMaxHistoryDuration() + TimeStamp(1, Units::MicroSecond)); // limit case + a bit
-	CPPUNIT_ASSERT_EQUAL(0u, cache.getNumberOfCacheEntries());
+	CPPUNIT_ASSERT_EQUAL(0u, cache.size());
 	CPPUNIT_ASSERT_EQUAL(0, cache.getData(TimeStamp(100, Units::Second))); // 0 is error case
 
 	/* restart with random order */
@@ -245,7 +245,7 @@ void TemporalCacheTest::testCacheInsertions() {
 	cache.insertData(5, TimeStamp(5, Units::Second));
 	cache.insertData(3, TimeStamp(3, Units::Second));
 
-	CPPUNIT_ASSERT_EQUAL(5u, cache.getNumberOfCacheEntries());
+	CPPUNIT_ASSERT_EQUAL(5u, cache.size());
 	CPPUNIT_ASSERT(cache.getOldestTimeStamp() == TimeStamp(1, Units::Second));
 	CPPUNIT_ASSERT(cache.getLatestTimeStamp() == TimeStamp(5, Units::Second));
 
@@ -273,7 +273,7 @@ void TemporalCacheTest::testCacheInsertions() {
 		}
 	}
 
-	CPPUNIT_ASSERT_EQUAL(5u, shiftedCache.getNumberOfCacheEntries());
+	CPPUNIT_ASSERT_EQUAL(5u, shiftedCache.size());
 	CPPUNIT_ASSERT(shiftedCache.getOldestTimeStamp() == TimeStamp(1, Units::Second));
 	CPPUNIT_ASSERT(shiftedCache.getLatestTimeStamp() == TimeStamp(7, Units::Second));
 
@@ -285,7 +285,7 @@ void TemporalCacheTest::testCacheInsertions() {
 	}
 
 	shiftedCache.clear();
-	CPPUNIT_ASSERT_EQUAL(0u, shiftedCache.getNumberOfCacheEntries());
+	CPPUNIT_ASSERT_EQUAL(0u, shiftedCache.size());
 	CPPUNIT_ASSERT(shiftedCache.getOldestTimeStamp() == TimeStamp(0.0, Units::Second));
 	CPPUNIT_ASSERT(shiftedCache.getLatestTimeStamp() == TimeStamp(0.0, Units::Second));
 
@@ -313,6 +313,87 @@ void TemporalCacheTest::testCacheConfiguration() {
 	cache3.setMaxHistoryDuration(TimeStamp(-30.0, Units::Second)); // will be ignored
 	CPPUNIT_ASSERT(TimeStamp(0.0, Units::Second) == cache3.getMaxHistoryDuration());
 }
+
+typedef int T;
+typename TemporalCache<int>::Cache::iterator myGetPrecedingData(TimeStamp timeStamp, TemporalCache<int>::Cache& cache) {
+
+	typename TemporalCache<T>::Cache::iterator resultIterator;
+	typename TemporalCache<T>::Cache::iterator previousIterator; //remember: values have a descending order
+	resultIterator = cache.begin();
+
+	if(cache.size() == 1) { // special case for first element -> just return it
+		return resultIterator;
+	}
+
+	while(resultIterator != cache.end()) { // loop over history
+		if (timeStamp >= resultIterator->second) {
+			return resultIterator;
+		}
+		resultIterator++;
+	}
+
+	/*
+	 * We might reach this line when timeStamp is older than the oldest element in the history.
+	 * In that case we want to return the last/oldest element.
+	 */
+	if(cache.size() > 1) {
+		resultIterator = cache.end() - 1;
+		assert(timeStamp <= resultIterator->second); // just to be sure...
+	}
+	return resultIterator;
+}
+
+void TemporalCacheTest::testGetPrecedingAccessPolicy() {
+	TemporalCache<int> cache(TimeStamp(20, Units::Second)); // cache size = 20[s]
+
+	/* insert some data */
+	cache.insertData(0, TimeStamp(-2, Units::Second)); // entry = 0
+	CPPUNIT_ASSERT_EQUAL(1u, cache.size());
+	cache.insertData(1, TimeStamp(0, Units::Second)); // entry = 1
+	cache.insertData(2, TimeStamp(10.0, Units::Second)); // entry = 2
+	cache.insertData(3, TimeStamp(15.0, Units::Second)); // entry = 3
+	CPPUNIT_ASSERT_EQUAL(4u, cache.size());
+
+	CPPUNIT_ASSERT_EQUAL(0, cache.getData(TimeStamp(-2, Units::Second), &TemporalCache<int>::getPrecedingData));
+	CPPUNIT_ASSERT_EQUAL(0, cache.getData(TimeStamp(-1.00001, Units::Second), &TemporalCache<int>::getPrecedingData));
+	CPPUNIT_ASSERT_EQUAL(0, cache.getData(TimeStamp(-1, Units::Second), &TemporalCache<int>::getPrecedingData)); //ambigious case case -> the newer one will be taken
+	CPPUNIT_ASSERT_EQUAL(0, cache.getData(TimeStamp(-0.999, Units::Second), &TemporalCache<int>::getPrecedingData));
+	CPPUNIT_ASSERT_EQUAL(0, cache.getData(TimeStamp(-0.999, Units::Second), &TemporalCache<int>::getPrecedingData));
+	CPPUNIT_ASSERT_EQUAL(1, cache.getData(TimeStamp(0, Units::Second), &TemporalCache<int>::getPrecedingData));
+	CPPUNIT_ASSERT_EQUAL(1, cache.getData(TimeStamp(4, Units::Second), &TemporalCache<int>::getPrecedingData));
+	CPPUNIT_ASSERT_EQUAL(1, cache.getData(TimeStamp(5, Units::Second), &TemporalCache<int>::getPrecedingData));
+	CPPUNIT_ASSERT_EQUAL(2, cache.getData(TimeStamp(10, Units::Second), &TemporalCache<int>::getPrecedingData));
+	CPPUNIT_ASSERT_EQUAL(2, cache.getData(TimeStamp(12, Units::Second), &TemporalCache<int>::getPrecedingData));
+	CPPUNIT_ASSERT_EQUAL(2, cache.getData(TimeStamp(12.5, Units::Second), &TemporalCache<int>::getPrecedingData));
+	CPPUNIT_ASSERT_EQUAL(3, cache.getData(TimeStamp(15, Units::Second), &myGetPrecedingData)); //custom accessor
+}
+
+void TemporalCacheTest::testGetClosetAccessPolicy() {
+	TemporalCache<int> cache(TimeStamp(20, Units::Second)); // cache size = 20[s]
+
+	/* insert some data */
+	cache.insertData(0, TimeStamp(-2, Units::Second)); // entry = 0
+	CPPUNIT_ASSERT_EQUAL(1u, cache.size());
+	cache.insertData(1, TimeStamp(0, Units::Second)); // entry = 1
+	cache.insertData(2, TimeStamp(10.0, Units::Second)); // entry = 2
+	cache.insertData(3, TimeStamp(15.0, Units::Second)); // entry = 3
+	CPPUNIT_ASSERT_EQUAL(4u, cache.size());
+
+	CPPUNIT_ASSERT_EQUAL(0, cache.getData(TimeStamp(-2, Units::Second), &TemporalCache<int>::getClosestData));
+	CPPUNIT_ASSERT_EQUAL(0, cache.getData(TimeStamp(-1.00001, Units::Second), &TemporalCache<int>::getClosestData));
+	CPPUNIT_ASSERT_EQUAL(1, cache.getData(TimeStamp(-1, Units::Second), &TemporalCache<int>::getClosestData)); //ambigious case case -> the newer one will be taken
+	CPPUNIT_ASSERT_EQUAL(1, cache.getData(TimeStamp(-0.999, Units::Second), &TemporalCache<int>::getClosestData));
+	CPPUNIT_ASSERT_EQUAL(1, cache.getData(TimeStamp(-0.999, Units::Second), &TemporalCache<int>::getClosestData));
+	CPPUNIT_ASSERT_EQUAL(1, cache.getData(TimeStamp(0, Units::Second), &TemporalCache<int>::getClosestData));
+	CPPUNIT_ASSERT_EQUAL(1, cache.getData(TimeStamp(4, Units::Second), &TemporalCache<int>::getClosestData));
+	CPPUNIT_ASSERT_EQUAL(2, cache.getData(TimeStamp(5, Units::Second), &TemporalCache<int>::getClosestData));
+	CPPUNIT_ASSERT_EQUAL(2, cache.getData(TimeStamp(10, Units::Second), &TemporalCache<int>::getClosestData));
+	CPPUNIT_ASSERT_EQUAL(2, cache.getData(TimeStamp(12, Units::Second), &TemporalCache<int>::getClosestData));
+	CPPUNIT_ASSERT_EQUAL(3, cache.getData(TimeStamp(12.5, Units::Second), &TemporalCache<int>::getClosestData));
+	CPPUNIT_ASSERT_EQUAL(3, cache.getData(TimeStamp(15, Units::Second), &TemporalCache<int>::getClosestData));
+
+}
+
 
 }
 

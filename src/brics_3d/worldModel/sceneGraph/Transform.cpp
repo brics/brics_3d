@@ -119,7 +119,7 @@ void Transform::setMaxHistoryDuration(TimeStamp maxHistoryDuration) {
 }
 
 unsigned int Transform::getCurrentHistoryLenght() {
-	return history.getNumberOfCacheEntries();
+	return history.size();
 }
 
 TimeStamp Transform::getLatestTimeStamp() {

@@ -94,6 +94,8 @@ private:
 
 };
 
+typedef TimeStamp Duration;
+
 } // namespace brics_3d::rsg
 
 } // namespace brics_3d

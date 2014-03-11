@@ -67,7 +67,7 @@ TimeStamp UncertainTransform::getOldestTransformUncertaintyTimeStamp() {
 }
 
 unsigned int UncertainTransform::getCurrentUncertaintyHistoryLength() {
-	return uncertaintyHistory.getNumberOfCacheEntries();
+	return uncertaintyHistory.size();
 }
 
 void UncertainTransform::setMaxHistoryDuration(TimeStamp maxHistoryDuration) {
