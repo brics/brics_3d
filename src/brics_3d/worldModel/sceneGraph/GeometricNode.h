@@ -26,6 +26,7 @@
 #include "Attribute.h"
 
 // Some default shapes
+#include "Sphere.h"
 #include "Box.h"
 #include "Cylinder.h"
 #include "PointCloud.h"

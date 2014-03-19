@@ -1084,6 +1084,17 @@ void SceneGraphNodesTest::testGeometricNode() {
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, cylinder2->getRadius(), maxTolerance);
 	geode1->setShape(cylinder1);
 
+	Sphere::SpherePtr sphere0(new Sphere());
+	Sphere::SpherePtr sphere1(new Sphere(1));
+	Sphere::SpherePtr sphere2(new Sphere(200, Units::CentiMeter));
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, sphere0->getRadius(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, sphere1->getRadius(), maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, sphere2->getRadius(), maxTolerance);
+	sphere0->setRadius(4);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, sphere0->getRadius(), maxTolerance);
+	sphere0->setRadius(4, Units::KiloMeter);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(4000.0, sphere0->getRadius(), maxTolerance);
+
 	Cylinder::CylinderPtr tmpCylinder1;
 	tmpBox1.reset();
 	CPPUNIT_ASSERT(tmpCylinder1 == 0);
@@ -1094,6 +1105,13 @@ void SceneGraphNodesTest::testGeometricNode() {
 	CPPUNIT_ASSERT(tmpCylinder1 != 0);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.2, tmpCylinder1->getRadius(), maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.1, tmpCylinder1->getHeight(), maxTolerance);
+
+	geode1->setShape(sphere2);
+	Sphere::SpherePtr tmpSphere1;
+	tmpSphere1 = boost::dynamic_pointer_cast<Sphere>(geode1->getShape());
+	CPPUNIT_ASSERT(tmpSphere1 != 0);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, tmpSphere1->getRadius(), maxTolerance);
+
 
 
 	/*

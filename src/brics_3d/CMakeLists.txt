@@ -170,6 +170,7 @@ SET (WORLD_MODEL_LIBRARY_SOURCES
     ./worldModel/sceneGraph/Attribute
     ./worldModel/sceneGraph/Box
     ./worldModel/sceneGraph/Cylinder
+    ./worldModel/sceneGraph/Sphere
     ./worldModel/sceneGraph/GeometricNode
     ./worldModel/sceneGraph/Group
     ./worldModel/sceneGraph/Mesh
