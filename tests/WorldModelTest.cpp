@@ -136,6 +136,203 @@ void WorldModelTest::testTowerOfHanoi() {
 
 }
 
+void WorldModelTest::testFMPCUseCase() {
+	/*
+	 * Example usage for the Fast Model Predictive Controller, which
+	 * acts as a _user_ od the world model.
+	 *
+	 * Essentially the world model will store a box as a virtual fence
+	 * and spheres as virtual obstacles. All geometries have a z value
+	 * of zero, because the controllers handles constraints in 2D space.
+	 *
+	 */
+
+	/*
+	 * Setup of the world model.
+	 */
+	WorldModel* wmHandle = new WorldModel();
+
+	std::vector<rsg::Attribute> attributes;
+	attributes.clear();
+	attributes.push_back(rsg::Attribute("taskType", "scene_objecs"));
+	rsg::Id sceneObjectsId;
+	wmHandle->scene.addGroup(wmHandle->getRootNodeId(), sceneObjectsId, attributes);
+
+	/* Box for "virtual fence" */
+	attributes.clear();
+	attributes.push_back(rsg::Attribute("name", "box_tf"));
+	rsg::Id boxTfId;
+	brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform120(new brics_3d::HomogeneousMatrix44(1,0,0,  	// Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             1,2,0)); 						// Translation coefficients
+	wmHandle->scene.addTransformNode(sceneObjectsId, boxTfId, attributes, transform120, wmHandle->now());
+
+	attributes.clear();
+	attributes.push_back(rsg::Attribute("shape", "Box"));
+	attributes.push_back(rsg::Attribute("name", "virtual_fence")); // this name serves as a conventions here
+	rsg::Box::BoxPtr box( new rsg::Box(1,2,0));
+	rsg::Id boxId;
+	wmHandle->scene.addGeometricNode(boxTfId, boxId, attributes, box, wmHandle->now());
+
+	/* A sphere used as obstacle  */
+	attributes.clear();
+	attributes.push_back(rsg::Attribute("name", "shpere_1_tf"));
+	rsg::Id sphere1TfId;
+	brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transformShpere1(new brics_3d::HomogeneousMatrix44(1,0,0,  	// Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             0.5,1,0)); 						// Translation coefficients
+	wmHandle->scene.addTransformNode(sceneObjectsId, sphere1TfId, attributes, transformShpere1, wmHandle->now());
+
+	attributes.clear();
+	attributes.push_back(rsg::Attribute("shape", "Sphere"));
+	attributes.push_back(rsg::Attribute("name", "sphere_1"));
+	rsg::Sphere::SpherePtr sphere1( new rsg::Sphere(20, Units::CentiMeter));
+	rsg::Id sphere1Id;
+	wmHandle->scene.addGeometricNode(sphere1TfId, sphere1Id, attributes, sphere1, wmHandle->now());
+
+	/* A another sphere used as obstacle  */
+	attributes.clear();
+	attributes.push_back(rsg::Attribute("name", "shpere_2_tf"));
+	rsg::Id sphere2TfId;
+	brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transformShpere2(new brics_3d::HomogeneousMatrix44(1,0,0,  	// Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             0.8,1.5,0)); 						// Translation coefficients
+	wmHandle->scene.addTransformNode(sceneObjectsId, sphere2TfId, attributes, transformShpere2, wmHandle->now());
+
+	attributes.clear();
+	attributes.push_back(rsg::Attribute("shape", "Sphere"));
+	attributes.push_back(rsg::Attribute("name", "sphere_2"));
+	rsg::Sphere::SpherePtr sphere2( new rsg::Sphere(10, Units::CentiMeter));
+	rsg::Id sphere2Id;
+	wmHandle->scene.addGeometricNode(sphere2TfId, sphere2Id, attributes, sphere2, wmHandle->now());
+
+
+	/*
+	 * Sample queries by the FMPC.
+	 */
+	vector<Attribute> queryAttributes;
+	vector<Id> resultIds;
+
+	/* Get data and pose of the box */
+	queryAttributes.clear();
+	resultIds.clear();
+	queryAttributes.push_back(Attribute("name", "virtual_fence"));
+	wmHandle->scene.getNodes(queryAttributes, resultIds);
+
+	for(vector<Id>::iterator it = resultIds.begin(); it!=resultIds.end(); ++it) { // loop over results
+		TimeStamp creationTime;
+		Shape::ShapePtr shape;
+		wmHandle->scene.getGeometry(*it, shape, creationTime);
+		Box::BoxPtr resultBox = boost::dynamic_pointer_cast<Box>(shape);
+		if (resultBox != 0) {
+			LOG(INFO) << "Box (x,y,z) = " << resultBox->getSizeX() << " "
+					<< resultBox->getSizeY() << " "
+					<< resultBox->getSizeZ();
+		}
+		IHomogeneousMatrix44::IHomogeneousMatrix44Ptr boxPose;
+		wmHandle->scene.getTransformForNode(*it, wmHandle->getRootNodeId(), creationTime, boxPose);
+		LOG(INFO) << "Pose of box is = " << std::endl << *boxPose;
+	}
+
+	/* Get data of obstacles (spheres) */
+	queryAttributes.clear();
+	resultIds.clear();
+	queryAttributes.push_back(Attribute("shape", "Sphere"));
+	wmHandle->scene.getNodes(queryAttributes, resultIds);
+
+	for(vector<Id>::iterator it = resultIds.begin(); it!=resultIds.end(); ++it) { // loop over results
+		TimeStamp creationTime;
+		Shape::ShapePtr shape;
+		wmHandle->scene.getGeometry(*it, shape, creationTime);
+		Sphere::SpherePtr resultSphere = boost::dynamic_pointer_cast<Sphere>(shape);
+		if (resultSphere != 0) {
+			LOG(INFO) << "Sphere (r) = " << resultSphere->getRadius();
+		}
+		IHomogeneousMatrix44::IHomogeneousMatrix44Ptr spherePose;
+		wmHandle->scene.getTransformForNode(*it, wmHandle->getRootNodeId(), creationTime, spherePose);
+		LOG(INFO) << "Pose of sphere is = " << std::endl << *spherePose;
+	}
+
+	/*
+	 * Sample updates to the world model.
+	 */
+
+	/* update the pose of the second sphere */
+	brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transformShpere2Update(new brics_3d::HomogeneousMatrix44(1,0,0,  	// Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             0.9,1.55,0)); 						// Translation coefficients
+	wmHandle->scene.setTransform(sphere2TfId, transformShpere2Update, wmHandle->now());
+
+	/* update fence geometry be creation of a new geometry */
+	queryAttributes.clear();
+	resultIds.clear();
+	queryAttributes.push_back(Attribute("name", "virtual_fence"));
+	wmHandle->scene.getNodes(queryAttributes, resultIds);
+	for(vector<Id>::iterator it = resultIds.begin(); it!=resultIds.end(); ++it) { // delete all node  with "name", "virtual_fence"
+		wmHandle->scene.deleteNode(*it);
+	}
+	attributes.clear();
+	attributes.push_back(rsg::Attribute("shape", "Box"));
+	attributes.push_back(rsg::Attribute("name", "virtual_fence"));
+	rsg::Box::BoxPtr newBox(new rsg::Box(1.5,2.5,0));
+	rsg::Id newBoxId;
+	wmHandle->scene.addGeometricNode(boxTfId, newBoxId, attributes, newBox, wmHandle->now());
+
+	/*
+	 * Query again
+	 */
+
+	/* Get data and pose of the box */
+	queryAttributes.clear();
+	resultIds.clear();
+	queryAttributes.push_back(Attribute("name", "virtual_fence"));
+	wmHandle->scene.getNodes(queryAttributes, resultIds);
+
+	for(vector<Id>::iterator it = resultIds.begin(); it!=resultIds.end(); ++it) { // loop over results
+		TimeStamp creationTime;
+		Shape::ShapePtr shape;
+		wmHandle->scene.getGeometry(*it, shape, creationTime);
+		Box::BoxPtr resultBox = boost::dynamic_pointer_cast<Box>(shape);
+		if (resultBox != 0) {
+			LOG(INFO) << "Box (x,y,z) = " << resultBox->getSizeX() << " "
+					<< resultBox->getSizeY() << " "
+					<< resultBox->getSizeZ();
+		}
+		IHomogeneousMatrix44::IHomogeneousMatrix44Ptr boxPose;
+		wmHandle->scene.getTransformForNode(*it, wmHandle->getRootNodeId(), creationTime, boxPose);
+		LOG(INFO) << "Pose of box is = " << std::endl << *boxPose;
+	}
+
+	/* Get data of obstacles (spheres) */
+	queryAttributes.clear();
+	resultIds.clear();
+	queryAttributes.push_back(Attribute("shape", "Sphere"));
+	wmHandle->scene.getNodes(queryAttributes, resultIds);
+
+	for(vector<Id>::iterator it = resultIds.begin(); it!=resultIds.end(); ++it) { // loop over results
+		TimeStamp creationTime;
+		Shape::ShapePtr shape;
+		wmHandle->scene.getGeometry(*it, shape, creationTime);
+		Sphere::SpherePtr resultSphere = boost::dynamic_pointer_cast<Sphere>(shape);
+		if (resultSphere != 0) {
+			LOG(INFO) << "Sphere (r) = " << resultSphere->getRadius();
+		}
+		IHomogeneousMatrix44::IHomogeneousMatrix44Ptr spherePose;
+		wmHandle->scene.getTransformForNode(*it, wmHandle->getRootNodeId(), creationTime, spherePose);
+		LOG(INFO) << "Pose of sphere is = " << std::endl << *spherePose;
+	}
+
+	/*
+	 * Cleaning up.
+	 */
+	delete wmHandle;
+}
+
+
 }  // namespace unitTests
 
 /* EOF */
