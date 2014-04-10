@@ -36,6 +36,12 @@ class HDF5Typecaster {
 public:
 
 	static const int rsgIdRank = 1;
+	static const int nonIndexedShapeRank = 1; // common rank for Sphere, Cylinder, Box
+	static const int indexedShapeRank = 2; 	// common rank for PointCloud and Mesh data
+	static const int sphereDimension = 1; 		// radius
+	static const int cylinderDimension = 2; 	// radius, height
+	static const int boxDimension = 3; // x,y,z
+
 
 	/* Constants and enums to serve as common agreement in the HDF5 encoding to
 	 * form kind of a "protocol".
@@ -43,6 +49,10 @@ public:
 	 */
 	static const string rsgIdName;
 	static const string rsgNodeTypeInfoName;
+	static const string rsgShapeName;
+	static const string rsgShapeTypeInfoName;
+
+//	static const H5::PredType atomicRsgShapeType; // common atomic type for all shape data sets.
 
 	/*
 	 * Top level indication on what to do with the data.
@@ -69,7 +79,7 @@ public:
 		UNKNOWN_NODE,
 	    NODE,
 	    GROUP,
-	    GEOMETIRIC_NODE,
+	    GEOMETIRC_NODE,
 	    TRANSFORM,
 	    UNCERTAIN_TRANSFORM,
 	    JOINT
@@ -80,7 +90,7 @@ public:
 	 */
 	enum RsgShapeTypeInfo {
 		UNKNOWN_SHAPE,
-	    SHERE,
+	    SPHERE,
 	    CYLINDER,
 	    BOX,
 	    POINT_CLOUD,
@@ -90,7 +100,7 @@ public:
 	HDF5Typecaster(){};
 	virtual ~HDF5Typecaster(){};
 
-	inline static void addNodeIdToHDF5Group(brics_3d::rsg::Id id,  H5::Group& group) {
+	inline static bool addNodeIdToHDF5Group(brics_3d::rsg::Id id,  H5::Group& group) {
 		hsize_t rsgIdDimensions[rsgIdRank];
 		rsgIdDimensions[0] = 16; // 16 bytes
 		H5::DataSpace rsgIdDataSpace(rsgIdRank, rsgIdDimensions);
@@ -98,40 +108,226 @@ public:
 
 		H5::DataSet rsgIdDataset = group.createDataSet(rsgIdName, rsgIdDataType, rsgIdDataSpace);
 		rsgIdDataset.write(id.begin(), H5::PredType::NATIVE_UCHAR);
+
+		return true;
 	}
 
-	inline static void getNodeIdFromHDF5Group(brics_3d::rsg::Id& id, H5::Group& group) {
+	inline static bool getNodeIdFromHDF5Group(brics_3d::rsg::Id& id, H5::Group& group) {
 		H5::DataSet rsgIdDataset = group.openDataSet(rsgIdName);
 		// Here might be some checks if dimension, etc match...
 		rsgIdDataset.read(id.begin(), H5::PredType::NATIVE_UCHAR);
+
+		return true;
 	}
 
 
-	inline static void addAttributeToHDF5Group(brics_3d::rsg::Attribute attribute, H5::Group& group) {
+	inline static bool addAttributeToHDF5Group(brics_3d::rsg::Attribute attribute, H5::Group& group) {
 		H5::StrType stringType(0, H5T_VARIABLE);
 		H5::DataSpace attributeSpace(H5S_SCALAR);
 		H5::Attribute rsgHDF5Attribute = group.createAttribute(attribute.key, stringType, attributeSpace);
 		rsgHDF5Attribute.write(stringType, attribute.value);
+
+		return true;
 	}
 
-	inline static void addNodeTypeInfoToHDF5Group(RsgNodeTypeInfo nodeType, H5::Group& group) {
+	inline static bool getAttributeByNameFromHDF5Group(brics_3d::rsg::Attribute& attribute, std::string name, H5::Group& group) {
+		H5::StrType stringType(0, H5T_VARIABLE);
+
+		try {
+			H5::Attribute tmpAttribute = group.openAttribute(name);
+			H5std_string valueString;
+			tmpAttribute.read(stringType, valueString);
+			attribute.key = name;
+			attribute.value = valueString;
+
+		} catch (H5::Exception e) {
+			LOG(WARNING) << "Cannot get retrieve Attribute from HDF5 Group.";
+			return false;
+		}
+
+		return true;
+	}
+
+	inline static bool addNodeTypeInfoToHDF5Group(RsgNodeTypeInfo nodeType, H5::Group& group) {
 		H5::IntType rsgNodeTypeInfoDataType( H5::PredType::NATIVE_INT);
 		H5::DataSpace rsgNodeTypeInfoSpace(H5S_SCALAR);
-		H5::DataSet rsgNodeTypeInfoDataset = group.createDataSet("NodeTypeInfo" , rsgNodeTypeInfoDataType, rsgNodeTypeInfoSpace);
+		H5::DataSet rsgNodeTypeInfoDataset = group.createDataSet(rsgNodeTypeInfoName , rsgNodeTypeInfoDataType, rsgNodeTypeInfoSpace);
 		rsgNodeTypeInfoDataset.write(&nodeType, rsgNodeTypeInfoDataType);
+
+		return true;
 	}
 
-	inline static void getNodeTypeInfoFromHDF5Group(RsgNodeTypeInfo& nodeType, H5::Group& group) {
+	inline static bool getNodeTypeInfoFromHDF5Group(RsgNodeTypeInfo& nodeType, H5::Group& group) {
 		H5::IntType rsgNodeTypeInfoDataType( H5::PredType::NATIVE_INT);
-		H5::DataSet rsgNodeTypeInfoDataset = group.openDataSet("NodeTypeInfo");
+		H5::DataSet rsgNodeTypeInfoDataset = group.openDataSet(rsgNodeTypeInfoName);
 		rsgNodeTypeInfoDataset.read(&nodeType, rsgNodeTypeInfoDataType);
+
+		return true;
 	}
 
+	inline static bool addShapeToHDF5Group(brics_3d::rsg::Shape::ShapePtr shape, H5::Group& group) {
+		LOG(DEBUG) << "convertShapeToHDF5DataSet: ";
+		RsgShapeTypeInfo type;
+		H5::DataSet rsgShapeDataset;
+		H5::PredType atomicRsgShapeType = H5::PredType::NATIVE_DOUBLE; // common atomic type for all shape data sets.
+		H5::FloatType rsgShapeDataType(atomicRsgShapeType);
+
+		rsg::Sphere::SpherePtr sphere(new rsg::Sphere());
+		sphere =  boost::dynamic_pointer_cast<rsg::Sphere>(shape);
+		rsg::Box::BoxPtr box(new rsg::Box());
+		box =  boost::dynamic_pointer_cast<rsg::Box>(shape);
+		rsg::Cylinder::CylinderPtr cylinder(new rsg::Cylinder());
+		cylinder =  boost::dynamic_pointer_cast<rsg::Cylinder>(shape);
+
+		if (sphere !=0) {
+			LOG(DEBUG) << "                 -> Found a sphere.";
+			type = SPHERE;
+
+			/* HDF5 meta data*/
+			hsize_t rsgSphereDimension[nonIndexedShapeRank];
+			rsgSphereDimension[0] = sphereDimension;
+			H5::DataSpace rsgSphereDataSpace(nonIndexedShapeRank, rsgSphereDimension);
+
+			/* actual data */
+			double tmpSpehereData[sphereDimension];
+			tmpSpehereData[0] = sphere->getRadius();
+			rsgShapeDataset = group.createDataSet(rsgShapeName, rsgShapeDataType, rsgSphereDataSpace);
+			rsgShapeDataset.write(&tmpSpehereData, atomicRsgShapeType);
+
+
+		} else if (cylinder !=0) {
+			LOG(DEBUG) << "                 -> Found a cylinder.";
+			type = CYLINDER;
+
+			/* HDF5 meta data*/
+			hsize_t rsgCylinderDimension[nonIndexedShapeRank];
+			rsgCylinderDimension[0] = cylinderDimension;
+			H5::DataSpace rsgSphereDataSpace(nonIndexedShapeRank, rsgCylinderDimension);
+
+			/* actual data */
+			double tmpCylinderData[cylinderDimension];
+			tmpCylinderData[0] = cylinder->getRadius();
+			tmpCylinderData[1] = cylinder->getHeight();
+			rsgShapeDataset = group.createDataSet(rsgShapeName, rsgShapeDataType, rsgSphereDataSpace);
+			rsgShapeDataset.write(&tmpCylinderData, atomicRsgShapeType);
+
+		} else if (box !=0) {
+			LOG(DEBUG) << "                 -> Found a box.";
+			type = BOX;
+
+			/* HDF5 meta data*/
+			hsize_t rsgBoxDimension[nonIndexedShapeRank];
+			rsgBoxDimension[0] = boxDimension;
+			H5::DataSpace rsgBoxDataSpace(nonIndexedShapeRank, rsgBoxDimension);
+
+			/* actual data */
+			double tmpBoxData[boxDimension];
+			tmpBoxData[0] = box->getSizeX();
+			tmpBoxData[1] = box->getSizeY();
+			tmpBoxData[2] = box->getSizeZ();
+			rsgShapeDataset = group.createDataSet(rsgShapeName, rsgShapeDataType, rsgBoxDataSpace);
+			rsgShapeDataset.write(&tmpBoxData, atomicRsgShapeType);
+
+		} else {
+			LOG(ERROR) << "convertShapeToHDF5DataSet: Shape type not yet supported.";
+			type = UNKNOWN_SHAPE;
+			return false;
+		}
+
+
+		/* Attach the tag for the use type */
+		H5::IntType rsgShapeTypeInfoDataType( H5::PredType::NATIVE_INT);
+		H5::DataSpace rsgShapeTypeInfoSpace(H5S_SCALAR);
+		H5::Attribute rsgHDF5Attribute = rsgShapeDataset.createAttribute(rsgShapeTypeInfoName, rsgShapeTypeInfoDataType, rsgShapeTypeInfoSpace);
+		rsgHDF5Attribute.write(rsgShapeTypeInfoDataType, &type);
+
+		/* Unit of Measurement */
+
+		return true;
+	}
+
+	inline static bool getShapeFromHDF5Group(brics_3d::rsg::Shape::ShapePtr& shape, H5::Group& group) {
+		LOG(DEBUG) << "getShapeFromHDF5Group: ";
+		RsgShapeTypeInfo type;
+		H5::PredType atomicRsgShapeType = H5::PredType::NATIVE_DOUBLE; // common atomic type for all shape data sets.
+		H5::DataSet rsgShapeDataset;
+
+		try {
+			rsgShapeDataset = group.openDataSet(rsgShapeName);
+		} catch (H5::Exception e) {
+			LOG(ERROR) << "Cannot get open rsgShapeDataset from HDF5 Group.";
+			return false;
+		}
+
+		/* Get tag for the used type */
+		H5::IntType rsgShapeTypeInfoDataType( H5::PredType::NATIVE_INT);
+		try {
+			H5::Attribute tmpAttribute = rsgShapeDataset.openAttribute(rsgShapeTypeInfoName);
+			tmpAttribute.read(rsgShapeTypeInfoDataType, &type);
+			LOG(DEBUG) << "RsgShapeTypeInfo = " << type;
+		} catch (H5::Exception e) {
+			LOG(ERROR) << "Cannot get retrieve rsgShapeTypeInfoName from rsgShapeDataset.";
+			return false;
+		}
+
+		brics_3d::rsg::Sphere::SpherePtr newSphere;
+		brics_3d::rsg::Cylinder::CylinderPtr newCylinder;
+		brics_3d::rsg::Box::BoxPtr newBox;
+
+		switch (type) {
+			case SPHERE:
+				LOG(DEBUG) << "                 -> Found a new sphere.";
+
+				double tmpShpere[sphereDimension];
+				rsgShapeDataset.read(&tmpShpere, atomicRsgShapeType);
+				// Here might be some checks if dimension, etc match...
+				newSphere = brics_3d::rsg::Sphere::SpherePtr(new brics_3d::rsg::Sphere());
+				newSphere->setRadius(tmpShpere[0]);
+				shape = newSphere;
+
+				break;
+
+			case CYLINDER:
+				LOG(DEBUG) << "                 -> Found a new cylinder.";
+
+				double tmpCylinder[cylinderDimension];
+				rsgShapeDataset.read(&tmpCylinder, atomicRsgShapeType);
+				newCylinder = brics_3d::rsg::Cylinder::CylinderPtr(new brics_3d::rsg::Cylinder());
+				newCylinder->setRadius(tmpCylinder[0]);
+				newCylinder->setHeight(tmpCylinder[1]);
+				shape = newCylinder;
+
+				break;
+
+			case BOX:
+				LOG(DEBUG) << "                 -> Found a new box.";
+
+				double tmpBox[boxDimension];
+				rsgShapeDataset.read(&tmpBox, atomicRsgShapeType);
+				newBox = brics_3d::rsg::Box::BoxPtr(new brics_3d::rsg::Box());
+				newBox->setSizeX(tmpBox[0]);
+				newBox->setSizeY(tmpBox[1]);
+				newBox->setSizeZ(tmpBox[2]);
+				shape = newBox;
+
+				break;
+
+			default:
+				LOG(WARNING) << "                 -> Unknown or unsupported type " << type;
+				break;
+		}
+
+		return true;
+	}
 };
 
 /* initialization of all constants */
 const string HDF5Typecaster::rsgIdName  = "Id";
 const string HDF5Typecaster::rsgNodeTypeInfoName = "NodeTypeInfo";
+const string HDF5Typecaster::rsgShapeName = "Shape";
+const string HDF5Typecaster::rsgShapeTypeInfoName = "ShapeTypeInfo";
+
+//const H5::PredType atomicRsgShapeType = H5::PredType::NATIVE_DOUBLE;
 
 } /* namespace rsg */
 } /* namespace brics_3d */
