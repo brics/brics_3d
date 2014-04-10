@@ -38,10 +38,11 @@ public:
 	static const int rsgIdRank = 1;
 	static const int nonIndexedShapeRank = 1; // common rank for Sphere, Cylinder, Box
 	static const int indexedShapeRank = 2; 	// common rank for PointCloud and Mesh data
+	static const int transformDataRank = 1;	// array of structs
 	static const int sphereDimension = 1; 		// radius
 	static const int cylinderDimension = 2; 	// radius, height
 	static const int boxDimension = 3; // x,y,z
-
+	static const int matrixElements = 16;
 
 	/* Constants and enums to serve as common agreement in the HDF5 encoding to
 	 * form kind of a "protocol".
@@ -51,6 +52,7 @@ public:
 	static const string rsgNodeTypeInfoName;
 	static const string rsgShapeName;
 	static const string rsgShapeTypeInfoName;
+	static const string rsgTransformName;
 
 //	static const H5::PredType atomicRsgShapeType; // common atomic type for all shape data sets.
 
@@ -96,6 +98,12 @@ public:
 	    POINT_CLOUD,
 	    MESH
 	};
+
+	 /* First structure and dataset*/
+	typedef struct transform_data_t {
+		double timeStamp;
+		double matrixData[matrixElements];
+	} transform_data_t;
 
 	HDF5Typecaster(){};
 	virtual ~HDF5Typecaster(){};
@@ -319,6 +327,81 @@ public:
 
 		return true;
 	}
+
+	inline static bool addTransformToHDF5Group(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp, H5::Group& group) {
+		int numberOfTransforms = 1;
+
+		const H5std_string MEMBER1( "timeStamp" );
+		const H5std_string MEMBER2( "matrixData" );
+
+		/* "type" for matrix array*/
+		hsize_t rsgMatrixDataDimensions[rsgIdRank];
+		rsgMatrixDataDimensions[0] = matrixElements; // 16
+		H5::ArrayType rsgMatrixDataType(H5::PredType::NATIVE_DOUBLE, numberOfTransforms, rsgMatrixDataDimensions);
+
+		/* assemble compound type */
+		hsize_t rsgTransformDimensions[transformDataRank];
+		rsgTransformDimensions[0] = numberOfTransforms; // number of transforms goes here
+		H5::DataSpace rsgTransformDataSpace(transformDataRank, rsgTransformDimensions);
+		H5::CompType rsgTransformDataType(sizeof(transform_data_t));
+		rsgTransformDataType.insertMember(MEMBER1, HOFFSET(transform_data_t, timeStamp), H5::PredType::NATIVE_DOUBLE);
+		rsgTransformDataType.insertMember(MEMBER2, HOFFSET(transform_data_t, matrixData), rsgMatrixDataType);
+
+		/* prepare data */
+		transform_data_t transforms[numberOfTransforms];
+		transforms[0].timeStamp = timeStamp.getSeconds(); // for now just one element
+		memcpy(&transforms[0].matrixData, transform->getRawData(), sizeof(double)*matrixElements);
+
+		/* add data to HDF5 group */
+		try {
+			H5::DataSet rsgTransformDataset = group.createDataSet(rsgTransformName, rsgTransformDataType, rsgTransformDataSpace);
+			rsgTransformDataset.write(&transforms, rsgTransformDataType);
+		} catch (H5::Exception e) {
+			LOG(ERROR) << "Cannot add transform data set to HDF5 group.";
+			return false;
+		}
+
+		return true;
+	}
+
+	inline static bool getTransformFromHDF5Group(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform, TimeStamp& timeStamp, H5::Group& group) {
+		int numberOfTransforms = 1;
+
+		const H5std_string MEMBER1( "timeStamp" );
+		const H5std_string MEMBER2( "matrixData" );
+
+		/* "type" for matrix array*/
+		hsize_t rsgMatrixDataDimensions[rsgIdRank];
+		rsgMatrixDataDimensions[0] = matrixElements; // 16
+		H5::ArrayType rsgMatrixDataType(H5::PredType::NATIVE_DOUBLE, numberOfTransforms, rsgMatrixDataDimensions);
+
+		/* assemble compound type */
+		hsize_t rsgTransformDimensions[transformDataRank];
+		rsgTransformDimensions[0] = numberOfTransforms; // number of transforms goes here
+		H5::DataSpace rsgTransformDataSpace(transformDataRank, rsgTransformDimensions);
+		H5::CompType rsgTransformDataType(sizeof(transform_data_t));
+		rsgTransformDataType.insertMember(MEMBER1, HOFFSET(transform_data_t, timeStamp), H5::PredType::NATIVE_DOUBLE);
+		rsgTransformDataType.insertMember(MEMBER2, HOFFSET(transform_data_t, matrixData), rsgMatrixDataType);
+
+		/* do read from group */
+		try {
+			H5::DataSet rsgTransformDataset = group.openDataSet(rsgTransformName);
+//			H5::DataSpace rsgReadTransformDataSpace = rsgTransformDataset.getSpace();
+//			rsgReadTransformDataSpace.getCounter();
+			transform_data_t transforms[numberOfTransforms];
+			rsgTransformDataset.read(&transforms, rsgTransformDataType);
+
+			/* process data */
+			timeStamp = brics_3d::rsg::TimeStamp(transforms[0].timeStamp, brics_3d::Units::Second);
+			memcpy(transform->setRawData(), &transforms[0].matrixData, sizeof(double)*matrixElements);
+		} catch (H5::Exception e) {
+			LOG(ERROR) << "Cannot retrieve transform data from HDF5 group.";
+			return false;
+		}
+
+		return true;
+	}
+
 };
 
 /* initialization of all constants */
@@ -326,6 +409,7 @@ const string HDF5Typecaster::rsgIdName  = "Id";
 const string HDF5Typecaster::rsgNodeTypeInfoName = "NodeTypeInfo";
 const string HDF5Typecaster::rsgShapeName = "Shape";
 const string HDF5Typecaster::rsgShapeTypeInfoName = "ShapeTypeInfo";
+const string HDF5Typecaster::rsgTransformName = "Transform";
 
 //const H5::PredType atomicRsgShapeType = H5::PredType::NATIVE_DOUBLE;
 
