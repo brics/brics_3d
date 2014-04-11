@@ -163,6 +163,18 @@ IF(USE_MICROBLX)
     ENDIF (MICROBLX_FOUND)
 ENDIF(USE_MICROBLX)
 
+# search for Microblx
+OPTION(USE_HDF5 "Enable HDF5 Support" OFF)
+IF(USE_HDF5)  
+    FIND_PACKAGE(HDF5 REQUIRED COMPONENTS CXX)
+    IF (HDF5_FOUND)
+      MESSAGE(STATUS "SUCCESSFUL: HDF5 found")
+      ADD_DEFINITIONS(-DBRICS_HDF5_ENABLE)     
+    ELSE (HDF5_FOUND)
+      MESSAGE(SEND_ERROR "WARNING: HDF5 not found.")
+    ENDIF (HDF5_FOUND)
+ENDIF(USE_HDF5)
+
 ## perform platform dependant configurations
 IF (WIN32)   # windows
 	SET (CGAL_LIBRARY "") # windows uses auto_linker.h => skip CGAL_LIBRARY for linker
