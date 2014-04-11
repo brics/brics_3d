@@ -17,11 +17,30 @@
  *
  ******************************************************************************/
 
-#ifndef HDF5TYPECASTER_H_
-#define HDF5TYPECASTER_H_
+#ifndef RSG_HDF5TYPECASTER_H_
+#define RSG_HDF5TYPECASTER_H_
 
-#include <brics_3d/core/Logger.h>
-#include "H5Cpp.h"
+#include <H5Cpp.h>
+
+#include "brics_3d/core/Logger.h"
+#include "brics_3d/worldModel/sceneGraph/Attribute.h"
+#include "brics_3d/worldModel/sceneGraph/Shape.h"
+#include "brics_3d/worldModel/sceneGraph/Sphere.h"
+#include "brics_3d/worldModel/sceneGraph/Box.h"
+#include "brics_3d/worldModel/sceneGraph/Cylinder.h"
+#include "brics_3d/worldModel/sceneGraph/PointCloud.h"
+#include "brics_3d/worldModel/sceneGraph/Mesh.h"
+
+/* Constants to serve as common agreement in the HDF5 encoding to
+ * form kind of a "protocol".
+ */
+#define rsgCommandTypeInfoName "CommandTypeInfo"
+#define rsgIdName "Id"
+#define rsgNodeTypeInfoName "NodeTypeInfo"
+#define rsgShapeName "Shape"
+#define rsgShapeTypeInfoName "ShapeTypeInfo"
+#define rsgTransformName "Transform"
+#define rsgTimeStampName "TimeStamp"
 
 namespace brics_3d {
 namespace rsg {
@@ -29,6 +48,9 @@ namespace rsg {
 
 /**
  * @brief Helper class to convert from and to HDF5 file format.
+ *
+ * This class is designed as "header only". It can be always included in other
+ * projects, regardless the used compilation flags (USE_HDF5) of brics_3d.
  *
  * @ingroup sceneGraph
  */
@@ -48,11 +70,11 @@ public:
 	 * form kind of a "protocol".
 	 * Initialization of string constants: cf. below this file.
 	 */
-	static const string rsgIdName;
-	static const string rsgNodeTypeInfoName;
-	static const string rsgShapeName;
-	static const string rsgShapeTypeInfoName;
-	static const string rsgTransformName;
+//	static const std::string rsgIdName;
+//	static const std::string rsgNodeTypeInfoName;
+//	static const std::string rsgShapeName;
+//	static const std::string rsgShapeTypeInfoName;
+//	static const std::string rsgTransformName;
 
 //	static const H5::PredType atomicRsgShapeType; // common atomic type for all shape data sets.
 
@@ -99,7 +121,7 @@ public:
 	    MESH
 	};
 
-	 /* First structure and dataset*/
+	/* Compound data type for (temporal cached) transform data */
 	typedef struct transform_data_t {
 		double timeStamp;
 		double matrixData[matrixElements];
@@ -108,20 +130,37 @@ public:
 	HDF5Typecaster(){};
 	virtual ~HDF5Typecaster(){};
 
-	inline static bool addNodeIdToHDF5Group(brics_3d::rsg::Id id,  H5::Group& group) {
+	inline static bool addCommandTypeInfoToHDF5Group(RsgUpdateCommand commandType, H5::Group& group) {
+		H5::IntType rsgCommandTypeInfoDataType( H5::PredType::NATIVE_INT);
+		H5::DataSpace rsgCommandTypeInfoSpace(H5S_SCALAR);
+		H5::DataSet rsgCommandTypeInfoDataset = group.createDataSet(rsgCommandTypeInfoName, rsgCommandTypeInfoDataType, rsgCommandTypeInfoSpace);
+		rsgCommandTypeInfoDataset.write(&commandType, rsgCommandTypeInfoDataType);
+
+		return true;
+	}
+
+	inline static bool getCommandTypeInfoFromHDF5Group(RsgNodeTypeInfo& commandType, H5::Group& group) {
+		H5::IntType rsgCommandTypeInfoDataType( H5::PredType::NATIVE_INT);
+		H5::DataSet rsgCommandTypeInfoDataset = group.openDataSet(rsgCommandTypeInfoName);
+		rsgCommandTypeInfoDataset.read(&commandType, rsgCommandTypeInfoDataType);
+
+		return true;
+	}
+
+	inline static bool addNodeIdToHDF5Group(brics_3d::rsg::Id id,  H5::Group& group, std::string idName = rsgIdName) {
 		hsize_t rsgIdDimensions[rsgIdRank];
 		rsgIdDimensions[0] = 16; // 16 bytes
 		H5::DataSpace rsgIdDataSpace(rsgIdRank, rsgIdDimensions);
 		H5::IntType rsgIdDataType(H5::PredType::NATIVE_UCHAR); //for byte
 
-		H5::DataSet rsgIdDataset = group.createDataSet(rsgIdName, rsgIdDataType, rsgIdDataSpace);
+		H5::DataSet rsgIdDataset = group.createDataSet(idName, rsgIdDataType, rsgIdDataSpace);
 		rsgIdDataset.write(id.begin(), H5::PredType::NATIVE_UCHAR);
 
 		return true;
 	}
 
-	inline static bool getNodeIdFromHDF5Group(brics_3d::rsg::Id& id, H5::Group& group) {
-		H5::DataSet rsgIdDataset = group.openDataSet(rsgIdName);
+	inline static bool getNodeIdFromHDF5Group(brics_3d::rsg::Id& id, H5::Group& group, std::string idName = rsgIdName) {
+		H5::DataSet rsgIdDataset = group.openDataSet(idName);
 		// Here might be some checks if dimension, etc match...
 		rsgIdDataset.read(id.begin(), H5::PredType::NATIVE_UCHAR);
 
@@ -134,6 +173,16 @@ public:
 		H5::DataSpace attributeSpace(H5S_SCALAR);
 		H5::Attribute rsgHDF5Attribute = group.createAttribute(attribute.key, stringType, attributeSpace);
 		rsgHDF5Attribute.write(stringType, attribute.value);
+
+		return true;
+	}
+
+	inline static bool addAttributesToHDF5Group(std::vector<brics_3d::rsg::Attribute> attributes, H5::Group& group) {
+		for (std::vector<brics_3d::rsg::Attribute>::iterator it = attributes.begin(); it != attributes.end(); ++it) {
+			if(!addAttributeToHDF5Group(*it, group)) {
+				return false;
+			}
+		}
 
 		return true;
 	}
@@ -402,14 +451,34 @@ public:
 		return true;
 	}
 
+	inline static bool addTimeStampToHDF5Group(brics_3d::rsg::TimeStamp timeStamp, H5::Group& group) {
+		H5::IntType rsgTimeStampType( H5::PredType::NATIVE_DOUBLE);
+		H5::DataSpace rsgTimeStampSpace(H5S_SCALAR);
+		H5::DataSet rsgTimeStampDataset = group.createDataSet(rsgTimeStampName, rsgTimeStampType, rsgTimeStampSpace);
+		double tmpTimeStamp = timeStamp.getSeconds();
+		rsgTimeStampDataset.write(&tmpTimeStamp, rsgTimeStampType);
+
+		return true;
+	}
+
+	inline static bool getTimeStampFromHDF5Group(brics_3d::rsg::TimeStamp& timeStamp, H5::Group& group) {
+		H5::IntType rsgTimeStampType( H5::PredType::NATIVE_DOUBLE);
+		H5::DataSet rsgTimeStampDataset = group.openDataSet(rsgTimeStampName);
+		double tmpTimeStamp;
+		rsgTimeStampDataset.read(&tmpTimeStamp, rsgTimeStampType);
+		timeStamp = brics_3d::rsg::TimeStamp(tmpTimeStamp, brics_3d::Units::Second);
+
+		return true;
+	}
+
 };
 
 /* initialization of all constants */
-const string HDF5Typecaster::rsgIdName  = "Id";
-const string HDF5Typecaster::rsgNodeTypeInfoName = "NodeTypeInfo";
-const string HDF5Typecaster::rsgShapeName = "Shape";
-const string HDF5Typecaster::rsgShapeTypeInfoName = "ShapeTypeInfo";
-const string HDF5Typecaster::rsgTransformName = "Transform";
+//const string HDF5Typecaster::rsgIdName  = "Id";
+//const string HDF5Typecaster::rsgNodeTypeInfoName = "NodeTypeInfo";
+//const string HDF5Typecaster::rsgShapeName = "Shape";
+//const string HDF5Typecaster::rsgShapeTypeInfoName = "ShapeTypeInfo";
+//const string HDF5Typecaster::rsgTransformName = "Transform";
 
 //const H5::PredType atomicRsgShapeType = H5::PredType::NATIVE_DOUBLE;
 
@@ -418,6 +487,6 @@ const string HDF5Typecaster::rsgTransformName = "Transform";
 
 
 
-#endif /* HDF5TYPECASTER_H_ */
+#endif /* RSG_HDF5TYPECASTER_H_ */
 
 /* EOF */
