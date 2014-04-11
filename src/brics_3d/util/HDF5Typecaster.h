@@ -139,7 +139,7 @@ public:
 		return true;
 	}
 
-	inline static bool getCommandTypeInfoFromHDF5Group(RsgNodeTypeInfo& commandType, H5::Group& group) {
+	inline static bool getCommandTypeInfoFromHDF5Group(RsgUpdateCommand& commandType, H5::Group& group) {
 		H5::IntType rsgCommandTypeInfoDataType( H5::PredType::NATIVE_INT);
 		H5::DataSet rsgCommandTypeInfoDataset = group.openDataSet(rsgCommandTypeInfoName);
 		rsgCommandTypeInfoDataset.read(&commandType, rsgCommandTypeInfoDataType);

@@ -233,6 +233,7 @@ ENDIF(USE_PCL AND USE_EIGEN3)
 
 IF (USE_HDF5)
     list(APPEND WORLD_MODEL_LIBRARY_SOURCES ./worldModel/sceneGraph/HDF5UpdateSerializer)
+    list(APPEND WORLD_MODEL_LIBRARY_SOURCES ./worldModel/sceneGraph/HDF5UpdateDeserializer)
 ENDIF(USE_HDF5)
 
 # add library directories (-L)
