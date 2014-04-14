@@ -18,6 +18,7 @@
  ******************************************************************************/
 
 #include "HDF5UpdateDeserializer.h"
+#include "brics_3d/core/HomogeneousMatrix44.h"
 #include <fstream>
 
 namespace brics_3d {
@@ -46,13 +47,6 @@ herr_t collectGroupNames(hid_t loc_id, const char *name, void *opdata) {
     return 0;
 }
 
-void collectAttributeNames(H5::H5Object& loc,
-		const H5std_string attr_name, void *operator_data) {
-
-	LOG(DEBUG) << "H5::Attribute name = " << attr_name;
-	vector<std::string>* attributeNames = (vector<std::string>*)operator_data;
-	attributeNames->push_back(attr_name);
-}
 
 HDF5UpdateDeserializer::HDF5UpdateDeserializer(WorldModel* wm) :
 		wm(wm) {
@@ -85,19 +79,19 @@ bool HDF5UpdateDeserializer::handleSceneGraphUpdate(const char* dataBuffer,
 
 	/* open with HDF5 */
     try {
-       H5::Exception::dontPrint();
+       //H5::Exception::dontPrint();
        H5::H5File file(messageName, H5F_ACC_RDONLY); // re-open that tmp file
 
        H5::Group scene = file.openGroup("Scene");
        HDF5Typecaster::RsgUpdateCommand command;
        HDF5Typecaster::RsgNodeTypeInfo type;
        HDF5Typecaster::getCommandTypeInfoFromHDF5Group(command, scene);
+       HDF5Typecaster::getNodeIdFromHDF5Group(parentId, scene, rsgParentIdName); // we memorize the parent Id as backtrack in HDF5 is not so easy.
 
        /* Discover the attached HDF5 groups */
        group_name_iter_info groupNamesIterator;
        groupNamesIterator.index = 0;
-//       vector<std::string> groupNames;
-       int returnValue = scene.iterateElems(".", NULL, collectGroupNames, &groupNamesIterator);
+       scene.iterateElems(".", NULL, collectGroupNames, &groupNamesIterator);
        std::vector<std::string> groupNames = groupNamesIterator.collectedGroupNames;
        if(groupNames.size() != 1) {
     	   LOG(ERROR) << "HDF5UpdateDeserializer:  Discovered " << groupNames.size() << " H5::Groups underneath Scene Group. Should be one.";
@@ -105,7 +99,8 @@ bool HDF5UpdateDeserializer::handleSceneGraphUpdate(const char* dataBuffer,
     	   return false;
        }
        std::string groupName = groupNames[0];
-       H5::Group group = file.openGroup(groupName);
+       LOG(DEBUG) << "Opening H5::Group with name " << groupName;
+       H5::Group group = scene.openGroup(groupName);
 
        /* parse incoming data */
        switch (command) {
@@ -125,6 +120,7 @@ bool HDF5UpdateDeserializer::handleSceneGraphUpdate(const char* dataBuffer,
     		   break;
 
     	   case HDF5Typecaster::GEOMETIRC_NODE:
+    		   LOG(DEBUG) << "entering doAddGeometricNode(group)";
     		   doAddGeometricNode(group);
     		   break;
 
@@ -133,13 +129,13 @@ bool HDF5UpdateDeserializer::handleSceneGraphUpdate(const char* dataBuffer,
     		   break;
 
     	   default:
-    		   LOG(WARNING) << "HDF5UpdateDeserializer: Unhandeled node type: " << type;
+    		   LOG(WARNING) << "HDF5UpdateDeserializer: Unhandled node type: " << type;
     		   break;
     	   }
 
     	   break;
     	   default:
-    		   LOG(WARNING) << "HDF5UpdateDeserializer: Unhandeled command: " << command;
+    		   LOG(WARNING) << "HDF5UpdateDeserializer: Unhandled command: " << command;
     		   break;
        }
 
@@ -157,47 +153,101 @@ bool HDF5UpdateDeserializer::handleSceneGraphUpdate(const char* dataBuffer,
 }
 
 bool HDF5UpdateDeserializer::doAddNode(H5::Group& group) {
-	LOG(ERROR) << "HDF5UpdateDeserializer: functionality not yet implemented.";
+	LOG(ERROR) << "HDF5UpdateDeserializer: doAddNode functionality not yet implemented.";
 	return false;
 }
 
 bool HDF5UpdateDeserializer::doAddGroup(H5::Group& group) {
-	LOG(ERROR) << "HDF5UpdateDeserializer: functionality not yet implemented.";
-	return false;
+	LOG(DEBUG) << "HDF5UpdateDeserializer: doAddGroup.";
+	Id id = 0;
+	vector<Attribute> attributes;
+
+	if (!HDF5Typecaster::getNodeIdFromHDF5Group(id, group)) {
+		LOG(ERROR) << "H5::Group has no ID";
+		return false;
+	}
+	LOG(DEBUG) << "H5::Group has ID " << id;
+	HDF5Typecaster::getAttributesFromHDF5Group(attributes, group);
+
+//	LOG(DEBUG) << "Complete group name = " << group.getObjnameByIdx(group.getId());
+
+	return wm->scene.addGroup(parentId, id, attributes, true);
 }
 
 bool HDF5UpdateDeserializer::doAddTransformNode(H5::Group& group) {
-	LOG(ERROR) << "HDF5UpdateDeserializer: functionality not yet implemented.";
-	return false;
+	LOG(ERROR) << "HDF5UpdateDeserializer: doAddTransformNode.";
+
+	Id id = 0;
+	vector<Attribute> attributes;
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform(new HomogeneousMatrix44());
+	TimeStamp timeStamp;
+
+	if (!HDF5Typecaster::getNodeIdFromHDF5Group(id, group)) {
+		LOG(ERROR) << "H5::Group has no ID";
+		return false;
+	}
+	LOG(DEBUG) << "H5::Group has ID " << id;
+	HDF5Typecaster::getAttributesFromHDF5Group(attributes, group);
+
+	if(!HDF5Typecaster::getTransformFromHDF5Group(transform, timeStamp, group)) {
+		LOG(ERROR) << "H5::Group has no transform dataset.";
+		return false;
+	}
+	LOG(DEBUG) << "Transform @t " << timeStamp.getSeconds() <<"  is" << std::endl << *transform;
+
+	return wm->scene.addTransformNode(parentId, id, attributes, transform, timeStamp, true);
 }
 
 bool HDF5UpdateDeserializer::doAddGeometricNode(H5::Group& group) {
-	LOG(ERROR) << "HDF5UpdateDeserializer: functionality not yet implemented.";
-	return false;
+	LOG(INFO) << "HDF5UpdateDeserializer: doAddGeometricNode.";
+
+	Id id = 0;
+	vector<Attribute> attributes;
+	Shape::ShapePtr shape;
+	TimeStamp timeStamp;
+
+	if (!HDF5Typecaster::getNodeIdFromHDF5Group(id, group)) {
+		LOG(ERROR) << "H5::Group has no ID";
+		return false;
+	}
+	LOG(DEBUG) << "H5::Group has ID " << id;
+	HDF5Typecaster::getAttributesFromHDF5Group(attributes, group);
+
+	if(!brics_3d::rsg::HDF5Typecaster::getShapeFromHDF5Group(shape, group)) {
+		LOG(ERROR) << "H5::Group has no Shape";
+		return false;
+	}
+
+	if(!brics_3d::rsg::HDF5Typecaster::getTimeStampFromHDF5Group(timeStamp, group)) {
+		LOG(ERROR) << "H5::Group has no TimeStamp";
+		return false;
+	}
+
+	return wm->scene.addGeometricNode(parentId, id, attributes, shape, timeStamp, true);
 }
 
 bool HDF5UpdateDeserializer::doSetNodeAttributes(H5::Group& group) {
-	LOG(ERROR) << "HDF5UpdateDeserializer: functionality not yet implemented.";
+	LOG(ERROR) << "HDF5UpdateDeserializer: doSetNodeAttributes functionality not yet implemented.";
 	return false;
 }
 
 bool HDF5UpdateDeserializer::doSetTransform(H5::Group& group) {
-	LOG(ERROR) << "HDF5UpdateDeserializer: functionality not yet implemented.";
+	LOG(ERROR) << "HDF5UpdateDeserializer: doSetTransform functionality not yet implemented.";
 	return false;
 }
 
 bool HDF5UpdateDeserializer::doDeleteNode(H5::Group& group) {
-	LOG(ERROR) << "HDF5UpdateDeserializer: functionality not yet implemented.";
+	LOG(ERROR) << "HDF5UpdateDeserializer: doDeleteNode functionality not yet implemented.";
 	return false;
 }
 
 bool HDF5UpdateDeserializer::doAddParent(H5::Group& group) {
-	LOG(ERROR) << "HDF5UpdateDeserializer: functionality not yet implemented.";
+	LOG(ERROR) << "HDF5UpdateDeserializer: doAddParent functionality not yet implemented.";
 	return false;
 }
 
 bool HDF5UpdateDeserializer::doRemoveParent(H5::Group& group) {
-	LOG(ERROR) << "HDF5UpdateDeserializer: functionality not yet implemented.";
+	LOG(ERROR) << "HDF5UpdateDeserializer: doRemoveParent functionality not yet implemented.";
 	return false;
 }
 

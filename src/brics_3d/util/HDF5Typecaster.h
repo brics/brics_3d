@@ -36,6 +36,7 @@
  */
 #define rsgCommandTypeInfoName "CommandTypeInfo"
 #define rsgIdName "Id"
+#define rsgParentIdName "ParentId"
 #define rsgNodeTypeInfoName "NodeTypeInfo"
 #define rsgShapeName "Shape"
 #define rsgShapeTypeInfoName "ShapeTypeInfo"
@@ -45,6 +46,13 @@
 namespace brics_3d {
 namespace rsg {
 
+static void collectHDF5AttributeNames(H5::H5Object& loc,
+		const H5std_string attr_name, void *operator_data) {
+
+	LOG(DEBUG) << "H5::Attribute name = " << attr_name;
+	vector<std::string>* attributeNames = (vector<std::string>*)operator_data;
+	attributeNames->push_back(attr_name);
+}
 
 /**
  * @brief Helper class to convert from and to HDF5 file format.
@@ -177,16 +185,6 @@ public:
 		return true;
 	}
 
-	inline static bool addAttributesToHDF5Group(std::vector<brics_3d::rsg::Attribute> attributes, H5::Group& group) {
-		for (std::vector<brics_3d::rsg::Attribute>::iterator it = attributes.begin(); it != attributes.end(); ++it) {
-			if(!addAttributeToHDF5Group(*it, group)) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-
 	inline static bool getAttributeByNameFromHDF5Group(brics_3d::rsg::Attribute& attribute, std::string name, H5::Group& group) {
 		H5::StrType stringType(0, H5T_VARIABLE);
 
@@ -200,6 +198,32 @@ public:
 		} catch (H5::Exception e) {
 			LOG(WARNING) << "Cannot get retrieve Attribute from HDF5 Group.";
 			return false;
+		}
+
+		return true;
+	}
+
+	inline static bool addAttributesToHDF5Group(std::vector<brics_3d::rsg::Attribute> attributes, H5::Group& group) {
+		for (std::vector<brics_3d::rsg::Attribute>::iterator it = attributes.begin(); it != attributes.end(); ++it) {
+			if(!addAttributeToHDF5Group(*it, group)) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	inline static bool getAttributesFromHDF5Group(std::vector<brics_3d::rsg::Attribute>& attributes, H5::Group& group) {
+		LOG(DEBUG) << "H5::Group has " << group.getNumAttrs() << " Attribute(s)";
+		vector<std::string> attributeNames;
+		group.iterateAttrs(collectHDF5AttributeNames, NULL, &attributeNames);
+
+		for (vector<std::string>::iterator it = attributeNames.begin(); it!=attributeNames.end(); ++it) {
+			brics_3d::rsg::Attribute result;
+			if(brics_3d::rsg::HDF5Typecaster::getAttributeByNameFromHDF5Group(result, *it, group)) {
+				LOG(DEBUG) << "\t adding rsg::Attribute " << result;
+				attributes.push_back(result);
+			}
 		}
 
 		return true;

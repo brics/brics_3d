@@ -29,6 +29,7 @@ namespace rsg {
 DotVisualizer::DotVisualizer(brics_3d::rsg::SceneGraphFacade* scene) : scene(scene)  {
 	keepHistory = false;
 	counter = 0;
+	fileName = "current_graph";
 }
 
 DotVisualizer::~DotVisualizer() {
@@ -98,26 +99,29 @@ void DotVisualizer::printGraph(){
 	LOG(DEBUG) << "DotVisualizer: Printing graph to file.";
 	graphPrinter.setConfig(config);
 	scene->executeGraphTraverser(&graphPrinter, scene->getRootId());
-//	std::cout << graphPrinter.getDotGraph() << std::endl << std::endl;
 
 	/* Save a svg file as snapshopt */
-	std::string fileName = "current_graph.gv";
-	output.open(fileName.c_str(), std::ios::trunc);
+	// e.g.  "current_graph.gv";
+	output.open((fileName + ".gv").c_str(), std::ios::trunc);
 	output << graphPrinter.getDotGraph();
 	output.flush();
 	output.close();
-	system("dot current_graph.gv -Tsvg -o current_graph.gv.svg"); //e.g. with gthumb you can observe changes...
+
+	std::stringstream command;
+	command.str("");
+	// e.g. "dot current_graph.gv -Tsvg -o current_graph.gv.svg";
+	command << "dot " << fileName <<".gv -Tsvg -o " << fileName << ".gv.svg";
+	system(command.str().c_str()); //e.g. with gthumb you can observe changes...
 
 	if(keepHistory) {
-		std::stringstream command;
 		command.str("");
 
-		command << "cp current_graph.gv.svg graph_" << counter << ".gv.svg";
+		command << "cp " << fileName <<".gv.svg "<< fileName << "_graph_" << counter << ".gv.svg";
 		system(command.str().c_str());
 		command.str("");
-		command << "cp current_graph.gv graph_" << counter << ".gv";
+		command << "cp " << fileName <<".gv "<< fileName << "_graph_" << counter << ".gv";
 		system(command.str().c_str());
-		LOG(DEBUG) << "DotVisualizer:	File name is: graph_" << counter << ".gv.svg";
+		LOG(DEBUG) << "DotVisualizer:	File name is: "<< fileName << "_graph_" << counter << ".gv.svg";
 	}
 
 	graphPrinter.reset();

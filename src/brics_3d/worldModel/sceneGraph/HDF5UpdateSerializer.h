@@ -56,9 +56,6 @@ protected:
 	bool doSendMessage(std::string messageName);
 	IOutputPort* port;
 
-private:
-	static const std::string rsgParentIdName;
-
 };
 
 } /* namespace rsg */

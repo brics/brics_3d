@@ -73,6 +73,14 @@ public:
 		this->config = config;
 	}
 
+	const std::string& getFileName() const {
+		return fileName;
+	}
+
+	void setFileName(const std::string& fileName) {
+		this->fileName = fileName;
+	}
+
 private:
 	///Handle the to the scene to be observed
 	brics_3d::rsg::SceneGraphFacade* scene;
@@ -94,6 +102,9 @@ private:
 	bool keepHistory;
 
 	unsigned int counter;
+
+	// Name for generated svg file (without file extension). Default = "current_graph.gv"
+	std::string fileName;
 };
 
 }
