@@ -23,12 +23,27 @@
 namespace brics_3d {
 namespace rsg {
 
+// helper struct to memorize index and name verctor
+typedef struct {
+    int index;               // index of the current object
+    std::vector<std::string> collectedGroupNames;
+} group_name_iter_info;
 
 herr_t collectGroupNames(hid_t loc_id, const char *name, void *opdata) {
 	LOG(DEBUG) << "H5::Group name = " << name;
-	std::vector<std::string>* groupNames = (std::vector<std::string>*)opdata;
-	groupNames->push_back(name);
-	return 0;
+
+	group_name_iter_info *info=(group_name_iter_info *)opdata;
+    int obj_type = H5Gget_objtype_by_idx(loc_id, info->index);
+    if(obj_type == H5G_GROUP) {
+    	 LOG(DEBUG)  << "        is a group";
+    		info->collectedGroupNames.push_back(name);
+
+    } else {
+		LOG(DEBUG) << "       is NOT a proup but of type: " << obj_type;
+	}
+
+    (info->index)++;
+    return 0;
 }
 
 void collectAttributeNames(H5::H5Object& loc,
@@ -79,8 +94,11 @@ bool HDF5UpdateDeserializer::handleSceneGraphUpdate(const char* dataBuffer,
        HDF5Typecaster::getCommandTypeInfoFromHDF5Group(command, scene);
 
        /* Discover the attached HDF5 groups */
-       vector<std::string> groupNames;
-       int returnValue = scene.iterateElems(".", NULL, collectGroupNames, &groupNames);
+       group_name_iter_info groupNamesIterator;
+       groupNamesIterator.index = 0;
+//       vector<std::string> groupNames;
+       int returnValue = scene.iterateElems(".", NULL, collectGroupNames, &groupNamesIterator);
+       std::vector<std::string> groupNames = groupNamesIterator.collectedGroupNames;
        if(groupNames.size() != 1) {
     	   LOG(ERROR) << "HDF5UpdateDeserializer:  Discovered " << groupNames.size() << " H5::Groups underneath Scene Group. Should be one.";
     	   file.close();
@@ -126,6 +144,7 @@ bool HDF5UpdateDeserializer::handleSceneGraphUpdate(const char* dataBuffer,
        }
 
        /* close file */
+//       file.flush(H5F_SCOPE_GLOBAL);
        file.close();
 
     } catch (H5::Exception e) {
@@ -133,6 +152,7 @@ bool HDF5UpdateDeserializer::handleSceneGraphUpdate(const char* dataBuffer,
     	return false;
     }
 
+    transferredBytes = dataLength;
 	return true;
 }
 

@@ -59,7 +59,6 @@ bool HDF5UpdateSerializer::addGroup(Id parentId, Id& assignedId,
 
 		file.flush(H5F_SCOPE_GLOBAL);
 		file.close();
-
 		doSendMessage(fileName);
 
 	} catch (H5::Exception e) {
@@ -91,7 +90,9 @@ bool HDF5UpdateSerializer::addTransformNode(Id parentId,
 		HDF5Typecaster::addAttributesToHDF5Group(attributes, group);
 		HDF5Typecaster::addTransformToHDF5Group(transform, timeStamp, group);
 
+		file.flush(H5F_SCOPE_GLOBAL);
 		file.close();
+		doSendMessage(fileName);
 
 	} catch (H5::Exception e) {
 		LOG(ERROR) << "HDF5UpdateSerializer addTransformNode: Cannot create a HDF serialization.";
@@ -129,7 +130,9 @@ bool HDF5UpdateSerializer::addGeometricNode(Id parentId,
 		HDF5Typecaster::addShapeToHDF5Group(shape, group);
 		HDF5Typecaster::addTimeStampToHDF5Group(timeStamp, group);
 
+		file.flush(H5F_SCOPE_GLOBAL);
 		file.close();
+//		doSendMessage(fileName);
 
 	} catch (H5::Exception e) {
 		LOG(ERROR) << "HDF5UpdateSerializer addTransformNode: Cannot create a HDF serialization.";
@@ -161,7 +164,9 @@ bool HDF5UpdateSerializer::setTransform(Id id,
 		HDF5Typecaster::addNodeIdToHDF5Group(id, group);
 		HDF5Typecaster::addTransformToHDF5Group(transform, timeStamp, group);
 
+		file.flush(H5F_SCOPE_GLOBAL);
 		file.close();
+		doSendMessage(fileName);
 
 	} catch (H5::Exception e) {
 		LOG(ERROR) << "HDF5UpdateSerializer setTransform: Cannot create a HDF serialization.";
@@ -192,7 +197,9 @@ bool HDF5UpdateSerializer::deleteNode(Id id) {
 		H5::Group group = scene.createGroup("Node-" + id.toString()); // The actual data
 		HDF5Typecaster::addNodeIdToHDF5Group(id, group);
 
+		file.flush(H5F_SCOPE_GLOBAL);
 		file.close();
+		doSendMessage(fileName);
 
 	} catch (H5::Exception e) {
 		LOG(ERROR) << "HDF5UpdateSerializer setTransform: Cannot create a HDF serialization.";
@@ -220,12 +227,12 @@ bool HDF5UpdateSerializer::doSendMessage(std::string messageName) {
 		LOG(ERROR) << "Cannot open file" << messageName <<". Aborting.";
 		return false;
 	}
-	LOG(DEBUG) << "Sending message " << messageName;
 
 	/* get length of file */
 	inputFile.seekg (0, std::ios::end);
 	long length = inputFile.tellg();
 	inputFile.seekg (0, std::ios::beg);
+	LOG(DEBUG) << "HDF5UpdateSerializer: Sending message " << messageName << " with length " << length;
 
 	char *buffer = new char [length];
 	inputFile.read (buffer,length); // a single bunch of data is feed into the buffer
