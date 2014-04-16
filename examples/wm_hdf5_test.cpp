@@ -34,21 +34,6 @@
 using namespace brics_3d;
 using brics_3d::Logger;
 
-// "Is" an output port and "has" an input port to directly feed forward data (byte array).
-class HSDF5SimleBridge : public brics_3d::rsg::IOutputPort {
-public:
-	HSDF5SimleBridge(brics_3d::rsg::IInputPort* inputPort) : inputPort(inputPort){};
-	virtual ~HSDF5SimleBridge(){};
-
-	int write(const char *dataBuffer, int dataLength, int &transferredBytes) {
-		return inputPort->write(dataBuffer, dataLength, transferredBytes); // just feed forward
-	};
-
-private:
-	brics_3d::rsg::IInputPort* inputPort;
-};
-
-
 void hexdump(const char *ptr, int buflen) {
 	unsigned char *buf = (unsigned char*)ptr;
 	int i, j;
@@ -66,6 +51,22 @@ void hexdump(const char *ptr, int buflen) {
 		printf("\n");
 	}
 }
+
+// "Is" an output port and "has" an input port to directly feed forward data (byte array).
+class HSDF5SimleBridge : public brics_3d::rsg::IOutputPort {
+public:
+	HSDF5SimleBridge(brics_3d::rsg::IInputPort* inputPort) : inputPort(inputPort){};
+	virtual ~HSDF5SimleBridge(){};
+
+	int write(const char *dataBuffer, int dataLength, int &transferredBytes) {
+		LOG(INFO) << "HSDF5SimleBridge: Feeding data forwards.";
+//		hexdump(dataBuffer, dataLength);
+		return inputPort->write(dataBuffer, dataLength, transferredBytes); // just feed forward
+	};
+
+private:
+	brics_3d::rsg::IInputPort* inputPort;
+};
 
 class OutputPortDummy : public brics_3d::rsg::IOutputPort {
 public:
@@ -108,6 +109,7 @@ int main(int argc, char **argv) {
 	wm->scene.attachUpdateObserver(wm3DVisualizer); //enable visualization
 	wm->scene.attachUpdateObserver(wmStructureVisualizer);
 	wmReplica->scene.attachUpdateObserver(wmReplicaStructureVisualizer);
+	usleep(500*1000); // the OSG visualization window seems to need some setup time
 
 	/*
 	 * Connect both world models via:

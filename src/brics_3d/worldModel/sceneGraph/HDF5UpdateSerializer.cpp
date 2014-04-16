@@ -232,24 +232,16 @@ bool HDF5UpdateSerializer::doSendMessage(std::string messageName) {
 	long length = inputFile.tellg();
 	inputFile.seekg (0, std::ios::beg);
 	LOG(DEBUG) << "HDF5UpdateSerializer: Sending message " << messageName << " with length " << length;
-	LOG(DEBUG) << "Status "
-			<< " good()=" << inputFile.good() << " "
-			<< " eof()=" << inputFile.eof() << " "
-			<< " fail()=" << inputFile.fail() << " "
-			<< " bad()=" << inputFile.bad();
-	usleep(/*500*/300 * 1000); // FIXME
 
 	char *buffer = new char [length];
-	LOG(DEBUG) << "Buffer prepared. " << inputFile.gcount();
-	inputFile.rdbuf();
 	inputFile.read (buffer,length); // a single bunch of data is feed into the buffer
-	LOG(DEBUG) << "HDF5UpdateSerializer: prepared (file).";
+	inputFile.close();
+	LOG(DEBUG) << "HDF5UpdateSerializer: prepared byte stream.";
 
 	int transferredBytes;
 	int returnValue =  port->write(buffer, length, transferredBytes);
 	LOG(DEBUG) << "HDF5UpdateSerializer: \t" << transferredBytes << " bytes transferred.";
 
-	inputFile.close();
 	delete buffer;
 	return true;
 }
