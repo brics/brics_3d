@@ -86,7 +86,14 @@ bool HDF5UpdateDeserializer::handleSceneGraphUpdate(const char* dataBuffer,
        HDF5Typecaster::RsgUpdateCommand command;
        HDF5Typecaster::RsgNodeTypeInfo type;
        HDF5Typecaster::getCommandTypeInfoFromHDF5Group(command, scene);
-       HDF5Typecaster::getNodeIdFromHDF5Group(parentId, scene, rsgParentIdName); // we memorize the parent Id as backtrack in HDF5 is not so easy.
+       bool hasParentId = false;
+
+       try {
+    	   HDF5Typecaster::getNodeIdFromHDF5Group(parentId, scene, rsgParentIdName); // we memorize the parent Id as backtrack in HDF5 is not so easy.
+    	   hasParentId = true;
+       } catch (H5::Exception e) {
+    	   LOG(WARNING) << "No parentId given.";
+       }
 
        /* Discover the attached HDF5 groups */
        group_name_iter_info groupNamesIterator;
@@ -105,38 +112,66 @@ bool HDF5UpdateDeserializer::handleSceneGraphUpdate(const char* dataBuffer,
        /* parse incoming data */
        switch (command) {
 
-       case HDF5Typecaster::ADD:
+		   case HDF5Typecaster::ADD:
 
-    	   LOG(DEBUG) << "HDF5UpdateDeserializer: Processing ADD command";
-    	   HDF5Typecaster::getNodeTypeInfoFromHDF5Group(type, group);
+			   LOG(DEBUG) << "HDF5UpdateDeserializer: Processing ADD command";
+			   if(!hasParentId) {
+				   LOG(ERROR) << "Retrieved an ADD command, but without parentId - this does not work.";
+				   break;
 
-    	   switch (type) {
-    	   case HDF5Typecaster::NODE:
-    		   doAddNode(group);
-    		   break;
+			   }
+			   HDF5Typecaster::getNodeTypeInfoFromHDF5Group(type, group);
 
-    	   case HDF5Typecaster::GROUP:
-    		   doAddGroup(group);
-    		   break;
+			   switch (type) {
+			   case HDF5Typecaster::NODE:
+				   doAddNode(group);
+				   break;
 
-    	   case HDF5Typecaster::GEOMETIRC_NODE:
-    		   LOG(DEBUG) << "entering doAddGeometricNode(group)";
-    		   doAddGeometricNode(group);
-    		   break;
+			   case HDF5Typecaster::GROUP:
+				   doAddGroup(group);
+				   break;
 
-    	   case HDF5Typecaster::TRANSFORM:
-    		   doAddTransformNode(group);
-    		   break;
+			   case HDF5Typecaster::GEOMETIRC_NODE:
+				   LOG(DEBUG) << "entering doAddGeometricNode(group)";
+				   doAddGeometricNode(group);
+				   break;
 
-    	   default:
-    		   LOG(WARNING) << "HDF5UpdateDeserializer: Unhandled node type: " << type;
-    		   break;
-    	   }
+			   case HDF5Typecaster::TRANSFORM:
+				   doAddTransformNode(group);
+				   break;
+
+			   default:
+				   LOG(WARNING) << "HDF5UpdateDeserializer: Unhandled node type: " << type;
+				   break;
+			   }
+			   break;
+
+           case HDF5Typecaster::SET_TRANSFORM:
+
+        	   LOG(DEBUG) << "HDF5UpdateDeserializer: Processing SET_TRANSFOR command";
+        	   HDF5Typecaster::getNodeTypeInfoFromHDF5Group(type, group);
+        	   if(type != HDF5Typecaster::TRANSFORM) {
+        		   LOG(ERROR) << "Received a SET_TRANSFORM command, but node type is not a Transform.";
+        		   return false;
+        	   }
+        	   doSetTransform(group);
+
+        	   break;
+
+           case HDF5Typecaster::DELETE:
+
+        	   LOG(DEBUG) << "HDF5UpdateDeserializer: Processing DELETE command";
+        	   doDeleteNode(group);
+
+        	   break;
 
     	   break;
     	   default:
     		   LOG(WARNING) << "HDF5UpdateDeserializer: Unhandled command: " << command;
     		   break;
+
+
+
        }
 
        /* close file */
@@ -232,13 +267,35 @@ bool HDF5UpdateDeserializer::doSetNodeAttributes(H5::Group& group) {
 }
 
 bool HDF5UpdateDeserializer::doSetTransform(H5::Group& group) {
-	LOG(ERROR) << "HDF5UpdateDeserializer: doSetTransform functionality not yet implemented.";
-	return false;
+	LOG(DEBUG) << "HDF5UpdateDeserializer: doSetTransform.";
+
+	Id id;
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform(new HomogeneousMatrix44());
+	TimeStamp timeStamp;
+
+	if (!HDF5Typecaster::getNodeIdFromHDF5Group(id, group)) {
+		LOG(ERROR) << "H5::Group has no ID";
+		return false;
+	}
+
+	if(!HDF5Typecaster::getTransformFromHDF5Group(transform, timeStamp, group)) {
+		LOG(ERROR) << "H5::Group has no transform dataset.";
+		return false;
+	}
+
+	return wm->scene.setTransform(id, transform, timeStamp);
 }
 
 bool HDF5UpdateDeserializer::doDeleteNode(H5::Group& group) {
-	LOG(ERROR) << "HDF5UpdateDeserializer: doDeleteNode functionality not yet implemented.";
-	return false;
+	LOG(DEBUG) << "HDF5UpdateDeserializer: doDeleteNode.";
+
+	Id id;
+	if (!HDF5Typecaster::getNodeIdFromHDF5Group(id, group)) {
+		LOG(ERROR) << "H5::Group that shall be deleted has no ID";
+		return false;
+	}
+
+	return wm->scene.deleteNode(id);
 }
 
 bool HDF5UpdateDeserializer::doAddParent(H5::Group& group) {
