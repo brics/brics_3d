@@ -57,6 +57,7 @@ bool HDF5UpdateSerializer::addGroup(Id parentId, Id& assignedId,
 		HDF5Typecaster::addAttributesToHDF5Group(attributes, group);
 
 		file.flush(H5F_SCOPE_GLOBAL);
+//		doSendMessage(file);
 		file.close();
 		doSendMessage(fileName);
 
@@ -97,6 +98,7 @@ bool HDF5UpdateSerializer::addTransformNode(Id parentId,
 		LOG(ERROR) << "HDF5UpdateSerializer addTransformNode: Cannot create a HDF serialization.";
 		return false;
 	}
+	return true;
 }
 
 bool HDF5UpdateSerializer::addUncertainTransformNode(Id parentId,
@@ -137,6 +139,7 @@ bool HDF5UpdateSerializer::addGeometricNode(Id parentId,
 		LOG(ERROR) << "HDF5UpdateSerializer addTransformNode: Cannot create a HDF serialization.";
 		return false;
 	}
+	return true;
 }
 
 bool HDF5UpdateSerializer::setNodeAttributes(Id id,
@@ -246,6 +249,27 @@ bool HDF5UpdateSerializer::doSendMessage(std::string messageName) {
 	return true;
 }
 
+bool HDF5UpdateSerializer::doSendMessage(H5::H5File message) {
+	int* fileHandle = 0;
+	hsize_t fileSize = -1;
+	ssize_t numberOfBytesRead;
+
+	message.getVFDHandle((void**) &fileHandle); // this one gives us access to the low-level bytes
+	fileSize = message.getFileSize();
+	LOG(DEBUG) << "HDF5UpdateSerializer (VFD): Sending message with length " << fileSize;
+
+	char *buffer = new char [fileSize];
+    int seekReturn = lseek((*fileHandle), 0, SEEK_SET);
+    numberOfBytesRead = read(*fileHandle, buffer, fileSize);
+	LOG(DEBUG) << "HDF5UpdateSerializer (VFD): prepared byte stream with length " << numberOfBytesRead;
+
+	int transferredBytes;
+	int returnValue =  port->write(buffer, numberOfBytesRead, transferredBytes);
+	LOG(DEBUG) << "HDF5UpdateSerializer (VFD): \t" << transferredBytes << " bytes transferred.";
+
+	delete buffer;
+	return true;
+}
 
 } /* namespace rsg */
 } /* namespace brics_3d */

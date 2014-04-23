@@ -27,6 +27,7 @@
 namespace brics_3d {
 namespace rsg {
 
+
 class IOutputPort {
 public:
 	IOutputPort(){};
@@ -54,6 +55,7 @@ public:
 protected:
 
 	bool doSendMessage(std::string messageName);
+	bool doSendMessage(H5::H5File message);
 	IOutputPort* port;
 
 };
