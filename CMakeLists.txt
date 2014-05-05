@@ -150,17 +150,17 @@ ENDIF(USE_XERCES)
 
 
 # search for Microblx
-OPTION(USE_MICROBLX "Enable Microblx Support" OFF)
+OPTION(USE_MICROBLX "Enable Microblx (UBX) Support" OFF)
 IF(USE_MICROBLX)  
     FIND_PACKAGE(Microblx REQUIRED)
-    IF (MICROBLX_FOUND)
+    IF (UBX_FOUND)
       MESSAGE(STATUS "SUCCESSFUL: MICROBLX found")
       ADD_DEFINITIONS(-DBRICS_MICROBLX_ENABLE)     
-      GET_FILENAME_COMPONENT(MICROBLX_ROOT_DIR ${MICROBLX_INCLUDE_DIR} PATH)
+      GET_FILENAME_COMPONENT(MICROBLX_ROOT_DIR ${UBX_INCLUDE_DIR} PATH)
       ADD_DEFINITIONS(-DMICROBLX_ROOT_DIR="${MICROBLX_ROOT_DIR}/") # We need to tell where e.g. the "standard types" are
-    ELSE (MICROBLX_FOUND)
-      MESSAGE(SEND_ERROR "WARNING: MICROBLX not found. You might need to set the MICROBLX_DIR environment variable.")
-    ENDIF (MICROBLX_FOUND)
+    ELSE (UBX_FOUND)
+      MESSAGE(SEND_ERROR "WARNING: MICROBLX not found. You might need to set the UBX_ROOT environment variable.")
+    ENDIF (UBX_FOUND)
 ENDIF(USE_MICROBLX)
 
 # search for HDF5 (>= 1.8.9)

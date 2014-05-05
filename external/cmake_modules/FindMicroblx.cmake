@@ -1,28 +1,30 @@
-# - Try to find MICROBLX
+# - Try to find the Microblox (=UBX) library
 # Once done this will define
 #
-#  MICROBLX_FOUND - if MICROBLX was found
-#  MICROBLX_INCLUDE_DIR - the MICROBLX include directory (-I)
-#  MICROBLX_LINK_DIRECTORIES - the MICROBLX linker directories (-L)
-#  MICROBLX_LIBRARIES - MICROBLX libraries
+#  UBX_FOUND - if UBX was found
+#  UBX_INCLUDE_DIR - the UBX include directory (-I)
+#  UBX_LINK_DIRECTORIES - the UBX linker directories (-L)
+#  UBX_LIBRARIES - UBX libraries
 #
-# You can set an environment variable "MICROBLX_DIR" to help CMake to find the MICROBLX library,
+# You can set an environment variable "UBX_ROOT" to help CMake to find the UBX library,
 # in case it is not installed in one of the standard paths.
 #
+# Authors: Sabastian Blumenthal, Enea Scioni 
+#
 
-FIND_PATH(MICROBLX_INCLUDE_DIR NAMES ubx.h
+FIND_PATH(UBX_INCLUDE_DIR NAMES ubx.h
   PATHS
-  $ENV{MICROBLX_DIR}/src
+  $ENV{UBX_ROOT}/src
   ENV CPATH
   /usr/include/
   /usr/local/include/
   NO_DEFAULT_PATH
 )
 
-FIND_LIBRARY(MICROBLX_LIBRARY NAMES "ubx" 
+FIND_LIBRARY(UBX_LIBRARY NAMES "ubx" 
   PATHS
-  $ENV{MICROBLX_DIR}/src
-  $ENV{MICROBLX_DIR}/lib 
+  $ENV{UBX_ROOT}/src
+  $ENV{UBX_ROOT}/lib 
   ENV LD_LIBRARY_PATH
   ENV LIBRARY_PATH
   /usr/lib
@@ -30,34 +32,33 @@ FIND_LIBRARY(MICROBLX_LIBRARY NAMES "ubx"
   NO_DEFAULT_PATH
 )
 
-IF(MICROBLX_LIBRARY)
-  GET_FILENAME_COMPONENT(MICROBLX_LINK_DIRECTORIES ${MICROBLX_LIBRARY} PATH CACHE)
-ENDIF(MICROBLX_LIBRARY)
+IF(UBX_LIBRARY)
+  GET_FILENAME_COMPONENT(UBX_LINK_DIRECTORIES ${UBX_LIBRARY} PATH CACHE)
+ENDIF(UBX_LIBRARY)
 
 
-SET(MICROBLX_LIBRARIES_TMP
+SET(UBX_LIBRARIES_TMP
 )
 
 
-IF(MICROBLX_LIBRARY) 
-  SET(MICROBLX_LIBRARIES
-    ${MICROBLX_LIBRARY}
+IF(UBX_LIBRARY) 
+  SET(UBX_LIBRARIES
+    ${UBX_LIBRARY}
     CACHE STRING "Mixroblx library"
   ) 
-ENDIF(MICROBLX_LIBRARY)
+ENDIF(UBX_LIBRARY)
 
 
 
 
 
 include(FindPackageHandleStandardArgs)
-# handle the QUIETLY and REQUIRED arguments and set MICROBLX_FOUND to TRUE
+# handle the QUIETLY and REQUIRED arguments and set UBX_FOUND to TRUE
 # if all listed variables are TRUE
-find_package_handle_standard_args(MICROBLX  DEFAULT_MSG
-                                  MICROBLX_INCLUDE_DIR MICROBLX_LINK_DIRECTORIES MICROBLX_LIBRARIES)
+find_package_handle_standard_args(UBX  DEFAULT_MSG
+                                  UBX_INCLUDE_DIR UBX_LINK_DIRECTORIES UBX_LIBRARIES)
 
-# show the MICROBLX_INCLUDE_DIR and MICROBLX_LIBRARIES variables only in the advanced view
-IF(MICROBLX_FOUND)
-  MARK_AS_ADVANCED(MICROBLX_INCLUDE_DIR MICROBLX_LINK_DIRECTORIES MICROBLX_LIBRARIES)
-ENDIF(MICROBLX_FOUND)
-
+# show the UBX_INCLUDE_DIR and UBX_LIBRARIES variables only in the advanced view
+IF(UBX_FOUND)
+  MARK_AS_ADVANCED(UBX_INCLUDE_DIR UBX_LINK_DIRECTORIES UBX_LIBRARIES)
+ENDIF(UBX_FOUND)
