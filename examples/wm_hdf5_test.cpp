@@ -50,7 +50,7 @@
 #include <brics_3d/worldModel/sceneGraph/HDF5UpdateDeserializer.h>
 
 #include <brics_3d/util/HDF5Typecaster.h>
-
+#include <hdf5.h>
 using namespace brics_3d;
 using brics_3d::Logger;
 

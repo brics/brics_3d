@@ -56,8 +56,10 @@ protected:
 
 	bool doSendMessage(std::string messageName);
 	bool doSendMessage(H5::H5File message);
-	IOutputPort* port;
 
+	IOutputPort* port;
+	bool storeMessageBackupsOnFileSystem;
+	size_t fileImageIncremet;
 };
 
 } /* namespace rsg */

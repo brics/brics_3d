@@ -20,11 +20,13 @@
 #include "HDF5UpdateDeserializer.h"
 #include "brics_3d/core/HomogeneousMatrix44.h"
 #include <fstream>
+#include "H5LTpublic.h" // not in default installation -> need to enable HDF5_BUILD_HLIB
+
 
 namespace brics_3d {
 namespace rsg {
 
-// helper struct to memorize index and name verctor
+// helper struct to memorize index and name vector
 typedef struct {
     int index;               // index of the current object
     std::vector<std::string> collectedGroupNames;
@@ -70,17 +72,26 @@ bool HDF5UpdateDeserializer::handleSceneGraphUpdate(const char* dataBuffer,
 
 	LOG(DEBUG) << "HDF5UpdateDeserializer: Receiving a new data stream.";
 
-	/* safe as tmp file  (FIXME) */
+	/* safe as tmp file  */
 	std::string messageName = "tmpMessage.h5";
-	std::ofstream outputFile(messageName.c_str(), std::ios::binary | std::ios::trunc);
-	outputFile.write(dataBuffer, dataLength);
-	outputFile.flush();
-	outputFile.close();
+//	std::ofstream outputFile(messageName.c_str(), std::ios::binary | std::ios::trunc);
+//	outputFile.write(dataBuffer, dataLength);
+//	outputFile.flush();
+//	outputFile.close();
 
 	/* open with HDF5 */
     try {
+
+
+    	/* Create HDF5 (in-memory) image file from data buffer */
+    	unsigned flags;
+    	flags = H5LT_FILE_IMAGE_DONT_COPY | H5LT_FILE_IMAGE_DONT_RELEASE;
+    	hid_t fileId = H5LTopen_file_image((char* )dataBuffer, dataLength, flags); // to copy or not?
+    	H5::H5File file;
+    	file.setId(fileId);
+
        //H5::Exception::dontPrint();
-       H5::H5File file(messageName, H5F_ACC_RDONLY); // re-open that tmp file
+//    	H5::H5File file(messageName, H5F_ACC_RDONLY); // re-open that tmp file
 
        H5::Group scene = file.openGroup("Scene");
        HDF5Typecaster::RsgUpdateCommand command;

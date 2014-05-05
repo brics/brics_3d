@@ -43,10 +43,16 @@
 #define rsgTransformName "Transform"
 #define rsgTimeStampName "TimeStamp"
 
+//#define HDF_1_8_12_OR_HIGHER
+
 namespace brics_3d {
 namespace rsg {
 
+#ifdef HDF_1_8_12_OR_HIGHER
+static void collectHDF5AttributeNames(H5::H5Location& loc,
+#else
 static void collectHDF5AttributeNames(H5::H5Object& loc,
+#endif
 		const H5std_string attr_name, void *operator_data) {
 
 	LOG(DEBUG) << "H5::Attribute name = " << attr_name;

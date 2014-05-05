@@ -27,6 +27,10 @@ namespace rsg {
 HDF5UpdateSerializer::HDF5UpdateSerializer(IOutputPort* port) :
 		port(port) {
 
+	/* some default values */
+	storeMessageBackupsOnFileSystem = false;
+	fileImageIncremet = 1*sizeof(char);
+
 }
 
 HDF5UpdateSerializer::~HDF5UpdateSerializer() {
@@ -44,7 +48,9 @@ bool HDF5UpdateSerializer::addGroup(Id parentId, Id& assignedId,
 	LOG(DEBUG) << "HDF5UpdateSerializer: adding a Group-" << assignedId.toString();
 	try {
 		std::string fileName = "Group-" + assignedId.toString() + "-rsg.h5";
-		H5::H5File file(fileName, H5F_ACC_TRUNC );
+		H5::FileAccPropList faplCore;
+		faplCore.setCore(fileImageIncremet, storeMessageBackupsOnFileSystem); // toggle in-memory behavior
+		H5::H5File file(fileName, H5F_ACC_TRUNC, H5::FileCreatPropList::DEFAULT, faplCore);
 
 		/* Generic/common entry group with general information */
 		H5::Group scene = file.createGroup("Scene");
@@ -57,9 +63,9 @@ bool HDF5UpdateSerializer::addGroup(Id parentId, Id& assignedId,
 		HDF5Typecaster::addAttributesToHDF5Group(attributes, group);
 
 		file.flush(H5F_SCOPE_GLOBAL);
-//		doSendMessage(file);
+		doSendMessage(file);
 		file.close();
-		doSendMessage(fileName);
+//		doSendMessage(fileName);
 
 	} catch (H5::Exception e) {
 		LOG(ERROR) << "HDF5UpdateSerializer addGroup: Cannot create a HDF serialization.";
@@ -77,7 +83,9 @@ bool HDF5UpdateSerializer::addTransformNode(Id parentId,
 	LOG(DEBUG) << "HDF5UpdateSerializer: adding a Transform-" << assignedId.toString();
 	try {
 		std::string fileName = "Transform-" + assignedId.toString() + "-rsg.h5";
-		H5::H5File file(fileName, H5F_ACC_TRUNC );
+		H5::FileAccPropList faplCore;
+		faplCore.setCore(fileImageIncremet, storeMessageBackupsOnFileSystem); // toggle in-memory behavior
+		H5::H5File file(fileName, H5F_ACC_TRUNC, H5::FileCreatPropList::DEFAULT, faplCore);
 
 		/* Generic/common entry group with general information */
 		H5::Group scene = file.createGroup("Scene");
@@ -91,8 +99,9 @@ bool HDF5UpdateSerializer::addTransformNode(Id parentId,
 		HDF5Typecaster::addTransformToHDF5Group(transform, timeStamp, group);
 
 		file.flush(H5F_SCOPE_GLOBAL);
+		doSendMessage(file);
 		file.close();
-		doSendMessage(fileName);
+//		doSendMessage(fileName);
 
 	} catch (H5::Exception e) {
 		LOG(ERROR) << "HDF5UpdateSerializer addTransformNode: Cannot create a HDF serialization.";
@@ -117,7 +126,9 @@ bool HDF5UpdateSerializer::addGeometricNode(Id parentId,
 	LOG(DEBUG) << "HDF5UpdateSerializer: adding a GeometricNode-" << assignedId.toString();
 	try {
 		std::string fileName = "GeometricNode-" + assignedId.toString() + "-rsg.h5";
-		H5::H5File file(fileName, H5F_ACC_TRUNC );
+		H5::FileAccPropList faplCore;
+		faplCore.setCore(fileImageIncremet, storeMessageBackupsOnFileSystem); // toggle in-memory behavior
+		H5::H5File file(fileName, H5F_ACC_TRUNC, H5::FileCreatPropList::DEFAULT, faplCore);
 
 		/* Generic/common entry group with general information */
 		H5::Group scene = file.createGroup("Scene");
@@ -132,8 +143,9 @@ bool HDF5UpdateSerializer::addGeometricNode(Id parentId,
 		HDF5Typecaster::addTimeStampToHDF5Group(timeStamp, group);
 
 		file.flush(H5F_SCOPE_GLOBAL);
+		doSendMessage(file);
 		file.close();
-		doSendMessage(fileName);
+//		doSendMessage(fileName);
 
 	} catch (H5::Exception e) {
 		LOG(ERROR) << "HDF5UpdateSerializer addTransformNode: Cannot create a HDF serialization.";
@@ -155,7 +167,9 @@ bool HDF5UpdateSerializer::setTransform(Id id,
 	LOG(DEBUG) << "HDF5UpdateSerializer: updating a Transform-" << id.toString();
 	try {
 		std::string fileName = "Transform-Update-" + id.toString() + "-rsg.h5";
-		H5::H5File file(fileName, H5F_ACC_TRUNC );
+		H5::FileAccPropList faplCore;
+		faplCore.setCore(fileImageIncremet, storeMessageBackupsOnFileSystem); // toggle in-memory behavior
+		H5::H5File file(fileName, H5F_ACC_TRUNC, H5::FileCreatPropList::DEFAULT, faplCore);
 
 		/* Generic/common entry group with general information */
 		H5::Group scene = file.createGroup("Scene");
@@ -167,8 +181,9 @@ bool HDF5UpdateSerializer::setTransform(Id id,
 		HDF5Typecaster::addTransformToHDF5Group(transform, timeStamp, group);
 
 		file.flush(H5F_SCOPE_GLOBAL);
+		doSendMessage(file);
 		file.close();
-		doSendMessage(fileName);
+//		doSendMessage(fileName);
 
 	} catch (H5::Exception e) {
 		LOG(ERROR) << "HDF5UpdateSerializer setTransform: Cannot create a HDF serialization.";
@@ -190,7 +205,9 @@ bool HDF5UpdateSerializer::deleteNode(Id id) {
 	LOG(DEBUG) << "HDF5UpdateSerializer: deleting Node-" << id.toString();
 	try {
 		std::string fileName = "Node-Deletion-" + id.toString() + "-rsg.h5";
-		H5::H5File file(fileName, H5F_ACC_TRUNC );
+		H5::FileAccPropList faplCore;
+		faplCore.setCore(fileImageIncremet, storeMessageBackupsOnFileSystem); // toggle in-memory behavior
+		H5::H5File file(fileName, H5F_ACC_TRUNC, H5::FileCreatPropList::DEFAULT, faplCore);
 
 		/* Generic/common entry group with general information */
 		H5::Group scene = file.createGroup("Scene");
@@ -200,8 +217,9 @@ bool HDF5UpdateSerializer::deleteNode(Id id) {
 		HDF5Typecaster::addNodeIdToHDF5Group(id, group);
 
 		file.flush(H5F_SCOPE_GLOBAL);
+		doSendMessage(file);
 		file.close();
-		doSendMessage(fileName);
+//		doSendMessage(fileName);
 
 	} catch (H5::Exception e) {
 		LOG(ERROR) << "HDF5UpdateSerializer setTransform: Cannot create a HDF serialization.";
@@ -250,17 +268,15 @@ bool HDF5UpdateSerializer::doSendMessage(std::string messageName) {
 }
 
 bool HDF5UpdateSerializer::doSendMessage(H5::H5File message) {
-	int* fileHandle = 0;
-	hsize_t fileSize = -1;
+	ssize_t fileSize = -1;
 	ssize_t numberOfBytesRead;
 
-	message.getVFDHandle((void**) &fileHandle); // this one gives us access to the low-level bytes
-	fileSize = message.getFileSize();
+//	fileSize = message.getFileSize();
+    fileSize = H5Fget_file_image(message.getId(), NULL, 0);
 	LOG(DEBUG) << "HDF5UpdateSerializer (VFD): Sending message with length " << fileSize;
 
 	char *buffer = new char [fileSize];
-    int seekReturn = lseek((*fileHandle), 0, SEEK_SET);
-    numberOfBytesRead = read(*fileHandle, buffer, fileSize);
+    H5Fget_file_image(message.getId(), buffer, fileSize);
 	LOG(DEBUG) << "HDF5UpdateSerializer (VFD): prepared byte stream with length " << numberOfBytesRead;
 
 	int transferredBytes;

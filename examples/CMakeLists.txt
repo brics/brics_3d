@@ -10,6 +10,7 @@ INCLUDE_DIRECTORIES(
     ${Boost_INCLUDE_DIR}
     ${OPENSCENEGRAPH_INCLUDE_DIRS}
     ${STANN_INCLUDE_DIRS}
+    ${HDF5_CXX_INCLUDE_DIR}
 )
 
 IF (USE_EIGEN3)
@@ -209,6 +210,7 @@ IF (USE_OSG)
     )
    
     IF (USE_HDF5)
+    message(STATUS "INFO: used HDF5_LIBRARIES: ${HDF5_LIBRARIES}")
     ADD_EXECUTABLE(wm_hdf5_test wm_hdf5_test)
         TARGET_LINK_LIBRARIES(wm_hdf5_test
             brics3d_world_model
