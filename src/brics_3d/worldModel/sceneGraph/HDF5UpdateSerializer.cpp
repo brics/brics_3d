@@ -269,7 +269,7 @@ bool HDF5UpdateSerializer::doSendMessage(std::string messageName) {
 
 bool HDF5UpdateSerializer::doSendMessage(H5::H5File message) {
 	ssize_t fileSize = -1;
-	ssize_t numberOfBytesRead;
+//	ssize_t numberOfBytesRead;
 
 //	fileSize = message.getFileSize();
     fileSize = H5Fget_file_image(message.getId(), NULL, 0);
@@ -277,10 +277,10 @@ bool HDF5UpdateSerializer::doSendMessage(H5::H5File message) {
 
 	char *buffer = new char [fileSize];
     H5Fget_file_image(message.getId(), buffer, fileSize);
-	LOG(DEBUG) << "HDF5UpdateSerializer (VFD): prepared byte stream with length " << numberOfBytesRead;
+	LOG(DEBUG) << "HDF5UpdateSerializer (VFD): prepared byte stream with length " << fileSize;
 
 	int transferredBytes;
-	int returnValue =  port->write(buffer, numberOfBytesRead, transferredBytes);
+	int returnValue =  port->write(buffer, fileSize, transferredBytes);
 	LOG(DEBUG) << "HDF5UpdateSerializer (VFD): \t" << transferredBytes << " bytes transferred.";
 
 	delete buffer;
