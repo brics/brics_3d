@@ -52,6 +52,15 @@ public:
 	bool addParent(Id id, Id parentId);
 	bool removeParent(Id id, Id parentId);
 
+	bool getStoreMessageBackupsOnFileSystem() const {
+		return storeMessageBackupsOnFileSystem;
+	}
+
+	void setStoreMessageBackupsOnFileSystem(
+			bool storeMessageBackupsOnFileSystem) {
+		this->storeMessageBackupsOnFileSystem = storeMessageBackupsOnFileSystem;
+	}
+
 protected:
 
 	bool doSendMessage(std::string messageName);
@@ -60,6 +69,8 @@ protected:
 	IOutputPort* port;
 	bool storeMessageBackupsOnFileSystem;
 	size_t fileImageIncremet;
+
+	std::string fileSuffix;
 };
 
 } /* namespace rsg */

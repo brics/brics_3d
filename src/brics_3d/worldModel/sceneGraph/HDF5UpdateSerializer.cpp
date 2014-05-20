@@ -31,6 +31,11 @@ HDF5UpdateSerializer::HDF5UpdateSerializer(IOutputPort* port) :
 	storeMessageBackupsOnFileSystem = false;
 	fileImageIncremet = 1*sizeof(char);
 
+	std::stringstream instanceBasedSuffix; //in case multiple HDF5 files  with the same derived file name are created.
+	instanceBasedSuffix << this; // pointer as "name"
+//	fileSuffix = "-rsg.h5";
+	fileSuffix = "-rsg-" + instanceBasedSuffix.str() + ".h5";
+
 }
 
 HDF5UpdateSerializer::~HDF5UpdateSerializer() {
@@ -47,7 +52,7 @@ bool HDF5UpdateSerializer::addGroup(Id parentId, Id& assignedId,
 		vector<Attribute> attributes, bool forcedId) {
 	LOG(DEBUG) << "HDF5UpdateSerializer: adding a Group-" << assignedId.toString();
 	try {
-		std::string fileName = "Group-" + assignedId.toString() + "-rsg.h5";
+		std::string fileName = "Group-" + assignedId.toString() + fileSuffix;
 		H5::FileAccPropList faplCore;
 		faplCore.setCore(fileImageIncremet, storeMessageBackupsOnFileSystem); // toggle in-memory behavior
 		H5::H5File file(fileName, H5F_ACC_TRUNC, H5::FileCreatPropList::DEFAULT, faplCore);
@@ -82,7 +87,7 @@ bool HDF5UpdateSerializer::addTransformNode(Id parentId,
 
 	LOG(DEBUG) << "HDF5UpdateSerializer: adding a Transform-" << assignedId.toString();
 	try {
-		std::string fileName = "Transform-" + assignedId.toString() + "-rsg.h5";
+		std::string fileName = "Transform-" + assignedId.toString() + fileSuffix;
 		H5::FileAccPropList faplCore;
 		faplCore.setCore(fileImageIncremet, storeMessageBackupsOnFileSystem); // toggle in-memory behavior
 		H5::H5File file(fileName, H5F_ACC_TRUNC, H5::FileCreatPropList::DEFAULT, faplCore);
@@ -125,7 +130,7 @@ bool HDF5UpdateSerializer::addGeometricNode(Id parentId,
 
 	LOG(DEBUG) << "HDF5UpdateSerializer: adding a GeometricNode-" << assignedId.toString();
 	try {
-		std::string fileName = "GeometricNode-" + assignedId.toString() + "-rsg.h5";
+		std::string fileName = "GeometricNode-" + assignedId.toString() + fileSuffix;
 		H5::FileAccPropList faplCore;
 		faplCore.setCore(fileImageIncremet, storeMessageBackupsOnFileSystem); // toggle in-memory behavior
 		H5::H5File file(fileName, H5F_ACC_TRUNC, H5::FileCreatPropList::DEFAULT, faplCore);
@@ -166,7 +171,7 @@ bool HDF5UpdateSerializer::setTransform(Id id,
 
 	LOG(DEBUG) << "HDF5UpdateSerializer: updating a Transform-" << id.toString();
 	try {
-		std::string fileName = "Transform-Update-" + id.toString() + "-rsg.h5";
+		std::string fileName = "Transform-Update-" + id.toString() + fileSuffix;
 		H5::FileAccPropList faplCore;
 		faplCore.setCore(fileImageIncremet, storeMessageBackupsOnFileSystem); // toggle in-memory behavior
 		H5::H5File file(fileName, H5F_ACC_TRUNC, H5::FileCreatPropList::DEFAULT, faplCore);
@@ -204,7 +209,7 @@ bool HDF5UpdateSerializer::setUncertainTransform(Id id,
 bool HDF5UpdateSerializer::deleteNode(Id id) {
 	LOG(DEBUG) << "HDF5UpdateSerializer: deleting Node-" << id.toString();
 	try {
-		std::string fileName = "Node-Deletion-" + id.toString() + "-rsg.h5";
+		std::string fileName = "Node-Deletion-" + id.toString() + fileSuffix;
 		H5::FileAccPropList faplCore;
 		faplCore.setCore(fileImageIncremet, storeMessageBackupsOnFileSystem); // toggle in-memory behavior
 		H5::H5File file(fileName, H5F_ACC_TRUNC, H5::FileCreatPropList::DEFAULT, faplCore);

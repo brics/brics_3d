@@ -84,16 +84,20 @@ void hexdump(const char *ptr, int buflen) {
  */
 class HSDF5SimleBridge : public brics_3d::rsg::IOutputPort {
 public:
-	HSDF5SimleBridge(brics_3d::rsg::IInputPort* inputPort) : inputPort(inputPort){};
+	HSDF5SimleBridge(brics_3d::rsg::IInputPort* inputPort, std::string debugTag = "HSDF5SimleBridge") :
+		inputPort(inputPort), debugTag(debugTag) {
+		LOG(DEBUG) << debugTag << " created.";
+	};
 	virtual ~HSDF5SimleBridge(){};
 
 	int write(const char *dataBuffer, int dataLength, int &transferredBytes) {
-		LOG(DEBUG) << "HSDF5SimleBridge: Feeding data forwards.";
+		LOG(DEBUG) << debugTag << ": Feeding data forwards.";
 //		hexdump(dataBuffer, dataLength);
 		return inputPort->write(dataBuffer, dataLength, transferredBytes); // just feed forward
 	};
 
 private:
+	std::string debugTag;
 	brics_3d::rsg::IInputPort* inputPort;
 };
 
@@ -138,7 +142,14 @@ int main(int argc, char **argv) {
 	HSDF5SimleBridge* feedForwardBridge = new HSDF5SimleBridge(wmUpdatesToHdf5deserializer);
 	brics_3d::rsg::HDF5UpdateSerializer* wmUpdatesToHdf5Serializer = new brics_3d::rsg::HDF5UpdateSerializer(feedForwardBridge);
 	wm->scene.attachUpdateObserver(wmUpdatesToHdf5Serializer);
+	wmUpdatesToHdf5Serializer->setStoreMessageBackupsOnFileSystem(false); /* set to true to store all updates as .h5 files */
 
+	/* Allow roundtrip updates from wmReplica to wm as well */
+	brics_3d::rsg::HDF5UpdateDeserializer* wmUpdatesToHdf5deserializer2 = new brics_3d::rsg::HDF5UpdateDeserializer(wm);
+	HSDF5SimleBridge* feedForwardBridge2 = new HSDF5SimleBridge(wmUpdatesToHdf5deserializer2, "HSDF5SimleBridge-roundtrip");
+	brics_3d::rsg::HDF5UpdateSerializer* wmUpdatesToHdf5Serializer2 = new brics_3d::rsg::HDF5UpdateSerializer(feedForwardBridge2);
+	wmReplica->scene.attachUpdateObserver(wmUpdatesToHdf5Serializer2);
+	wmUpdatesToHdf5Serializer2->setStoreMessageBackupsOnFileSystem(false);
 
 	/* ================== Setup of world model content ===================== */
 
@@ -316,6 +327,11 @@ int main(int argc, char **argv) {
 		LOG(INFO) << "Pose of sphere is = " << std::endl << *spherePose;
 	}
 
+	/* Perform an update on the wmReplica -> this will be pushed to the wm as well */
+	attributes.clear();
+	attributes.push_back(rsg::Attribute("name", "tablet"));
+	rsg::Id tabletId;
+	wmReplica->scene.addGroup(wmReplica->getRootNodeId(), tabletId, attributes);
 
 	/* Wait until user closes the GUI */
 	while(!wm3DVisualizer->done()) {
