@@ -29,6 +29,7 @@ namespace rsg {
 
 SceneGraphFacade::SceneGraphFacade() {
 //	this->idGenerator = new SimpleIdGenerator();
+	callObserversEvenIfErrorsOccurred = true;
 	this->idGenerator = new UuidGenerator();
 	initialize();
 }
@@ -204,7 +205,7 @@ bool SceneGraphFacade::addNode(Id parentId, Id& assignedId, vector<Attribute> at
 		operationSucceeded = true;
 	}
 
-	/* Call all observers regardless if an error occured or not */
+	/* Call all observers depending on the given policy in case an error occured */
 	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
 	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
 		Id assignedIdcopy = assignedId; // prevent that observer might change this....
@@ -255,11 +256,13 @@ bool SceneGraphFacade::addGroup(Id parentId, Id& assignedId, vector<Attribute> a
 		operationSucceeded = true;
 	}
 
-	/* Call all observers regardless if an error occured or not */
-	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
-	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
-		Id assignedIdcopy = assignedId; // prevent that observer might change this....
-		(*observerIterator)->addGroup(parentId, assignedIdcopy, attributes, forcedId);
+	/* Call all observers depending on the given policy in case an error occured */
+	if (operationSucceeded || callObserversEvenIfErrorsOccurred) {
+		std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
+		for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
+			Id assignedIdcopy = assignedId; // prevent that observer might change this....
+			(*observerIterator)->addGroup(parentId, assignedIdcopy, attributes, forcedId);
+		}
 	}
 
 	if (operationSucceeded) {
@@ -307,11 +310,13 @@ bool SceneGraphFacade::addTransformNode(Id parentId, Id& assignedId, vector<Attr
 		operationSucceeded = true;
 	}
 
-	/* Call all observers regardless if an error occured or not */
-	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
-	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
-		Id assignedIdcopy = assignedId; // prevent that observer might change this....
-		(*observerIterator)->addTransformNode(parentId, assignedIdcopy, attributes, transform, timeStamp);
+	/* Call all observers depending on the given policy in case an error occured */
+	if (operationSucceeded || callObserversEvenIfErrorsOccurred) {
+		std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
+		for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
+			Id assignedIdcopy = assignedId; // prevent that observer might change this....
+			(*observerIterator)->addTransformNode(parentId, assignedIdcopy, attributes, transform, timeStamp);
+		}
 	}
 
 	if(operationSucceeded) {
@@ -357,11 +362,13 @@ bool SceneGraphFacade::addUncertainTransformNode(Id parentId, Id& assignedId, ve
 		operationSucceeded = true;
 	}
 
-	/* Call all observers regardless if an error occured or not */
-	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
-	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
-		Id assignedIdcopy = assignedId; // prevent that observer might change this....
-		(*observerIterator)->addUncertainTransformNode(parentId, assignedIdcopy, attributes, transform, uncertainty, timeStamp);
+	/* Call all observers depending on the given policy in case an error occured */
+	if (operationSucceeded || callObserversEvenIfErrorsOccurred) {
+		std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
+		for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
+			Id assignedIdcopy = assignedId; // prevent that observer might change this....
+			(*observerIterator)->addUncertainTransformNode(parentId, assignedIdcopy, attributes, transform, uncertainty, timeStamp);
+		}
 	}
 
 	if(operationSucceeded) {
@@ -410,11 +417,13 @@ bool SceneGraphFacade::addGeometricNode(Id parentId, Id& assignedId, vector<Attr
 		operationSucceeded = true;
 	}
 
-	/* Call all observers regardless if an error occured or not */
-	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
-	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
-		Id assignedIdcopy = assignedId; // prevent that observer might change this....
-		(*observerIterator)->addGeometricNode(parentId, assignedIdcopy, attributes, shape, timeStamp);
+	/* Call all observers depending on the given policy in case an error occured */
+	if (operationSucceeded || callObserversEvenIfErrorsOccurred) {
+		std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
+		for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
+			Id assignedIdcopy = assignedId; // prevent that observer might change this....
+			(*observerIterator)->addGeometricNode(parentId, assignedIdcopy, attributes, shape, timeStamp);
+		}
 	}
 
 	if(operationSucceeded) {
@@ -437,11 +446,13 @@ bool SceneGraphFacade::setNodeAttributes(Id id, vector<Attribute> newAttributes)
 		operationSucceeded = true;
 	}
 
-	/* Call all observers regardless if an error occured or not */
-	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
-	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
-		Id assignedIdcopy = id; // prevent that observer might change this....
-		(*observerIterator)->setNodeAttributes(assignedIdcopy, newAttributes);
+	/* Call all observers depending on the given policy in case an error occured */
+	if (operationSucceeded || callObserversEvenIfErrorsOccurred) {
+		std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
+		for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
+			Id assignedIdcopy = id; // prevent that observer might change this....
+			(*observerIterator)->setNodeAttributes(assignedIdcopy, newAttributes);
+		}
 	}
 
 	if (operationSucceeded) {
@@ -461,10 +472,12 @@ bool SceneGraphFacade::setTransform(Id id, IHomogeneousMatrix44::IHomogeneousMat
 		operationSucceeded = true;
 	}
 
-	/* Call all observers regardless if an error occured or not */
-	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
-	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
-		(*observerIterator)->setTransform(id, transform, timeStamp);
+	/* Call all observers depending on the given policy in case an error occured */
+	if (operationSucceeded || callObserversEvenIfErrorsOccurred) {
+		std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
+		for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
+			(*observerIterator)->setTransform(id, transform, timeStamp);
+		}
 	}
 
 	if (operationSucceeded) {
@@ -485,10 +498,12 @@ bool SceneGraphFacade::setUncertainTransform(Id id, IHomogeneousMatrix44::IHomog
 		operationSucceeded = true;
 	}
 
-	/* Call all observers regardless if an error occured or not */
-	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
-	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
-		(*observerIterator)->setUncertainTransform(id, transform, uncertainty, timeStamp);
+	/* Call all observers depending on the given policy in case an error occured */
+	if (operationSucceeded || callObserversEvenIfErrorsOccurred) {
+		std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
+		for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
+			(*observerIterator)->setUncertainTransform(id, transform, uncertainty, timeStamp);
+		}
 	}
 
 	if (operationSucceeded) {
@@ -533,10 +548,12 @@ bool SceneGraphFacade::deleteNode(Id id) {
 		}
 	}
 
-	/* Call all observers regardless if an error occured or not */
-	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
-	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
-		(*observerIterator)->deleteNode(id);
+	/* Call all observers depending on the given policy in case an error occured */
+	if (operationSucceeded || callObserversEvenIfErrorsOccurred) {
+		std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
+		for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
+			(*observerIterator)->deleteNode(id);
+		}
 	}
 
 	if (operationSucceeded) {
@@ -559,10 +576,12 @@ bool SceneGraphFacade::addParent(Id id, Id parentId) {
 		operationSucceeded = true;
 	}
 
-	/* Call all observers regardless if an error occured or not */
-	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
-	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
-		(*observerIterator)->addParent(id, parentId);
+	/* Call all observers depending on the given policy in case an error occured */
+	if (operationSucceeded || callObserversEvenIfErrorsOccurred) {
+		std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
+		for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
+			(*observerIterator)->addParent(id, parentId);
+		}
 	}
 
 	if (operationSucceeded) {
@@ -608,10 +627,12 @@ bool SceneGraphFacade::removeParent(Id id, Id parentId) {
 		}
 	}
 
-	/* Call all observers regardless if an error occured or not */
-	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
-	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
-		(*observerIterator)->removeParent(id, parentId);
+	/* Call all observers depending on the given policy in case an error occured */
+	if (operationSucceeded || callObserversEvenIfErrorsOccurred) {
+		std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
+		for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
+			(*observerIterator)->removeParent(id, parentId);
+		}
 	}
 
 	if (operationSucceeded) {
@@ -636,6 +657,16 @@ bool SceneGraphFacade::detachUpdateObserver(ISceneGraphUpdateObserver* observer)
     }
     LOG(ERROR) << "Cannot detach update observer. Provided reference does not match with any in the observers list.";
 	return false;
+}
+
+bool SceneGraphFacade::isCallObserversEvenIfErrorsOccurred() const {
+	return callObserversEvenIfErrorsOccurred;
+}
+
+void SceneGraphFacade::setCallObserversEvenIfErrorsOccurred(
+		bool callObserversEvenIfErrorsOccurred) {
+	this->callObserversEvenIfErrorsOccurred =
+			callObserversEvenIfErrorsOccurred;
 }
 
 bool SceneGraphFacade::executeGraphTraverser(INodeVisitor* visitor, Id subgraphId) {

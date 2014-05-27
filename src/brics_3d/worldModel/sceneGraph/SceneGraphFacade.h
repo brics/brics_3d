@@ -101,6 +101,9 @@ class SceneGraphFacade : public ISceneGraphQuery, public ISceneGraphUpdate {
     bool attachUpdateObserver(ISceneGraphUpdateObserver* observer);
     bool detachUpdateObserver(ISceneGraphUpdateObserver* observer);
 
+	bool isCallObserversEvenIfErrorsOccurred() const;
+	void setCallObserversEvenIfErrorsOccurred(bool callObserversEvenIfErrorsOccurred);
+
     /* Coordination methods */
 	bool executeGraphTraverser(INodeVisitor* visitor, Id subgraphId);
 
@@ -137,6 +140,9 @@ class SceneGraphFacade : public ISceneGraphQuery, public ISceneGraphUpdate {
 
     /// Set of observers that will be notified when the update function will be called.
     std::vector<ISceneGraphUpdateObserver*> updateObservers;
+
+    /// Policy on error propagation (e.g. duplicated IDs) to the observers. Default is true.
+    bool callObserversEvenIfErrorsOccurred;
 
 
 };
