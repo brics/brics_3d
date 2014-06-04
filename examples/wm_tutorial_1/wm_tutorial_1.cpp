@@ -29,6 +29,7 @@ int main(int argc, char **argv) {
 
 	/* Create a world model handle */
 	brics_3d::WorldModel* wm = new brics_3d::WorldModel();
+	brics_3d::Logger::setMinLoglevel(Logger::INFO);
 
 	/* Graph structure:
 	 *                 root
@@ -64,6 +65,7 @@ int main(int argc, char **argv) {
 	attributes.clear(); // We re-use the attributes vector, but we have to clean it
 	                    // unless we want to previous attributes to the new group.
 	attributes.push_back(Attribute("name","my_group2"));
+	attributes.push_back(Attribute("text","Hello world."));
 	wm->scene.addGroup(wm->getRootNodeId(), group2Id, attributes);
 
 
@@ -103,7 +105,7 @@ int main(int argc, char **argv) {
 	 * the automatic deletion of nodes. Thus, managing nodes in the graph also means
 	 * to manage memory.
 	 */
-	wm->scene.deleteNode(group2Id);
+	wm->scene.deleteNode(group1Id);
 
 
 	/* Graph structure:
@@ -116,6 +118,12 @@ int main(int argc, char **argv) {
 	 *
 	 */
 
+	attributes.clear();
+	wm->scene.getNodeAttributes(group2Id, attributes);
+	LOG(INFO) << "group2 has " << attributes.size() << " attributes";
+	for (std::vector<Attribute>::iterator it = attributes.begin(); it != attributes.end() ;++it) {
+		LOG(INFO) << "\t ( " << it->key << ", " << it->value << " )";
+	}
 
 	/* Clean up */
 
