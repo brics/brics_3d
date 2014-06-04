@@ -1,5 +1,8 @@
 lib
+libs
 build
+androidbuild
+angstrombuild
 bin
 .project
 .cproject

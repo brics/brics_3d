@@ -46,8 +46,8 @@ Eigen::Vector3d Centroid3D::computeCentroid(brics_3d::PointCloud3D *inCloud){
 		tempY = (*inCloud->getPointCloud())[i].getY();
 		tempZ = (*inCloud->getPointCloud())[i].getZ();
 
-		if(!isnan(tempX) && !isinf(tempX) && !isnan(tempY) && !isinf(tempY) &&
-				!isnan(tempZ) && !isinf(tempZ) ) {
+		if(!std::isnan(tempX) && !std::isinf(tempX) && !std::isnan(tempY) && !std::isinf(tempY) &&
+				!std::isnan(tempZ) && !std::isinf(tempZ) ) {
 			centroid[0] = centroid[0] + tempX;
 			centroid[1] = centroid[1] + tempY;
 			centroid[2] = centroid[2] + tempZ;
@@ -85,8 +85,8 @@ Eigen::Vector3d Centroid3D::computeCentroid(IPoint3DIterator::IPoint3DIteratorPt
 		tempY = inCloud->getY();
 		tempZ = inCloud->getZ();
 
-		if(!isnan(tempX) && !isinf(tempX) && !isnan(tempY) && !isinf(tempY) &&
-				!isnan(tempZ) && !isinf(tempZ) ) {
+		if(!std::isnan(tempX) && !std::isinf(tempX) && !std::isnan(tempY) && !std::isinf(tempY) &&
+				!std::isnan(tempZ) && !std::isinf(tempZ) ) {
 			centroid[0] = centroid[0] + tempX;
 			centroid[1] = centroid[1] + tempY;
 			centroid[2] = centroid[2] + tempZ;

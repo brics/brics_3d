@@ -13,7 +13,7 @@ if ( CMAKE_COMPILER_IS_GNUCXX )
     ADD_DEFINITIONS(-Wno-deprecated)
     # optimization
     ADD_DEFINITIONS(-O3 -Wall -finline-functions)
-    ADD_DEFINITIONS(-pipe -march=native)
+    #ADD_DEFINITIONS(-pipe -march=native)
     ADD_DEFINITIONS(-fpermissive) # workaround for gcc 4.7
 endif ( CMAKE_COMPILER_IS_GNUCXX )
 

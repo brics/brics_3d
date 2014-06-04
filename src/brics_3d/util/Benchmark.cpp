@@ -92,6 +92,9 @@ void Benchmark::setupTargetFile() {
 #ifdef WIN32 //__MSDOS__
 		err = _mkdir (directoryName.c_str());
 #else  /*  Unix */
+	#ifdef ANDROID
+		#define ACCESSPERMS S_IRWXU|S_IRWXG|S_IRWXO // ~ (S_IRWXU|S_IRWXG|S_IRWXO) android ndk does not have sophisticated stats.h ...
+	#endif
 		err = mkdir (Benchmark::directoryName.c_str(), ACCESSPERMS);
 #endif
 		if (err < 0) {
