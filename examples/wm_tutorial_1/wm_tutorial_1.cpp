@@ -29,7 +29,8 @@ int main(int argc, char **argv) {
 
 	/* Create a world model handle */
 	brics_3d::WorldModel* wm = new brics_3d::WorldModel();
-	brics_3d::Logger::setMinLoglevel(Logger::INFO);
+	brics_3d::Logger::setMinLoglevel(Logger::INFO);	// Default logger level is WARNING.
+	LOG(INFO) << "Instance of world model succesfully created.";
 
 	/* Graph structure:
 	 *                 root
@@ -118,6 +119,7 @@ int main(int argc, char **argv) {
 	 *
 	 */
 
+	/* Example on how to query and print the attributes of group2 */
 	attributes.clear();
 	wm->scene.getNodeAttributes(group2Id, attributes);
 	LOG(INFO) << "group2 has " << attributes.size() << " attributes";
@@ -129,7 +131,7 @@ int main(int argc, char **argv) {
 
 	/*
 	 * Deletion of the world model handle will internally delete the root node.
-	 * That means all node in the graph will be automatically deleted in a
+	 * That means all nodes in the graph will be automatically deleted in a
 	 * cascaded fashion and the resources are freed.
 	 */
 	delete wm;

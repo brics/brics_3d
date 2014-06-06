@@ -40,14 +40,15 @@
  */
 
 /* BRICS_3D includes */
-#include <brics_3d/worldModel/sceneGraph/OSGVisualizer.h>
 #include <brics_3d/core/Logger.h>
 #include <brics_3d/core/HomogeneousMatrix44.h>
 #include <brics_3d/worldModel/WorldModel.h>
-#include <brics_3d/worldModel/sceneGraph/OSGVisualizer.h>
 #include <brics_3d/worldModel/sceneGraph/DotVisualizer.h>
 #include <brics_3d/worldModel/sceneGraph/HDF5UpdateSerializer.h>
 #include <brics_3d/worldModel/sceneGraph/HDF5UpdateDeserializer.h>
+#ifdef BRICS_OSG_ENABLE
+	#include <brics_3d/worldModel/sceneGraph/OSGVisualizer.h>
+#endif
 
 #include <brics_3d/util/HDF5Typecaster.h>
 #include <hdf5.h>
@@ -111,23 +112,27 @@ int main(int argc, char **argv) {
 	brics_3d::WorldModel* wmReplica = new brics_3d::WorldModel(); // second delegate
 
 	/* Attach some (optional) visualization facilities (observers) */
-	brics_3d::rsg::OSGVisualizer* wm3DVisualizer = new brics_3d::rsg::OSGVisualizer();
+	brics_3d::rsg::VisualizationConfiguration visualizationConfig; // optional configuration
+	visualizationConfig.visualizeIds = true;
+	visualizationConfig.visualizeAttributes = false;
+	visualizationConfig.abbreviateIds = true;
+
 	brics_3d::rsg::DotVisualizer* wmStructureVisualizer = new brics_3d::rsg::DotVisualizer(&wm->scene);
 	brics_3d::rsg::DotVisualizer* wmReplicaStructureVisualizer = new brics_3d::rsg::DotVisualizer(&wmReplica->scene);
-	brics_3d::rsg::VisualizationConfiguration osgConfiguration; // optional configuration
-	osgConfiguration.visualizeIds = true;
-	osgConfiguration.visualizeAttributes = false;
-	osgConfiguration.abbreviateIds = true;
-	wm3DVisualizer->setConfig(osgConfiguration);
-	wmStructureVisualizer->setConfig(osgConfiguration); // we use the same config here
+	wmStructureVisualizer->setConfig(visualizationConfig); // we use the same config here
 	wmStructureVisualizer->setKeepHistory(true);
-	wmReplicaStructureVisualizer->setConfig(osgConfiguration);
+	wmReplicaStructureVisualizer->setConfig(visualizationConfig);
 	wmReplicaStructureVisualizer->setFileName("current_replica_graph");
 	wmReplicaStructureVisualizer->setKeepHistory(true);
-	wm->scene.attachUpdateObserver(wm3DVisualizer); //enable visualization
 	wm->scene.attachUpdateObserver(wmStructureVisualizer);
 	wmReplica->scene.attachUpdateObserver(wmReplicaStructureVisualizer);
+
+#ifdef BRICS_OSG_ENABLE
+	brics_3d::rsg::OSGVisualizer* wm3DVisualizer = new brics_3d::rsg::OSGVisualizer();
+	wm3DVisualizer->setConfig(visualizationConfig);
+	wm->scene.attachUpdateObserver(wm3DVisualizer); //enable visualization
 	usleep(500*1000); // the OSG visualization window seems to need some setup time
+#endif
 
 	/*
 	 * Connect both world model instances via update mechanism as follows:
@@ -142,7 +147,7 @@ int main(int argc, char **argv) {
 	HSDF5SimleBridge* feedForwardBridge = new HSDF5SimleBridge(wmUpdatesToHdf5deserializer);
 	brics_3d::rsg::HDF5UpdateSerializer* wmUpdatesToHdf5Serializer = new brics_3d::rsg::HDF5UpdateSerializer(feedForwardBridge);
 	wm->scene.attachUpdateObserver(wmUpdatesToHdf5Serializer);
-	wmUpdatesToHdf5Serializer->setStoreMessageBackupsOnFileSystem(false); /* set to true to store all updates as .h5 files */
+	wmUpdatesToHdf5Serializer->setStoreMessageBackupsOnFileSystem(true); /* set to true to store all updates as .h5 files */
 
 	/* Allow roundtrip updates from wmReplica to wm as well */
 	brics_3d::rsg::HDF5UpdateDeserializer* wmUpdatesToHdf5deserializer2 = new brics_3d::rsg::HDF5UpdateDeserializer(wm);
@@ -333,16 +338,18 @@ int main(int argc, char **argv) {
 	rsg::Id tabletId;
 	wmReplica->scene.addGroup(wmReplica->getRootNodeId(), tabletId, attributes);
 
+#ifdef BRICS_OSG_ENABLE
 	/* Wait until user closes the GUI */
 	while(!wm3DVisualizer->done()) {
 		//nothing here
 	}
 
 	/* Clean up */
+	delete wm3DVisualizer;
+#endif
 	delete wmUpdatesToHdf5Serializer;
 	delete wmUpdatesToHdf5deserializer;
 	delete feedForwardBridge;
-	delete wm3DVisualizer;
 	delete wmStructureVisualizer;
 	delete wmReplicaStructureVisualizer;
 	delete wm;

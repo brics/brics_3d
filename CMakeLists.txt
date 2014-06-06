@@ -186,7 +186,8 @@ IF(USE_HDF5)
         SET(HDF5_LIBRARIES 
             ${HDF5_ROOT}/lib/libhdf5_hl_debug.a
             ${HDF5_ROOT}/lib/libhdf5_cpp_debug.a
-            ${HDF5_ROOT}/lib/libhdf5_debug.a   
+            ${HDF5_ROOT}/lib/libhdf5_debug.a
+            CACHE STRING "Accumulated HDF5 libraries."   
         )
     ENDIF(USE_HDF5_NON_DEFAULT_PATH)   
     MESSAGE(STATUS "INFO: used HDF5_LIBRARIES: ${HDF5_LIBRARIES}")
