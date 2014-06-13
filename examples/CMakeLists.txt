@@ -224,6 +224,19 @@ IF (USE_OSG)
         	${OSGTEXT_LIBRARY_DEBUG}
         	${HDF5_LIBRARIES}
         )   
+    ADD_EXECUTABLE(wm_udp_hdf5_test wm_udp_hdf5_test)
+     TARGET_LINK_LIBRARIES(wm_udp_hdf5_test
+            brics3d_world_model
+            brics3d_algorithm
+            brics3d_util
+            brics3d_core 
+        	${OSG_LIBRARY_DEBUG}
+        	${OSGGA_LIBRARY_DEBUG}
+        	${OSGVIEWER_LIBRARY_DEBUG}
+        	${OSGUTIL_LIBRARY_DEBUG}
+        	${OSGTEXT_LIBRARY_DEBUG}
+        	${HDF5_LIBRARIES}
+        )     
     ENDIF(USE_HDF5)
     
 #    ADD_EXECUTABLE(rsg_generated /home/sblume/eclipse_workspaces/runtime-EclipseXtext/WM/src-gen/rsg_main_generated.cpp)
@@ -243,13 +256,21 @@ ELSE(USE_OSG)
     IF (USE_HDF5)
     message(STATUS "INFO: wm_hdf5_test_no_osg used HDF5_LIBRARIES: ${HDF5_LIBRARIES}")
     ADD_EXECUTABLE(wm_hdf5_test_no_osg wm_hdf5_test)
-        TARGET_LINK_LIBRARIES(wm_hdf5_test_no_osg
+    TARGET_LINK_LIBRARIES(wm_hdf5_test_no_osg
             brics3d_world_model
             brics3d_algorithm
             brics3d_util
             brics3d_core 
         	${HDF5_LIBRARIES}
-        )   
+        )  
+    ADD_EXECUTABLE(wm_udp_hdf5_test_no_osg wm_udp_hdf5_test)
+    TARGET_LINK_LIBRARIES(wm_udp_hdf5_test_no_osg
+            brics3d_world_model
+            brics3d_algorithm
+            brics3d_util
+            brics3d_core 
+        	${HDF5_LIBRARIES}
+        )            
     ENDIF(USE_HDF5)
     
 ENDIF(USE_OSG)
