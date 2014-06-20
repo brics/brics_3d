@@ -30,6 +30,7 @@
 #include "brics_3d/worldModel/sceneGraph/Cylinder.h"
 #include "brics_3d/worldModel/sceneGraph/PointCloud.h"
 #include "brics_3d/worldModel/sceneGraph/Mesh.h"
+#include "brics_3d/core/ColoredPoint3D.h"
 
 /* Constants to serve as common agreement in the HDF5 encoding to
  * form kind of a "protocol".
@@ -40,6 +41,7 @@
 #define rsgNodeTypeInfoName "NodeTypeInfo"
 #define rsgShapeName "Shape"
 #define rsgShapeTypeInfoName "ShapeTypeInfo"
+#define rsgPointCloudTypeInfoName "PointCloudTypeInfo"
 #define rsgTransformName "Transform"
 #define rsgTimeStampName "TimeStamp"
 
@@ -75,6 +77,7 @@ public:
 	static const int nonIndexedShapeRank = 1; // common rank for Sphere, Cylinder, Box
 	static const int indexedShapeRank = 2; 	// common rank for PointCloud and Mesh data
 	static const int transformDataRank = 1;	// array of structs
+	static const int pointCloudDataRank = 1;	// array of structs
 	static const int sphereDimension = 1; 		// radius
 	static const int cylinderDimension = 2; 	// radius, height
 	static const int boxDimension = 3; // x,y,z
@@ -140,6 +143,23 @@ public:
 		double timeStamp;
 		double matrixData[matrixElements];
 	} transform_data_t;
+
+	/* Compound data type for XYZ point cloud */
+	typedef struct point_cloud_xyz_data_t {
+		double x;
+		double y;
+		double z;
+	} point_cloud_xyz_data_t;
+
+	/* Compound data type for XYZRGB point cloud */
+	typedef struct point_cloud_xyzrgb_data_t {
+		double x;
+		double y;
+		double z;
+		unsigned char r;
+		unsigned char g;
+		unsigned char b;
+	} point_cloud_xyzrgb_data_t;
 
 	HDF5Typecaster(){};
 	virtual ~HDF5Typecaster(){};
@@ -315,6 +335,74 @@ public:
 			rsgShapeDataset = group.createDataSet(rsgShapeName, rsgShapeDataType, rsgBoxDataSpace);
 			rsgShapeDataset.write(&tmpBoxData, atomicRsgShapeType);
 
+		} else if (shape->getPointCloudIterator() != 0) {
+
+			LOG(DEBUG) << "                 -> Found a point cloud.";
+			type = POINT_CLOUD;
+
+			/* HDF5 meta data: we treate a single row as a compund data type */
+			const H5std_string MEMBER1( "x" );
+			const H5std_string MEMBER2( "y" );
+			const H5std_string MEMBER3( "z" );
+			const H5std_string MEMBER4( "r" );
+			const H5std_string MEMBER5( "g" );
+			const H5std_string MEMBER6( "b" );
+
+			/* as there is no zize method in the iterator we have to loop ofer it a priori */
+			int numberOfPoints = 0;
+			IPoint3DIterator::IPoint3DIteratorPtr it = shape->getPointCloudIterator();
+			for (it->begin(); !it->end(); it->next()) {
+				numberOfPoints++;
+			}
+			LOG(DEBUG) << "numberOfPoints = " << numberOfPoints;
+
+			hsize_t rsgPointCloutDimensions[pointCloudDataRank]; // on dim (array)
+			rsgPointCloutDimensions[0] = numberOfPoints; // number of nD point in point cloud gies here
+			H5::DataSpace rsgPointDataSpace(pointCloudDataRank, rsgPointCloutDimensions);
+			H5::CompType rsgPointCloudDataType(sizeof(point_cloud_xyzrgb_data_t));
+			rsgPointCloudDataType.insertMember(MEMBER1, HOFFSET(point_cloud_xyzrgb_data_t, x), H5::PredType::NATIVE_DOUBLE);
+			rsgPointCloudDataType.insertMember(MEMBER2, HOFFSET(point_cloud_xyzrgb_data_t, y), H5::PredType::NATIVE_DOUBLE);
+			rsgPointCloudDataType.insertMember(MEMBER3, HOFFSET(point_cloud_xyzrgb_data_t, z), H5::PredType::NATIVE_DOUBLE);
+			rsgPointCloudDataType.insertMember(MEMBER4, HOFFSET(point_cloud_xyzrgb_data_t, r), H5::PredType::NATIVE_UCHAR);
+			rsgPointCloudDataType.insertMember(MEMBER5, HOFFSET(point_cloud_xyzrgb_data_t, g), H5::PredType::NATIVE_UCHAR);
+			rsgPointCloudDataType.insertMember(MEMBER6, HOFFSET(point_cloud_xyzrgb_data_t, b), H5::PredType::NATIVE_UCHAR);
+
+
+			/* Prepare actual data */
+			point_cloud_xyzrgb_data_t points[numberOfPoints]; // raw version of point cloud
+			int i = 0;
+			for (it->begin(); !it->end(); it->next()) {
+				points[i].x = it->getX();
+				points[i].y = it->getY();
+				points[i].z = it->getZ();
+
+
+				if(it->getRawData()->asColoredPoint3D() != 0) {
+					points[i].r = it->getRawData()->asColoredPoint3D()->getR();
+					points[i].g = it->getRawData()->asColoredPoint3D()->getG();
+					points[i].b = it->getRawData()->asColoredPoint3D()->getB();
+				} else {
+					points[i].r = 0x00;
+					points[i].g = 0x00;
+					points[i].b = 0x00;
+				}
+
+				i++;
+				if (i >= numberOfPoints) { // early termination (just in case)
+					break;
+				}
+			}
+
+			/* Write out data */
+			rsgShapeDataset = group.createDataSet(rsgShapeName, rsgPointCloudDataType, rsgPointDataSpace);
+			rsgShapeDataset.write(&points, rsgPointCloudDataType);
+
+			/* Attach an additional attribute indicating the underlying type of the point cloud (e.g. brics_3d::PointCloud3D) */
+			H5::StrType stringType(0, H5T_VARIABLE);
+			H5::DataSpace attributeSpace(H5S_SCALAR);
+			H5::Attribute rsgHDF5Attribute = rsgShapeDataset.createAttribute(rsgPointCloudTypeInfoName, stringType, attributeSpace);
+			rsgHDF5Attribute.write(stringType, it->getPointCloudTypeName());
+
 		} else {
 			LOG(ERROR) << "convertShapeToHDF5DataSet: Shape type not yet supported.";
 			type = UNKNOWN_SHAPE;
@@ -361,6 +449,11 @@ public:
 		brics_3d::rsg::Cylinder::CylinderPtr newCylinder;
 		brics_3d::rsg::Box::BoxPtr newBox;
 
+		/* Additional matadata in case of a point cloud */
+		H5std_string pointCloudName = "unspecifiedPointcloudType";
+		H5::Attribute pointCloudAttribute;
+		H5::StrType stringType(0, H5T_VARIABLE);
+
 		switch (type) {
 			case SPHERE:
 				LOG(DEBUG) << "                 -> Found a new sphere.";
@@ -396,6 +489,84 @@ public:
 				newBox->setSizeY(tmpBox[1]);
 				newBox->setSizeZ(tmpBox[2]);
 				shape = newBox;
+
+				break;
+
+			case POINT_CLOUD:
+				LOG(DEBUG) << "                 -> Found a new point cloud.";
+
+				try {
+					pointCloudAttribute = rsgShapeDataset.openAttribute(rsgPointCloudTypeInfoName);
+					pointCloudAttribute.read(stringType, pointCloudName);
+					LOG(DEBUG) << "                 rsgPointCloudTypeInfoName = " << pointCloudName;
+				} catch (H5::Exception e) {
+					LOG(ERROR) << "Cannot get retrieve rsgPointCloudTypeInfoName from rsgShapeDataset.";
+					return false;
+				}
+
+				/* PointCloudFactory? */
+				if(pointCloudName.compare("brics_3d::PointCloud3D") == 0) {
+					LOG(DEBUG) << "                 BRICS_3D point cloud detected.";
+
+					/* Create a new (concrete) point cloud  */
+					brics_3d::PointCloud3D::PointCloud3DPtr newPointCloud(new brics_3d::PointCloud3D());
+
+					/* Create scene graph container for specific point cloud type  */
+					brics_3d::rsg::PointCloud<brics_3d::PointCloud3D>::PointCloudPtr newPointCloudContainer(new brics_3d::rsg::PointCloud<brics_3d::PointCloud3D>());
+
+					/* Assign concrete type to container */
+					newPointCloudContainer->data=newPointCloud;
+
+					/* HDF5 meta data: we treate a single row as a compund data type */
+					const H5std_string MEMBER1( "x" );
+					const H5std_string MEMBER2( "y" );
+					const H5std_string MEMBER3( "z" );
+					const H5std_string MEMBER4( "r" );
+					const H5std_string MEMBER5( "g" );
+					const H5std_string MEMBER6( "b" );
+
+
+					/* Go through HDF5 meta-data */
+					int numberOfPoints = 0;
+					H5::DataSpace rsgInferredPointDataSpace = rsgShapeDataset.getSpace();
+					numberOfPoints = rsgInferredPointDataSpace.getSimpleExtentNpoints();
+
+					H5::CompType rsgPointCloudDataType(sizeof(point_cloud_xyzrgb_data_t));
+					rsgPointCloudDataType.insertMember(MEMBER1, HOFFSET(point_cloud_xyzrgb_data_t, x), H5::PredType::NATIVE_DOUBLE);
+					rsgPointCloudDataType.insertMember(MEMBER2, HOFFSET(point_cloud_xyzrgb_data_t, y), H5::PredType::NATIVE_DOUBLE);
+					rsgPointCloudDataType.insertMember(MEMBER3, HOFFSET(point_cloud_xyzrgb_data_t, z), H5::PredType::NATIVE_DOUBLE);
+					rsgPointCloudDataType.insertMember(MEMBER4, HOFFSET(point_cloud_xyzrgb_data_t, r), H5::PredType::NATIVE_UCHAR);
+					rsgPointCloudDataType.insertMember(MEMBER5, HOFFSET(point_cloud_xyzrgb_data_t, g), H5::PredType::NATIVE_UCHAR);
+					rsgPointCloudDataType.insertMember(MEMBER6, HOFFSET(point_cloud_xyzrgb_data_t, b), H5::PredType::NATIVE_UCHAR);
+
+					/* Intermediate buffer for point cloud (TODO: remove this step) */
+					point_cloud_xyzrgb_data_t points[numberOfPoints]; // raw version of point cloud
+
+					/* Fill point cloud  with data */
+					LOG(DEBUG) << "                 Update contains " << numberOfPoints << " points.";
+					rsgShapeDataset.read(&points, rsgPointCloudDataType);
+
+					for (int i = 0; i < numberOfPoints; ++i) {
+
+						Point3D* tmpPoint =  new Point3D(
+								points[i].x,
+								points[i].y,
+								points[i].z);
+
+						ColoredPoint3D* tmpColoredPoint = new ColoredPoint3D(tmpPoint, //optional decoration layer
+								points[i].r,
+								points[i].g,
+								points[i].b);
+
+						newPointCloudContainer->data->addPointPtr(tmpColoredPoint);
+					}
+
+					shape = newPointCloudContainer;
+
+				} else {
+					LOG(WARNING) << "                 " << pointCloudName << " - this point cloud type cannot be deserialized.";
+					return false;
+				}
 
 				break;
 
