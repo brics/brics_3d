@@ -38,6 +38,7 @@ class WorldModelTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testSimpleHanoiUseCase );
 	CPPUNIT_TEST( testTowerOfHanoi );
 	CPPUNIT_TEST( testFMPCUseCase );
+	CPPUNIT_TEST( testMovingSceneObject );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -48,6 +49,7 @@ public:
 	void testSimpleHanoiUseCase();
 	void testTowerOfHanoi();
 	void testFMPCUseCase();
+	void testMovingSceneObject();
 
 private:
 	  /// Maximum deviation for equality check of double variables

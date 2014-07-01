@@ -184,7 +184,7 @@ WorldModel::WorldModel(rsg::IIdGenerator* idGenerator) : scene(idGenerator) {
 
 
 void WorldModel::getSceneObjects(vector<rsg::Attribute> attributes, vector<SceneObject>& results) {
-	TimeStamp currentTime(timer.getCurrentTime(), Units::MilliSecond);
+	TimeStamp currentTime = now();
 	vector<rsg::Id>resultIds;
 	results.clear();
 
@@ -213,7 +213,8 @@ void WorldModel::getSceneObjects(vector<rsg::Attribute> attributes, vector<Scene
 		scene.getGroupChildren(resultIds[i], childIds);
 		for (unsigned int j = 0; j < static_cast<unsigned int>(childIds.size()); ++j) {
 			Shape::ShapePtr tmpShape;
-			if (scene.getGeometry(childIds[j], tmpShape, currentTime) == true) {
+			TimeStamp dataInsertionTime;
+			if (scene.getGeometry(childIds[j], tmpShape, dataInsertionTime) == true) {
 				tmpSceneObject.shape = tmpShape;
 				break; //stop on first found geometry
 			}
@@ -233,7 +234,7 @@ void WorldModel::getCurrentTransform(rsg::Id id, IHomogeneousMatrix44::IHomogene
 }
 
 void WorldModel::insertTransform(rsg::Id id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform) {
-	TimeStamp currentTime(timer.getCurrentTime(), Units::MilliSecond);
+	TimeStamp currentTime = now();
 	scene.setTransform(id, transform, currentTime);
 }
 

@@ -149,6 +149,10 @@ void Transform::accept(INodeVisitor* visitor){
 	}
 }
 
+std::string Transform::cacheToString() {
+	return history.cacheToString();
+}
+
 } // namespace brics_3d::RSG
 
 } // namespace brics_3d

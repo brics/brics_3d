@@ -23,6 +23,8 @@
 #include "brics_3d/core/Logger.h"
 #include "AttributeFinder.h"
 
+#include <iomanip> // setprecision
+
 namespace brics_3d {
 
 namespace rsg {

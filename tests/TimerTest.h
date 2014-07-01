@@ -13,6 +13,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "brics_3d/util/Timer.h"
+#include "brics_3d/worldModel/WorldModel.h"
 
 using namespace brics_3d;
 
@@ -22,6 +23,7 @@ class TimerTest : public CPPUNIT_NS::TestFixture {
 
 	CPPUNIT_TEST_SUITE( TimerTest );
 	CPPUNIT_TEST( testSimpleTiming );
+	CPPUNIT_TEST( testWorldModelCounterIncrements );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -29,6 +31,7 @@ public:
 	void tearDown();
 
 	void testSimpleTiming();
+	void testWorldModelCounterIncrements();
 };
 
 }

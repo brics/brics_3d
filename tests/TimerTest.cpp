@@ -43,6 +43,23 @@ void TimerTest::testSimpleTiming() {
 	CPPUNIT_ASSERT(elapsedTime > timer.getElapsedTime());
 }
 
+void TimerTest::testWorldModelCounterIncrements() {
+	WorldModel wm;
+
+	rsg::TimeStamp lastStamp = wm.now();
+	int maxTestCycles = 10000;
+	int equalCounter = 0;
+	for (int i = 0; i < maxTestCycles; ++i) {
+		rsg::TimeStamp currentStamp = wm.now();
+		if(currentStamp == lastStamp) {
+			equalCounter++;
+		}
+		CPPUNIT_ASSERT( currentStamp >= lastStamp);
+		lastStamp = currentStamp;
+	}
+//	CPPUNIT_ASSERT_EQUAL(0,equalCounter); //just for debugging
+}
+
 }
 
 /* EOF */

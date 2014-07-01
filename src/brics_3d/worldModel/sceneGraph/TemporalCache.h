@@ -23,6 +23,9 @@
 #include "TimeStamp.h"
 #include "brics_3d/core/Logger.h"
 #include <vector>
+#include <string>
+#include <sstream>
+#include <iomanip> // setprecision
 
 using brics_3d::Logger;
 
@@ -423,6 +426,26 @@ public:
 
     T returnNullData() {
     	return 0;
+    }
+
+    /**
+     * @brief Print all entries of the cache.
+     * Assumes pointers to be inserted as elements.
+     * @return Preformated string with complete cache.
+     */
+    std::string cacheToString() {
+    	std::stringstream result;
+    	result.str("");
+
+    	historyIterator = history.begin();
+    	while(historyIterator != history.end()) { // loop over history
+    		result << "| " << std::setprecision(15) <<historyIterator->second.getSeconds() << " |" << std::endl
+    				<< *historyIterator->first
+    				<< std::endl;
+    		historyIterator++;
+    	}
+
+    	return result.str();
     }
 
 protected:

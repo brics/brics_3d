@@ -152,6 +152,12 @@ class Transform : public Group {
      */
     void deleteOutdatedTransforms(TimeStamp latestTimeStamp);
 
+    /**
+     * @brief Print all entries of the cache.
+     * @return Preformated string with complete cache.
+     */
+    std::string cacheToString();
+
   private:
 
     /// History of transforms. Each transform has an associated time stamp.

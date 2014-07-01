@@ -332,6 +332,145 @@ void WorldModelTest::testFMPCUseCase() {
 	delete wmHandle;
 }
 
+void WorldModelTest::testMovingSceneObject() {
+	WorldModel myWM;
+	SceneObject tmpSceneObject;
+	SceneObject tmpSceneObject2;
+	const double* matrixPtr;
+	double x1 = 1.1;
+	double y1 = 2.2;
+	double z1 = 3.3;
+
+	Shape::ShapePtr targetShape(new Box());
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform1(new HomogeneousMatrix44(1,0,0,  	//Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             x1,y1,z1)); 						//Translation coefficients
+	tmpSceneObject.shape = targetShape;
+	tmpSceneObject.transform = transform1;
+	tmpSceneObject.parentId =  myWM.getRootNodeId(); // hook in after root node
+	tmpSceneObject.attributes.clear();
+	tmpSceneObject.attributes.push_back(Attribute("taskType","sceneObject"));
+
+	Id sceneobjectId;
+	myWM.addSceneObject(tmpSceneObject, sceneobjectId);
+
+	vector<Attribute> queryArributes;
+	queryArributes.push_back(Attribute("taskType","sceneObject"));
+	vector<SceneObject> resultObjects;
+
+	myWM.getSceneObjects(queryArributes, resultObjects);
+
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultObjects.size()));
+	matrixPtr = resultObjects[0].transform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(x1, matrixPtr[12], maxTolerance); //check (just) translation
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(y1, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(z1, matrixPtr[14], maxTolerance);
+
+	double x2 = 1.2;
+	double y2 = 2.3;
+	double z2 = 3.4;
+
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform2(new HomogeneousMatrix44(1,0,0,  	//Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             x2, y2, z2)); 						//Translation coefficients
+
+	myWM.insertTransform(sceneobjectId, transform2);
+
+	queryArributes.clear();
+	queryArributes.push_back(Attribute("taskType","sceneObject"));
+	resultObjects.clear();
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultObjects.size()));
+
+	myWM.getSceneObjects(queryArributes, resultObjects);
+
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultObjects.size()));
+	matrixPtr = resultObjects[0].transform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(x2, matrixPtr[12], maxTolerance); //check (just) translation
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(y2, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(z2, matrixPtr[14], maxTolerance);
+
+	/* Add a second object */
+	double x3 = 1.3;
+	double y3 = 2.4;
+	double z3 = 3.5;
+
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform3(new HomogeneousMatrix44(1,0,0,  	//Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             x3,y3,z3)); 						//Translation coefficients
+	tmpSceneObject2.shape = targetShape;
+	tmpSceneObject2.transform = transform3;
+	tmpSceneObject2.parentId =  myWM.getRootNodeId(); // hook in after root node
+	tmpSceneObject2.attributes.clear();
+	tmpSceneObject2.attributes.push_back(Attribute("taskType","sceneObject"));
+
+	Id sceneobject2Id;
+	myWM.addSceneObject(tmpSceneObject2, sceneobject2Id);
+
+	/* query for both */
+	queryArributes.clear();
+	queryArributes.push_back(Attribute("taskType","sceneObject"));
+	resultObjects.clear();
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultObjects.size()));
+
+	myWM.getSceneObjects(queryArributes, resultObjects);
+
+	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(resultObjects.size()));
+	matrixPtr = resultObjects[0].transform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(x2, matrixPtr[12], maxTolerance); //check (just) translation
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(y2, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(z2, matrixPtr[14], maxTolerance);
+
+	matrixPtr = resultObjects[1].transform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(x3, matrixPtr[12], maxTolerance); //check (just) translation
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(y3, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(z3, matrixPtr[14], maxTolerance);
+
+	/* Update both scene objets*/
+	double x4 = 10.3;
+	double y4 = 20.4;
+	double z4 = 30.5;
+
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform4(new HomogeneousMatrix44(1,0,0,  	//Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             x4,y4,z4)); 						//Translation coefficients
+
+	double x5 = 100.3;
+	double y5 = 200.4;
+	double z5 = 300.5;
+
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform5(new HomogeneousMatrix44(1,0,0,  	//Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             x5,y5,z5)); 						//Translation coefficients
+
+	myWM.insertTransform(sceneobjectId, transform4);
+	myWM.insertTransform(sceneobject2Id, transform5);
+
+	/* query for both */
+	queryArributes.clear();
+	queryArributes.push_back(Attribute("taskType","sceneObject"));
+	resultObjects.clear();
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultObjects.size()));
+
+	myWM.getSceneObjects(queryArributes, resultObjects);
+
+	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(resultObjects.size()));
+	matrixPtr = resultObjects[0].transform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(x4, matrixPtr[12], maxTolerance); //check (just) translation
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(y4, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(z4, matrixPtr[14], maxTolerance);
+
+	matrixPtr = resultObjects[1].transform->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(x5, matrixPtr[12], maxTolerance); //check (just) translation
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(y5, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(z5, matrixPtr[14], maxTolerance);
+
+
+}
 
 }  // namespace unitTests
 
