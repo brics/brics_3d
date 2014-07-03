@@ -385,7 +385,7 @@ void SceneGraphNodesTest::testTemporalTransform() {
 
 
 	/*again feed with newer data */
-	transform1->insertTransform(transform345, TimeStamp(59));
+	transform1->insertTransform(transform345, TimeStamp(58.999));
 	CPPUNIT_ASSERT_EQUAL(3u, transform1->getCurrentHistoryLenght());
 
 	resultTransform = transform1->getLatestTransform();
@@ -394,7 +394,10 @@ void SceneGraphNodesTest::testTemporalTransform() {
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, matrixPtr[13], maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, matrixPtr[14], maxTolerance);
 
-	transform1->insertTransform(transform234, TimeStamp(59));
+	CPPUNIT_ASSERT(transform1->insertTransform(transform234, TimeStamp(59)));
+	CPPUNIT_ASSERT_EQUAL(4u, transform1->getCurrentHistoryLenght());
+
+	CPPUNIT_ASSERT(!transform1->insertTransform(transform234, TimeStamp(59))); // insertion at the same timestamp should be ignored and return false.
 	CPPUNIT_ASSERT_EQUAL(4u, transform1->getCurrentHistoryLenght());
 
 	resultTransform = transform1->getLatestTransform();
@@ -865,15 +868,23 @@ void SceneGraphNodesTest::testTemporalUncertainTransform() {
 	 */
 	CPPUNIT_ASSERT_EQUAL(0u, uncertainTransform1->getCurrentHistoryLenght());
 	CPPUNIT_ASSERT_EQUAL(0u, uncertainTransform1->getCurrentUncertaintyHistoryLength());
-	uncertainTransform1->insertTransform(transform123, uncertainty123, TimeStamp(0));
+	CPPUNIT_ASSERT(uncertainTransform1->insertTransform(transform123, uncertainty123, TimeStamp(0)));
 	CPPUNIT_ASSERT_EQUAL(1u, uncertainTransform1->getCurrentHistoryLenght());
 	CPPUNIT_ASSERT_EQUAL(1u, uncertainTransform1->getCurrentUncertaintyHistoryLength());
 
-	uncertainTransform1->insertTransform(transform234, uncertainty234, TimeStamp(7.0));
+	CPPUNIT_ASSERT(uncertainTransform1->insertTransform(transform234, uncertainty234, TimeStamp(7.0)));
 	CPPUNIT_ASSERT_EQUAL(2u, uncertainTransform1->getCurrentHistoryLenght());
 	CPPUNIT_ASSERT_EQUAL(2u, uncertainTransform1->getCurrentUncertaintyHistoryLength());
 
-	uncertainTransform1->insertTransform(transform345, uncertainty345, TimeStamp(5.0));
+	CPPUNIT_ASSERT(uncertainTransform1->insertTransform(transform345, uncertainty345, TimeStamp(5.0)));
+	CPPUNIT_ASSERT_EQUAL(3u, uncertainTransform1->getCurrentHistoryLenght());
+	CPPUNIT_ASSERT_EQUAL(3u, uncertainTransform1->getCurrentUncertaintyHistoryLength());
+
+	CPPUNIT_ASSERT(!uncertainTransform1->insertTransform(transform345, uncertainty345, TimeStamp(5.0))); //no double insertions
+	CPPUNIT_ASSERT_EQUAL(3u, uncertainTransform1->getCurrentHistoryLenght());
+	CPPUNIT_ASSERT_EQUAL(3u, uncertainTransform1->getCurrentUncertaintyHistoryLength());
+
+	CPPUNIT_ASSERT(!uncertainTransform1->insertTransform(transform345, TimeStamp(5.0))); //no double insertions
 	CPPUNIT_ASSERT_EQUAL(3u, uncertainTransform1->getCurrentHistoryLenght());
 	CPPUNIT_ASSERT_EQUAL(3u, uncertainTransform1->getCurrentUncertaintyHistoryLength());
 
@@ -1571,9 +1582,9 @@ void SceneGraphNodesTest::testTransformVisitor() {
 	                                                             7,8,9)); 						//Translation coefficients
 	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr resultTransform;
 
-	tf1->insertTransform(transform123, dummyTime);
-	tf2->insertTransform(transform654, dummyTime);
-	tf3->insertTransform(transform789, dummyTime);
+	tf1->insertTransform(transform123, dummyTime + TimeStamp(1, Units::MilliSecond));
+	tf2->insertTransform(transform654, dummyTime + TimeStamp(2, Units::MilliSecond));
+	tf3->insertTransform(transform789, dummyTime + TimeStamp(3, Units::MilliSecond));
 
 	CPPUNIT_ASSERT_EQUAL(rootId, root->getId()); // preconditions:
 	CPPUNIT_ASSERT_EQUAL(tf1Id, tf1->getId());
@@ -1686,7 +1697,7 @@ void SceneGraphNodesTest::testTransformVisitor() {
 	                                                             0,1,0,
 	                                                             0,0,1,
 	                                                             -100,-100,-100)); 						//Translation coefficients
-	tf1->insertTransform(someUpdate, dummyTime);
+	tf1->insertTransform(someUpdate, dummyTime + TimeStamp(4, Units::MilliSecond));
 	pathCollector->reset();
 	node5->accept(pathCollector);
 
@@ -1985,10 +1996,10 @@ void SceneGraphNodesTest::testGlobalTransformCalculation() {
 	                                                             7,8,9)); 						//Translation coefficients
 	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr resultTransform;
 
-	root->insertTransform(transform001, dummyTime);
-	tf1->insertTransform(transform123, dummyTime);
-	tf2->insertTransform(transform654, dummyTime);
-	tf3->insertTransform(transform789, dummyTime);
+	root->insertTransform(transform001, dummyTime +  TimeStamp(1, Units::MilliSecond));
+	tf1->insertTransform(transform123, dummyTime +  TimeStamp(2, Units::MilliSecond));
+	tf2->insertTransform(transform654, dummyTime +  TimeStamp(3, Units::MilliSecond));
+	tf3->insertTransform(transform789, dummyTime +  TimeStamp(4, Units::MilliSecond));
 
 	CPPUNIT_ASSERT_EQUAL(rootId, root->getId()); // preconditions:
 	CPPUNIT_ASSERT_EQUAL(tf1Id, tf1->getId());
@@ -2046,7 +2057,7 @@ void SceneGraphNodesTest::testGlobalTransformCalculation() {
 	                                                             0,1,0,
 	                                                             0,0,1,
 	                                                             100,100,99));
-	root->insertTransform(someUpdate, dummyTime);
+	root->insertTransform(someUpdate, dummyTime + TimeStamp(5, Units::MilliSecond));
 
 	resultTransform = getGlobalTransform(root);
 	matrixPtr = resultTransform->getRawData();
@@ -2540,9 +2551,9 @@ void SceneGraphNodesTest::testSceneGraphFacade(){
 	tmpAttributes.clear();
 	tmpAttributes.push_back(Attribute("name","tf"));
 	CPPUNIT_ASSERT(tf1Id == 0);
-	CPPUNIT_ASSERT(scene.addTransformNode(rootId, tf1Id, tmpAttributes, transform123, dummyTime));
+	CPPUNIT_ASSERT(scene.addTransformNode(rootId, tf1Id, tmpAttributes, transform123, dummyTime + TimeStamp(0, Units::MilliSecond)));
 	CPPUNIT_ASSERT(tf1Id != 0);
-	CPPUNIT_ASSERT(!scene.addTransformNode(invalidId, tf1Id, tmpAttributes, transform123, dummyTime));
+	CPPUNIT_ASSERT(!scene.addTransformNode(invalidId, tf1Id, tmpAttributes, transform123, dummyTime + TimeStamp(2, Units::MilliSecond)));
 
 	resultParentIds.clear();
 	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultParentIds.size()) );
@@ -2679,9 +2690,9 @@ void SceneGraphNodesTest::testSceneGraphFacade(){
 	                                                             4,5,6)); 						//Translation coefficients
 
 
-	CPPUNIT_ASSERT(scene.setTransform(tf1Id, transform456, dummyTime));
+	CPPUNIT_ASSERT(scene.setTransform(tf1Id, transform456, dummyTime  + TimeStamp(3, Units::MilliSecond)));
 
-	CPPUNIT_ASSERT(scene.getTransform(tf1Id, dummyTime, resultTransform));
+	CPPUNIT_ASSERT(scene.getTransform(tf1Id, dummyTime  + TimeStamp(3, Units::MilliSecond), resultTransform));
 	matrixPtr = resultTransform->getRawData();
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, matrixPtr[12], maxTolerance); //check (just) translation
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, matrixPtr[13], maxTolerance);

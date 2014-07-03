@@ -75,8 +75,10 @@ public:
      * @param newTransform The transform to be added.
      * @param newUncertainty The transform uncertainty associated with the newTransform to be added.
      * @param timeStamp The times stamp that is associated with the transform and the uncertainty.
+     * @return False if an entry with this time stamp already exists. In this case data will not be inserted.
+	 *         Otherwise true.
      */
-    void insertTransform(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr newTransform, ITransformUncertainty::ITransformUncertaintyPtr newUncertainty, TimeStamp timeStamp);
+    bool insertTransform(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr newTransform, ITransformUncertainty::ITransformUncertaintyPtr newUncertainty, TimeStamp timeStamp);
 
     /**
      * @brief Add a new transform without accompanying uncertainty data to the history.
@@ -84,12 +86,15 @@ public:
      *
      * @param newTransform The transform to be added.
      * @param timeStamp The times stamp that is associated with the transform.
-     *
+     * @return False if an entry with this time stamp already exists. In this case data will not be inserted.
+	 *         Otherwise true.
+	 *
      * @note The individual caches might get out of sync. I.e. as the uncertainty cache does not get updated
      * it temporal range might lack behind until next invocation of
      * insertTransform(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr newTransform, ITransformUncertainty::ITransformUncertaintyPtr newUncertainty, TimeStamp timeStamp)
+     *
      */
-    void insertTransform(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr newTransform, TimeStamp timeStamp);
+    bool insertTransform(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr newTransform, TimeStamp timeStamp);
 
     /**
      * @brief Retrieve a transform in the history cache whose time stamp matches best a given stamp.

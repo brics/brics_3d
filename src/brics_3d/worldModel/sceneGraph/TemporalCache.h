@@ -149,8 +149,10 @@ public:
 	 *
 	 * @param newData The new datum to be inserted. The actual type is defined by the template parameter.
 	 * @param timeStamp The accompanying time stamp. It will define the position.
+	 * @return False if an entry with this time stamp already exists. In this case data will not be inserted.
+	 *         Otherwise true.
 	 */
-    void insertData(T newData, TimeStamp timeStamp) {
+    bool insertData(T newData, TimeStamp timeStamp) {
 
     	/* history policy: descending order of time stamps (the older the closer to the end - like humans...)
     	 *  latest              oldest
@@ -163,6 +165,10 @@ public:
     	/* insert new data at its correct place in time */
     	while(historyIterator != history.end()) { // loop over history
     		if (historyIterator->second <= timeStamp) {
+    			if(historyIterator->second == timeStamp) {
+    				LOG(WARNING) << "Can not insert data. An entry at time stamp "  << timeStamp.getSeconds() << "[s] exists already. Skipping it.";
+    				return false;
+    			}
     			break;
     		}
     		historyIterator++;
@@ -178,6 +184,8 @@ public:
     	historyIterator = history.begin(); // we already know that there is already one element...
     	TimeStamp latestTimeStamp = history.begin()->second;
     	deleteOutdatedData(latestTimeStamp);
+
+    	return true;
     }
 
     /**

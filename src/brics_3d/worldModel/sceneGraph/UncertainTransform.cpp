@@ -34,19 +34,29 @@ UncertainTransform::~UncertainTransform() {
 	uncertaintyHistory.clear();
 }
 
-void UncertainTransform::insertTransform(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr newTransform, ITransformUncertainty::ITransformUncertaintyPtr newUncertainty, TimeStamp timeStamp) {
+bool UncertainTransform::insertTransform(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr newTransform, ITransformUncertainty::ITransformUncertaintyPtr newUncertainty, TimeStamp timeStamp) {
 	assert(newTransform != 0);
 	assert(newUncertainty != 0);
 
 	/* update the transform cache (cf. super class) */
-	Transform::insertTransform(newTransform, timeStamp);
-	uncertaintyHistory.insertData(newUncertainty, timeStamp);
+	bool transformSuccess = Transform::insertTransform(newTransform, timeStamp);
+	bool uncertaintySuccess = uncertaintyHistory.insertData(newUncertainty, timeStamp);
+
+	if (transformSuccess && uncertaintySuccess) {
+		return true;
+	}
+	return false;
 }
 
-void UncertainTransform::insertTransform(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr newTransform, TimeStamp timeStamp) {
+bool UncertainTransform::insertTransform(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr newTransform, TimeStamp timeStamp) {
 	/* update the transform cache (cf. super class) */
-	Transform::insertTransform(newTransform, timeStamp);
+	bool transformSuccess =  Transform::insertTransform(newTransform, timeStamp);
 	uncertaintyHistory.deleteOutdatedData(uncertaintyHistory.getLatestTimeStamp());
+
+	if (transformSuccess) {
+		return true;
+	}
+	return false;
 }
 
 ITransformUncertainty::ITransformUncertaintyPtr UncertainTransform::getTransformUncertainty(TimeStamp timeStamp) {

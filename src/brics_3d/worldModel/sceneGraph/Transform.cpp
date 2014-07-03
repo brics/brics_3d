@@ -92,10 +92,14 @@ Transform::~Transform() {
 	history.clear();;
 }
 
-void Transform::insertTransform(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr newTransform, TimeStamp timeStamp) {
+bool Transform::insertTransform(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr newTransform, TimeStamp timeStamp) {
 	assert(newTransform != 0);
-	history.insertData(newTransform, timeStamp);
-	updateCount ++;
+	bool success = history.insertData(newTransform, timeStamp);
+	if (success) {
+		updateCount ++;
+		return true;
+	}
+	return false;
 }
 
 void Transform::deleteOutdatedTransforms(TimeStamp latestTimeStamp) {
