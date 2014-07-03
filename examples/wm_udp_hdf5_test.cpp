@@ -262,6 +262,14 @@ private:
 
 int main(int argc, char **argv) {
 
+	std::string hostIP ="224.0.0.1";
+	if (argc == 1) {
+		LOG(INFO) << "Usage: " << argv[0] << " <host_ip>";
+	} else if (argc == 2) {
+		hostIP = argv[1];
+	}
+	LOG(INFO) << "Host IP = " << hostIP;
+
 	/* Configure the logger - default level won't tell us much */
 	brics_3d::Logger::setMinLoglevel(brics_3d::Logger::LOGDEBUG);
 
@@ -293,14 +301,14 @@ int main(int argc, char **argv) {
 	 *
 	 * NOTE: 224.0.0.1 is a multicast address so we don't have to bother who is server and who is client.
 	 */
-	HSDF5UDPOutputBridge* udpOutBridge = new HSDF5UDPOutputBridge("224.0.0.1", 11211);
+	HSDF5UDPOutputBridge* udpOutBridge = new HSDF5UDPOutputBridge(hostIP, 11411);
 	brics_3d::rsg::HDF5UpdateSerializer* wmUpdatesToHdf5Serializer = new brics_3d::rsg::HDF5UpdateSerializer(udpOutBridge);
 	wm->scene.attachUpdateObserver(wmUpdatesToHdf5Serializer);
 	wmUpdatesToHdf5Serializer->setStoreMessageBackupsOnFileSystem(true); /* set to true to store all updates as .h5 files */
 
 	/* Setup of IN bridge (via UDP) */
 	brics_3d::rsg::HDF5UpdateDeserializer* wmUpdatesToHdf5deserializer = new brics_3d::rsg::HDF5UpdateDeserializer(wm);
-	HSDF5UDPInputBridge* udpInBridge = new HSDF5UDPInputBridge(wmUpdatesToHdf5deserializer, "224.0.0.1", 11211);
+	HSDF5UDPInputBridge* udpInBridge = new HSDF5UDPInputBridge(wmUpdatesToHdf5deserializer, "224.0.0.1", 11411);
 
 	/* ================== Setup of world model content ===================== */
 
@@ -318,6 +326,7 @@ int main(int argc, char **argv) {
 	/* Box for "virtual fence" */
 	attributes.clear();
 	attributes.push_back(rsg::Attribute("name", "box_tf"));
+	attributes.push_back(rsg::Attribute("taskType", "sceneObject"));
 	rsg::Id boxTfId;
 	brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform120(new brics_3d::HomogeneousMatrix44(1,0,0,  	// Rotation coefficients
 	                                                             0,1,0,
@@ -340,8 +349,12 @@ int main(int argc, char **argv) {
 	while(!wm3DVisualizer->done()) {
 		//nothing here
 	}
+#else
+	while(true){}; // Continue to recieve messages.
+#endif
 
 	/* Clean up */
+#ifdef BRICS_OSG_ENABLE
 	delete wm3DVisualizer;
 #endif
 	delete wmUpdatesToHdf5Serializer;
