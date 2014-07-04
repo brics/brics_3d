@@ -470,8 +470,7 @@ bool SceneGraphFacade::setTransform(Id id, IHomogeneousMatrix44::IHomogeneousMat
 	Node::NodePtr node = tmpNode.lock();
 	rsg::Transform::TransformPtr transformNode = boost::dynamic_pointer_cast<rsg::Transform>(node);
 	if (transformNode != 0) {
-		transformNode->insertTransform(transform, timeStamp);
-		operationSucceeded = true;
+		operationSucceeded = transformNode->insertTransform(transform, timeStamp);
 	}
 
 	/* Call all observers depending on the given policy in case an error occured */
@@ -496,8 +495,7 @@ bool SceneGraphFacade::setUncertainTransform(Id id, IHomogeneousMatrix44::IHomog
 	Node::NodePtr node = tmpNode.lock();
 	rsg::UncertainTransform::UncertainTransformPtr transformNode = boost::dynamic_pointer_cast<rsg::UncertainTransform>(node);
 	if (transformNode != 0) {
-		transformNode->insertTransform(transform, uncertainty, timeStamp);
-		operationSucceeded = true;
+		operationSucceeded = transformNode->insertTransform(transform, uncertainty, timeStamp);
 	}
 
 	/* Call all observers depending on the given policy in case an error occured */
