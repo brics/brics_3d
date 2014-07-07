@@ -1128,7 +1128,7 @@ void SceneGraphNodesTest::testGeometricNode() {
 	/*
 	 * check traversals
 	 */
-	resultTransform = getGlobalTransform(geode1);
+	resultTransform = getGlobalTransform(geode1, TimeStamp(1.0));
 	matrixPtr = resultTransform->getRawData();
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(6.0, matrixPtr[12], maxTolerance); //check (just) translation
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, matrixPtr[13], maxTolerance);
@@ -1631,7 +1631,7 @@ void SceneGraphNodesTest::testTransformVisitor() {
 	CPPUNIT_ASSERT_EQUAL(tf2Id, (*pathCollector->getNodePaths()[1][1]).getId());
 	CPPUNIT_ASSERT_EQUAL(group4Id, (*pathCollector->getNodePaths()[1][2]).getId());
 
-	resultTransform = getGlobalTransformAlongPath(pathCollector->getNodePaths()[0]);
+	resultTransform = getGlobalTransformAlongPath(pathCollector->getNodePaths()[0], dummyTime);
 //	cout << (*resultTransform) << endl;
 
 	matrixPtr = resultTransform->getRawData();
@@ -1660,7 +1660,7 @@ void SceneGraphNodesTest::testTransformVisitor() {
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[11], maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, matrixPtr[15], maxTolerance);
 
-	resultTransform = getGlobalTransformAlongPath(pathCollector->getNodePaths()[1]);
+	resultTransform = getGlobalTransformAlongPath(pathCollector->getNodePaths()[1], dummyTime);
 //	cout << (*resultTransform) << endl;
 
 	matrixPtr = resultTransform->getRawData();
@@ -1714,7 +1714,7 @@ void SceneGraphNodesTest::testTransformVisitor() {
 	CPPUNIT_ASSERT_EQUAL(tf2Id, (*pathCollector->getNodePaths()[1][1]).getId());
 	CPPUNIT_ASSERT_EQUAL(group4Id, (*pathCollector->getNodePaths()[1][2]).getId());
 
-	resultTransform = getGlobalTransformAlongPath(pathCollector->getNodePaths()[0]);
+	resultTransform = getGlobalTransformAlongPath(pathCollector->getNodePaths()[0], dummyTime + TimeStamp(4, Units::MilliSecond));
 //	cout << (*resultTransform) << endl;
 
 	matrixPtr = resultTransform->getRawData();
@@ -1743,7 +1743,7 @@ void SceneGraphNodesTest::testTransformVisitor() {
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[11], maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, matrixPtr[15], maxTolerance);
 
-	resultTransform = getGlobalTransformAlongPath(pathCollector->getNodePaths()[1]);
+	resultTransform = getGlobalTransformAlongPath(pathCollector->getNodePaths()[1], dummyTime + TimeStamp(4, Units::MilliSecond));
 //	cout << (*resultTransform) << endl;
 
 	matrixPtr = resultTransform->getRawData();
@@ -1879,7 +1879,7 @@ void SceneGraphNodesTest::testUncertainTransformVisitor() {
 	CPPUNIT_ASSERT_EQUAL(utf2Id, (*pathCollector->getNodePaths()[1][1]).getId());
 	CPPUNIT_ASSERT_EQUAL(group4Id, (*pathCollector->getNodePaths()[1][2]).getId());
 
-	resultTransform = getGlobalTransformAlongPath(pathCollector->getNodePaths()[0]);
+	resultTransform = getGlobalTransformAlongPath(pathCollector->getNodePaths()[0], dummyTime);
 //	cout << (*resultTransform) << endl;
 
 	matrixPtr = resultTransform->getRawData();
@@ -1908,7 +1908,7 @@ void SceneGraphNodesTest::testUncertainTransformVisitor() {
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[11], maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, matrixPtr[15], maxTolerance);
 
-	resultTransform = getGlobalTransformAlongPath(pathCollector->getNodePaths()[1]);
+	resultTransform = getGlobalTransformAlongPath(pathCollector->getNodePaths()[1], dummyTime);
 //	cout << (*resultTransform) << endl;
 
 	matrixPtr = resultTransform->getRawData();
@@ -2017,37 +2017,37 @@ void SceneGraphNodesTest::testGlobalTransformCalculation() {
 	group4->addChild(node5);
 
 
-	resultTransform = getGlobalTransform(root);
+	resultTransform = getGlobalTransform(root, dummyTime); //There is actually an offeste in time but this should be ok for the cache.
 	matrixPtr = resultTransform->getRawData();
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[12], maxTolerance); //check (just) translation
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, matrixPtr[13], maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, matrixPtr[14], maxTolerance);
 
-	resultTransform = getGlobalTransform(tf1);
+	resultTransform = getGlobalTransform(tf1, dummyTime);
 	matrixPtr = resultTransform->getRawData();
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, matrixPtr[12], maxTolerance); //check (just) translation
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, matrixPtr[13], maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, matrixPtr[14], maxTolerance);
 
-	resultTransform = getGlobalTransform(tf3);
+	resultTransform = getGlobalTransform(tf3, dummyTime);
 	matrixPtr = resultTransform->getRawData();
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(8.0, matrixPtr[12], maxTolerance); //check (just) translation
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(10.0, matrixPtr[13], maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(11.0, matrixPtr[14], maxTolerance);
 
-	resultTransform = getGlobalTransform(node5);
+	resultTransform = getGlobalTransform(node5, dummyTime);
 	matrixPtr = resultTransform->getRawData();
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(8.0, matrixPtr[12], maxTolerance); //check (just) translation
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(10.0, matrixPtr[13], maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(11.0, matrixPtr[14], maxTolerance);
 
-	resultTransform = getGlobalTransform(tf2);
+	resultTransform = getGlobalTransform(tf2, dummyTime);
 	matrixPtr = resultTransform->getRawData();
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(6.0, matrixPtr[12], maxTolerance); //check (just) translation
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, matrixPtr[13], maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, matrixPtr[14], maxTolerance);
 
-	resultTransform = getGlobalTransform(group4);
+	resultTransform = getGlobalTransform(group4, dummyTime);
 	matrixPtr = resultTransform->getRawData();
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(6.0, matrixPtr[12], maxTolerance); //check (just) translation
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, matrixPtr[13], maxTolerance);
@@ -2059,37 +2059,37 @@ void SceneGraphNodesTest::testGlobalTransformCalculation() {
 	                                                             100,100,99));
 	root->insertTransform(someUpdate, dummyTime + TimeStamp(5, Units::MilliSecond));
 
-	resultTransform = getGlobalTransform(root);
+	resultTransform = getGlobalTransform(root, dummyTime + TimeStamp(5, Units::MilliSecond));
 	matrixPtr = resultTransform->getRawData();
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(100.0, matrixPtr[12], maxTolerance); //check (just) translation
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(100.0, matrixPtr[13], maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(99, matrixPtr[14], maxTolerance);
 
-	resultTransform = getGlobalTransform(tf1);
+	resultTransform = getGlobalTransform(tf1, dummyTime + TimeStamp(5, Units::MilliSecond));
 	matrixPtr = resultTransform->getRawData();
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(101.0, matrixPtr[12], maxTolerance); //check (just) translation
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(102.0, matrixPtr[13], maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(102.0, matrixPtr[14], maxTolerance);
 
-	resultTransform = getGlobalTransform(tf3);
+	resultTransform = getGlobalTransform(tf3, dummyTime + TimeStamp(5, Units::MilliSecond));
 	matrixPtr = resultTransform->getRawData();
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(108.0, matrixPtr[12], maxTolerance); //check (just) translation
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(110.0, matrixPtr[13], maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(111.0, matrixPtr[14], maxTolerance);
 
-	resultTransform = getGlobalTransform(node5);
+	resultTransform = getGlobalTransform(node5, dummyTime + TimeStamp(5, Units::MilliSecond));
 	matrixPtr = resultTransform->getRawData();
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(108.0, matrixPtr[12], maxTolerance); //check (just) translation
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(110.0, matrixPtr[13], maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(111.0, matrixPtr[14], maxTolerance);
 
-	resultTransform = getGlobalTransform(tf2);
+	resultTransform = getGlobalTransform(tf2, dummyTime + TimeStamp(5, Units::MilliSecond));
 	matrixPtr = resultTransform->getRawData();
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(106.0, matrixPtr[12], maxTolerance); //check (just) translation
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(105.0, matrixPtr[13], maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(103.0, matrixPtr[14], maxTolerance);
 
-	resultTransform = getGlobalTransform(group4);
+	resultTransform = getGlobalTransform(group4, dummyTime + TimeStamp(5, Units::MilliSecond));
 	matrixPtr = resultTransform->getRawData();
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(106.0, matrixPtr[12], maxTolerance); //check (just) translation
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(105.0, matrixPtr[13], maxTolerance);
@@ -2097,7 +2097,7 @@ void SceneGraphNodesTest::testGlobalTransformCalculation() {
 
 	tf3->removeChildren(0); //make a tree
 
-	resultTransform = getGlobalTransform(node5);
+	resultTransform = getGlobalTransform(node5, dummyTime + TimeStamp(5, Units::MilliSecond));
 	matrixPtr = resultTransform->getRawData();
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(106.0, matrixPtr[12], maxTolerance); //check (just) translation
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(105.0, matrixPtr[13], maxTolerance);
@@ -3039,10 +3039,9 @@ void SceneGraphNodesTest::testSceneGraphFacadeTransforms() {
 
 	resultMatrixData = resultTransform->getRawData();
 	desiredMatrixData = expectedTransform->getRawData();
-	// FIXE: query _always_ uses the latest cahe entry!
-//	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[12], resultMatrixData[12], maxTolerance); //check (just) translation
-//	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[13], resultMatrixData[13], maxTolerance);
-//	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[14], resultMatrixData[14], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[12], resultMatrixData[12], maxTolerance); //check (just) translation
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[13], resultMatrixData[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[14], resultMatrixData[14], maxTolerance);
 
 	/*check root to node5 (involves tf3) @ dummyTime2 */
 	CPPUNIT_ASSERT(scene.getTransformForNode(node5Id, scene.getRootId(), dummyTime2, resultTransform)); // query stll at dummy time -> result shoudlbe unschneged
@@ -3067,10 +3066,9 @@ void SceneGraphNodesTest::testSceneGraphFacadeTransforms() {
 
 	resultMatrixData = resultTransform->getRawData();
 	desiredMatrixData = expectedTransform->getRawData();
-	//FIXME same issue as above
-//	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[12], resultMatrixData[12], maxTolerance); //check (just) translation
-//	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[13], resultMatrixData[13], maxTolerance);
-//	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[14], resultMatrixData[14], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[12], resultMatrixData[12], maxTolerance); //check (just) translation
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[13], resultMatrixData[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[14], resultMatrixData[14], maxTolerance);
 
 	/*check root to node5 (involved tf3) @ dummyTime2 */
 	CPPUNIT_ASSERT(scene.getTransformForNode(node5Id, scene.getRootId(), dummyTime2, resultTransform)); // query stll at dummy time -> result shoudlbe unschneged
@@ -3174,7 +3172,7 @@ void SceneGraphNodesTest::testPointCloud() {
 	tf2->addChild(pcGeode3);
 
 	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr resultTransform;
-	resultTransform	= getGlobalTransform(pcGeode3);
+	resultTransform	= getGlobalTransform(pcGeode3, TimeStamp(0.0));
 	//cout << *resultTransform;
 
 	Shape::ShapePtr resultShape;

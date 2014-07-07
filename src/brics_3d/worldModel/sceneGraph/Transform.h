@@ -45,7 +45,7 @@ typedef std::vector< std::pair<IHomogeneousMatrix44::IHomogeneousMatrix44Ptr, Ti
  * @return Shared pointer to the accumulated transform.
  * @ingroup sceneGraph
  */
-extern IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransformAlongPath(Node::NodePath nodePath);
+extern IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransformAlongPath(Node::NodePath nodePath, TimeStamp timeStamp);
 
 /**
  * @brief Calculate the accumulated global transform for a node.
@@ -56,9 +56,9 @@ extern IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransformAlongPath
  * @return Shared pointer to the accumulated transform.
  * @ingroup sceneGraph
  */
-extern IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransform(Node::NodePtr node);
+extern IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransform(Node::NodePtr node, TimeStamp timeStamp);
 
-extern IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getTransformBetweenNodes(Node::NodePtr node, Node::NodePtr referenceNode);
+extern IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getTransformBetweenNodes(Node::NodePtr node, Node::NodePtr referenceNode, TimeStamp timeStamp);
 
 
 /**

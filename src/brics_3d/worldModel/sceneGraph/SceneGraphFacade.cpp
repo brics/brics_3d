@@ -167,7 +167,7 @@ bool SceneGraphFacade::getTransformForNode (Id id, Id idReferenceNode, TimeStamp
 	Node::NodePtr referenceNode= tmpReferenceNode.lock();
 	if ((node != 0) && (referenceNode != 0)) {
 //		transform = getGlobalTransform(node);
-		transform = getTransformBetweenNodes(node, referenceNode);
+		transform = getTransformBetweenNodes(node, referenceNode, timeStamp);
 		return true;
 	}
 	return false;

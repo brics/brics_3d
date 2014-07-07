@@ -95,7 +95,7 @@ IHomogeneousMatrix44::IHomogeneousMatrix44Ptr PointCloudAccumulator::doGetTransf
 		childIndex = parentGroup->getChildIndex(node);
 		Node::NodePtr nodeAsSharedPtr = parentGroup->getChild(childIndex);
 
-		transformFromReferenceToPointCloud = getTransformBetweenNodes(nodeAsSharedPtr, referenceNode);
+		transformFromReferenceToPointCloud = getTransformBetweenNodes(nodeAsSharedPtr, referenceNode, node->getTimeStamp()); //For now we only query for creation time
 	}
 
 	return transformFromReferenceToPointCloud;

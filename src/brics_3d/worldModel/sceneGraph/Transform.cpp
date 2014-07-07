@@ -28,18 +28,18 @@ namespace brics_3d {
 
 namespace rsg {
 
-IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransformAlongPath(Node::NodePath nodePath){
+IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransformAlongPath(Node::NodePath nodePath, TimeStamp timeStamp){
 	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr result(new HomogeneousMatrix44()); //identity matrix
 	for (unsigned int i = 0; i < static_cast<unsigned int>(nodePath.size()); ++i) {
 		Transform* tmpTransform = dynamic_cast<Transform*>(nodePath[i]);
 		if (tmpTransform) {
-			*result = *( (*result) * (*tmpTransform->getLatestTransform()) );
+			*result = *( (*result) * (*tmpTransform->getTransform(timeStamp)) );
 		}
 	}
 	return result;
 }
 
-IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransform(Node::NodePtr node) {
+IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransform(Node::NodePtr node, TimeStamp timeStamp) {
 	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr result(new HomogeneousMatrix44()); //identity matrix
 	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr accumulatedTransform;
 
@@ -47,7 +47,7 @@ IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransform(Node::NodePtr n
 	PathCollector* pathCollector = new PathCollector();
 	node->accept(pathCollector);
 	if (static_cast<unsigned int>(pathCollector->getNodePaths().size()) > 0) { // != root
-		*result = *((*result) * (*(getGlobalTransformAlongPath(pathCollector->getNodePaths()[0]))));
+		*result = *((*result) * (*(getGlobalTransformAlongPath(pathCollector->getNodePaths()[0], timeStamp))));
 		if (static_cast<unsigned int>(pathCollector->getNodePaths().size()) > 1) {
 			LOG(WARNING) << "Multiple transform paths to this node detected. Taking fist path and ignoring the rest.";
 		}
@@ -56,26 +56,20 @@ IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransform(Node::NodePtr n
 	/* check if node is a transform on its own ... */
 	Transform::TransformPtr tmpTransform = boost::dynamic_pointer_cast<Transform>(node);
 	if (tmpTransform) {
-		*result = *( (*result) * (*tmpTransform->getLatestTransform()) );
+		*result = *( (*result) * (*tmpTransform->getTransform(timeStamp)) );
 	}
 
 	delete pathCollector;
 	return result;
 }
 
-IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getTransformBetweenNodes(Node::NodePtr node, Node::NodePtr referenceNode) {
+IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getTransformBetweenNodes(Node::NodePtr node, Node::NodePtr referenceNode, TimeStamp timeStamp) {
 	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr result(new HomogeneousMatrix44()); //identity matrix
-	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr rootToNodeTransform = getGlobalTransform(node);
-	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr rootToReferenceNodeTransform = getGlobalTransform(referenceNode);
-
-//	std::cout << "rootToNodeTransform :" << std::endl << *rootToNodeTransform << std::endl;
-//	std::cout << "rootToReferenceNodeTransform :" << std::endl << *rootToReferenceNodeTransform << std::endl;
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr rootToNodeTransform = getGlobalTransform(node, timeStamp);
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr rootToReferenceNodeTransform = getGlobalTransform(referenceNode, timeStamp);
 
 	rootToReferenceNodeTransform->inverse();
-//	std::cout << "rootToReferenceNodeTransform inversed :" << std::endl << *rootToReferenceNodeTransform << std::endl;
-
 	*result = *( (*rootToReferenceNodeTransform) * (*rootToNodeTransform) ); //cf. Craig p39
-//	std::cout << "result :" << std::endl << *result << std::endl;
 
 	return result;
 }
