@@ -87,6 +87,7 @@ SET (ALGORITHM_LIBRARY_SOURCES
     ./algorithm/featureExtraction/BoundingBox3DExtractor
 	./algorithm/featureExtraction/INormalEstimation
 	./algorithm/featureExtraction/PCA
+    ./algorithm/featureExtraction/DensityExtractor
 
     ./algorithm/filtering/IFiltering
 	./algorithm/filtering/IOctreeReductionFilter
