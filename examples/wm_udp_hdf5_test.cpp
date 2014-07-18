@@ -125,7 +125,7 @@ public:
 				(struct sockaddr *) &address,
 				sizeof (address));
 
-		sleep(1); //just to be able to follow the output on std out...
+		//sleep(1); //just to be able to follow the output on std out...
 
 		LOG(INFO) << debugTag << ": " << transferredBytes << " of << " << static_cast<size_t>(dataLength) << " bytes send.";
 

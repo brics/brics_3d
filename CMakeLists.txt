@@ -8,7 +8,7 @@ PROJECT(BRICS_3D)
 ADD_DEFINITIONS(-DBRICS_IMGAGES_DIR="${CMAKE_HOME_DIRECTORY}/examples/test_data/depth_images")
 ADD_DEFINITIONS(-DBRICS_MODELS_DIR="${CMAKE_HOME_DIRECTORY}/examples/test_data/3d_models")
 ADD_DEFINITIONS(-DBRICS_CONFIGURATIONS_DIR="${CMAKE_HOME_DIRECTORY}/examples/test_data")
-ADD_DEFINITIONS(-DBRICS_LOGFILES_DIR="${CMAKE_HOME_DIRECTORY}/examples/test_data/logfiles")
+ADD_DEFINITIONS(-DBRICS_LOGFILES_DIR="${CMAKE_HOME_DIRECTORY}/data/logfiles")
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC") #recycle existing flags if any
 
 ##  Loads the current version number:
@@ -187,7 +187,7 @@ IF(USE_HDF5)
             ${HDF5_ROOT}/lib/libhdf5_hl_debug.a
             ${HDF5_ROOT}/lib/libhdf5_cpp_debug.a
             ${HDF5_ROOT}/lib/libhdf5_debug.a
-            CACHE STRING "Accumulated HDF5 libraries."   
+            #CACHE STRING "Accumulated HDF5 libraries."   
         )
     ENDIF(USE_HDF5_NON_DEFAULT_PATH)   
     MESSAGE(STATUS "INFO: used HDF5_LIBRARIES: ${HDF5_LIBRARIES}")

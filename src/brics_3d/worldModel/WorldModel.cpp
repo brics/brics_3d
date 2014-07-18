@@ -147,7 +147,7 @@ void WorldModel::initializeMicroblx() {
 	memcpy(outputFifoData->data, &bufferSize, sizeof(bufferSize));
 
 	outputFifoData = ubx_config_get_data(outputBlock, "type_name");
-	len = strlen("struct rsg_ids")+1;
+	len = strlen("struct rsg_ids")+1;  //'rsg_ids' but should be 'struct rsg_ids'
 	ubx_data_resize(outputFifoData, len);
 	strncpy((char*)outputFifoData->data, "struct rsg_ids", len);
 
@@ -163,6 +163,7 @@ void WorldModel::initializeMicroblx() {
 		return;
 	}
 
+	outputBlockCopy = outputBlock;
 	WorldModel::microBlxWmHandle = this;
 
 #endif
@@ -454,7 +455,11 @@ bool WorldModel::executeFunctionBlock(std::string name, std::vector<rsg::Id>& in
 		val.len = 1;// because 1* ids struct ...  sizeof(tmpIds);//inputPointCloudId);
 		val.data = &recievedOutputDataIds;
 
-		outputBlock->read(outputBlock, &val);
+		if (outputBlock != outputBlockCopy) { //workaround
+			LOG(ERROR) << "Handle to output block has been corrupted."  << std::endl;
+			return false;
+		}
+		outputBlock->read(outputBlock, &val); //can segfault
 		outputBlock->stat_num_reads++;
 
 		brics_3d::rsg::UbxTypecaster::convertIdsFromUbx(recievedOutputDataIds, output);

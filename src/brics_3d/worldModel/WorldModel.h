@@ -96,6 +96,7 @@ class WorldModel : public IWorldModelQuery, public IWorldModelUpdate, public IWo
 
 	ubx_block* inputBlock;
 	ubx_block* outputBlock;
+	ubx_block* outputBlockCopy;
 
 
 
