@@ -128,6 +128,7 @@ int main(int argc, char **argv) {
 	wmReplica->scene.attachUpdateObserver(wmReplicaStructureVisualizer);
 
 #ifdef BRICS_OSG_ENABLE
+#warning here
 	brics_3d::rsg::OSGVisualizer* wm3DVisualizer = new brics_3d::rsg::OSGVisualizer();
 	wm3DVisualizer->setConfig(visualizationConfig);
 	wm->scene.attachUpdateObserver(wm3DVisualizer); //enable visualization

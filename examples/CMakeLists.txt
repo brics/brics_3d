@@ -254,23 +254,24 @@ ELSE(USE_OSG)
 
     #version as above but without OSG visualization
     IF (USE_HDF5)
-    message(STATUS "INFO: wm_hdf5_test_no_osg used HDF5_LIBRARIES: ${HDF5_LIBRARIES}")
-    ADD_EXECUTABLE(wm_hdf5_test_no_osg wm_hdf5_test)
-    TARGET_LINK_LIBRARIES(wm_hdf5_test_no_osg
-            brics3d_world_model
-            brics3d_algorithm
-            brics3d_util
-            brics3d_core 
-        	${HDF5_LIBRARIES}
-        )  
-    ADD_EXECUTABLE(wm_udp_hdf5_test_no_osg wm_udp_hdf5_test)
-    TARGET_LINK_LIBRARIES(wm_udp_hdf5_test_no_osg
-            brics3d_world_model
-            brics3d_algorithm
-            brics3d_util
-            brics3d_core 
-        	${HDF5_LIBRARIES}
-        )            
+    #message(STATUS "INFO: wm_hdf5_test_no_osg used HDF5_LIBRARIES: ${HDF5_LIBRARIES}")
+    #ADD_EXECUTABLE(wm_hdf5_test_no_osg wm_hdf5_test)
+    #TARGET_LINK_LIBRARIES(wm_hdf5_test_no_osg
+    #        brics3d_world_model
+    #        brics3d_algorithm
+    #        brics3d_util
+    #        brics3d_core 
+    #    	${HDF5_LIBRARIES}
+    #    )  
+    #ADD_EXECUTABLE(wm_udp_hdf5_test_no_osg wm_udp_hdf5_test)
+    #TARGET_LINK_LIBRARIES(wm_udp_hdf5_test_no_osg
+    #        brics3d_world_model
+    #        brics3d_algorithm
+    #        brics3d_util
+    #        brics3d_core 
+    #    	${HDF5_LIBRARIES}
+    #    )
+    # TODO does not compile for now            
     ENDIF(USE_HDF5)
     
 ENDIF(USE_OSG)
