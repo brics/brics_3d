@@ -69,11 +69,11 @@ void DensityExtractionTest::setUp() {
 
 void DensityExtractionTest::tearDown() {
 	if (testCloud) {
-		delete testCloud;
+	//	delete testCloud;
 		testCloud = 0;
 	}
 	if (testCloudUnitCube) {
-		delete testCloudUnitCube;
+	//	delete testCloudUnitCube;
 		testCloudUnitCube = 0;
 	}
 }

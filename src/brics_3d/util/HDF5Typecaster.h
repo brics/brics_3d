@@ -20,7 +20,11 @@
 #ifndef RSG_HDF5TYPECASTER_H_
 #define RSG_HDF5TYPECASTER_H_
 
+#ifdef HDF_1_8_12_OR_HIGHER
+#include <H5Cpp.h>
+#else
 #include <cpp/H5Cpp.h>
+#endif
 
 #include "brics_3d/core/Logger.h"
 #include "brics_3d/worldModel/sceneGraph/Attribute.h"

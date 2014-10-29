@@ -174,9 +174,9 @@ WorldModel::~WorldModel() {
 #ifdef BRICS_MICROBLX_ENABLE
 	WorldModel::microBlxWmHandle = 0;
 	//ubx_node_cleanup(microBlxNodeHandle); // FIXME causes segfault
-	LOG(DEBUG) << "Shutting down world model. Goodbye.";
-#endif
 
+#endif
+	LOG(DEBUG) << "Shutting down world model. Goodbye.";
 }
 
 WorldModel::WorldModel(rsg::IIdGenerator* idGenerator) : scene(idGenerator) {

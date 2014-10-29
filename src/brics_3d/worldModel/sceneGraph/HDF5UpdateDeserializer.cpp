@@ -85,19 +85,24 @@ bool HDF5UpdateDeserializer::handleSceneGraphUpdate(const char* dataBuffer,
 
     	/* Create HDF5 (in-memory) image file from data buffer */
     	unsigned flags;
-    	flags = H5LT_FILE_IMAGE_DONT_COPY | H5LT_FILE_IMAGE_DONT_RELEASE;
+//    	flags = H5LT_FILE_IMAGE_DONT_COPY | H5LT_FILE_IMAGE_DONT_RELEASE;
+    	flags = H5LT_FILE_IMAGE_DONT_RELEASE;
+    	LOG(DEBUG) << "HDF5UpdateDeserializer: trying H5LTopen_file_image.";
     	hid_t fileId = H5LTopen_file_image((char* )dataBuffer, dataLength, flags); // to copy or not?
+    	LOG(DEBUG) << "HDF5UpdateDeserializer: H5LTopen_file_image done.";
     	H5::H5File file;
     	file.setId(fileId);
+    	LOG(DEBUG) << "HDF5UpdateDeserializer: HDF5 file set up.";
 
        //H5::Exception::dontPrint();
 //    	H5::H5File file(messageName, H5F_ACC_RDONLY); // re-open that tmp file
 
        H5::Group scene = file.openGroup("Scene");
+       LOG(DEBUG) << "HDF5UpdateDeserializer: Opened \"Scene\" group.";
        HDF5Typecaster::RsgUpdateCommand command;
        HDF5Typecaster::RsgNodeTypeInfo type;
        HDF5Typecaster::getCommandTypeInfoFromHDF5Group(command, scene);
-       bool hasParentId = false;
+       bool hasParentId = false;;
 
        try {
     	   HDF5Typecaster::getNodeIdFromHDF5Group(parentId, scene, rsgParentIdName); // we memorize the parent Id as backtrack in HDF5 is not so easy.

@@ -58,7 +58,13 @@ void SceneGraphFacade::initialize() {
 }
 
 Id SceneGraphFacade::getRootId() {
-	return idGenerator->getRootId();
+	if(idGenerator) {
+		return idGenerator->getRootId();
+	} else {
+		LOG(ERROR) << "Cannot return the root node as idGenerator is null. Possibly some else called the destructor. Try to reinitialize.";
+		Id nil = 0;
+		return nil;
+	}
 }
 
 bool SceneGraphFacade::getNodes(vector<Attribute> attributes, vector<Id>& ids) {
@@ -684,7 +690,11 @@ Node::NodeWeakPtr SceneGraphFacade::findNodeRecerence(Id id) {
 	if (nodeIterator != idLookUpTable.end()) { //TODO multiple IDs?
 		Node::NodePtr tmpNodeHandle = nodeIterator->second.lock();
 		if(tmpNodeHandle !=0) {
-			assert (id == tmpNodeHandle->getId()); // Otherwise something really went wrong while maintaining IDs...
+//			assert (id == tmpNodeHandle->getId()); // Otherwise something really went wrong while maintaining IDs...
+			if(id != tmpNodeHandle->getId()) {
+				LOG(ERROR) << "id != tmpNodeHandle->getId() " << id << "; " << tmpNodeHandle->getId();
+				return Node::NodeWeakPtr();
+			}
 			return nodeIterator->second;
 		}
 		LOG(WARNING) << "ID " << id << " seems to be orphaned. Possibly its node has been deleted earlier.";
