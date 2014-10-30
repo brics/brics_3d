@@ -184,9 +184,9 @@ IF(USE_HDF5)
     IF(USE_HDF5_NON_DEFAULT_PATH) #override results
         SET(HDF5_CXX_INCLUDE_DIR ${HDF5_ROOT}/include)        
         SET(HDF5_LIBRARIES 
-            ${HDF5_ROOT}/lib/libhdf5_hl_debug.a
-            ${HDF5_ROOT}/lib/libhdf5_cpp_debug.a
-            ${HDF5_ROOT}/lib/libhdf5_debug.a
+            ${HDF5_ROOT}/lib/libhdf5_hl_debug.so
+            ${HDF5_ROOT}/lib/libhdf5_cpp_debug.so
+            ${HDF5_ROOT}/lib/libhdf5_debug.so
             #CACHE STRING "Accumulated HDF5 libraries."   
         )
     ENDIF(USE_HDF5_NON_DEFAULT_PATH)   

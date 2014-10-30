@@ -85,8 +85,8 @@ bool HDF5UpdateDeserializer::handleSceneGraphUpdate(const char* dataBuffer,
 
     	/* Create HDF5 (in-memory) image file from data buffer */
     	unsigned flags;
-//    	flags = H5LT_FILE_IMAGE_DONT_COPY | H5LT_FILE_IMAGE_DONT_RELEASE;
-    	flags = H5LT_FILE_IMAGE_DONT_RELEASE;
+    	flags = H5LT_FILE_IMAGE_DONT_COPY | H5LT_FILE_IMAGE_DONT_RELEASE;
+//    	flags = H5LT_FILE_IMAGE_DONT_COPY;
     	LOG(DEBUG) << "HDF5UpdateDeserializer: trying H5LTopen_file_image.";
     	hid_t fileId = H5LTopen_file_image((char* )dataBuffer, dataLength, flags); // to copy or not?
     	LOG(DEBUG) << "HDF5UpdateDeserializer: H5LTopen_file_image done.";
@@ -102,14 +102,7 @@ bool HDF5UpdateDeserializer::handleSceneGraphUpdate(const char* dataBuffer,
        HDF5Typecaster::RsgUpdateCommand command;
        HDF5Typecaster::RsgNodeTypeInfo type;
        HDF5Typecaster::getCommandTypeInfoFromHDF5Group(command, scene);
-       bool hasParentId = false;;
-
-       try {
-    	   HDF5Typecaster::getNodeIdFromHDF5Group(parentId, scene, rsgParentIdName); // we memorize the parent Id as backtrack in HDF5 is not so easy.
-    	   hasParentId = true;
-       } catch (H5::Exception e) {
-    	   LOG(WARNING) << "No parentId given.";
-       }
+       bool hasParentId = false;
 
        /* Discover the attached HDF5 groups */
        group_name_iter_info groupNamesIterator;
@@ -131,6 +124,14 @@ bool HDF5UpdateDeserializer::handleSceneGraphUpdate(const char* dataBuffer,
 		   case HDF5Typecaster::ADD:
 
 			   LOG(DEBUG) << "HDF5UpdateDeserializer: Processing ADD command";
+		       try {
+		    	   HDF5Typecaster::getNodeIdFromHDF5Group(parentId, scene, rsgParentIdName); // we memorize the parent Id as backtrack in HDF5 is not so easy.
+		    	   hasParentId = true;
+		       } catch (H5::Exception e) {
+		    	   LOG(WARNING) << "No parentId given.";
+		       }
+
+
 			   if(!hasParentId) {
 				   LOG(ERROR) << "Retrieved an ADD command, but without parentId - this does not work.";
 				   break;
@@ -191,7 +192,7 @@ bool HDF5UpdateDeserializer::handleSceneGraphUpdate(const char* dataBuffer,
        }
 
        /* close file */
-//       file.flush(H5F_SCOPE_GLOBAL);
+       file.flush(H5F_SCOPE_GLOBAL);
        file.close();
 
     } catch (H5::Exception e) {
@@ -226,7 +227,7 @@ bool HDF5UpdateDeserializer::doAddGroup(H5::Group& group) {
 }
 
 bool HDF5UpdateDeserializer::doAddTransformNode(H5::Group& group) {
-	LOG(ERROR) << "HDF5UpdateDeserializer: doAddTransformNode.";
+	LOG(DEBUG) << "HDF5UpdateDeserializer: doAddTransformNode.";
 
 	Id id = 0;
 	vector<Attribute> attributes;

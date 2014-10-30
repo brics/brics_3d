@@ -110,6 +110,8 @@ int main(int argc, char **argv) {
 	/* Create the world model instances/handles */
 	brics_3d::WorldModel* wm = new brics_3d::WorldModel();        // first delegate
 	brics_3d::WorldModel* wmReplica = new brics_3d::WorldModel(); // second delegate
+	wm->scene.setCallObserversEvenIfErrorsOccurred(false);
+	wmReplica->scene.setCallObserversEvenIfErrorsOccurred(false);
 
 	/* Attach some (optional) visualization facilities (observers) */
 	brics_3d::rsg::VisualizationConfiguration visualizationConfig; // optional configuration

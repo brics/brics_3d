@@ -129,7 +129,7 @@ void HDF5Test::testLoopBack() {
 	rsg::Id sceneObjectsId;
 	wm->scene.addGroup(wm->getRootNodeId(), sceneObjectsId, attributes);
 
-	/* Box for "virtual fence" */
+	/* Box TF for "virtual fence" */
 	attributes.clear();
 	attributes.push_back(rsg::Attribute("name", "box_tf"));
 	rsg::Id boxTfId;
@@ -139,11 +139,19 @@ void HDF5Test::testLoopBack() {
 			1,2,0)); 						// Translation coefficients
 	wm->scene.addTransformNode(sceneObjectsId, boxTfId, attributes, transform120, wm->now());
 
+	/* Box for "virtual fence" */
+	attributes.clear();
+	attributes.push_back(rsg::Attribute("shape", "Box"));
+	attributes.push_back(rsg::Attribute("name", "virtual_fence")); // this name serves as a conventions here
+	rsg::Box::BoxPtr box( new rsg::Box(1,2,0));
+	rsg::Id boxId;
+	wm->scene.addGeometricNode(boxTfId, boxId, attributes, box, wm->now());
+
 	doRun = true;
 	boost::thread* thread = new boost::thread(boost::bind(&HDF5Test::threadFunction, this, wm));
 
 
-	int max = 100;
+	int max = 10;
 	for (int i = 0; i < max; ++i) {
 		double x = i/10.0;
 		brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr tmpTransform(new brics_3d::HomogeneousMatrix44(1,0,0,  	// Rotation coefficients
@@ -158,6 +166,13 @@ void HDF5Test::testLoopBack() {
 		IHomogeneousMatrix44::IHomogeneousMatrix44Ptr result2;
 		CPPUNIT_ASSERT(wm->scene.getTransform(boxTfId, wmReplica->now(), result2));
 		LOG(INFO) << "Freshly inserted and duplicated transform of box_tf is = " << std::endl << *result;
+
+		attributes.clear();
+		attributes.push_back(rsg::Attribute("shape", "Box"));
+		attributes.push_back(rsg::Attribute("name", "virtual_fence")); // this name serves as a conventions here
+		rsg::Box::BoxPtr box( new rsg::Box(1,2,x));
+		rsg::Id boxId;
+		CPPUNIT_ASSERT(wm->scene.addGeometricNode(boxTfId, boxId, attributes, box, wm->now()));
 	}
 
 
@@ -207,7 +222,7 @@ void HDF5Test::threadFunction(brics_3d::WorldModel* wm) {
 		for(vector<rsg::Id>::iterator it = resultIds.begin(); it!=resultIds.end(); ++it) { // loop over results
 			rsg::TimeStamp creationTime = wm->now();
 			IHomogeneousMatrix44::IHomogeneousMatrix44Ptr pose;
-			wm->scene.getTransformForNode(*it, wm->getRootNodeId(), creationTime, pose);
+			CPPUNIT_ASSERT(wm->scene.getTransformForNode(*it, wm->getRootNodeId(), creationTime, pose));
 			LOG(INFO) << "Pose of box_tf is = " << std::endl << *pose;
 		}
 	}
