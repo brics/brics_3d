@@ -196,6 +196,7 @@ SET (WORLD_MODEL_LIBRARY_SOURCES
     ./worldModel/sceneGraph/SceneGraphToUpdatesTraverser
     ./worldModel/sceneGraph/TemporalCache
     ./worldModel/sceneGraph/VisualizationConfiguration         
+    ./worldModel/sceneGraph/FrequencyAwareUpdateFilter 
 )
 
 #optional sources

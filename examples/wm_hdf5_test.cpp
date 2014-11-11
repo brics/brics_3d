@@ -47,6 +47,7 @@
 #include <brics_3d/worldModel/sceneGraph/HDF5UpdateSerializer.h>
 #include <brics_3d/worldModel/sceneGraph/HDF5UpdateDeserializer.h>
 #ifdef BRICS_OSG_ENABLE
+#undef BRICS_OSG_ENABLE
 	#include <brics_3d/worldModel/sceneGraph/OSGVisualizer.h>
 #endif
 
