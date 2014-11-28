@@ -187,6 +187,15 @@ void IdTest::testUuidGenerator() {
 	CPPUNIT_ASSERT(id3 != id1);
 	CPPUNIT_ASSERT(id3 != id2);
 
+	/* Test preset IDs */
+	Uuid rootId42 = 42;
+	UuidGenerator idGenerator2(rootId42);
+	CPPUNIT_ASSERT(rootId42 == idGenerator2.getRootId());
+
+	/* prevent invalid NIL ID */
+	UuidGenerator idGenerator3(nullId);
+	CPPUNIT_ASSERT(nullId != idGenerator3.getRootId());
+
 }
 
 void IdTest::testIdGenerator() {
@@ -208,6 +217,14 @@ void IdTest::testIdGenerator() {
 	CPPUNIT_ASSERT(id3 != id1);
 	CPPUNIT_ASSERT(id3 != id2);
 
+	/* Test preset IDs */
+	Id rootId42 = 42;
+	UuidGenerator idGenerator2(rootId42);
+	CPPUNIT_ASSERT(rootId42 == idGenerator2.getRootId());
+
+	/* prevent invalid NIL ID */
+	UuidGenerator idGenerator3(nullId);
+	CPPUNIT_ASSERT(nullId != idGenerator3.getRootId());
 }
 
 } /* namespace unitTests */

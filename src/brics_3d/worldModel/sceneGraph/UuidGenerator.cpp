@@ -23,7 +23,18 @@ namespace brics_3d {
 namespace rsg {
 
 UuidGenerator::UuidGenerator() {
-	rootId = 1u; //getNextValidId();
+	this->rootId = getNextValidId();
+	removeIdFromPool(rootId);
+	Id nullId = 0;
+	removeIdFromPool(nullId);
+}
+
+UuidGenerator::UuidGenerator(Id rootId) {
+	if(!rootId.isNil()) {
+		this->rootId = rootId;
+	} else { // fall back strategy in case an invalid NIL ID has been provided
+		this->rootId = getNextValidId();
+	}
 	removeIdFromPool(rootId);
 	Id nullId = 0;
 	removeIdFromPool(nullId);

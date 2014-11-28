@@ -25,7 +25,20 @@ namespace brics_3d {
 namespace rsg {
 
 SimpleIdGenerator::SimpleIdGenerator() {
-	rootId = 1u; //just an arbitrary choice here
+	this->rootId = 1u; //just an arbitrary choice here
+	runningNumber = uuidToUnsignedInt(rootId) + 1;
+	idPool.clear();
+	Id nullId = 0;
+	idPool.push_back(nullId);
+	idPool.push_back(rootId);
+}
+
+SimpleIdGenerator::SimpleIdGenerator(Id rootId) {
+	if(!rootId.isNil()) {
+		this->rootId = rootId;
+	} else { // fall back in case of NIL
+		this->rootId = 1u; //just an arbitrary choice here
+	}
 	runningNumber = uuidToUnsignedInt(rootId) + 1;
 	idPool.clear();
 	Id nullId = 0;

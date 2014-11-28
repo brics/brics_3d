@@ -9,6 +9,7 @@
 #include "SceneGraphNodesTest.h"
 #include <stdexcept>
 #include "brics_3d/core/Logger.h"
+#include "brics_3d/worldModel/sceneGraph/UuidGenerator.h"
 
 namespace unitTests {
 
@@ -2504,7 +2505,7 @@ void SceneGraphNodesTest::testSceneGraphFacade(){
 	Id geode4Id = 0;
 	const Id invalidId = 100000000;
 
-	SceneGraphFacade scene;
+	SceneGraphFacade scene(new UuidGenerator(1u));// provide a fixed root ID
 	vector<Attribute> tmpAttributes;
 	vector<Id> resultParentIds;
 	vector<Id> resultChildIds;
@@ -4102,7 +4103,7 @@ void SceneGraphNodesTest::testSceneGraphToUpdates() {
 	Id group8Id = 0;
 	Id group9Id = 0;
 
-	brics_3d::rsg::SceneGraphFacade scene;			// The 3D world model handle
+	brics_3d::rsg::SceneGraphFacade scene(new UuidGenerator(1u));			// The 3D world model handle
 	vector<Attribute> attributes;	// with this one we can attach attibutes / tags to the nodes
 
 	/* Some (dummy) data to be use within the scenegraph */
@@ -4205,7 +4206,7 @@ void SceneGraphNodesTest::testSceneGraphToUpdates() {
 	CPPUNIT_ASSERT_EQUAL(0, elementCounterCretation.deleteNodeCounter);
 
 //	cout << "Duplicating..." << endl;
-	brics_3d::rsg::SceneGraphFacade sceneDuplication;
+	brics_3d::rsg::SceneGraphFacade sceneDuplication(new UuidGenerator(1u)); // we also dublicate the root Id (=1u), for better testability
 	SceneGraphToUpdatesTraverser graphDuplicator(&sceneDuplication);
 	scene.executeGraphTraverser(&graphDuplicator, scene.getRootId());
 

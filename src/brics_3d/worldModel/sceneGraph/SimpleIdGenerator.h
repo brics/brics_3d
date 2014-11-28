@@ -35,6 +35,7 @@ class SimpleIdGenerator : public IIdGenerator {
 
 public:
 	SimpleIdGenerator();
+	SimpleIdGenerator(Id rootId);
 	virtual ~SimpleIdGenerator();
 
 	Id getNextValidId();
@@ -42,8 +43,8 @@ public:
     bool removeIdFromPool(Id id);
 
 private:
-	unsigned int runningNumber;
 	Id rootId;
+	unsigned int runningNumber;
 
 	std::vector<Id> idPool;
 };

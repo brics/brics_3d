@@ -30,6 +30,7 @@ namespace rsg {
 class UuidGenerator: public brics_3d::rsg::IIdGenerator {
 public:
 	UuidGenerator();
+	UuidGenerator(Id rootId);
 	virtual ~UuidGenerator();
 
 	// Interface implementations
@@ -39,7 +40,7 @@ public:
 
 protected:
 
-    Id rootId;
+	Id rootId;
 	std::vector<Id> idPool;
 
 	boost::uuids::random_generator idGenerator;
