@@ -67,6 +67,37 @@ Id SceneGraphFacade::getRootId() {
 	}
 }
 
+bool SceneGraphFacade::addRemoteRootNode(Id rootId, vector<Attribute> attributes) {
+	bool operationSucceeded = false;
+	bool idIsOk = false;
+
+	if( (!doesIdExist(rootId)) && (idGenerator->removeIdFromPool(rootId)) ) {
+		idIsOk = true;
+	} else {
+		LOG(WARNING) << "Remote root ID " << rootId << " cannot be assigend. Probably another object with that ID exists already!";
+		idIsOk = false;
+	}
+
+
+	if ((idIsOk)) {
+		Group::GroupPtr newGroup(new Group());
+		newGroup->setId(rootId);
+		newGroup->setAttributes(attributes);
+		//parentGroup->addChild(newNode);
+		remoteRootNodes.push_back(newGroup);
+		idLookUpTable.insert(std::make_pair(newGroup->getId(), newGroup));
+		operationSucceeded = true;
+	}
+
+//	/* Call all observers depending on the given policy in case an error occured */
+//	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
+//	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
+//		(*observerIterator)->addRemoteRootNode(rootId, attributes);
+//	}
+
+	return operationSucceeded;
+}
+
 bool SceneGraphFacade::getNodes(vector<Attribute> attributes, vector<Id>& ids) {
 	LOG(DEBUG) << " Current idLookUpTable lenght = " << idLookUpTable.size();
 	ids.clear();

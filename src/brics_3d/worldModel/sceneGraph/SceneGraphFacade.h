@@ -72,6 +72,7 @@ class SceneGraphFacade : public ISceneGraphQuery, public ISceneGraphUpdate {
 
     /* Facade specific methods */
     Id getRootId();
+    bool addRemoteRootNode(Id rootId, vector<Attribute> attributes);
 
     /* Implemented query interfaces */
     bool getNodes(vector<Attribute> attributes, vector<Id>& ids); //subgraph?
@@ -128,6 +129,9 @@ class SceneGraphFacade : public ISceneGraphQuery, public ISceneGraphUpdate {
 
     /// The root of all evil...
     Group::GroupPtr rootNode;
+
+    /// Possible set of remote root nodes.
+    vector<Group::GroupPtr> remoteRootNodes;
 
     /// Table that maps IDs to references.
     map<Id, Node::NodeWeakPtr > idLookUpTable;

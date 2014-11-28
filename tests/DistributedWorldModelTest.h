@@ -30,7 +30,7 @@
 #include "brics_3d/worldModel/sceneGraph/Box.h"
 #include "brics_3d/worldModel/sceneGraph/Cylinder.h"
 #include "brics_3d/worldModel/sceneGraph/UuidGenerator.h"
-
+#include "brics_3d/worldModel/sceneGraph/FrequencyAwareUpdateFilter.h"
 
 namespace unitTests {
 
@@ -47,6 +47,7 @@ class DistributedWorldModelTest : public CPPUNIT_NS::TestFixture {
 
 	CPPUNIT_TEST_SUITE( DistributedWorldModelTest );
 	CPPUNIT_TEST( testRootIds );
+	CPPUNIT_TEST( testRemoteRootNodes );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -54,6 +55,7 @@ public:
 	void tearDown();
 
 	void testRootIds();
+	void testRemoteRootNodes();
 
 
 private:
