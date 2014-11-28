@@ -3,6 +3,7 @@ libs
 build
 androidbuild
 angstrombuild
+clangbuild
 bin
 .project
 .cproject
