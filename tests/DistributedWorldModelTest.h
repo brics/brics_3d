@@ -30,7 +30,7 @@
 #include "brics_3d/worldModel/sceneGraph/Box.h"
 #include "brics_3d/worldModel/sceneGraph/Cylinder.h"
 #include "brics_3d/worldModel/sceneGraph/UuidGenerator.h"
-#include "brics_3d/worldModel/sceneGraph/FrequencyAwareUpdateFilter.h"
+#include "brics_3d/worldModel/sceneGraph/UpdatesToSceneGraphListener.h"
 
 namespace unitTests {
 

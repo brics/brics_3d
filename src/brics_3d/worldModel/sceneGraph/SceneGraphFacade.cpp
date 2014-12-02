@@ -219,16 +219,14 @@ bool SceneGraphFacade::addNode(Id parentId, Id& assignedId, vector<Attribute> at
 	Node::NodePtr node = tmpNode.lock();
 	Group::GroupPtr parentGroup = boost::dynamic_pointer_cast<Group>(node);
 
-	if (forcedId) {
-//				Node::NodeWeakPtr tmpNodeAlreadyExists = findNodeRecerence(assignedId); //check if id alredy exists in local LookUpTable
-//				Node::NodePtr nodeAlreadyExists = tmpNodeAlreadyExists.lock();
-				if( (!doesIdExist(assignedId)) && (idGenerator->removeIdFromPool(assignedId)) ) {
-					id = assignedId;
-					idIsOk = true;
-				} else {
-					LOG(WARNING) << "Forced ID " << assignedId << " cannot be assigend. Probably another object with that ID exists already!";
-					idIsOk = false;
-				}
+	if (forcedId && (parentGroup != 0)) { // NOTE: As we are handling existing IDs we need to be careful with removing them from the pool
+		if( (!doesIdExist(assignedId)) && (idGenerator->removeIdFromPool(assignedId)) ) {
+			id = assignedId;
+			idIsOk = true;
+		} else {
+			LOG(WARNING) << "Forced ID " << assignedId << " cannot be assigend. Probably another object with that ID exists already!";
+			idIsOk = false;
+		}
 	} else {
 		id = idGenerator->getNextValidId();
 		idIsOk = true;
@@ -269,16 +267,14 @@ bool SceneGraphFacade::addGroup(Id parentId, Id& assignedId, vector<Attribute> a
 	Node::NodePtr node = tmpNode.lock();
 	Group::GroupPtr parentGroup = boost::dynamic_pointer_cast<Group>(node);
 
-	if (forcedId) {
-//				Node::NodeWeakPtr tmpNodeAlreadyExists = findNodeRecerence(assignedId); //check if id alredy exists in local LookUpTable
-//				Node::NodePtr nodeAlreadyExists = tmpNodeAlreadyExists.lock();
-				if( (!doesIdExist(assignedId)) && (idGenerator->removeIdFromPool(assignedId)) ) {
-					id = assignedId;
-					idIsOk = true;
-				} else {
-					LOG(WARNING) << "Forced ID " << assignedId << " cannot be assigend. Probably another object with that ID exists already!";
-					idIsOk = false;
-				}
+	if (forcedId && (parentGroup != 0)) { // NOTE: As we are handling existing IDs we need to be careful with removing them from the pool
+		if( (!doesIdExist(assignedId)) && (idGenerator->removeIdFromPool(assignedId)) ) {
+			id = assignedId;
+			idIsOk = true;
+		} else {
+			LOG(WARNING) << "Forced ID " << assignedId << " cannot be assigend. Probably another object with that ID exists already!";
+			idIsOk = false;
+		}
 	} else {
 		id = idGenerator->getNextValidId();
 		idIsOk = true;
@@ -323,9 +319,7 @@ bool SceneGraphFacade::addTransformNode(Id parentId, Id& assignedId, vector<Attr
 
 	Group::GroupPtr parentGroup = boost::dynamic_pointer_cast<Group>(node);
 
-	if (forcedId) {
-//		Node::NodeWeakPtr tmpNodeAlreadyExists = findNodeRecerence(assignedId); //check if id alredy exists in local LookUpTable
-//		Node::NodePtr nodeAlreadyExists = tmpNodeAlreadyExists.lock();
+	if (forcedId && (parentGroup != 0)) { // NOTE: As we are handling existing IDs we need to be careful with removing them from the pool
 		if( (!doesIdExist(assignedId)) && (idGenerator->removeIdFromPool(assignedId)) ) {
 			id = assignedId;
 			idIsOk = true;
@@ -377,7 +371,7 @@ bool SceneGraphFacade::addUncertainTransformNode(Id parentId, Id& assignedId, ve
 
 	Group::GroupPtr parentGroup = boost::dynamic_pointer_cast<Group>(node);
 
-	if (forcedId) {
+	if (forcedId && (parentGroup != 0)) { // NOTE: As we are handling existing IDs we need to be careful with removing them from the pool
 		if( (!doesIdExist(assignedId)) && (idGenerator->removeIdFromPool(assignedId)) ) {
 			id = assignedId;
 			idIsOk = true;
@@ -429,9 +423,7 @@ bool SceneGraphFacade::addGeometricNode(Id parentId, Id& assignedId, vector<Attr
 	Node::NodePtr node = tmpNode.lock();
 	Group::GroupPtr parentGroup = boost::dynamic_pointer_cast<Group>(node);
 
-	if (forcedId) {
-//		Node::NodeWeakPtr tmpNodeAlreadyExists = findNodeRecerence(assignedId); //check if id alredy exists in local LookUpTable
-//		Node::NodePtr nodeAlreadyExists = tmpNodeAlreadyExists.lock();
+	if (forcedId && (parentGroup != 0)) { // NOTE: As we are handling existing IDs we need to be careful with removing them from the pool
 		if( (!doesIdExist(assignedId)) && (idGenerator->removeIdFromPool(assignedId)) ) {
 			id = assignedId;
 			idIsOk = true;

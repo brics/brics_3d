@@ -497,7 +497,11 @@ void DistributedWorldModelTest::testDirectUpdateObserver() {
 	 * Various observer attachments
 	 */
 	CPPUNIT_ASSERT(wm->scene.attachUpdateObserver(&wmNodeCounter));
-//	CPPUNIT_ASSERT(wm->scene.attachUpdateObserver(&(remoteWm->scene))); // we directly let one WM observe the other one
+//	CPPUNIT_ASSERT(wm->scene.attachUpdateObserver(&(remoteWm->scene))); // this is not possible
+	// we directly let one WM observe the other one
+	UpdatesToSceneGraphListener wmToRemoteWmListener;
+	CPPUNIT_ASSERT(wm->scene.attachUpdateObserver(&wmToRemoteWmListener));
+	wmToRemoteWmListener.attachSceneGraph(&remoteWm->scene);
 	CPPUNIT_ASSERT(remoteWm->scene.attachUpdateObserver(&remoteWmNodeCounter));
 
 	Id groupId;
@@ -533,7 +537,7 @@ void DistributedWorldModelTest::testDirectUpdateObserver() {
 	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultIds.size()));
 
 	/*
-	 * now we add the remote node bot we keep it unconnected
+	 * Now we add the remote node but we keep it unconnected
 	 */
 	attributes.clear(); // here we ommit the attributes
 	remoteWm->scene.addRemoteRootNode(wm->getRootNodeId(), attributes);
@@ -571,7 +575,7 @@ void DistributedWorldModelTest::testDirectUpdateObserver() {
 	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultIds.size())); // should still fail as there is no connection between the graphs
 
 	/*
-	 * Finally connect the graphs within the rmote root node
+	 * Finally connect the graphs within the remote root node
 	 */
 	CPPUNIT_ASSERT(remoteWm->scene.addParent(wm->getRootNodeId(), remoteWm->getRootNodeId()));
 
@@ -607,10 +611,10 @@ void DistributedWorldModelTest::testDirectUpdateObserver() {
 	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(resultIds.size())); // now the updates since the addRemoteRoot should be available
 
 	/*
-	 * Trigger a full traveral on the firs one. get them fully synchrinized.
-	 * Can be used to solve the late join.
+	 * Trigger a full traveral on the first one to get them fully synchronized.
+	 * Can be used to solve the late joins.
 	 */
-	SceneGraphToUpdatesTraverser wmToRemotWm(&remoteWm->scene);
+	SceneGraphToUpdatesTraverser wmToRemotWm(&wmToRemoteWmListener);
 	wm->scene.executeGraphTraverser(&wmToRemotWm, wm->getRootNodeId());
 
 	resultIds.clear();
