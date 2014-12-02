@@ -608,7 +608,7 @@ bool SceneGraphFacade::addParent(Id id, Id parentId) {
 	Node::NodePtr parentNode = tmpParentNode.lock();
 	Group::GroupPtr parentGroup = boost::dynamic_pointer_cast<Group>(parentNode);
 
-	if (parentGroup != 0 && node != 0) {
+	if (parentGroup != 0 && node != 0 && (id != parentId)) {
 		parentGroup->addChild(node);
 		operationSucceeded = true;
 	}
@@ -624,7 +624,12 @@ bool SceneGraphFacade::addParent(Id id, Id parentId) {
 	if (operationSucceeded) {
 		return true;
 	} else {
-		LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new parent-child relation.";
+		if (id == parentId) {
+			LOG(ERROR) << "Parent with ID " << parentId << " and child ID " << id << " are identical. Cannot add a new parent-child relation.";
+		} else {
+			LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new parent-child relation.";
+		}
+
 		return false;
 	}
 }
