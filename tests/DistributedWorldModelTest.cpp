@@ -79,6 +79,84 @@ void DistributedWorldModelTest::testRootIds() {
 	delete wmWithFixedId2;
 }
 
+void DistributedWorldModelTest::testRemoteRootNodeCreationAndDeletion() {
+	Id localRootId = 1u;
+	WorldModel* wm = new WorldModel(new UuidGenerator(localRootId));
+	CPPUNIT_ASSERT(!wm->getRootNodeId().isNil());
+	CPPUNIT_ASSERT(wm->getRootNodeId() == localRootId);
+	vector<Attribute> dummyAttributes;
+
+	// preconditions
+	vector<Id> remoteRootIds;
+	vector<Attribute> attributes;
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(remoteRootIds.size()));
+
+	/* check prevention self inclusion */
+	CPPUNIT_ASSERT(!wm->scene.addRemoteRootNode(wm->getRootNodeId(),attributes));
+	remoteRootIds.clear();
+	CPPUNIT_ASSERT(wm->scene.getRemoteRootNodes(remoteRootIds));
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(remoteRootIds.size()));
+
+	/* valid Ids*/
+	Id remotRootId1 = 2u;
+	Id remotRootId2 = 3u;
+
+	CPPUNIT_ASSERT(wm->scene.addRemoteRootNode(remotRootId1, attributes));
+	remoteRootIds.clear();
+	CPPUNIT_ASSERT(wm->scene.getRemoteRootNodes(remoteRootIds));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(remoteRootIds.size()));
+	CPPUNIT_ASSERT(remoteRootIds[0] ==  remotRootId1);
+
+	CPPUNIT_ASSERT(wm->scene.addRemoteRootNode(remotRootId2, attributes));
+	remoteRootIds.clear();
+	CPPUNIT_ASSERT(wm->scene.getRemoteRootNodes(remoteRootIds));
+	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(remoteRootIds.size()));
+	CPPUNIT_ASSERT(remoteRootIds[0] ==  remotRootId1);
+	CPPUNIT_ASSERT(remoteRootIds[1] ==  remotRootId2);
+
+	// chck existence
+	CPPUNIT_ASSERT(wm->scene.getNodeAttributes(remotRootId1, dummyAttributes));
+	CPPUNIT_ASSERT(wm->scene.getNodeAttributes(remotRootId2, dummyAttributes));
+
+	/* Remove first one  */
+	CPPUNIT_ASSERT(wm->scene.deleteNode(remotRootId1));
+	remoteRootIds.clear();
+	CPPUNIT_ASSERT(wm->scene.getRemoteRootNodes(remoteRootIds));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(remoteRootIds.size()));
+	CPPUNIT_ASSERT(remoteRootIds[0] ==  remotRootId2);
+
+	CPPUNIT_ASSERT(!wm->scene.getNodeAttributes(remotRootId1, dummyAttributes));
+	CPPUNIT_ASSERT(wm->scene.getNodeAttributes(remotRootId2, dummyAttributes));
+
+	CPPUNIT_ASSERT(!wm->scene.deleteNode(remotRootId1));
+	remoteRootIds.clear();
+	CPPUNIT_ASSERT(wm->scene.getRemoteRootNodes(remoteRootIds));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(remoteRootIds.size()));
+	CPPUNIT_ASSERT(remoteRootIds[0] ==  remotRootId2);
+
+	/*
+	 * add remot node to
+	 */
+	CPPUNIT_ASSERT(wm->scene.addParent(remotRootId2, localRootId));
+
+	CPPUNIT_ASSERT(!wm->scene.getNodeAttributes(remotRootId1, dummyAttributes));
+	CPPUNIT_ASSERT(wm->scene.getNodeAttributes(remotRootId2, dummyAttributes));
+
+	/*
+	 * remove last one
+	 */
+	CPPUNIT_ASSERT(wm->scene.deleteNode(remotRootId2));
+	remoteRootIds.clear();
+	CPPUNIT_ASSERT(wm->scene.getRemoteRootNodes(remoteRootIds));
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(remoteRootIds.size()));
+
+
+	CPPUNIT_ASSERT(!wm->scene.getNodeAttributes(remotRootId1, dummyAttributes));
+	CPPUNIT_ASSERT(!wm->scene.getNodeAttributes(remotRootId2, dummyAttributes));
+
+	delete wm;
+}
+
 void DistributedWorldModelTest::testRemoteRootNodes() {
 
 	WorldModel* wm = 0;
@@ -641,6 +719,47 @@ void DistributedWorldModelTest::testDirectUpdateObserver() {
 
 	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.addNodeCounter); //precondition
 	CPPUNIT_ASSERT_EQUAL(3, remoteWmNodeCounter.addGroupCounter); // update should be there
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.deleteNodeCounter);
+
+	/*
+	 * Now both are synronized. Further sucessive updates should be passed automatically
+	 */
+
+	attributes.clear();
+	attributes.push_back(rsg::Attribute("name", "group4"));
+	attributes.push_back(rsg::Attribute("name", "some_common_tag"));
+	wm->scene.addGroup(wm->getRootNodeId(), groupId, attributes);
+
+	resultIds.clear();
+	attributes.clear();
+	attributes.push_back(rsg::Attribute("name", "some_common_tag"));
+	CPPUNIT_ASSERT(wm->scene.getNodes(attributes, resultIds));
+	CPPUNIT_ASSERT_EQUAL(4u, static_cast<unsigned int>(resultIds.size()));
+
+	resultIds.clear();
+	attributes.clear();
+	attributes.push_back(rsg::Attribute("name", "some_common_tag"));
+	CPPUNIT_ASSERT(remoteWm->scene.getNodes(attributes, resultIds));
+	CPPUNIT_ASSERT_EQUAL(4u, static_cast<unsigned int>(resultIds.size())); // now the last update should be available
+
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addNodeCounter); //precondition
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.deleteNodeCounter);
+
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.addNodeCounter); //precondition
+	CPPUNIT_ASSERT_EQUAL(4, remoteWmNodeCounter.addGroupCounter); // update should be there
 	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.addTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.addGeometricNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.setNodeAttributesCounter);

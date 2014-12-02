@@ -47,6 +47,7 @@ class DistributedWorldModelTest : public CPPUNIT_NS::TestFixture {
 
 	CPPUNIT_TEST_SUITE( DistributedWorldModelTest );
 	CPPUNIT_TEST( testRootIds );
+	CPPUNIT_TEST( testRemoteRootNodeCreationAndDeletion );
 	CPPUNIT_TEST( testRemoteRootNodes );
 	CPPUNIT_TEST( testRemoteRootNodeQueries );
 	CPPUNIT_TEST( testDirectUpdateObserver );
@@ -57,6 +58,7 @@ public:
 	void tearDown();
 
 	void testRootIds();
+	void testRemoteRootNodeCreationAndDeletion();
 	void testRemoteRootNodes();
 	void testRemoteRootNodeQueries();
 	void testDirectUpdateObserver();

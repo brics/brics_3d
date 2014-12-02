@@ -98,6 +98,17 @@ bool SceneGraphFacade::addRemoteRootNode(Id rootId, vector<Attribute> attributes
 	return operationSucceeded;
 }
 
+bool SceneGraphFacade::getRemoteRootNodes(vector<Id>& ids) {
+	ids.clear();
+
+	vector<Group::GroupPtr>::const_iterator it;
+	for(it = remoteRootNodes.begin(); it != remoteRootNodes.end(); ++it) {
+		ids.push_back((*it)->getId());
+	}
+
+	return true;
+}
+
 bool SceneGraphFacade::getNodes(vector<Attribute> attributes, vector<Id>& ids) {
 	LOG(DEBUG) << " Current idLookUpTable lenght = " << idLookUpTable.size();
 	ids.clear();
@@ -550,9 +561,27 @@ bool SceneGraphFacade::deleteNode(Id id) {
 	Node::NodePtr node = tmpNode.lock();
 	if (node != 0) {
 		if (node->getNumberOfParents() == 0) { // oops we are trying to delete the root node, but this on has no parents...
-			assert (id == getRootId()); // just to be sure something really strange did not happend...
-			LOG(WARNING) << "The root node with ID " << id << " cannot be deleted.";
-			operationSucceeded = false;
+			//assert (id == getRootId()); // just to be sure something really strange did not happend...
+			if(id == getRootId()) { // case: local root. this cannot be deleted
+				LOG(WARNING) << "The root node with ID " << id << " cannot be deleted.";
+				operationSucceeded = false;
+			} else { // case remote root nodes; they can be deleted but have to be trated differently
+
+				/* Loop over all remote nodes and remove the one(?) with corresponding id */
+				int deletionCouter = 0;
+				vector<Group::GroupPtr>::iterator it;
+				for(it = remoteRootNodes.begin(); it != remoteRootNodes.end();) {
+				    if (id == (*it)->getId()) {
+				        it = remoteRootNodes.erase(it);
+				    	++deletionCouter;
+				    } else {
+				        ++it;
+				    }
+				}
+				assert(deletionCouter == 1);
+				idLookUpTable.erase(id);
+				operationSucceeded = true; // could be still part of a graph
+			}
 
 		} else {
 
@@ -573,6 +602,26 @@ bool SceneGraphFacade::deleteNode(Id id) {
 			}
 			idLookUpTable.erase(id); //erase by ID (if not done here there would be orphaned IDs)
 			// TODO: do we have to delete children?
+
+			/* Case: node is a remote root node that was integrated as a regular node.
+			 * Thus, we have to clean up the remoteRootNodes list as above in the
+			 * "no-parent-case".
+			 */
+
+			/* Loop over all remote nodes and remove the one(?) with corresponding id */
+			int deletionCouter = 0;
+			vector<Group::GroupPtr>::iterator it;
+			for(it = remoteRootNodes.begin(); it != remoteRootNodes.end();) {
+			    if (id == (*it)->getId()) {
+			        it = remoteRootNodes.erase(it);
+			    	++deletionCouter;
+			    } else {
+			        ++it;
+			    }
+			}
+			assert(deletionCouter <= 1); // no or exactly one remoteNode possible
+			idLookUpTable.erase(id);
+
 			operationSucceeded = true;
 		}
 	}

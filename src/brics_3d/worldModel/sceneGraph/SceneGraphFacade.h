@@ -73,6 +73,7 @@ class SceneGraphFacade : public ISceneGraphQuery, public ISceneGraphUpdate {
     /* Facade specific methods */
     Id getRootId();
     bool addRemoteRootNode(Id rootId, vector<Attribute> attributes);
+    bool getRemoteRootNodes(vector<Id>& ids);
 
     /* Implemented query interfaces */
     bool getNodes(vector<Attribute> attributes, vector<Id>& ids); //subgraph?
