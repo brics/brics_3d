@@ -175,6 +175,13 @@ bool HDF5UpdateDeserializer::handleSceneGraphUpdate(const char* dataBuffer,
 
         	   break;
 
+           case HDF5Typecaster::SET_ATTRIBUTES:
+
+        	   LOG(DEBUG) << "HDF5UpdateDeserializer: Processing SET_ATTRIBUTES command";
+        	   doSetNodeAttributes(group);
+
+        	   break;
+
            case HDF5Typecaster::DELETE:
 
         	   LOG(DEBUG) << "HDF5UpdateDeserializer: Processing DELETE command";
@@ -350,8 +357,18 @@ bool HDF5UpdateDeserializer::doAddRemoteRootNode(H5::Group& group) {
 }
 
 bool HDF5UpdateDeserializer::doSetNodeAttributes(H5::Group& group) {
-	LOG(ERROR) << "HDF5UpdateDeserializer: doSetNodeAttributes functionality not yet implemented.";
-	return false;
+	LOG(DEBUG) << "HDF5UpdateDeserializer: doSetNodeAttributes.";
+	Id id = 0;
+	vector<Attribute> attributes;
+
+	if (!HDF5Typecaster::getNodeIdFromHDF5Group(id, group)) {
+		LOG(ERROR) << "H5::Group has no ID";
+		return false;
+	}
+	LOG(DEBUG) << "H5::Group has ID " << id;
+	HDF5Typecaster::getAttributesFromHDF5Group(attributes, group);
+
+	return wm->scene.setNodeAttributes(id, attributes);
 }
 
 bool HDF5UpdateDeserializer::doSetTransform(H5::Group& group) {

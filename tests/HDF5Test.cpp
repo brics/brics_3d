@@ -536,7 +536,7 @@ void HDF5Test::testUpdateObersver() {
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.setTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.deleteNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addParentCounter);
-	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.removeParentCounter);
 
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addGroupCounter);
@@ -547,7 +547,7 @@ void HDF5Test::testUpdateObersver() {
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.setTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.deleteNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(2, remoteWmNodeCounter.addParentCounter);
-	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.removeParentCounter);
 
 	ITransformUncertainty::ITransformUncertaintyPtr uncertainty456(new CovarianceMatrix66(6, 0.002, 0.002, 0.0000, 0.000000, 0.00000));
 	CPPUNIT_ASSERT(wm->scene.setUncertainTransform(utfId, transform456, uncertainty456 , wm->now()));

@@ -215,8 +215,32 @@ bool HDF5UpdateSerializer::addRemoteRootNode(Id rootId, vector<Attribute> attrib
 
 bool HDF5UpdateSerializer::setNodeAttributes(Id id,
 		vector<Attribute> newAttributes) {
-	LOG(ERROR) << "HDF5UpdateSerializer: functionality not yet implemented.";
-	return false;
+
+	LOG(DEBUG) << "HDF5UpdateSerializer: updating Attributes for node " << id.toString();
+	try {
+		std::string fileName = "Attribute-Update-" + id.toString() + fileSuffix;
+		H5::FileAccPropList faplCore;
+		faplCore.setCore(fileImageIncremet, storeMessageBackupsOnFileSystem); // toggle in-memory behavior
+		H5::H5File file(fileName, H5F_ACC_TRUNC, H5::FileCreatPropList::DEFAULT, faplCore);
+
+		/* Generic/common entry group with general information */
+		H5::Group scene = file.createGroup("Scene");
+		HDF5Typecaster::addCommandTypeInfoToHDF5Group(HDF5Typecaster::SET_ATTRIBUTES, scene);
+
+		H5::Group group = scene.createGroup("Attribute-Update-" + id.toString()); // The actual data
+		HDF5Typecaster::addNodeIdToHDF5Group(id, group);
+		HDF5Typecaster::addAttributesToHDF5Group(newAttributes, group);
+
+		file.flush(H5F_SCOPE_GLOBAL);
+		doSendMessage(file);
+		file.close();
+
+	} catch (H5::Exception e) {
+		LOG(ERROR) << "HDF5UpdateSerializer setNodeAttributes: Cannot create a HDF serialization.";
+		return false;
+	}
+
+	return true;
 }
 
 bool HDF5UpdateSerializer::setTransform(Id id,
