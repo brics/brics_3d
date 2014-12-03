@@ -198,6 +198,7 @@ void HDF5Test::testUpdateObersver() {
 	brics_3d::WorldModel* wmReplica = new brics_3d::WorldModel(); // second world model agent
 
 	vector<Attribute> dummyAttributes;
+	vector<Attribute> resultAttributes;
 	Id assignedId;
 
 	brics_3d::rsg::HDF5UpdateDeserializer* wmUpdatesToHdf5deserializer = new brics_3d::rsg::HDF5UpdateDeserializer(wmReplica);
@@ -521,6 +522,12 @@ void HDF5Test::testUpdateObersver() {
 	CPPUNIT_ASSERT_EQUAL(2, remoteWmNodeCounter.addParentCounter);
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.removeParentCounter);
 
+	resultAttributes.clear();
+	CPPUNIT_ASSERT(wmReplica->scene.getNodeAttributes(wm->getRootNodeId(), resultAttributes));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultAttributes.size()));
+	CPPUNIT_ASSERT(resultAttributes[0].key.compare("name") == 0);
+	CPPUNIT_ASSERT(resultAttributes[0].value.compare("someRootNodePolicy") == 0);
+
 	brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform456(new brics_3d::HomogeneousMatrix44(1,0,0,  	// Rotation coefficients
 	                                                             0,1,0,
 	                                                             0,0,1,
@@ -548,6 +555,15 @@ void HDF5Test::testUpdateObersver() {
 	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.deleteNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(2, remoteWmNodeCounter.addParentCounter);
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.removeParentCounter);
+
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transformResult1;
+	CPPUNIT_ASSERT(wmReplica->scene.getTransformForNode(tfId, wmReplica->getRootNodeId(), wmReplica->now(), transformResult1));
+
+	//check data
+	const double* matrix1 = transformResult1->getRawData();
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(4, matrix1[matrixEntry::x], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(5, matrix1[matrixEntry::y], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(6, matrix1[matrixEntry::z], maxTolerance);
 
 	ITransformUncertainty::ITransformUncertaintyPtr uncertainty456(new CovarianceMatrix66(6, 0.002, 0.002, 0.0000, 0.000000, 0.00000));
 	CPPUNIT_ASSERT(wm->scene.setUncertainTransform(utfId, transform456, uncertainty456 , wm->now()));

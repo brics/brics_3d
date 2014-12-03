@@ -49,6 +49,8 @@ public:
 	void threadFunction(brics_3d::WorldModel* wm);
 
 private:
+	  /// Maximum deviation for equality check of double variables
+	  static const double maxTolerance = 0.00001;
 
 //	brics_3d::WorldModel* wm;
 	volatile bool doRun;
