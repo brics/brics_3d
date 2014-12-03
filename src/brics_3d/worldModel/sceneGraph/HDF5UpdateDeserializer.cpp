@@ -135,8 +135,8 @@ bool HDF5UpdateDeserializer::handleSceneGraphUpdate(const char* dataBuffer,
 			   if(!hasParentId) {
 				   LOG(ERROR) << "Retrieved an ADD command, but without parentId - this does not work.";
 				   break;
-
 			   }
+
 			   HDF5Typecaster::getNodeTypeInfoFromHDF5Group(type, group);
 
 			   switch (type) {
@@ -165,7 +165,7 @@ bool HDF5UpdateDeserializer::handleSceneGraphUpdate(const char* dataBuffer,
 
            case HDF5Typecaster::SET_TRANSFORM:
 
-        	   LOG(DEBUG) << "HDF5UpdateDeserializer: Processing SET_TRANSFOR command";
+        	   LOG(DEBUG) << "HDF5UpdateDeserializer: Processing SET_TRANSFORM command";
         	   HDF5Typecaster::getNodeTypeInfoFromHDF5Group(type, group);
         	   if(type != HDF5Typecaster::TRANSFORM) {
         		   LOG(ERROR) << "Received a SET_TRANSFORM command, but node type is not a Transform.";
@@ -183,6 +183,29 @@ bool HDF5UpdateDeserializer::handleSceneGraphUpdate(const char* dataBuffer,
         	   break;
 
     	   break;
+
+           case HDF5Typecaster::ADD_PARENT:
+
+			   LOG(DEBUG) << "HDF5UpdateDeserializer: Processing ADD_PARENT command";
+		       try {
+		    	   HDF5Typecaster::getNodeIdFromHDF5Group(parentId, scene, rsgParentIdName); // we memorize the parent Id as backtrack in HDF5 is not so easy.
+		    	   hasParentId = true;
+		       } catch (H5::Exception e) {
+		    	   LOG(WARNING) << "No parentId given.";
+		       }
+
+			   if(!hasParentId) {
+				   LOG(ERROR) << "Retrieved an ADD_PARENT command, but without parentId - this does not work.";
+				   break;
+			   }
+
+        	   LOG(DEBUG) << "HDF5UpdateDeserializer: Processing ADD_PARENT command";
+        	   doAddParent(group);
+
+        	   break;
+
+    	   break;
+
     	   default:
     		   LOG(WARNING) << "HDF5UpdateDeserializer: Unhandled command: " << command;
     		   break;
@@ -326,8 +349,15 @@ bool HDF5UpdateDeserializer::doDeleteNode(H5::Group& group) {
 }
 
 bool HDF5UpdateDeserializer::doAddParent(H5::Group& group) {
-	LOG(ERROR) << "HDF5UpdateDeserializer: doAddParent functionality not yet implemented.";
-	return false;
+	LOG(DEBUG) << "HDF5UpdateDeserializer: doAddParent.";
+
+	Id id;
+	if (!HDF5Typecaster::getNodeIdFromHDF5Group(id, group)) {
+		LOG(ERROR) << "H5::Group that shall be deleted has no ID";
+		return false;
+	}
+
+	return wm->scene.addParent(id, parentId);
 }
 
 bool HDF5UpdateDeserializer::doRemoveParent(H5::Group& group) {
