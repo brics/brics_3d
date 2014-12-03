@@ -220,6 +220,13 @@ bool HDF5UpdateDeserializer::handleSceneGraphUpdate(const char* dataBuffer,
 
         	   break;
 
+           case HDF5Typecaster::ADD_REMOTE_ROOT_NODE:
+
+        	   LOG(DEBUG) << "HDF5UpdateDeserializer: Processing ADD_REMOTE_ROOT_NODE command";
+        	   doAddRemoteRootNode(group);
+
+        	   break;
+
     	   break;
 
     	   default:
@@ -325,6 +332,21 @@ bool HDF5UpdateDeserializer::doAddGeometricNode(H5::Group& group) {
 	}
 
 	return wm->scene.addGeometricNode(parentId, id, attributes, shape, timeStamp, true);
+}
+
+bool HDF5UpdateDeserializer::doAddRemoteRootNode(H5::Group& group) {
+	LOG(DEBUG) << "HDF5UpdateDeserializer: doAddRemoteRootNode.";
+	Id id = 0;
+	vector<Attribute> attributes;
+
+	if (!HDF5Typecaster::getNodeIdFromHDF5Group(id, group)) {
+		LOG(ERROR) << "H5::Group has no ID";
+		return false;
+	}
+	LOG(DEBUG) << "H5::Group has ID " << id;
+	HDF5Typecaster::getAttributesFromHDF5Group(attributes, group);
+
+	return wm->scene.addRemoteRootNode(id, attributes);
 }
 
 bool HDF5UpdateDeserializer::doSetNodeAttributes(H5::Group& group) {

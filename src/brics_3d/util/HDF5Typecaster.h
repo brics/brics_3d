@@ -112,7 +112,8 @@ public:
 	    SET_ATTRIBUTES,
 	    SET_TRANSFORM,
 	    ADD_PARENT,
-	    REMOVE_PARENT
+	    REMOVE_PARENT,
+	    ADD_REMOTE_ROOT_NODE
 	};
 
 	/*
@@ -125,7 +126,6 @@ public:
 	    NODE,
 	    GROUP,
 	    GEOMETIRC_NODE,
-	    REMOTE_ROOT_NODE,
 	    TRANSFORM,
 	    UNCERTAIN_TRANSFORM,
 	    JOINT

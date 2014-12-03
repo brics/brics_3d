@@ -188,23 +188,22 @@ bool HDF5UpdateSerializer::addGeometricNode(Id parentId,
 bool HDF5UpdateSerializer::addRemoteRootNode(Id rootId, vector<Attribute> attributes) {
 	LOG(DEBUG) << "HDF5UpdateSerializer: adding a RemoteNode-" << rootId.toString();
 	try {
-		std::string fileName = "RemoteNode-" + rootId.toString() + fileSuffix;
+		std::string fileName = "RemoteRootNode-" + rootId.toString() + fileSuffix;
 		H5::FileAccPropList faplCore;
 		faplCore.setCore(fileImageIncremet, storeMessageBackupsOnFileSystem); // toggle in-memory behavior
 		H5::H5File file(fileName, H5F_ACC_TRUNC, H5::FileCreatPropList::DEFAULT, faplCore);
 
 		/* Generic/common entry group with general information */
 		H5::Group scene = file.createGroup("Scene");
+		HDF5Typecaster::addCommandTypeInfoToHDF5Group(HDF5Typecaster::ADD_REMOTE_ROOT_NODE, scene);
 
-		H5::Group group = scene.createGroup("RemoteNode-" + rootId.toString()); // The actual data
-		HDF5Typecaster::addNodeTypeInfoToHDF5Group(HDF5Typecaster::REMOTE_ROOT_NODE, group);
+		H5::Group group = scene.createGroup("RemoteRootNode-" + rootId.toString()); // The actual data
 		HDF5Typecaster::addNodeIdToHDF5Group(rootId, group);
 		HDF5Typecaster::addAttributesToHDF5Group(attributes, group);
 
 		file.flush(H5F_SCOPE_GLOBAL);
 		doSendMessage(file);
 		file.close();
-//		doSendMessage(fileName);
 
 	} catch (H5::Exception e) {
 		LOG(ERROR) << "HDF5UpdateSerializer addRemoteRootNode: Cannot create a HDF serialization.";

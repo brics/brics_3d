@@ -49,6 +49,7 @@ protected:
 	bool doAddGroup(H5::Group& group);
 	bool doAddTransformNode(H5::Group& group);
 	bool doAddGeometricNode(H5::Group& group);
+	bool doAddRemoteRootNode(H5::Group& group);
 	bool doSetNodeAttributes(H5::Group& group);
 	bool doSetTransform(H5::Group& group);
 	bool doDeleteNode(H5::Group& group);
