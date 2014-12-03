@@ -198,9 +198,25 @@ bool HDF5UpdateDeserializer::handleSceneGraphUpdate(const char* dataBuffer,
 				   LOG(ERROR) << "Retrieved an ADD_PARENT command, but without parentId - this does not work.";
 				   break;
 			   }
-
-        	   LOG(DEBUG) << "HDF5UpdateDeserializer: Processing ADD_PARENT command";
         	   doAddParent(group);
+
+        	   break;
+
+           case HDF5Typecaster::REMOVE_PARENT:
+
+			   LOG(DEBUG) << "HDF5UpdateDeserializer: Processing REMOVE_PARENT command";
+		       try {
+		    	   HDF5Typecaster::getNodeIdFromHDF5Group(parentId, scene, rsgParentIdName); // we memorize the parent Id as backtrack in HDF5 is not so easy.
+		    	   hasParentId = true;
+		       } catch (H5::Exception e) {
+		    	   LOG(WARNING) << "No parentId given.";
+		       }
+
+			   if(!hasParentId) {
+				   LOG(ERROR) << "Retrieved an REMOVE_PARENT command, but without parentId - this does not work.";
+				   break;
+			   }
+        	   doRemoveParent(group);
 
         	   break;
 
@@ -361,8 +377,15 @@ bool HDF5UpdateDeserializer::doAddParent(H5::Group& group) {
 }
 
 bool HDF5UpdateDeserializer::doRemoveParent(H5::Group& group) {
-	LOG(ERROR) << "HDF5UpdateDeserializer: doRemoveParent functionality not yet implemented.";
-	return false;
+	LOG(DEBUG) << "HDF5UpdateDeserializer: doRemoveParent.";
+
+	Id id;
+	if (!HDF5Typecaster::getNodeIdFromHDF5Group(id, group)) {
+		LOG(ERROR) << "H5::Group that shall be deleted has no ID";
+		return false;
+	}
+
+	return wm->scene.removeParent(id, parentId);
 }
 
 } /* namespace rsg */
