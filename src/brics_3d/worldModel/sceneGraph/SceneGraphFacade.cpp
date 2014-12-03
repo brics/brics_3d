@@ -89,11 +89,13 @@ bool SceneGraphFacade::addRemoteRootNode(Id rootId, vector<Attribute> attributes
 		operationSucceeded = true;
 	}
 
-//	/* Call all observers depending on the given policy in case an error occured */
-//	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
-//	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
-//		(*observerIterator)->addRemoteRootNode(rootId, attributes);
-//	}
+	/* Call all observers depending on the given policy in case an error occured */
+	if (operationSucceeded || callObserversEvenIfErrorsOccurred) {
+		std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
+		for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
+			(*observerIterator)->addRemoteRootNode(rootId, attributes);
+		}
+	}
 
 	return operationSucceeded;
 }
@@ -254,10 +256,12 @@ bool SceneGraphFacade::addNode(Id parentId, Id& assignedId, vector<Attribute> at
 	}
 
 	/* Call all observers depending on the given policy in case an error occured */
-	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
-	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
-		Id assignedIdcopy = assignedId; // prevent that observer might change this....
-		(*observerIterator)->addNode(parentId, assignedIdcopy, attributes);
+	if (operationSucceeded || callObserversEvenIfErrorsOccurred) {
+		std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
+		for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
+			Id assignedIdcopy = assignedId; // prevent that observer might change this....
+			(*observerIterator)->addNode(parentId, assignedIdcopy, attributes);
+		}
 	}
 
 	if (operationSucceeded) {

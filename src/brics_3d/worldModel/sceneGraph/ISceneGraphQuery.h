@@ -77,6 +77,12 @@ class ISceneGraphQuery {
      */
     virtual bool getGeometry(Id id, Shape::ShapePtr& shape, TimeStamp& timeStamp) = 0;
 
+    /**
+     * @brief Get all stored remote nodes, if any.
+     * @param[out] ids List of Id representing thr emote root nodes. Can be empty.
+     */
+    virtual bool getRemoteRootNodes(vector<Id>& ids) = 0;
+
 };
 
 } // namespace brics_3d::rsg

@@ -107,6 +107,7 @@ public:
 		addTransformCounter = 0;
 		addUncertainTransformCounter = 0;
 		addGeometricNodeCounter = 0;
+		addRemoteRootNodeCounter = 0;
 		setNodeAttributesCounter = 0;
 		setTransformCounter = 0;
 		setUncertainTransformCounter = 0;
@@ -140,6 +141,10 @@ public:
 		return true;
 	}
 
+    bool addRemoteRootNode(Id rootId, vector<Attribute> attributes) {
+    	addRemoteRootNodeCounter++;
+		return true;
+    }
 	bool setNodeAttributes(Id id, vector<Attribute> newAttributes) {
 		setNodeAttributesCounter++;
 		return true;
@@ -175,6 +180,7 @@ public:
 	int addTransformCounter;
 	int addUncertainTransformCounter;
 	int addGeometricNodeCounter;
+	int addRemoteRootNodeCounter;
 	int setNodeAttributesCounter;
 	int setTransformCounter;
 	int setUncertainTransformCounter;

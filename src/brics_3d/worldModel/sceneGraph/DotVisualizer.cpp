@@ -63,6 +63,12 @@ bool DotVisualizer::addGeometricNode(Id parentId, Id& assignedId, vector<Attribu
 	return true;
 }
 
+bool DotVisualizer::addRemoteRootNode(Id rootId, vector<Attribute> attributes) {
+	printGraph();
+	return true;
+}
+
+
 bool DotVisualizer::setNodeAttributes(Id id, vector<Attribute> newAttributes) {
 	printGraph();
 	return true;

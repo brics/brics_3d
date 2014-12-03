@@ -112,6 +112,8 @@ class ISceneGraphUpdate {
 	 */
 	virtual bool addGeometricNode(Id parentId, Id& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp, bool forcedId = false) = 0;
 
+	virtual bool addRemoteRootNode(Id rootId, vector<Attribute> attributes) = 0;
+
     /**
      * @brief Override the attributes of a node.
 	 *

@@ -72,14 +72,13 @@ class SceneGraphFacade : public ISceneGraphQuery, public ISceneGraphUpdate {
 
     /* Facade specific methods */
     Id getRootId();
-    bool addRemoteRootNode(Id rootId, vector<Attribute> attributes);
-    bool getRemoteRootNodes(vector<Id>& ids);
 
     /* Implemented query interfaces */
     bool getNodes(vector<Attribute> attributes, vector<Id>& ids); //subgraph?
     bool getNodeAttributes(Id id, vector<Attribute>& attributes);
     bool getNodeParents(Id id, vector<Id>& parentIds);
     bool getGroupChildren(Id id, vector<Id>& childIds);
+    bool getRemoteRootNodes(vector<Id>& ids);
     bool getTransform(Id id, TimeStamp timeStamp, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform);
     bool getUncertainTransform(Id id, TimeStamp timeStamp, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform, ITransformUncertainty::ITransformUncertaintyPtr &uncertainty);
     bool getGeometry(Id id, Shape::ShapePtr& shape, TimeStamp& timeStamp);
@@ -92,12 +91,14 @@ class SceneGraphFacade : public ISceneGraphQuery, public ISceneGraphUpdate {
     bool addTransformNode(Id parentId, Id& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp, bool forcedId = false);
     bool addUncertainTransformNode(Id parentId, Id& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp, bool forcedId = false);
     bool addGeometricNode(Id parentId, Id& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp, bool forcedId = false);
+    bool addRemoteRootNode(Id rootId, vector<Attribute> attributes);
     bool setNodeAttributes(Id id, vector<Attribute> newAttributes);
     bool setTransform(Id id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp);
     bool setUncertainTransform(Id id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp);
 	bool deleteNode(Id id);
     bool addParent(Id id, Id parentId);
     bool removeParent(Id id, Id parentId);
+
 
     /* Configuration */
     bool attachUpdateObserver(ISceneGraphUpdateObserver* observer);

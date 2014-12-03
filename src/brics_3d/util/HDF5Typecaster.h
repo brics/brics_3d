@@ -125,6 +125,7 @@ public:
 	    NODE,
 	    GROUP,
 	    GEOMETIRC_NODE,
+	    REMOTE_ROOT_NODE,
 	    TRANSFORM,
 	    UNCERTAIN_TRANSFORM,
 	    JOINT

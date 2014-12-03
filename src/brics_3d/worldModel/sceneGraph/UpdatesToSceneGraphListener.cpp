@@ -100,6 +100,17 @@ bool UpdatesToSceneGraphListener::addGeometricNode(Id parentId, Id& assignedId,
 	return true;
 }
 
+bool UpdatesToSceneGraphListener::addRemoteRootNode(Id rootId, vector<Attribute> attributes) {
+
+	/* Call _all_ observers  */
+	LOG(DEBUG) << "UpdatesToSceneGraphListener::addRemoteRootNode with ID: " << rootId;
+	std::vector<ISceneGraphUpdate*>::iterator observerIterator;
+	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
+		(*observerIterator)->addRemoteRootNode(rootId,  attributes);
+	}
+	return true;
+}
+
 bool UpdatesToSceneGraphListener::setNodeAttributes(Id id,
 		vector<Attribute> newAttributes) {
 

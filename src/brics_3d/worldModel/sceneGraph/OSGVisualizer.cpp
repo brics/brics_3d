@@ -376,6 +376,14 @@ bool OSGVisualizer::addGeometricNode(Id parentId, Id& assignedId, vector<Attribu
 	return false;
 }
 
+bool OSGVisualizer::addRemoteRootNode(Id rootId, vector<Attribute> attributes) {
+	LOG(DEBUG) << "OSGVisualizer: adding remote root node directly to local root node";
+	/*
+	 * "Auto-mount policy. We map everything directly to the root node.
+	 */
+	addGroup(getRootId(), rootId, attributes, true);
+	return true;
+}
 
 bool OSGVisualizer::setNodeAttributes(Id id, vector<Attribute> newAttributes) {
 	LOG(DEBUG) << "OSGVisualizer: setting attributes";
@@ -478,8 +486,14 @@ void OSGVisualizer::threadFunction(OSGVisualizer* obj) {
 }
 
 Id OSGVisualizer::getRootId() {
+	/*
+	 * NOTE: Since the refactoring towards multible root IDs for WorldModel instances,
+	 * it is fine to have a manually choosen ID. It is anywasy not exposed to the others.
+	 * Howecer to make it work (a) addRemoteRoot with the source root ID is required or
+	 * incidently the ids match: 1u
+	 */
 	Id rootId = 1u;
-	return rootId; //TODO ask the observed scene (for now: 1u is the same as the gerenerated on in the SimpleIDGenerator)
+	return rootId;
 }
 
 osg::ref_ptr<osg::Node> OSGVisualizer::findNodeRecerence(Id id) {
