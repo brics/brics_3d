@@ -116,7 +116,7 @@ public:
 	};
 
 	/*
-	 * In HDH5 there is only the "group". As we have in the robot scene
+	 * In HDF5 there is only the "group". As we have in the robot scene
 	 * graph further types like GeometricNode, Transform, etc. we need
 	 * to indicate that with an enum.
 	 */

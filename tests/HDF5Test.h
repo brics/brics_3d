@@ -35,6 +35,7 @@ class HDF5Test : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST_SUITE( HDF5Test );
 #ifdef BRICS_HDF5_ENABLE
 	CPPUNIT_TEST( testLoopBack );
+	CPPUNIT_TEST( testUpdateObersver );
 #endif /* BRICS_HDF5_ENABLE */
 	CPPUNIT_TEST_SUITE_END();
 
@@ -44,6 +45,7 @@ public:
 	void tearDown();
 
 	void testLoopBack();
+	void testUpdateObersver();
 	void threadFunction(brics_3d::WorldModel* wm);
 
 private:

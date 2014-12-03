@@ -205,8 +205,18 @@ bool HDF5UpdateDeserializer::handleSceneGraphUpdate(const char* dataBuffer,
 }
 
 bool HDF5UpdateDeserializer::doAddNode(H5::Group& group) {
-	LOG(ERROR) << "HDF5UpdateDeserializer: doAddNode functionality not yet implemented.";
-	return false;
+	LOG(DEBUG) << "HDF5UpdateDeserializer: doAddNode.";
+	Id id = 0;
+	vector<Attribute> attributes;
+
+	if (!HDF5Typecaster::getNodeIdFromHDF5Group(id, group)) {
+		LOG(ERROR) << "H5::Group has no ID";
+		return false;
+	}
+	LOG(DEBUG) << "H5::Group has ID " << id;
+	HDF5Typecaster::getAttributesFromHDF5Group(attributes, group);
+
+	return wm->scene.addNode(parentId, id, attributes, true);
 }
 
 bool HDF5UpdateDeserializer::doAddGroup(H5::Group& group) {

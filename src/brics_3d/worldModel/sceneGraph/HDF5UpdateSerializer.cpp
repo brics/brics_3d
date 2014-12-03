@@ -44,8 +44,34 @@ HDF5UpdateSerializer::~HDF5UpdateSerializer() {
 
 bool HDF5UpdateSerializer::addNode(Id parentId, Id& assignedId,
 		vector<Attribute> attributes, bool forcedId) {
-	LOG(ERROR) << "HDF5UpdateSerializer: functionality not yet implemented.";
-	return false;
+	LOG(DEBUG) << "HDF5UpdateSerializer: adding a Node-" << assignedId.toString();
+	try {
+		std::string fileName = "Node-" + assignedId.toString() + fileSuffix;
+		H5::FileAccPropList faplCore;
+		faplCore.setCore(fileImageIncremet, storeMessageBackupsOnFileSystem); // toggle in-memory behavior
+		H5::H5File file(fileName, H5F_ACC_TRUNC, H5::FileCreatPropList::DEFAULT, faplCore);
+
+		/* Generic/common entry group with general information */
+		H5::Group scene = file.createGroup("Scene");
+		HDF5Typecaster::addCommandTypeInfoToHDF5Group(HDF5Typecaster::ADD, scene);
+		HDF5Typecaster::addNodeIdToHDF5Group(parentId, scene, rsgParentIdName);
+
+		H5::Group group = scene.createGroup("Node-" + assignedId.toString()); // The actual data
+		HDF5Typecaster::addNodeTypeInfoToHDF5Group(HDF5Typecaster::NODE, group);
+		HDF5Typecaster::addNodeIdToHDF5Group(assignedId, group);
+		HDF5Typecaster::addAttributesToHDF5Group(attributes, group);
+
+		file.flush(H5F_SCOPE_GLOBAL);
+		doSendMessage(file);
+		file.close();
+
+
+	} catch (H5::Exception e) {
+		LOG(ERROR) << "HDF5UpdateSerializer addNode: Cannot create a HDF serialization.";
+		return false;
+	}
+
+	return true;
 }
 
 bool HDF5UpdateSerializer::addGroup(Id parentId, Id& assignedId,
@@ -264,7 +290,29 @@ bool HDF5UpdateSerializer::deleteNode(Id id) {
 }
 
 bool HDF5UpdateSerializer::addParent(Id id, Id parentId) {
-	LOG(ERROR) << "HDF5UpdateSerializer: functionality not yet implemented.";
+	LOG(DEBUG) << "HDF5UpdateSerializer: adding Parent " << parentId.toString() << " to Node " << id.toString();
+	try {
+		std::string fileName = "Parent-Addition-" + id.toString() + fileSuffix;
+		H5::FileAccPropList faplCore;
+		faplCore.setCore(fileImageIncremet, storeMessageBackupsOnFileSystem); // toggle in-memory behavior
+		H5::H5File file(fileName, H5F_ACC_TRUNC, H5::FileCreatPropList::DEFAULT, faplCore);
+
+		/* Generic/common entry group with general information */
+		H5::Group scene = file.createGroup("Scene");
+		HDF5Typecaster::addCommandTypeInfoToHDF5Group(HDF5Typecaster::ADD_PARENT, scene);
+		HDF5Typecaster::addNodeIdToHDF5Group(parentId, scene, rsgParentIdName);
+
+		H5::Group group = scene.createGroup("Parent-Child-Relation-" + id.toString()); // The actual data
+		HDF5Typecaster::addNodeIdToHDF5Group(id, group);
+
+		file.flush(H5F_SCOPE_GLOBAL);
+		doSendMessage(file);
+		file.close();
+
+	} catch (H5::Exception e) {
+		LOG(ERROR) << "HDF5UpdateSerializer addParent: Cannot create a HDF serialization.";
+		return false;
+	}
 	return false;
 }
 
