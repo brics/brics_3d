@@ -46,6 +46,7 @@
 #endif
 
 #include <brics_3d/util/HDF5Typecaster.h>
+#include <brics_3d/worldModel/sceneGraph/RemoteRootNodeAutoMounter.h>
 #include <hdf5.h>
 
 /* UDP includes*/
@@ -309,6 +310,14 @@ int main(int argc, char **argv) {
 	/* Setup of IN bridge (via UDP) */
 	brics_3d::rsg::HDF5UpdateDeserializer* wmUpdatesToHdf5deserializer = new brics_3d::rsg::HDF5UpdateDeserializer(wm);
 	HSDF5UDPInputBridge* udpInBridge = new HSDF5UDPInputBridge(wmUpdatesToHdf5deserializer, "224.0.0.1", 11411);
+
+	/* Setup auto mount policy for incoming data */
+	brics_3d::rsg::RemoteRootNodeAutoMounter autoMounter(&wm->scene, wm->getRootNodeId()); //mount everything relative to root node
+	wm->scene.attachUpdateObserver(&autoMounter);
+
+	/* Introduce this WM to potential others  */
+	wm->scene.advertiseRootNode(); // Don't forget this one! Otherwise the observers cannot correctly handle the updates.
+
 
 	/* ================== Setup of world model content ===================== */
 

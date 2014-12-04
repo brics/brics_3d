@@ -79,12 +79,14 @@ int main(int argc, char **argv) {
 	osgConfiguration.visualizePoseUncertainty = true;
 	wmObserver->setConfig(osgConfiguration);
 	wm->scene.attachUpdateObserver(wmObserver); //enable visualization
+	wm->scene.advertiseRootNode(); // Don't forget this one! Otherwise the observers cannot correctly handle the updates.
 
 	rsg::DotVisualizer* dbgObserver = new rsg::DotVisualizer(&wm->scene);
 	rsg::VisualizationConfiguration dotConfiguration; // optional configuration
 	dotConfiguration.abbreviateIds = true;
 	dbgObserver->setConfig(dotConfiguration);
 	wm->scene.attachUpdateObserver(dbgObserver);
+	wm->scene.advertiseRootNode(); // Don't forget this one! Otherwise the observers cannot correctly handle the updates.
 
 	/* test data */
 	Eigen::AngleAxis<double> rotation(0.25 * M_PI, Eigen::Vector3d(1,0,0/*1*/));

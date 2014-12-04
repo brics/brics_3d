@@ -101,6 +101,7 @@ int main(int argc, char **argv) {
 	osgConfiguration.visualizeAttributes = false;
 	wmObserver->setConfig(osgConfiguration);
 	wm->scene.attachUpdateObserver(wmObserver); //enable visualization
+	wm->scene.advertiseRootNode(); // Don't forget this one! Otherwise the observers cannot correctly handle the updates.
 
 	/* Hook in the point clouds */
 	PointCloud<brics_3d::PointCloud3D>::PointCloudPtr pc1Container(new rsg::PointCloud<brics_3d::PointCloud3D>());

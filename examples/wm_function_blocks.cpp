@@ -58,6 +58,7 @@ int main(int argc, char **argv) {
 	wm3DVisualizer->setConfig(osgConfiguration);
 	wm->scene.attachUpdateObserver(wm3DVisualizer); //enable visualization
 	wm->scene.attachUpdateObserver(wmStructureVisualizer);
+	wm->scene.advertiseRootNode(); // Don't forget this one! Otherwise the observers cannot correctly handle the updates.
 
 	/* Load a data set */
 	brics_3d::PointCloud3D::PointCloud3DPtr pointCloud1(new brics_3d::PointCloud3D());

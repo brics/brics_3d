@@ -49,6 +49,7 @@ public:
 		wm = new brics_3d::WorldModel();
 		wmObserver = new brics_3d::rsg::OSGVisualizer();
 		wm->scene.attachUpdateObserver(wmObserver); //enable visualization
+		wm->scene.advertiseRootNode(); // Don't forget this one! Otherwise the observers cannot correctly handle the updates.
 		lastPointCloudId = 0;
 		lastFilteredPointCloudId = 0;
 		lastMeshId = 0;

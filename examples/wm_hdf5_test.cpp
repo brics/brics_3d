@@ -44,6 +44,7 @@
 #include <brics_3d/core/HomogeneousMatrix44.h>
 #include <brics_3d/worldModel/WorldModel.h>
 #include <brics_3d/worldModel/sceneGraph/DotVisualizer.h>
+#include <brics_3d/worldModel/sceneGraph/RemoteRootNodeAutoMounter.h>
 #include <brics_3d/worldModel/sceneGraph/HDF5UpdateSerializer.h>
 #include <brics_3d/worldModel/sceneGraph/HDF5UpdateDeserializer.h>
 #ifdef BRICS_OSG_ENABLE
@@ -153,12 +154,22 @@ int main(int argc, char **argv) {
 	wm->scene.attachUpdateObserver(wmUpdatesToHdf5Serializer);
 	wmUpdatesToHdf5Serializer->setStoreMessageBackupsOnFileSystem(true); /* set to true to store all updates as .h5 files */
 
+	brics_3d::rsg::RemoteRootNodeAutoMounter autoMounterWm(&wm->scene, wm->getRootNodeId()); //mount everything relative to root node
+	wm->scene.attachUpdateObserver(&autoMounterWm);
+
 	/* Allow roundtrip updates from wmReplica to wm as well */
 	brics_3d::rsg::HDF5UpdateDeserializer* wmUpdatesToHdf5deserializer2 = new brics_3d::rsg::HDF5UpdateDeserializer(wm);
 	HSDF5SimleBridge* feedForwardBridge2 = new HSDF5SimleBridge(wmUpdatesToHdf5deserializer2, "HSDF5SimleBridge-roundtrip");
 	brics_3d::rsg::HDF5UpdateSerializer* wmUpdatesToHdf5Serializer2 = new brics_3d::rsg::HDF5UpdateSerializer(feedForwardBridge2);
 	wmReplica->scene.attachUpdateObserver(wmUpdatesToHdf5Serializer2);
 	wmUpdatesToHdf5Serializer2->setStoreMessageBackupsOnFileSystem(false);
+
+	brics_3d::rsg::RemoteRootNodeAutoMounter autoMounterWmReplica(&wmReplica->scene, wmReplica->getRootNodeId()); //mount everything relative to root node
+	wmReplica->scene.attachUpdateObserver(&autoMounterWmReplica);
+
+	/* Introduce WMs to ech other  */
+	wm->scene.advertiseRootNode();
+	wmReplica->scene.advertiseRootNode();
 
 	/* ================== Setup of world model content ===================== */
 

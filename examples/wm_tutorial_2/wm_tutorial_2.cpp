@@ -89,6 +89,15 @@ int main(int argc, char **argv) {
 	graphVizualizer->setKeepHistory(true); // Do not overwrite the produced files. Default is false.
 	wm->scene.attachUpdateObserver(graphVizualizer); // Enable graph visualization
 
+	/*
+	 * All observers have to be informed about the root ID of the scene they are observing!
+	 * This is becaues every scene including tthe one potntial observers are using
+	 * can have a diffrent ID as root node. Sucessive updes to the observers without knoing the
+	 * root ID causes loss od data. So we have to advertise this.
+	 *
+	 * Don't forget to call this one whenever new observers have been attached!
+	 */
+	wm->scene.advertiseRootNode();
 
 	/* Graph structure:
 	 *                 root
@@ -129,7 +138,7 @@ int main(int argc, char **argv) {
 	 *
 	 * In general geometric data is stored via shared pointers as it potentially
 	 * could be used by multiple nodes at the same time if desired. In addition,
-	 * we need to pass a time stamp indication the creation time; the method
+	 * we need to pass a time stamp indicating the creation time; the method
 	 * call wm->now() will return a current time stamp.
 	 *
 	 * Time stamps might be also generated from sensors or other external sources
