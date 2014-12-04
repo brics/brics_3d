@@ -766,6 +766,25 @@ bool SceneGraphFacade::executeGraphTraverser(INodeVisitor* visitor, Id subgraphI
 	return false;
 }
 
+bool SceneGraphFacade::advertiseRootNode() {
+	bool operationSucceeded = false;
+	vector<Attribute> rootAttributes;
+	rootAttributes.clear();
+
+	operationSucceeded = getNodeAttributes(getRootId(), rootAttributes);
+
+	if (operationSucceeded) { // Note, we ignore he error policy becauese this function will not be called in a possible loop back
+		std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
+		for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
+			(*observerIterator)->addRemoteRootNode(getRootId(), rootAttributes);
+		}
+	} else {
+		LOG(ERROR) << "Cannot obtain atributes for loacal root node with id " << getRootId().toString();
+	}
+
+	return operationSucceeded;
+}
+
 Node::NodeWeakPtr SceneGraphFacade::findNodeRecerence(Id id) {
 	nodeIterator = idLookUpTable.find(id);
 	if (nodeIterator != idLookUpTable.end()) { //TODO multiple IDs?

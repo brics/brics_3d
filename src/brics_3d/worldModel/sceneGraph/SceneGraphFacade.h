@@ -73,6 +73,7 @@ class SceneGraphFacade : public ISceneGraphQuery, public ISceneGraphUpdate {
     /* Facade specific methods */
     Id getRootId();
 
+
     /* Implemented query interfaces */
     bool getNodes(vector<Attribute> attributes, vector<Id>& ids); //subgraph?
     bool getNodeAttributes(Id id, vector<Attribute>& attributes);
@@ -110,9 +111,29 @@ class SceneGraphFacade : public ISceneGraphQuery, public ISceneGraphUpdate {
     /* Coordination methods */
 	bool executeGraphTraverser(INodeVisitor* visitor, Id subgraphId);
 
+    /**
+     * @brief Announce the root node to all observers.
+     *
+     * This essentially calls the addRemoteRootNode() function on all attached
+     * observers.
+     *
+     * Note, a manual self advetisement is not possible, beacause
+	 * addRemoteRootNode(getRootId, attributes) i.e. adding the own root node
+	 * as Root node causes an error, which in turn is not beeing propagated
+	 * to potential obeservers when using the below error policy:
+	 * setCallObserversEvenIfErrorsOccurred(false);
+	 * Thugh, this policy is required for a distibuted setting including
+	 * loop back connections.
+     *
+     * The advertiseRootNode() circumvetns this problem beacuse it sends it
+     * regardless the given error policy.
+     *
+     */
+    bool advertiseRootNode();
+
   private:
 
-	/// Internal initiaization.
+	/// Internal initialization.
     void initialize();
 
     /**
