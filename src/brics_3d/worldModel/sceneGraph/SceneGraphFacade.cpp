@@ -647,6 +647,7 @@ bool SceneGraphFacade::deleteNode(Id id) {
 
 bool SceneGraphFacade::addParent(Id id, Id parentId) {
 	bool operationSucceeded = false;
+	bool hasNoCycle = true;
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();
 	Node::NodeWeakPtr tmpParentNode = findNodeRecerence(parentId);
@@ -654,8 +655,24 @@ bool SceneGraphFacade::addParent(Id id, Id parentId) {
 	Group::GroupPtr parentGroup = boost::dynamic_pointer_cast<Group>(parentNode);
 
 	if (parentGroup != 0 && node != 0 && (id != parentId)) {
-		parentGroup->addChild(node);
-		operationSucceeded = true;
+		/* check for (direct) cycles */
+		Group::GroupPtr nodeAsGroup = boost::dynamic_pointer_cast<Group>(node);
+		if (nodeAsGroup != 0) { // check potential children
+			for (unsigned int i = 0; i < nodeAsGroup->getNumberOfChildren(); ++i) {
+				if(nodeAsGroup->getChild(i)->getId() == parentId) { // oops this would cases a cycle
+					LOG(ERROR) << "Cycle detected. Parent with ID " << parentId << " and child ID " << id <<
+							" already have in inverted relation. Cannot add a new parent-child relation.";
+					hasNoCycle = false;
+				}
+			}
+		}
+
+		if (hasNoCycle) {
+			parentGroup->addChild(node);
+			operationSucceeded = true;
+		} else {
+			operationSucceeded = false;
+		}
 	}
 
 	/* Call all observers depending on the given policy in case an error occured */
