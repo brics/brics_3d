@@ -88,17 +88,20 @@ bool SceneGraphToUpdatesTraverser::handleExistingNode(Node* node, Id& parentId) 
 	vector<Node*> parents;
 
 
-	if(alreadyVisitedNodesWithPendingStatus.size() == 0) { //first element of traversal shall be ignored
-		LOG(DEBUG) << "SceneGraphToUpdatesTraverser: Ignoring root node of traversal.";
-		parents.clear();
-		alreadyVisitedNodesWithPendingStatus.insert(std::make_pair(node, parents));
-		return true;
-	}
+//	if(alreadyVisitedNodesWithPendingStatus.size() == 0) { //first element of traversal shall be ignored
+//		LOG(DEBUG) << "SceneGraphToUpdatesTraverser: Ignoring root node of traversal.";
+//		parents.clear();
+//		alreadyVisitedNodesWithPendingStatus.insert(std::make_pair(node, parents));
+//		return true;
+//	}
 
 
 	parents = node->getParents();
 	if (parents.size() == 0) { // THE root node
-		LOG(DEBUG) << "SceneGraphToUpdatesTraverser: Ignoring root node as it has no parents.";
+		LOG(DEBUG) << "SceneGraphToUpdatesTraverser: Found a root node as it has no parents. Triggering addRemoteRootNode.";
+		updatesRecieverHandle->addRemoteRootNode(node->getId(), node->getAttributes());
+		parents.clear();
+		alreadyVisitedNodesWithPendingStatus.insert(std::make_pair(node, parents));
 		return true;
 	}
 	Node* potentialParentNode;

@@ -210,7 +210,7 @@ void DistributedWorldModelTest::testRemoteRootNodes() {
 	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.deleteNodeCounter);
 
 	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.addNodeCounter); //precondition
-	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.addGroupCounter); //cannot be ther because o missing root ID
+	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addGroupCounter); //cannot be ther because o missing root ID - nope that is fixed
 	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.addTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.addGeometricNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.setNodeAttributesCounter);
@@ -221,10 +221,10 @@ void DistributedWorldModelTest::testRemoteRootNodes() {
 
 	/* make first root ID avaoulable to remotWm*/
 	vector<Attribute> rootNodeAttributes;
-	wm->scene.getNodeAttributes(wm->getRootNodeId(), rootNodeAttributes);
-	remoteWm->scene.addRemoteRootNode(wm->getRootNodeId(), rootNodeAttributes);
-	wm->scene.addGroup(wm->getRootNodeId(), groupId, attributes);
-	wm->scene.executeGraphTraverser(&wmToRemoteWm, wm->getRootNodeId());	// Push complete graph tor remote wm
+	CPPUNIT_ASSERT(wm->scene.getNodeAttributes(wm->getRootNodeId(), rootNodeAttributes));
+	CPPUNIT_ASSERT(!remoteWm->scene.addRemoteRootNode(wm->getRootNodeId(), rootNodeAttributes)); // done alredy by traverser
+	CPPUNIT_ASSERT(wm->scene.addGroup(wm->getRootNodeId(), groupId, attributes));
+	CPPUNIT_ASSERT(wm->scene.executeGraphTraverser(&wmToRemoteWm, wm->getRootNodeId()));	// Push complete graph tor remote wm
 
 	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addNodeCounter); //precondition
 	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addGroupCounter);
@@ -237,7 +237,7 @@ void DistributedWorldModelTest::testRemoteRootNodes() {
 	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.deleteNodeCounter);
 
 	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.addNodeCounter); //precondition
-	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addGroupCounter); //now the update should be there
+	CPPUNIT_ASSERT_EQUAL(2, remoteWmNodeCounter.addGroupCounter); //now both the updates should be there
 	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.addTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.addGeometricNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.setNodeAttributesCounter);
@@ -1086,6 +1086,112 @@ void DistributedWorldModelTest::testSelfAnnouncement() {
 	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.deleteNodeCounter);
 
 	CPPUNIT_ASSERT(remoteWm->scene.getNodeAttributes(wm->getRootNodeId(), attributes));
+}
+
+void DistributedWorldModelTest::testGraphResender() {
+	/*
+	 * As an alternitive we an achive a selfe anouncemen with a
+	 * GrapgResender - though all observes have to subsribe to it as well.
+	 */
+
+	WorldModel* wm = new WorldModel();
+	WorldModel* remoteWm = new WorldModel();
+	CPPUNIT_ASSERT(wm->getRootNodeId() != remoteWm->getRootNodeId());
+
+	vector<Attribute> attributes;
+	vector<Attribute> resultAttributes;
+	vector<Id> resultIds;
+
+	MyObserver wmNodeCounter;
+	MyObserver remoteWmNodeCounter;
+
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addNodeCounter); //precondition
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addRemoteRootNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.deleteNodeCounter);
+
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.addNodeCounter); //precondition
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.addRemoteRootNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.deleteNodeCounter);
+
+	/*
+	 * Various observer attachments
+	 */
+	CPPUNIT_ASSERT(wm->scene.attachUpdateObserver(&wmNodeCounter));
+	UpdatesToSceneGraphListener wmToRemoteWmListener;
+	CPPUNIT_ASSERT(wm->scene.attachUpdateObserver(&wmToRemoteWmListener));
+	wmToRemoteWmListener.attachSceneGraph(&remoteWm->scene);
+	CPPUNIT_ASSERT(remoteWm->scene.attachUpdateObserver(&remoteWmNodeCounter));
+	SceneGraphToUpdatesTraverser wmToRemoteWm(&wmToRemoteWmListener);
+
+	/*
+	 * Test self annoucement
+	 */
+	wm->scene.setCallObserversEvenIfErrorsOccurred(false);
+	remoteWm->scene.setCallObserversEvenIfErrorsOccurred(true); // true just for the testability
+
+	CPPUNIT_ASSERT(wm->scene.executeGraphTraverser(&wmToRemoteWm, wm->getRootNodeId()));
+
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addNodeCounter); //precondition
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addRemoteRootNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.deleteNodeCounter);
+
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.addNodeCounter); //precondition
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addRemoteRootNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.deleteNodeCounter);
+
+	CPPUNIT_ASSERT(wm->scene.executeGraphTraverser(&wmToRemoteWm, wm->getRootNodeId()));
+
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addNodeCounter); //precondition
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addRemoteRootNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.deleteNodeCounter);
+
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.addNodeCounter); //precondition
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(2, remoteWmNodeCounter.addRemoteRootNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.deleteNodeCounter);
+
+//	CPPUNIT_ASSERT(remoteWm->scene.getNodeAttributes(wm->getRootNodeId(), attributes));
 }
 
 }  // namespace unitTests

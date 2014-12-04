@@ -53,6 +53,7 @@ class DistributedWorldModelTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testDirectUpdateObserver );
 	CPPUNIT_TEST( testManualSelfAnnouncement );
 	CPPUNIT_TEST( testSelfAnnouncement );
+	CPPUNIT_TEST( testGraphResender );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -66,6 +67,7 @@ public:
 	void testDirectUpdateObserver();
 	void testManualSelfAnnouncement();
 	void testSelfAnnouncement();
+	void testGraphResender();
 
 
 private:
