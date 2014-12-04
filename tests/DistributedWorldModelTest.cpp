@@ -1191,7 +1191,77 @@ void DistributedWorldModelTest::testGraphResender() {
 	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.addParentCounter);
 	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.deleteNodeCounter);
 
-//	CPPUNIT_ASSERT(remoteWm->scene.getNodeAttributes(wm->getRootNodeId(), attributes));
+	CPPUNIT_ASSERT(remoteWm->scene.getNodeAttributes(wm->getRootNodeId(), attributes));
+
+	delete wm;
+	delete remoteWm;
+}
+
+void DistributedWorldModelTest::testAutoMountRemoteNodePolicy() {
+
+		WorldModel* wm = new WorldModel();
+		WorldModel* remoteWm = new WorldModel();
+		CPPUNIT_ASSERT(wm->getRootNodeId() != remoteWm->getRootNodeId());
+
+		vector<Attribute> attributes;
+		vector<Attribute> resultAttributes;
+		vector<Id> resultIds;
+
+		/*
+		 * Set up logical  "communucation" and policies
+		 */
+		UpdatesToSceneGraphListener wmToRemoteWmListener;
+		CPPUNIT_ASSERT(wm->scene.attachUpdateObserver(&wmToRemoteWmListener));
+		wmToRemoteWmListener.attachSceneGraph(&remoteWm->scene);
+		SceneGraphToUpdatesTraverser wmToRemoteWm(&wmToRemoteWmListener);
+
+		wm->scene.setCallObserversEvenIfErrorsOccurred(false);
+		remoteWm->scene.setCallObserversEvenIfErrorsOccurred(false);
+
+
+
+		/*
+		 * Test self annoucement
+		 */
+
+		CPPUNIT_ASSERT(wm->scene.advertiseRootNode());
+
+		Id group1;
+		attributes.clear();
+		attributes.push_back(Attribute("name","group1"));
+		CPPUNIT_ASSERT(wm->scene.addGroup(wm->getRootNodeId(), group1, attributes));
+
+		resultAttributes.clear();
+		CPPUNIT_ASSERT(remoteWm->scene.getNodeAttributes(group1, resultAttributes)); // this should always work
+		CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultAttributes.size()));
+		CPPUNIT_ASSERT(resultAttributes[0].key.compare("name") == 0);
+		CPPUNIT_ASSERT(resultAttributes[0].value.compare("group1") == 0);
+
+		CPPUNIT_ASSERT(remoteWm->scene.getNodes(resultAttributes, resultIds)); // this does not work because the graphs are not connected
+		CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultIds.size()));
+
+
+
+		/*
+		 * Add auto mount and try again
+		 */
+		remoteWm->scene.setCallObserversEvenIfErrorsOccurred(true); // the root id exists as we don't start from fresh world model
+		RemoteRootNodeAutoMounter autoMounter(&remoteWm->scene);
+		remoteWm->scene.attachUpdateObserver(&autoMounter);
+		CPPUNIT_ASSERT(wm->scene.executeGraphTraverser(&wmToRemoteWm, wm->getRootNodeId()));
+
+		resultAttributes.clear();
+		CPPUNIT_ASSERT(remoteWm->scene.getNodeAttributes(group1, resultAttributes)); // this should always work
+		CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultAttributes.size()));
+		CPPUNIT_ASSERT(resultAttributes[0].key.compare("name") == 0);
+		CPPUNIT_ASSERT(resultAttributes[0].value.compare("group1") == 0);
+
+		CPPUNIT_ASSERT(remoteWm->scene.getNodes(resultAttributes, resultIds)); // this should work because the graphs are now connected, dou to the auto mount
+		CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultIds.size()));
+		CPPUNIT_ASSERT(resultIds[0] == group1);
+
+		delete wm;
+		delete remoteWm;
 }
 
 }  // namespace unitTests

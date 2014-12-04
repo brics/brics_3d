@@ -31,6 +31,7 @@
 #include "brics_3d/worldModel/sceneGraph/Cylinder.h"
 #include "brics_3d/worldModel/sceneGraph/UuidGenerator.h"
 #include "brics_3d/worldModel/sceneGraph/UpdatesToSceneGraphListener.h"
+#include "brics_3d/worldModel/sceneGraph/RemoteRootNodeAutoMounter.h"
 
 namespace unitTests {
 
@@ -54,6 +55,7 @@ class DistributedWorldModelTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testManualSelfAnnouncement );
 	CPPUNIT_TEST( testSelfAnnouncement );
 	CPPUNIT_TEST( testGraphResender );
+	CPPUNIT_TEST( testAutoMountRemoteNodePolicy );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -68,6 +70,7 @@ public:
 	void testManualSelfAnnouncement();
 	void testSelfAnnouncement();
 	void testGraphResender();
+	void testAutoMountRemoteNodePolicy();
 
 
 private:

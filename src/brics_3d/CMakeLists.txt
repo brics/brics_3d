@@ -198,6 +198,7 @@ SET (WORLD_MODEL_LIBRARY_SOURCES
     ./worldModel/sceneGraph/VisualizationConfiguration         
     ./worldModel/sceneGraph/FrequencyAwareUpdateFilter 
     ./worldModel/sceneGraph/UpdatesToSceneGraphListener
+    ./worldModel/sceneGraph/RemoteRootNodeAutoMounter    
 )
 
 #optional sources
