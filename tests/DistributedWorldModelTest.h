@@ -32,6 +32,7 @@
 #include "brics_3d/worldModel/sceneGraph/UuidGenerator.h"
 #include "brics_3d/worldModel/sceneGraph/UpdatesToSceneGraphListener.h"
 #include "brics_3d/worldModel/sceneGraph/RemoteRootNodeAutoMounter.h"
+#include <brics_3d/worldModel/sceneGraph/FrequencyAwareUpdateFilter.h>
 
 namespace unitTests {
 
@@ -56,6 +57,7 @@ class DistributedWorldModelTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testSelfAnnouncement );
 	CPPUNIT_TEST( testGraphResender );
 	CPPUNIT_TEST( testAutoMountRemoteNodePolicy );
+	CPPUNIT_TEST( testUpdateFilters );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -71,6 +73,7 @@ public:
 	void testSelfAnnouncement();
 	void testGraphResender();
 	void testAutoMountRemoteNodePolicy();
+	void testUpdateFilters();
 
 
 private:

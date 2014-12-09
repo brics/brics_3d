@@ -1264,6 +1264,13 @@ void DistributedWorldModelTest::testAutoMountRemoteNodePolicy() {
 		delete remoteWm;
 }
 
+void DistributedWorldModelTest::testUpdateFilters() {
+	FrequencyAwareUpdateFilter* frequencyFilter = new brics_3d::rsg::FrequencyAwareUpdateFilter();
+	CPPUNIT_ASSERT(frequencyFilter != 0);
+	delete frequencyFilter;
+}
+
+
 }  // namespace unitTests
 
 /* EOF */

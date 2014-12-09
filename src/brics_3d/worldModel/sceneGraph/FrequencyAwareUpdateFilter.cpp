@@ -114,6 +114,17 @@ bool FrequencyAwareUpdateFilter::addGeometricNode(Id parentId, Id& assignedId,
 	return false;
 }
 
+bool FrequencyAwareUpdateFilter::addRemoteRootNode(Id rootId, vector<Attribute> attributes) {
+
+	/* Call _all_ observers  */
+	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
+	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
+		(*observerIterator)->addRemoteRootNode(rootId, attributes);
+	}
+
+	return true;
+}
+
 bool FrequencyAwareUpdateFilter::setNodeAttributes(Id id,
 		vector<Attribute> newAttributes) {
 
