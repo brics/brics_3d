@@ -176,6 +176,7 @@ SET (WORLD_MODEL_LIBRARY_SOURCES
     ./worldModel/sceneGraph/Group
     ./worldModel/sceneGraph/Mesh
     ./worldModel/sceneGraph/Node
+    ./worldModel/sceneGraph/Connection
     ./worldModel/sceneGraph/PointCloud
     ./worldModel/sceneGraph/SceneGraphFacade
     ./worldModel/sceneGraph/Shape
