@@ -1151,6 +1151,66 @@ void SceneGraphNodesTest::testGeometricNode() {
 
 }
 
+void SceneGraphNodesTest::testConnection() {
+	/* Graph structure:
+	 *       root
+	 *    ----+-------
+	 *    |          |
+	 *   node1     node2
+	 */
+	const Id rootId = 1;
+	const Id node1Id = 2;
+	const Id node2Id = 3;
+
+	rsg::Group::GroupPtr root(new rsg::Group());
+	root->setId(rootId);
+	Node::NodePtr node1(new Node());
+	node1->setId(node1Id);
+	Node::NodePtr node2(new Node());
+	node2->setId(node2Id);
+	CPPUNIT_ASSERT(node1->getId() == node1Id);
+	CPPUNIT_ASSERT(node2->getId() == node2Id);
+
+	root->addChild(node1);
+	root->addChild(node2);
+	CPPUNIT_ASSERT_EQUAL(2u, root->getNumberOfChildren());
+
+	Connection::ConnectionPtr conn1(new Connection());
+	const Id conn1Id = 4;
+	conn1->setId(conn1Id);
+	CPPUNIT_ASSERT(conn1->getId() == conn1Id);
+	CPPUNIT_ASSERT_EQUAL(0u, conn1->getNumberOfParents());
+	CPPUNIT_ASSERT_EQUAL(0u, conn1->getNumberOfSourceNodes());
+	CPPUNIT_ASSERT_EQUAL(0u, conn1->getNumberOfTargetNodes());
+
+	/* Graph structure:
+	 *           root
+	 *    --------+---------
+	 *    |       |        |
+	 *   node1  conn1    node2
+	 */
+
+	root->addChild(conn1);
+	CPPUNIT_ASSERT_EQUAL(3u, root->getNumberOfChildren());
+	CPPUNIT_ASSERT_EQUAL(1u, conn1->getNumberOfParents());
+
+	/* Graph structure:
+	 *           root
+	 *    ----------+----------
+	 *    |        |          |
+	 *   node1...>conn1....>node2
+	 */
+
+	conn1->addSourceNode(node1.get());
+	conn1->addTargetNode(node2.get());
+	CPPUNIT_ASSERT_EQUAL(1u, conn1->getNumberOfSourceNodes());
+	CPPUNIT_ASSERT_EQUAL(1u, conn1->getNumberOfTargetNodes());
+
+	CPPUNIT_ASSERT(conn1->getSourceNode(0)->getId() == node1Id);
+	CPPUNIT_ASSERT(conn1->getTargetNode(0)->getId() == node2Id);
+
+}
+
 void SceneGraphNodesTest::testOwnership() {
 	/* Graph structure: (remember: nodes can only serve as are leaves)
 	 *             root

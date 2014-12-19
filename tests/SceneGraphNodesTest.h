@@ -34,6 +34,7 @@
 #include "brics_3d/worldModel/sceneGraph/SubGraphChecker.h"
 #include "brics_3d/worldModel/sceneGraph/SceneGraphToUpdatesTraverser.h"
 #include "brics_3d/worldModel/sceneGraph/UncertainTransform.h"
+#include "brics_3d/worldModel/sceneGraph/Connection.h"
 #include "brics_3d/core/PointCloud3D.h"
 #include "brics_3d/core/PointCloud3DIterator.h"
 
@@ -201,6 +202,7 @@ class SceneGraphNodesTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testUncertainTransform );
 	CPPUNIT_TEST( testTemporalUncertainTransform );
 	CPPUNIT_TEST( testGeometricNode );
+	CPPUNIT_TEST( testConnection );
 	CPPUNIT_TEST( testSimpleGraph );
 	CPPUNIT_TEST( testOwnership );
 	CPPUNIT_TEST( testSimpleVisitor );
@@ -237,6 +239,7 @@ public:
 	void testUncertainTransform();
 	void testTemporalUncertainTransform();
 	void testGeometricNode();
+	void testConnection();
 	void testOwnership();
 	void testSimpleGraph();
 	void testSimpleVisitor();
