@@ -25,6 +25,7 @@
 #include "ISceneGraphUpdateObserver.h"
 #include "IIdGenerator.h"
 #include "Group.h"
+#include "Connection.h"
 #include "Node.h"
 #include "Transform.h"
 #include "UncertainTransform.h"
@@ -100,6 +101,14 @@ class SceneGraphFacade : public ISceneGraphQuery, public ISceneGraphUpdate {
     bool addParent(Id id, Id parentId);
     bool removeParent(Id id, Id parentId);
 
+    /* Incubation/Experimental methods for connection type */
+    bool addConnection(Id parentId, Id& assignedId, vector<Attribute> attributes, vector<Id> sourceIds, vector<Id> targetIds, bool forcedId = false);
+    bool getConnections(vector<Attribute> attributes, vector<Id>& ids);
+    bool getConnectionAttributes(Id id, vector<Attribute>& attributes);
+    bool getConnectionParents(Id id, vector<Id>& parentIds);
+    bool getConnectionSourceIds(Id id, vector<Id>& sourceIds);
+    bool getConnectionTargetIds(Id id, vector<Id>& targetIds);
+    bool deleteConnection(Id id);
 
     /* Configuration */
     bool attachUpdateObserver(ISceneGraphUpdateObserver* observer);

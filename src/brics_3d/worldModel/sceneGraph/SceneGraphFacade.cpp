@@ -746,6 +746,106 @@ bool SceneGraphFacade::removeParent(Id id, Id parentId) {
 	};
 }
 
+bool SceneGraphFacade::addConnection(Id parentId, Id& assignedId, vector<Attribute> attributes, vector<Id> sourceIds, vector<Id> targetIds, bool forcedId) {
+	bool operationSucceeded = false;
+	bool idIsOk = false;
+	Id id;
+	Node::NodeWeakPtr tmpNode = findNodeRecerence(parentId);
+	Node::NodePtr node = tmpNode.lock();
+	Group::GroupPtr parentGroup = boost::dynamic_pointer_cast<Group>(node);
+
+	if (forcedId && (parentGroup != 0)) { // NOTE: As we are handling existing IDs we need to be careful with removing them from the pool
+		if( (!doesIdExist(assignedId)) && (idGenerator->removeIdFromPool(assignedId)) ) {
+			id = assignedId;
+			idIsOk = true;
+		} else {
+			LOG(WARNING) << "Forced ID " << assignedId << " cannot be assigend. Probably another object with that ID exists already!";
+			idIsOk = false;
+		}
+	} else {
+		id = idGenerator->getNextValidId();
+		idIsOk = true;
+	}
+
+
+	if ((parentGroup != 0) && (idIsOk)) {
+		Connection::ConnectionPtr newConnection(new Connection());
+		newConnection->setId(id);
+		newConnection->setAttributes(attributes);
+		parentGroup->addChild(newConnection);
+		assignedId = newConnection->getId();
+		idLookUpTable.insert(std::make_pair(newConnection->getId(), newConnection));
+		operationSucceeded = true;
+	}
+
+	/* Call all observers depending on the given policy in case an error occured */
+	if (operationSucceeded || callObserversEvenIfErrorsOccurred) {
+		std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
+		for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
+			Id assignedIdcopy = assignedId; // prevent that observer might change this....
+//			(*observerIterator)->addConnection(parentId, assignedIdcopy, attributes, forcedId); //FIXME add this to interface
+		}
+	}
+
+	if (operationSucceeded) {
+		return true;
+	} else {
+		if (idIsOk) { //If ID was OK but operation did not succeeded, then it is because of the parent...
+			LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new connection as a child of it.";
+		}
+		return false;
+	}
+	return false;
+}
+
+bool SceneGraphFacade::getConnections(vector<Attribute> attributes, vector<Id>& ids) {
+	return getNodes(attributes, ids);
+}
+
+bool SceneGraphFacade::getConnectionAttributes(Id id, vector<Attribute>& attributes) {
+	return getNodeAttributes(id, attributes);
+}
+
+bool SceneGraphFacade::getConnectionParents(Id id, vector<Id>& parentIds) {
+	return getNodeParents(id, parentIds);
+}
+
+bool SceneGraphFacade::getConnectionSourceIds(Id id, vector<Id>& sourceIds) {
+	sourceIds.clear();
+	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
+	Node::NodePtr node = tmpNode.lock();
+	Connection::ConnectionPtr connection = boost::dynamic_pointer_cast<Connection>(node);
+
+	if (connection != 0) {
+		for (unsigned int i = 0; i < connection->getNumberOfSourceNodes(); ++i) {
+			sourceIds.push_back(connection->getSourceNode(i)->getId());
+		}
+		return true;
+	}
+	LOG(ERROR) << "Node with ID " << id << " is not a connection. Cannot return source Id list.";
+	return false;
+}
+
+bool SceneGraphFacade::getConnectionTargetIds(Id id, vector<Id>& targetIds) {
+	targetIds.clear();
+	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
+	Node::NodePtr node = tmpNode.lock();
+	Connection::ConnectionPtr connection = boost::dynamic_pointer_cast<Connection>(node);
+
+	if (connection != 0) {
+		for (unsigned int i = 0; i < connection->getNumberOfTargetNodes(); ++i) {
+			targetIds.push_back(connection->getTargetNode(i)->getId());
+		}
+		return true;
+	}
+	LOG(ERROR) << "Node with ID " << id << " is not a connection. Cannot return target Id list.";
+	return false;
+}
+
+bool SceneGraphFacade::deleteConnection(Id id) {
+	return deleteNode(id);
+}
+
 bool SceneGraphFacade::attachUpdateObserver(ISceneGraphUpdateObserver* observer) {
 	assert(observer != 0);
 	updateObservers.push_back(observer);
