@@ -3148,6 +3148,145 @@ void SceneGraphNodesTest::testSceneGraphFacadeTransforms() {
 	 */
 }
 
+void SceneGraphNodesTest::testSceneGraphFacadeConnections() {
+	/* Graph structure: (remember: nodes can only serve as are leaves)
+	 *                 root
+	 *                   |
+	 *        -----------+----------
+	 *        |          |         |
+	 *       tf1  ---> conn2  --> node3
+	 */
+
+	/* will be assigned later */
+	Id rootId = 0;
+	Id tf1Id = 0;
+	Id connId = 0;
+	Id node3Id = 0;
+
+	SceneGraphFacade scene(new UuidGenerator(1u));// provide a fixed root ID
+	vector<Attribute> tmpAttributes;
+	vector<Id> resultParentIds;
+	vector<Id> resultChildIds;
+	vector<Id> resultIds;
+
+
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform123(new HomogeneousMatrix44(1,0,0,  	//Rotation coefficients
+			0,1,0,
+			0,0,1,
+			1,2,3)); 						//Translation coefficients
+			TimeStamp dummyTime(20);
+
+	/* test root */
+	Id expecetedRootId = 1u;
+	CPPUNIT_ASSERT_EQUAL(expecetedRootId, scene.getRootId()); //assumption: uses SimpleIdGenerator
+	rootId = scene.getRootId();
+
+	/*add tf */
+	tmpAttributes.clear();
+	tmpAttributes.push_back(Attribute("name","tf1"));
+	CPPUNIT_ASSERT(tf1Id == 0);
+	CPPUNIT_ASSERT(scene.addTransformNode(rootId, tf1Id, tmpAttributes, transform123, dummyTime + TimeStamp(0, Units::MilliSecond)));
+	CPPUNIT_ASSERT(tf1Id != 0);
+
+	/*add node */
+	tmpAttributes.clear();
+	tmpAttributes.push_back(Attribute("name","node3"));
+	CPPUNIT_ASSERT(node3Id == 0);
+	CPPUNIT_ASSERT(scene.addNode(rootId, node3Id, tmpAttributes));
+	CPPUNIT_ASSERT(node3Id != 0);
+
+	resultChildIds.clear();
+	CPPUNIT_ASSERT(scene.getGroupChildren(rootId, resultChildIds));
+	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(resultChildIds.size()));
+	CPPUNIT_ASSERT_EQUAL(tf1Id, static_cast<Id>(resultChildIds[0]));
+	CPPUNIT_ASSERT_EQUAL(node3Id, static_cast<Id>(resultChildIds[1]));
+
+	tmpAttributes.clear();
+	CPPUNIT_ASSERT(scene.getNodeAttributes(tf1Id, tmpAttributes));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(tmpAttributes.size()));
+	CPPUNIT_ASSERT(tmpAttributes[0] == Attribute("name","tf1"));
+
+	tmpAttributes.clear();
+	CPPUNIT_ASSERT(scene.getNodeAttributes(node3Id, tmpAttributes));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(tmpAttributes.size()));
+	CPPUNIT_ASSERT(tmpAttributes[0] == Attribute("name","node3"));
+
+	/*
+	 * Add the connection
+	 */
+	tmpAttributes.clear();
+	tmpAttributes.push_back(Attribute("rsg::connection","path"));
+	vector<Id> sourceIds;
+	vector<Id> targetIds;
+	sourceIds.push_back(tf1Id);
+	targetIds.push_back(node3Id);
+	CPPUNIT_ASSERT(scene.addConnection(rootId, connId, tmpAttributes, sourceIds, targetIds));
+
+	/* Test for invariance of the existin nodes */
+	resultChildIds.clear();
+	CPPUNIT_ASSERT(scene.getGroupChildren(rootId, resultChildIds));
+	CPPUNIT_ASSERT_EQUAL(3u, static_cast<unsigned int>(resultChildIds.size()));
+	CPPUNIT_ASSERT_EQUAL(tf1Id, static_cast<Id>(resultChildIds[0]));
+	CPPUNIT_ASSERT_EQUAL(node3Id, static_cast<Id>(resultChildIds[1]));
+	CPPUNIT_ASSERT_EQUAL(connId, static_cast<Id>(resultChildIds[2]));
+
+	tmpAttributes.clear();
+	CPPUNIT_ASSERT(scene.getNodeAttributes(tf1Id, tmpAttributes));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(tmpAttributes.size()));
+	CPPUNIT_ASSERT(tmpAttributes[0] == Attribute("name","tf1"));
+
+	tmpAttributes.clear();
+	CPPUNIT_ASSERT(scene.getNodeAttributes(node3Id, tmpAttributes));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(tmpAttributes.size()));
+	CPPUNIT_ASSERT(tmpAttributes[0] == Attribute("name","node3"));
+
+	/* Test connection getters*/
+	tmpAttributes.clear();
+	CPPUNIT_ASSERT(scene.getNodeAttributes(connId, tmpAttributes)); // TODO debatable if this shpould work
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(tmpAttributes.size()));
+	CPPUNIT_ASSERT(tmpAttributes[0] == Attribute("rsg::connection","path"));
+
+	tmpAttributes.clear();
+	CPPUNIT_ASSERT(scene.getConnectionAttributes(connId, tmpAttributes));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(tmpAttributes.size()));
+	CPPUNIT_ASSERT(tmpAttributes[0] == Attribute("rsg::connection","path"));
+
+	resultParentIds.clear();
+	CPPUNIT_ASSERT(scene.getConnectionParents(connId, resultParentIds));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultParentIds.size()));
+	CPPUNIT_ASSERT_EQUAL(rootId, static_cast<Id>(resultParentIds[0]));
+
+	resultIds.clear();
+	tmpAttributes.clear();
+	tmpAttributes.push_back(Attribute("rsg::connection","path"));
+	CPPUNIT_ASSERT(scene.getConnections(tmpAttributes, resultIds));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultIds.size()));
+	CPPUNIT_ASSERT(resultIds[0] == connId);
+
+	resultIds.clear();
+	CPPUNIT_ASSERT(scene.getConnectionSourceIds(connId, resultIds));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultIds.size()));
+	CPPUNIT_ASSERT_EQUAL(tf1Id, static_cast<Id>(resultIds[0]));
+
+	resultIds.clear();
+	CPPUNIT_ASSERT(scene.getConnectionTargetIds(connId, resultIds));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultIds.size()));
+	CPPUNIT_ASSERT_EQUAL(node3Id, static_cast<Id>(resultIds[0]));
+
+	/*
+	 * Delete connection
+	 */
+
+	CPPUNIT_ASSERT(scene.deleteConnection(connId));
+
+	resultChildIds.clear();
+	CPPUNIT_ASSERT(scene.getGroupChildren(rootId, resultChildIds));
+	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(resultChildIds.size()));
+	CPPUNIT_ASSERT_EQUAL(tf1Id, static_cast<Id>(resultChildIds[0]));
+	CPPUNIT_ASSERT_EQUAL(node3Id, static_cast<Id>(resultChildIds[1]));
+
+}
+
 void SceneGraphNodesTest::testPointCloud() {
 	/* Graph structure: (remember: nodes can only serve as are leaves)
 	 *                 root

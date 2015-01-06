@@ -772,6 +772,28 @@ bool SceneGraphFacade::addConnection(Id parentId, Id& assignedId, vector<Attribu
 		Connection::ConnectionPtr newConnection(new Connection());
 		newConnection->setId(id);
 		newConnection->setAttributes(attributes);
+		for (int i = 0; i < sourceIds.size(); ++i) {
+			Node::NodeWeakPtr tmpSourceNode = findNodeRecerence(sourceIds[i]);
+			Node::NodePtr sourceNode = tmpSourceNode.lock();
+			if (sourceNode != 0) {
+				newConnection->addSourceNode(sourceNode.get()); //TODO: weak pointer in connection?
+			} else {
+				LOG(ERROR) << "Id " << sourceIds[i] << " cannot be added as source ID.";
+				operationSucceeded = false;
+				break; // correct program flow?
+			}
+		}
+		for (int i = 0; i < targetIds.size(); ++i) {
+			Node::NodeWeakPtr tmpTargetNode = findNodeRecerence(targetIds[i]);
+			Node::NodePtr targetNode = tmpTargetNode.lock();
+			if (targetNode != 0) {
+				newConnection->addTargetNode(targetNode.get()); //TODO: weak pointer in connection?
+			} else {
+				LOG(ERROR) << "Id " << sourceIds[i] << " cannot be added as target ID.";
+				operationSucceeded = false;
+				break; // correct program flow?
+			}
+		}
 		parentGroup->addChild(newConnection);
 		assignedId = newConnection->getId();
 		idLookUpTable.insert(std::make_pair(newConnection->getId(), newConnection));

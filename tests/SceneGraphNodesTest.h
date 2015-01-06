@@ -215,6 +215,7 @@ class SceneGraphNodesTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testIdGenerator );
 	CPPUNIT_TEST( testSceneGraphFacade );
 	CPPUNIT_TEST( testSceneGraphFacadeTransforms );
+	CPPUNIT_TEST( testSceneGraphFacadeConnections );
 	CPPUNIT_TEST( testPointCloud );
 	CPPUNIT_TEST( testUpdateObserver );
 	CPPUNIT_TEST( testDotGraphGenerator );
@@ -252,6 +253,7 @@ public:
 	void testIdGenerator();
 	void testSceneGraphFacade();
 	void testSceneGraphFacadeTransforms();
+	void testSceneGraphFacadeConnections();
 	void testPointCloud();
 	void testUpdateObserver();
 	void testDotGraphGenerator();
