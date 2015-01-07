@@ -30,10 +30,9 @@
 /* microblx types for the robot scene graph */
 #include "brics_3d/util/UbxTypecaster.h"
 
-brics_3d::WorldModel* brics_3d::WorldModel::microBlxWmHandle = 0;
+//brics_3d::WorldModel* brics_3d::WorldModel::microBlxWmHandle = 0;
 
-def_read_fun(read_rsg_ids, rsg_ids)
-//def_write_fun(write_rsg_ids, rsg_ids)
+
 
 
 #endif
@@ -164,7 +163,7 @@ void WorldModel::initializeMicroblx() {
 	}
 
 	outputBlockCopy = outputBlock;
-	WorldModel::microBlxWmHandle = this;
+//	WorldModel::microBlxWmHandle = this;
 
 #endif
 }
@@ -172,7 +171,7 @@ void WorldModel::initializeMicroblx() {
 WorldModel::~WorldModel() {
 
 #ifdef BRICS_MICROBLX_ENABLE
-	WorldModel::microBlxWmHandle = 0;
+//	WorldModel::microBlxWmHandle = 0;
 	//ubx_node_cleanup(microBlxNodeHandle); // FIXME causes segfault
 
 #endif

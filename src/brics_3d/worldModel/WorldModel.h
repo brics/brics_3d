@@ -102,7 +102,7 @@ class WorldModel : public IWorldModelQuery, public IWorldModelUpdate, public IWo
 
   public:
 
-    static WorldModel* microBlxWmHandle; //workaround for wm as a shared resource among the microblx
+//    static WorldModel* microBlxWmHandle; //workaround for wm as a shared resource among the microblx
 #endif
 
 };
