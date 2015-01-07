@@ -43,6 +43,7 @@ private:
 
 	brics_3d::WorldModel* wm;
 	std::string functionBlockFile;
+	std::string blockRepositoryPath;
 
 };
 

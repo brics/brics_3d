@@ -16,14 +16,23 @@ namespace unitTests {
 CPPUNIT_TEST_SUITE_REGISTRATION( FunctionBlockTest );
 
 void FunctionBlockTest::setUp() {
-#ifdef BRICS_MICROBLX_ENABLE
-	CPPUNIT_ASSERT(brics_3d::WorldModel::microBlxWmHandle == 0);
-#endif
+
 	wm = new brics_3d::WorldModel();
-#ifdef BRICS_MICROBLX_ENABLE
-	CPPUNIT_ASSERT(brics_3d::WorldModel::microBlxWmHandle == wm);
-#endif
-	functionBlockFile = "cppdemo";
+
+//	functionBlockFile = "cppdemo";
+
+	/*
+	 * NOTE: This one is located in the brics_3d_function_blocks repository.
+	 * If it is not installed the tests will fail.
+	 */
+	functionBlockFile = "testblock";
+
+	if(getenv("FBX_MODULES") != 0) {
+		string functionBlocksModulesPath(getenv("FBX_MODULES"));
+		blockRepositoryPath = functionBlocksModulesPath + "/lib/";
+	} else {
+		blockRepositoryPath = "/opt/src/sandbox/brics_3d_function_blocks/lib/";
+	}
 
 	brics_3d::Logger::setMinLoglevel(brics_3d::Logger::LOGDEBUG);
 }
@@ -35,11 +44,11 @@ void FunctionBlockTest::tearDown() {
 
 void FunctionBlockTest::testFunctionBlockLoader() {
 	CPPUNIT_ASSERT(!wm->loadFunctionBlock("wrongFileName"));
-	CPPUNIT_ASSERT(wm->loadFunctionBlock(functionBlockFile));
+	CPPUNIT_ASSERT(wm->loadFunctionBlock(functionBlockFile, blockRepositoryPath));
 }
 
 void FunctionBlockTest::testFunctionBlockExecution() {
-	CPPUNIT_ASSERT(wm->loadFunctionBlock(functionBlockFile));
+	CPPUNIT_ASSERT(wm->loadFunctionBlock(functionBlockFile, blockRepositoryPath));
 
 	vector<brics_3d::rsg::Id> input;
 	input.push_back(wm->getRootNodeId()); // input hook
@@ -52,10 +61,8 @@ void FunctionBlockTest::testFunctionBlockExecution() {
 }
 
 void FunctionBlockTest::testExternalFunctionBlockExecution() {
-//	string blockName = "cppdemo";
-//	string blockPath = "/home/sblume/sandbox/microblx/microblx/std_blocks/cppdemo/";
 	string blockName = "roifilter";//"testblock";
-	string blockPath = "/home/sblume/sandbox/brics_3d_function_blocks/lib/";
+	string blockPath = blockRepositoryPath;
 
 	CPPUNIT_ASSERT(wm->loadFunctionBlock(blockName, blockPath));
 

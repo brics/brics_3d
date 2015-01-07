@@ -44,7 +44,7 @@ SET(UBX_LIBRARIES_TMP
 IF(UBX_LIBRARY) 
   SET(UBX_LIBRARIES
     ${UBX_LIBRARY}
-    CACHE STRING "Mixroblx library"
+    CACHE STRING "Microblx library"
   ) 
 ENDIF(UBX_LIBRARY)
 
