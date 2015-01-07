@@ -20,8 +20,19 @@ void FunctionBlockTest::setUp() {
 	wm = new brics_3d::WorldModel();
 
 //	functionBlockFile = "cppdemo";
+
+	/*
+	 * NOTE: This one is located in the brics_3d_function_blocks repository.
+	 * If it is not installed the tests will fail.
+	 */
 	functionBlockFile = "testblock";
-	blockRepositoryPath = "/opt/src/sandbox/brics_3d_function_blocks/lib/";
+
+	if(getenv("FBX_MODULES") != 0) {
+		string functionBlocksModulesPath(getenv("FBX_MODULES"));
+		blockRepositoryPath = functionBlocksModulesPath + "/lib/";
+	} else {
+		blockRepositoryPath = "/opt/src/sandbox/brics_3d_function_blocks/lib/";
+	}
 
 	brics_3d::Logger::setMinLoglevel(brics_3d::Logger::LOGDEBUG);
 }
@@ -50,8 +61,6 @@ void FunctionBlockTest::testFunctionBlockExecution() {
 }
 
 void FunctionBlockTest::testExternalFunctionBlockExecution() {
-//	string blockName = "cppdemo";
-//	string blockPath = "/home/sblume/sandbox/microblx/microblx/std_blocks/cppdemo/";
 	string blockName = "roifilter";//"testblock";
 	string blockPath = blockRepositoryPath;
 
