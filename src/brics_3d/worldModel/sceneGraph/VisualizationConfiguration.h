@@ -85,6 +85,9 @@ public:
 	/// If yes show GeometricNode.
 	bool visualizeGeometricNodes;
 
+	/// Size of displayed fonts, if abblicable
+	double fontSize;
+
 	// Default values
 	static const bool visualizeIdsDefault = true;
 	static const bool abbreviateIdsDefault = true;
@@ -100,6 +103,8 @@ public:
 	static const bool visualizeGroupsDefault = true;
 	static const bool visualizeTransformsDefault = true;
 	static const bool visualizeGeometricNodesDefault = true;
+
+	static const double fontSizeDefault;
 
 };
 

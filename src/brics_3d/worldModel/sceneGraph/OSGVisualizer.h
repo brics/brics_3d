@@ -33,6 +33,7 @@
 #include <osg/MatrixTransform>
 #include <osg/ShapeDrawable>
 #include <osg/BlendFunc>
+#include <osgGA/TrackballManipulator>
 #include <map>
 
 namespace brics_3d {
@@ -100,6 +101,9 @@ private:
 
     /// Helper function to visualize attributes as text
     osg::ref_ptr<osg::Node> createAttributeVisualization(vector<Attribute> attributes, Id id = 0);
+
+    /// Helper functio to relocate camera
+    bool moveCameraToPosition(double x, double y, double z);
 
 	/// OSG viewer object
 	osgViewer::Viewer viewer;

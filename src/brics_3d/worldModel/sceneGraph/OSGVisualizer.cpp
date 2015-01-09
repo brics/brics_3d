@@ -218,6 +218,10 @@ bool OSGVisualizer::addTransformNode(Id parentId, Id& assignedId, vector<Attribu
 	Attribute noVisualisationTag("debugInfo","no_visualization");
 	noVisualisation = attributeListContainsAttribute(attributes, noVisualisationTag);
 
+	bool isACameraReferenceFrame = false;
+	Attribute cameraReferenceFrameTag("osg::camera","home");
+	isACameraReferenceFrame = attributeListContainsAttribute(attributes, cameraReferenceFrameTag);
+
 	osg::ref_ptr<osg::Node> node = findNodeRecerence(parentId);
 	osg::ref_ptr<osg::Group> parentGroup = 0;
 	if (node != 0) {
@@ -238,6 +242,16 @@ bool OSGVisualizer::addTransformNode(Id parentId, Id& assignedId, vector<Attribu
 		}
 		viewer.addUpdateOperation(new OSGOperationAdd(this, newTransformNode, parentGroup));
 		idLookUpTable.insert(std::make_pair(assignedId, newTransformNode));
+
+		if(isACameraReferenceFrame) {
+			LOG(DEBUG) << "OSGVisualizer: resetting pose of camera";
+
+			double x = transform->getRawData()[brics_3d::matrixEntry::x];
+			double y = transform->getRawData()[brics_3d::matrixEntry::y];
+			double z = transform->getRawData()[brics_3d::matrixEntry::z];
+			moveCameraToPosition(x,y,z);
+		}
+
 		return true;
 	}
 	LOG(ERROR) << "OSGVisualizer: Parent with ID " << parentId << " is not a group. Cannot add a new transform as a child of it.";
@@ -492,6 +506,9 @@ void OSGVisualizer::threadFunction(OSGVisualizer* obj) {
 	viewer.addEventHandler(new osgViewer::WindowSizeHandler);
 	viewer.addEventHandler(new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
 
+	osgGA::TrackballManipulator* trackballManipulator = new osgGA::TrackballManipulator();
+	viewer.setCameraManipulator(trackballManipulator);
+
 	//The viewer.run() method starts the threads and the traversals.
 	viewer.run();
 	LOG(INFO) << "OSGVisualizer: Done.";
@@ -597,7 +614,7 @@ osg::ref_ptr<osg::Node> OSGVisualizer::createAttributeVisualization(vector<Attri
 		osgText::Text* text = new osgText::Text();
 //		text->setFont("arial.ttf");
 		text->setFont("/usr/share/fonts/truetype/msttcorefonts/arial.ttf");
-		text->setCharacterSize(1.0f);
+		text->setCharacterSize(config.fontSize);
 		text->setPosition(osg::Vec3(0, 0, 1.0));
 		text->setAlignment(osgText::Text::LEFT_BASE_LINE);
 		text->setColor(osg::Vec4(1.0f, 1.0f, 0.0f, 1.0f));
@@ -630,6 +647,56 @@ osg::ref_ptr<osg::Node> OSGVisualizer::createAttributeVisualization(vector<Attri
 	return textNode;
 }
 
+
+bool OSGVisualizer::moveCameraToPosition(double x, double y, double z) {
+	LOG(DEBUG) << "OSGVisualizer: resetting pose of camera";
+
+    osg::Vec3d homeEye;
+    osg::Vec3d homeCenter;
+    osg::Vec3d homeUp;
+
+	osgGA::TrackballManipulator* trackballManipulator = dynamic_cast<osgGA::TrackballManipulator*>(viewer.getCameraManipulator());
+
+    if(trackballManipulator != 0) {
+    	trackballManipulator->setCenter(osg::Vec3f(x, y, z));
+       	trackballManipulator->setDistance(10);
+       	trackballManipulator->getHomePosition(homeEye, homeCenter, homeUp);
+		LOG(DEBUG) << "OSGVisualizer: home was set to:"
+				<< homeEye[0] << ", "
+				<< homeEye[1] << ", "
+				<< homeEye[2] << "| "
+				<< homeCenter[0] << ", "
+				<< homeCenter[1] << ", "
+				<< homeCenter[2] << "| "
+				<< homeUp[0] << ", "
+				<< homeUp[1] << ", "
+				<< homeUp[2];
+
+		homeEye[0] = x;
+		homeEye[1] = y;
+
+		homeCenter[0] = x;
+		homeCenter[1] = y;
+
+		LOG(DEBUG) << "OSGVisualizer: home has new values of:"
+				<< homeEye[0] << ", "
+				<< homeEye[1] << ", "
+				<< homeEye[2] << "| "
+				<< homeCenter[0] << ", "
+				<< homeCenter[1] << ", "
+				<< homeCenter[2] << "| "
+				<< homeUp[0] << ", "
+				<< homeUp[1] << ", "
+				<< homeUp[2];
+
+		trackballManipulator->setHomePosition(homeEye, homeCenter, homeUp, true);
+
+		return true;
+    } else {
+    	LOG(WARNING) << "Cannot change camera pose.";
+        return false;
+    }
+}
 
 }  // namespace rsg
 

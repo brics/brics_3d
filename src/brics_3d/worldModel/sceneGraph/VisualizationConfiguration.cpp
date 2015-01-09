@@ -22,6 +22,8 @@
 namespace brics_3d {
 namespace rsg {
 
+const double VisualizationConfiguration::fontSizeDefault = 1.0;
+
 VisualizationConfiguration::VisualizationConfiguration() {
 
 	/* Apply default values: */
@@ -39,6 +41,7 @@ VisualizationConfiguration::VisualizationConfiguration() {
 	this->visualizeGroups = visualizeGroupsDefault;
 	this->visualizeTransforms = visualizeTransformsDefault;
 	this->visualizeGeometricNodes = visualizeGeometricNodesDefault;
+	this->fontSize = fontSizeDefault;
 
 }
 
