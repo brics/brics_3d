@@ -71,6 +71,20 @@ public:
 	/// Will be ignored if visualizePoseUncertainty = false.
 	bool visualizeRelativePoseUncertainty;
 
+	/* More fine grained control on what to display */
+
+	/// If yes show Nodes.
+	bool visualizeNodes;
+
+	/// If yes show Groups.
+	bool visualizeGroups;
+
+	/// If yes show Transforms.
+	bool visualizeTransforms;
+
+	/// If yes show GeometricNode.
+	bool visualizeGeometricNodes;
+
 	// Default values
 	static const bool visualizeIdsDefault = true;
 	static const bool abbreviateIdsDefault = true;
@@ -82,6 +96,10 @@ public:
 	static const bool visualizeTimeStampDefault = false;
 	static const bool visualizePoseUncertaintyDefault = false;
 	static const bool visualizeRelativePoseUncertaintyDefault = false;
+	static const bool visualizeNodesDefault = true;
+	static const bool visualizeGroupsDefault = true;
+	static const bool visualizeTransformsDefault = true;
+	static const bool visualizeGeometricNodesDefault = true;
 
 };
 

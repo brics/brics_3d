@@ -53,11 +53,12 @@ int main(int argc, char **argv) {
 	brics_3d::rsg::OSGVisualizer* wm3DVisualizer = new brics_3d::rsg::OSGVisualizer();
 	brics_3d::rsg::DotVisualizer* wmStructureVisualizer = new brics_3d::rsg::DotVisualizer(&wm->scene);
 	brics_3d::rsg::VisualizationConfiguration osgConfiguration; // optional configuration
-	osgConfiguration.visualizeIds = false;
-	osgConfiguration.visualizeAttributes = false;
+	osgConfiguration.visualizeIds = true;
+	osgConfiguration.visualizeAttributes = true;
+	osgConfiguration.visualizeTransforms = false;
 	wm3DVisualizer->setConfig(osgConfiguration);
 	wm->scene.attachUpdateObserver(wm3DVisualizer); //enable visualization
-	wm->scene.attachUpdateObserver(wmStructureVisualizer);
+//	wm->scene.attachUpdateObserver(wmStructureVisualizer);
 	wm->scene.advertiseRootNode(); // Don't forget this one! Otherwise the observers cannot correctly handle the updates.
 
 	/* Load a data set */
@@ -71,7 +72,7 @@ int main(int argc, char **argv) {
     std::vector<brics_3d::rsg::Attribute> attributes;
     attributes.clear();
     attributes.push_back(brics_3d::rsg::Attribute("name","pointCloud1Id"));
-	wm->scene.addGeometricNode(wm->getRootNodeId(), pointCloud1Id, attributes, pointCloud1Container, wm->now());
+	//wm->scene.addGeometricNode(wm->getRootNodeId(), pointCloud1Id, attributes, pointCloud1Container, wm->now());
 
 
 	/*
@@ -81,6 +82,7 @@ int main(int argc, char **argv) {
 	string blockPath = pathToFunctionBlocksRepository + "/lib/";
 	wm->loadFunctionBlock("pointcloudloader", blockPath);
 	wm->loadFunctionBlock("octreefilter", blockPath);
+	wm->loadFunctionBlock("osmloader", blockPath);
 
 	/*
 	 * Execute function blocks
@@ -92,7 +94,8 @@ int main(int argc, char **argv) {
 	input.push_back(inputHook); // input hook
 	vector<brics_3d::rsg::Id> output;
 	vector<brics_3d::rsg::Id> output2;
-	wm->executeFunctionBlock("pointcloudloader", input, output);
+//	wm->executeFunctionBlock("pointcloudloader", input, output);
+	wm->executeFunctionBlock("osmloader", input, output);
 	wm->executeFunctionBlock("octreefilter", output, output2); // "stack them together"
 
 	/* Wait until user closes the GUI */

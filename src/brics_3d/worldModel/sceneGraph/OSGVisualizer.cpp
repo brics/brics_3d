@@ -166,13 +166,25 @@ struct DrawCallback: public osg::Drawable::DrawCallback {
 
 bool OSGVisualizer::addNode(Id parentId, Id& assignedId, vector<Attribute> attributes, bool forcedId) {
 	LOG(DEBUG) << "OSGVisualizer: adding node";
+
+	bool noVisualisation = false;
+	Attribute noVisualisationTag("debugInfo","no_visualization");
+	noVisualisation = attributeListContainsAttribute(attributes, noVisualisationTag);
+
 	osg::ref_ptr<osg::Node> node = findNodeRecerence(parentId);
 	osg::ref_ptr<osg::Group> parentGroup = 0;
 	if (node != 0) {
 		parentGroup = node->asGroup();
 	}
 	if (parentGroup != 0) {
-		osg::ref_ptr<osg::Node> newNode = new osg::Node();
+		osg::ref_ptr<osg::Group> newNode = new osg::Group();
+		if (noVisualisation || !config.visualizeNodes) {
+			LOG(DEBUG) << "OSGVisualizer: node has no_visualization debug tag. Skipping visualization.";
+		} else {
+			if(config.visualizeAttributes) {
+				newNode->addChild(createAttributeVisualization(attributes, assignedId));
+			}
+		}
 		viewer.addUpdateOperation(new OSGOperationAdd(this, newNode, parentGroup));
 		idLookUpTable.insert(std::make_pair(assignedId, newNode));
 		return true;
@@ -216,7 +228,7 @@ bool OSGVisualizer::addTransformNode(Id parentId, Id& assignedId, vector<Attribu
 		osg::Matrixd transformMatrix;
 		transformMatrix.set(transform->getRawData());
 		newTransformNode->setMatrix(transformMatrix);
-		if (noVisualisation) {
+		if (noVisualisation || !config.visualizeTransforms) {
 			LOG(DEBUG) << "OSGVisualizer: transform has no_visualization debug tag. Skipping visualization.";
 		} else {
 			newTransformNode->addChild(createFrameAxis(frameAxisVisualisationScale)); //optionally for visualization

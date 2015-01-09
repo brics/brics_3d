@@ -35,6 +35,10 @@ VisualizationConfiguration::VisualizationConfiguration() {
 	this->visualizeTimeStamp = visualizeTimeStampDefault;
 	this->visualizePoseUncertainty = visualizePoseUncertaintyDefault;
 	this->visualizeRelativePoseUncertainty = visualizeRelativePoseUncertaintyDefault;
+	this->visualizeNodes = visualizeNodesDefault;
+	this->visualizeGroups = visualizeGroupsDefault;
+	this->visualizeTransforms = visualizeTransformsDefault;
+	this->visualizeGeometricNodes = visualizeGeometricNodesDefault;
 
 }
 
