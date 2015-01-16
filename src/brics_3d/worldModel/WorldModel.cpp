@@ -251,24 +251,6 @@ void WorldModel::addSceneObject(SceneObject newObject, rsg::Id& assignedId) {
 	scene.addGeometricNode(assignedId, dummyResultID, emptyAttributes, newObject.shape, currentTime);
 }
 
-void WorldModel::initPerception() {
-
-}
-
-void WorldModel::runPerception() {
-
-}
-
-void WorldModel::runOncePerception() {
-//	OutdatedDataDeleter* deleter = new OutdatedDataDeleter();
-	OutdatedDataIdAwareDeleter* deleter = new OutdatedDataIdAwareDeleter(&scene);
-	scene.executeGraphTraverser(deleter, scene.getRootId());
-}
-
-void WorldModel::stopPerception() {
-
-}
-
 bool WorldModel::loadFunctionBlock(std::string name) {
 	/* provide a reasonable default value */
 	std::string pathToBlock = microBlxPath + "std_blocks/" + name  + "/";

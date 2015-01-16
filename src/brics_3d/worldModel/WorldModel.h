@@ -57,13 +57,6 @@ class WorldModel : public IWorldModelQuery, public IWorldModelUpdate, public IWo
 
     void addSceneObject(SceneObject newObject, rsg::Id& assignedId);
 
-    void initPerception();
-
-    void runPerception();
-
-    void runOncePerception();
-
-    void stopPerception();
 
     /* Function block interface */
     bool loadFunctionBlock(std::string name); //default path

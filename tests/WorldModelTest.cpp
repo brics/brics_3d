@@ -55,10 +55,6 @@ void WorldModelTest::testSimpleHanoiUseCase() {
 	myWM->insertTransform(targetAreaID, tmpTransformation);
 
 
-	/* Start perception */
-	myWM->initPerception();
-	myWM->runPerception(); //starts some thread
-
 	/* Pose a query formed by Attributes. Please note that multiple Attributes are logically connected via AND */
 	vector<Attribute> queryArributes;
 	queryArributes.push_back(Attribute("shapeType","Box"));
@@ -91,7 +87,6 @@ void WorldModelTest::testSimpleHanoiUseCase() {
 	}
 
 	/* Clean up */
-	myWM->stopPerception();
 	delete myWM;
 	delete timer;
 	///[world_model_hanoi_example]

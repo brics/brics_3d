@@ -23,23 +23,19 @@
 namespace brics_3d {
 
 /**
- * @brief Coordination interface to trigger the internal perception processing functionalities.
+ * @brief Coordination interface to trigger the internal processing functionalities.
  * @ingroup sceneGraph
  */
 class IWorldModelCoordination {
   public:
 
-	///@deprecated
-    virtual void initPerception() = 0;
+    virtual bool loadFunctionBlock(std::string name) = 0;
 
-	///@deprecated
-    virtual void runPerception() = 0;
+    virtual bool loadFunctionBlock(std::string name, std::string path) = 0;
 
-	///@deprecated
-    virtual void runOncePerception() = 0;
+    virtual bool executeFunctionBlock(std::string name, std::vector<rsg::Id>& input, std::vector<rsg::Id>& output) = 0;
 
-	///@deprecated
-    virtual void stopPerception() = 0;
+    virtual bool getLoadedFunctionBlocks(std::vector<std::string>& functionBlocks) = 0;
 
 };
 
