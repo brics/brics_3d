@@ -63,7 +63,7 @@ class WorldModel : public IWorldModelQuery, public IWorldModelUpdate, public IWo
     bool loadFunctionBlock(std::string name, std::string path);
     bool executeFunctionBlock(std::string name, std::vector<rsg::Id>& input, std::vector<rsg::Id>& output);
     bool getLoadedFunctionBlocks(std::vector<std::string>& functionBlocks);
-
+    bool setFunctionBlockConfiguration(std::string name, std::vector<rsg::Attribute> configuration); // a gerneric Attribure-value list is provided
 
     /* Helper functions */
     rsg::Id getRootNodeId();

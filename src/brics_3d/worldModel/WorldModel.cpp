@@ -463,6 +463,10 @@ bool WorldModel::getLoadedFunctionBlocks(std::vector<std::string>& functionBlock
 	return false;
 }
 
+bool WorldModel::setFunctionBlockConfiguration(std::string name, std::vector<rsg::Attribute> configuration) {
+	return false;
+}
+
 rsg::Id WorldModel::getRootNodeId() {
 	return scene.getRootId();
 }
