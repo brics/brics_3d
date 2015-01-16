@@ -55,14 +55,14 @@ class Connection : public Node {
         this->start = start;
     }
 
-    TimeStamp getStop() const
+    TimeStamp getEnd() const
     {
-        return stop;
+        return end;
     }
 
-    void setStop(TimeStamp stop)
+    void setEnd(TimeStamp end)
     {
-        this->stop = stop;
+        this->end = end;
     }
     virtual void accept(INodeVisitor* visitor);
 
@@ -91,8 +91,8 @@ private:
     /// Life cycle start
     TimeStamp start;
 
-    /// Life cycle stop
-    TimeStamp stop;
+    /// Life cycle end
+    TimeStamp end;
 
 };
 

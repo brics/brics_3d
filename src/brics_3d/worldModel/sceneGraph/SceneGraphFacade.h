@@ -102,7 +102,7 @@ class SceneGraphFacade : public ISceneGraphQuery, public ISceneGraphUpdate {
     bool removeParent(Id id, Id parentId);
 
     /* Incubation/Experimental methods for connection type */
-    bool addConnection(Id parentId, Id& assignedId, vector<Attribute> attributes, vector<Id> sourceIds, vector<Id> targetIds, bool forcedId = false);
+    bool addConnection(Id parentId, Id& assignedId, vector<Attribute> attributes, vector<Id> sourceIds, vector<Id> targetIds, TimeStamp start, TimeStamp end, bool forcedId = false);
     bool getConnections(vector<Attribute> attributes, vector<Id>& ids);
     bool getConnectionAttributes(Id id, vector<Attribute>& attributes);
     bool getConnectionParents(Id id, vector<Id>& parentIds);

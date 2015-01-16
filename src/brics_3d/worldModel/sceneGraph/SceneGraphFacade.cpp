@@ -746,7 +746,7 @@ bool SceneGraphFacade::removeParent(Id id, Id parentId) {
 	};
 }
 
-bool SceneGraphFacade::addConnection(Id parentId, Id& assignedId, vector<Attribute> attributes, vector<Id> sourceIds, vector<Id> targetIds, bool forcedId) {
+bool SceneGraphFacade::addConnection(Id parentId, Id& assignedId, vector<Attribute> attributes, vector<Id> sourceIds, vector<Id> targetIds, TimeStamp start, TimeStamp end, bool forcedId) {
 	bool operationSucceeded = false;
 	bool idIsOk = false;
 	Id id;

@@ -3220,7 +3220,7 @@ void SceneGraphNodesTest::testSceneGraphFacadeConnections() {
 	vector<Id> targetIds;
 	sourceIds.push_back(tf1Id);
 	targetIds.push_back(node3Id);
-	CPPUNIT_ASSERT(scene.addConnection(rootId, connId, tmpAttributes, sourceIds, targetIds));
+	CPPUNIT_ASSERT(scene.addConnection(rootId, connId, tmpAttributes, sourceIds, targetIds, dummyTime, dummyTime));
 
 	/* Test for invariance of the existin nodes */
 	resultChildIds.clear();
