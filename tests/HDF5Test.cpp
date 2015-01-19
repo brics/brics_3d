@@ -217,6 +217,7 @@ void HDF5Test::testUpdateObersver() {
 	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addGeometricNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addRemoteRootNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addConnectionCounter);
 	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.setNodeAttributesCounter);
 	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.setTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.deleteNodeCounter);
@@ -228,6 +229,7 @@ void HDF5Test::testUpdateObersver() {
 	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.addTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.addGeometricNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.addRemoteRootNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.addConnectionCounter);
 	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.setNodeAttributesCounter);
 	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.setTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.deleteNodeCounter);
@@ -576,6 +578,7 @@ void HDF5Test::testUpdateObersver() {
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addGeometricNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addRemoteRootNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addConnectionCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.setNodeAttributesCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.setTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.deleteNodeCounter);
@@ -587,6 +590,41 @@ void HDF5Test::testUpdateObersver() {
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(3, remoteWmNodeCounter.addGeometricNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(2, remoteWmNodeCounter.addRemoteRootNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.addConnectionCounter);
+	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(2, remoteWmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.removeParentCounter);
+
+
+	Id connId;
+	vector<Attribute> connectionAttributes;
+	connectionAttributes.push_back(Attribute("rsg::Type","has_geometry"));
+	vector<Id> sourceIs;
+	sourceIs.push_back(cylinderId);
+	vector<Id> targetIs;
+	targetIs.push_back(tfId);
+	CPPUNIT_ASSERT(wm->scene.addConnection(wm->getRootNodeId(), connId, connectionAttributes, sourceIs, targetIs, wm->now(), wm->now()));
+
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addRemoteRootNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addConnectionCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.removeParentCounter);
+
+	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(3, remoteWmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(2, remoteWmNodeCounter.addRemoteRootNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addConnectionCounter);
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.setNodeAttributesCounter);
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.setTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.deleteNodeCounter);

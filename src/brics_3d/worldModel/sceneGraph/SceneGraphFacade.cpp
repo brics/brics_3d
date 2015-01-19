@@ -805,7 +805,7 @@ bool SceneGraphFacade::addConnection(Id parentId, Id& assignedId, vector<Attribu
 		std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
 		for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
 			Id assignedIdcopy = assignedId; // prevent that observer might change this....
-//			(*observerIterator)->addConnection(parentId, assignedIdcopy, attributes, forcedId); //FIXME add this to interface
+			(*observerIterator)->addConnection(parentId, assignedIdcopy, attributes, sourceIds, targetIds, start, end, forcedId); //FIXME add this to interface
 		}
 	}
 
