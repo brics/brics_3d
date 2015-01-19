@@ -109,6 +109,7 @@ public:
 		addUncertainTransformCounter = 0;
 		addGeometricNodeCounter = 0;
 		addRemoteRootNodeCounter = 0;
+		addConnectionCounter = 0;
 		setNodeAttributesCounter = 0;
 		setTransformCounter = 0;
 		setUncertainTransformCounter = 0;
@@ -146,6 +147,12 @@ public:
     	addRemoteRootNodeCounter++;
 		return true;
     }
+
+    bool addConnection(Id parentId, Id& assignedId, vector<Attribute> attributes, vector<Id> sourceIds, vector<Id> targetIds, TimeStamp start, TimeStamp end, bool forcedId = false) {
+    	addConnectionCounter++;
+    	return true;
+    }
+
 	bool setNodeAttributes(Id id, vector<Attribute> newAttributes) {
 		setNodeAttributesCounter++;
 		return true;
@@ -182,6 +189,7 @@ public:
 	int addUncertainTransformCounter;
 	int addGeometricNodeCounter;
 	int addRemoteRootNodeCounter;
+	int addConnectionCounter;
 	int setNodeAttributesCounter;
 	int setTransformCounter;
 	int setUncertainTransformCounter;

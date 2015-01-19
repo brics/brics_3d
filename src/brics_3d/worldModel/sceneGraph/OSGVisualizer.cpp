@@ -411,6 +411,12 @@ bool OSGVisualizer::addRemoteRootNode(Id rootId, vector<Attribute> attributes) {
 	return true;
 }
 
+bool OSGVisualizer::addConnection(Id parentId, Id& assignedId, vector<Attribute> attributes, vector<Id> sourceIds, vector<Id> targetIds, TimeStamp start, TimeStamp end, bool forcedId) {
+	LOG(DEBUG) << "OSGVisualizer: Skipping visualiation of Connection. This is not implemented.";
+	return true;
+}
+
+
 bool OSGVisualizer::setNodeAttributes(Id id, vector<Attribute> newAttributes) {
 	LOG(DEBUG) << "OSGVisualizer: setting attributes";
 	return true;

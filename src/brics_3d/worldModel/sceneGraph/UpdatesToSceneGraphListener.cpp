@@ -111,6 +111,17 @@ bool UpdatesToSceneGraphListener::addRemoteRootNode(Id rootId, vector<Attribute>
 	return true;
 }
 
+bool UpdatesToSceneGraphListener::addConnection(Id parentId, Id& assignedId, vector<Attribute> attributes, vector<Id> sourceIds, vector<Id> targetIds, TimeStamp start, TimeStamp end, bool forcedId) {
+
+	/* Call _all_ observers  */
+	LOG(DEBUG) << "UpdatesToSceneGraphListener::addConnection with ID: " << assignedId;
+	std::vector<ISceneGraphUpdate*>::iterator observerIterator;
+	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
+		(*observerIterator)->addConnection(parentId, assignedId, attributes, sourceIds, targetIds, start, end, forcedId);
+	}
+	return true;
+}
+
 bool UpdatesToSceneGraphListener::setNodeAttributes(Id id,
 		vector<Attribute> newAttributes) {
 

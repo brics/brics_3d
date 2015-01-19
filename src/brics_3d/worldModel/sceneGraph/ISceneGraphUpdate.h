@@ -108,11 +108,51 @@ class ISceneGraphUpdate {
 	 * @param timeStamp Time stamp assiciated with the geometic Shape.
 	 * @param forcedId If set to true the ID defined in assignedId will be taken instead of an intanally generated one. This is
 	 *                     in particular useful if distibuted scene graphs propagate updates and ensures IDs are not re-created.
-	 * @return True if a new GeometricNode was sucessfully added to the scen egraph.
+	 * @return True if a new GeometricNode was sucessfully added to the scene graph.
 	 */
 	virtual bool addGeometricNode(Id parentId, Id& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp, bool forcedId = false) = 0;
 
+	/**
+	 * @brief Add a new remote root node that represents the root node of another scene graph.
+	 *
+	 * This meachnism allows to have multiple subgraphs side-by-side. Of course these graphs
+	 * can be further related in subsequent invokation of the appropriate addParetnt nodes.
+	 * It is also possible to nest subraphs into each other i.e. one graph contains other
+	 * root nodes as ancesters.
+	 *
+	 * @param[in] rootId ID of the remote root node.
+	 * @param[in] attributes A set of attributs that will be set for this remote root node.
+	 * @return
+	 */
 	virtual bool addRemoteRootNode(Id rootId, vector<Attribute> attributes) = 0;
+
+	/**
+	 * @brief Add a new Connection between two or more nodes in the scene graph.
+	 *
+	 * A Connection is a generic labeled hyperedge in the graph. The attributes denote
+	 * how it is interpeted.
+	 *
+	 * A Connection is always a child of another (group) node.
+	 *
+	 * A Connection is only valid in the time interval [start, end]
+	 *
+	 * @param parentId[in]       ID of the parent node. To add more more parents use
+	 *                           the brics_3d::rsg::ISceneGraphUpdate::addParent() function.
+	 * @param assignedId[in,out] The ID that was assigned internally.
+	 *                           In case the forcedId flag has been set to true it will used instead of the internal ID assignment.
+	 *                           Use this functio with care. There are are some internal checks if the manually assigned is valid
+	 *                           but do not rely on this in a distibuted setting.
+	 * @param attributes[in]     A set of attributs that will be set for the node.
+	 * @param sourceIds[in]      A set of source nodes reeferted to by its IDs (ingoing arcs) that will be set for the connection. Can be empty.
+	 * @param targetIds[in]      A set of rarget nodes  reeferted to by its IDs (outgoing arcs) that will be set for the connection. Can be empty.
+	 * @param start[in]		     Time stamps that denots sinsce when a connection is valid. Recommended is the time of creation.
+	 * @param end[in]		     Time stamps that denots sinsce when a connection is valid. Recommended is a infitite time stamp.
+	 * @param forcedId[in]	     If set to true the ID defined in assignedId will be taken instead of an intanally generated one. This is
+	 *                           in particular useful if distibuted scene graphs propagate updates and ensures IDs are not re-created.
+	 * @return                   True if a new GeometricNode was sucessfully added to the scene graph.
+	 */
+	virtual bool addConnection(Id parentId, Id& assignedId, vector<Attribute> attributes, vector<Id> sourceIds, vector<Id> targetIds, TimeStamp start, TimeStamp end, bool forcedId = false) = 0;
+
 
     /**
      * @brief Override the attributes of a node.

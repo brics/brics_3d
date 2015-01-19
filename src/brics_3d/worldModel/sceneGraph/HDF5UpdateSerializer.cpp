@@ -213,6 +213,12 @@ bool HDF5UpdateSerializer::addRemoteRootNode(Id rootId, vector<Attribute> attrib
 	return true;
 }
 
+bool HDF5UpdateSerializer::addConnection(Id parentId, Id& assignedId, vector<Attribute> attributes, vector<Id> sourceIds, vector<Id> targetIds, TimeStamp start, TimeStamp end, bool forcedId) {
+	LOG(WARNING) << "HDF5UpdateSerializer: adding a Connection-" << assignedId.toString() << "is not yet supported.";
+	return false;
+}
+
+
 bool HDF5UpdateSerializer::setNodeAttributes(Id id,
 		vector<Attribute> newAttributes) {
 

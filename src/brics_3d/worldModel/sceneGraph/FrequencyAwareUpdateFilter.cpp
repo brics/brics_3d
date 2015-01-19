@@ -125,6 +125,16 @@ bool FrequencyAwareUpdateFilter::addRemoteRootNode(Id rootId, vector<Attribute> 
 	return true;
 }
 
+bool FrequencyAwareUpdateFilter::addConnection(Id parentId, Id& assignedId, vector<Attribute> attributes, vector<Id> sourceIds, vector<Id> targetIds, TimeStamp start, TimeStamp end, bool forcedId) {
+
+	/* Call _all_ observers  */
+	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
+	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
+		(*observerIterator)->addConnection(parentId, assignedId, attributes, sourceIds, targetIds, start, end, forcedId);
+	}
+	return true;
+}
+
 bool FrequencyAwareUpdateFilter::setNodeAttributes(Id id,
 		vector<Attribute> newAttributes) {
 

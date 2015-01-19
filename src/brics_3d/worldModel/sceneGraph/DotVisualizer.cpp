@@ -68,6 +68,12 @@ bool DotVisualizer::addRemoteRootNode(Id rootId, vector<Attribute> attributes) {
 	return true;
 }
 
+bool DotVisualizer::addConnection(Id parentId, Id& assignedId, vector<Attribute> attributes, vector<Id> sourceIds, vector<Id> targetIds, TimeStamp start, TimeStamp end, bool forcedId) {
+	printGraph();
+	return true;
+}
+
+
 
 bool DotVisualizer::setNodeAttributes(Id id, vector<Attribute> newAttributes) {
 	printGraph();

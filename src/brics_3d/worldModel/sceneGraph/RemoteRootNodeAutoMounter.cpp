@@ -79,6 +79,11 @@ bool RemoteRootNodeAutoMounter::addRemoteRootNode(Id rootId, vector<Attribute> a
 	return observedScene->addParent(rootId, mountPoint);
 }
 
+bool RemoteRootNodeAutoMounter::addConnection(Id parentId, Id& assignedId, vector<Attribute> attributes, vector<Id> sourceIds, vector<Id> targetIds, TimeStamp start, TimeStamp end, bool forcedId) {
+	return true;
+}
+
+
 bool RemoteRootNodeAutoMounter::setNodeAttributes(Id id,
 		vector<Attribute> newAttributes) {
 	return true;
