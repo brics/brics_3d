@@ -241,19 +241,6 @@ public:
 		return false;
 	}
 
-	inline static bool addTimeStampToHDF5Group(brics_3d::rsg::TimeStamp stamp,  H5::Group& group, std::string timeStampName) {
-		hsize_t rsgTimeStampDimensions[rsgTimeStampRank];
-		rsgTimeStampDimensions[0] = 1; // 1 DOUBLE VALUE
-		H5::DataSpace rsgTimeStampDataSpace(rsgTimeStampRank, rsgTimeStampDimensions);
-		H5::FloatType rsgTimeStampDataType(H5::PredType::NATIVE_DOUBLE); //for byte
-
-		H5::DataSet rsgTimeStampDataset = group.createDataSet(timeStampName, rsgTimeStampDataType, rsgTimeStampDataSpace);
-		double tmpStamp = stamp.getSeconds();
-		rsgTimeStampDataset.write(&tmpStamp, H5::PredType::NATIVE_DOUBLE);
-
-		return true;
-	}
-
 	inline static bool addAttributeToHDF5Group(brics_3d::rsg::Attribute attribute, H5::Group& group) {
 		H5::StrType stringType(0, H5T_VARIABLE);
 		H5::DataSpace attributeSpace(H5S_SCALAR);
@@ -704,19 +691,19 @@ public:
 		return true;
 	}
 
-	inline static bool addTimeStampToHDF5Group(brics_3d::rsg::TimeStamp timeStamp, H5::Group& group) {
+	inline static bool addTimeStampToHDF5Group(brics_3d::rsg::TimeStamp timeStamp, H5::Group& group, std::string timeStampName = rsgTimeStampName) {
 		H5::IntType rsgTimeStampType( H5::PredType::NATIVE_DOUBLE);
 		H5::DataSpace rsgTimeStampSpace(H5S_SCALAR);
-		H5::DataSet rsgTimeStampDataset = group.createDataSet(rsgTimeStampName, rsgTimeStampType, rsgTimeStampSpace);
+		H5::DataSet rsgTimeStampDataset = group.createDataSet(timeStampName, rsgTimeStampType, rsgTimeStampSpace);
 		double tmpTimeStamp = timeStamp.getSeconds();
 		rsgTimeStampDataset.write(&tmpTimeStamp, rsgTimeStampType);
 
 		return true;
 	}
 
-	inline static bool getTimeStampFromHDF5Group(brics_3d::rsg::TimeStamp& timeStamp, H5::Group& group) {
+	inline static bool getTimeStampFromHDF5Group(brics_3d::rsg::TimeStamp& timeStamp, H5::Group& group, std::string timeStampName = rsgTimeStampName) {
 		H5::IntType rsgTimeStampType( H5::PredType::NATIVE_DOUBLE);
-		H5::DataSet rsgTimeStampDataset = group.openDataSet(rsgTimeStampName);
+		H5::DataSet rsgTimeStampDataset = group.openDataSet(timeStampName);
 		double tmpTimeStamp;
 		rsgTimeStampDataset.read(&tmpTimeStamp, rsgTimeStampType);
 		timeStamp = brics_3d::rsg::TimeStamp(tmpTimeStamp, brics_3d::Units::Second);

@@ -148,6 +148,10 @@ bool HDF5UpdateDeserializer::handleSceneGraphUpdate(const char* dataBuffer,
 				   doAddGroup(group);
 				   break;
 
+			   case HDF5Typecaster::CONNECTION:
+				   doAddConnection(group);
+				   break;
+
 			   case HDF5Typecaster::GEOMETIRC_NODE:
 				   LOG(DEBUG) << "entering doAddGeometricNode(group)";
 				   doAddGeometricNode(group);
@@ -233,6 +237,7 @@ bool HDF5UpdateDeserializer::handleSceneGraphUpdate(const char* dataBuffer,
         	   doAddRemoteRootNode(group);
 
         	   break;
+
 
     	   break;
 
@@ -354,6 +359,30 @@ bool HDF5UpdateDeserializer::doAddRemoteRootNode(H5::Group& group) {
 	HDF5Typecaster::getAttributesFromHDF5Group(attributes, group);
 
 	return wm->scene.addRemoteRootNode(id, attributes);
+}
+
+bool HDF5UpdateDeserializer::doAddConnection(H5::Group& group) {
+	LOG(WARNING) << "HDF5UpdateDeserializer: doAddConnection.";
+
+	Id id = 0;
+	vector<Attribute> attributes;
+	vector<Id> sourceIds;
+	vector<Id> targetIds;
+	TimeStamp start;
+	TimeStamp end;
+
+	if (!HDF5Typecaster::getNodeIdFromHDF5Group(id, group)) {
+		LOG(ERROR) << "H5::Connection has no ID";
+		return false;
+	}
+
+	LOG(DEBUG) << "H5::Connection has ID " << id;
+	HDF5Typecaster::getAttributesFromHDF5Group(attributes, group);
+	// TODO read IDs
+	HDF5Typecaster::getTimeStampFromHDF5Group(start, group, "start");
+	HDF5Typecaster::getTimeStampFromHDF5Group(end, group, "end");
+
+	return wm->scene.addConnection(parentId, id, attributes, sourceIds, targetIds, start, end, true);
 }
 
 bool HDF5UpdateDeserializer::doSetNodeAttributes(H5::Group& group) {

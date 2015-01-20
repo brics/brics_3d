@@ -45,16 +45,17 @@ protected:
 	bool handleSceneGraphUpdate(const char *dataBuffer, int dataLength, int &transferredBytes);
 
 	//Functions that do the actual work (template method)
-	bool doAddNode(H5::Group& group);
-	bool doAddGroup(H5::Group& group);
-	bool doAddTransformNode(H5::Group& group);
-	bool doAddGeometricNode(H5::Group& group);
-	bool doAddRemoteRootNode(H5::Group& group);
-	bool doSetNodeAttributes(H5::Group& group);
-	bool doSetTransform(H5::Group& group);
-	bool doDeleteNode(H5::Group& group);
-	bool doAddParent(H5::Group& group);
-	bool doRemoveParent(H5::Group& group);
+	virtual bool doAddNode(H5::Group& group);
+	virtual bool doAddGroup(H5::Group& group);
+	virtual bool doAddTransformNode(H5::Group& group);
+	virtual bool doAddGeometricNode(H5::Group& group);
+	virtual bool doAddRemoteRootNode(H5::Group& group);
+	virtual bool doAddConnection(H5::Group& group);
+	virtual bool doSetNodeAttributes(H5::Group& group);
+	virtual bool doSetTransform(H5::Group& group);
+	virtual bool doDeleteNode(H5::Group& group);
+	virtual bool doAddParent(H5::Group& group);
+	virtual bool doRemoveParent(H5::Group& group);
 
 private:
 	WorldModel* wm;
