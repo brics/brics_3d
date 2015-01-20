@@ -214,8 +214,40 @@ bool HDF5UpdateSerializer::addRemoteRootNode(Id rootId, vector<Attribute> attrib
 }
 
 bool HDF5UpdateSerializer::addConnection(Id parentId, Id& assignedId, vector<Attribute> attributes, vector<Id> sourceIds, vector<Id> targetIds, TimeStamp start, TimeStamp end, bool forcedId) {
-	LOG(WARNING) << "HDF5UpdateSerializer: adding a Connection-" << assignedId.toString() << "is not yet supported.";
-	return false;
+	LOG(DEBUG) << "HDF5UpdateSerializer: adding a Connection-" << assignedId.toString();
+	try {
+		std::string fileName = "Connection-" + assignedId.toString() + fileSuffix;
+		H5::FileAccPropList faplCore;
+		faplCore.setCore(fileImageIncremet, storeMessageBackupsOnFileSystem); // toggle in-memory behavior
+		H5::H5File file(fileName, H5F_ACC_TRUNC, H5::FileCreatPropList::DEFAULT, faplCore);
+
+		/* Generic/common entry group with general information */
+		H5::Group scene = file.createGroup("Scene");
+		HDF5Typecaster::addCommandTypeInfoToHDF5Group(HDF5Typecaster::ADD, scene);
+		HDF5Typecaster::addNodeIdToHDF5Group(parentId, scene, rsgParentIdName);
+
+		H5::Group group = scene.createGroup("Connection-" + assignedId.toString()); // The actual data
+		HDF5Typecaster::addNodeTypeInfoToHDF5Group(HDF5Typecaster::CONNECTION, group);
+		HDF5Typecaster::addNodeIdToHDF5Group(assignedId, group);
+		HDF5Typecaster::addAttributesToHDF5Group(attributes, group);
+
+		/* Connection specific payload: Id sets and time stamps */
+		HDF5Typecaster::addIdsToHDF5Group(sourceIds, group, "sourceIds");
+		HDF5Typecaster::addIdsToHDF5Group(targetIds, group, "targetIds");
+		HDF5Typecaster::addTimeStampToHDF5Group(start, group, "start");
+		HDF5Typecaster::addTimeStampToHDF5Group(end, group, "end");
+
+		file.flush(H5F_SCOPE_GLOBAL);
+		doSendMessage(file);
+		file.close();
+
+	} catch (H5::Exception e) {
+		LOG(ERROR) << "HDF5UpdateSerializer addConnection: Cannot create a HDF serialization.";
+		return false;
+	}
+
+	return true;
+
 }
 
 

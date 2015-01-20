@@ -86,6 +86,7 @@ public:
 	static const int cylinderDimension = 2; 	// radius, height
 	static const int boxDimension = 3; // x,y,z
 	static const int matrixElements = 16;
+	static const int rsgTimeStampRank = 1;
 
 	/* Constants and enums to serve as common agreement in the HDF5 encoding to
 	 * form kind of a "protocol".
@@ -125,6 +126,7 @@ public:
 		UNKNOWN_NODE,
 	    NODE,
 	    GROUP,
+	    CONNECTION,
 	    GEOMETIRC_NODE,
 	    TRANSFORM,
 	    UNCERTAIN_TRANSFORM,
@@ -206,6 +208,51 @@ public:
 		return true;
 	}
 
+	inline static bool addIdsToHDF5Group(vector<brics_3d::rsg::Id> ids,  H5::Group& group, std::string idName) {
+		hsize_t rsgIdDimensions[rsgIdRank];
+		rsgIdDimensions[0] = 16 * ids.size(); // 16 * N bytes
+		H5::DataSpace rsgIdDataSpace(rsgIdRank, rsgIdDimensions);
+		H5::IntType rsgIdDataType(H5::PredType::NATIVE_UCHAR); //for byte
+
+		H5::DataSet rsgIdsDataset = group.createDataSet(idName, rsgIdDataType, rsgIdDataSpace);
+		// Write out as continious byte space
+		for (vector<brics_3d::rsg::Id>::iterator it = ids.begin(); it!=ids.end(); ++it) {
+			rsgIdsDataset.write(it->begin(), H5::PredType::NATIVE_UCHAR);
+		}
+
+		return true;
+	}
+
+	inline static bool getIdsFromHDF5Group(vector<brics_3d::rsg::Id>& ids, H5::Group& group, std::string idName) {
+		H5::DataSet rsgIdsDataset = group.openDataSet(idName);
+
+
+		/* Go through HDF5 meta-data */
+		int numberOfIds = 0;
+		H5::DataSpace rsgInferredIdDataSpace = rsgIdsDataset.getSpace();
+		numberOfIds = rsgInferredIdDataSpace.getSimpleExtentNpoints();
+		unsigned char rawData [16*numberOfIds];
+//		rsgIdsDataset.read(rawData, H5::PredType::NATIVE_UCHAR);
+//		for (int i = 0; i < numberOfIds; ++i) {
+//			brics_3d::rsg::Id id;
+//			rsgIdsDataset.read(id.begin(), H5::PredType::NATIVE_UCHAR);
+//		}
+
+		return false;
+	}
+
+	inline static bool addTimeStampToHDF5Group(brics_3d::rsg::TimeStamp stamp,  H5::Group& group, std::string timeStampName) {
+		hsize_t rsgTimeStampDimensions[rsgTimeStampRank];
+		rsgTimeStampDimensions[0] = 1; // 1 DOUBLE VALUE
+		H5::DataSpace rsgTimeStampDataSpace(rsgTimeStampRank, rsgTimeStampDimensions);
+		H5::FloatType rsgTimeStampDataType(H5::PredType::NATIVE_DOUBLE); //for byte
+
+		H5::DataSet rsgTimeStampDataset = group.createDataSet(timeStampName, rsgTimeStampDataType, rsgTimeStampDataSpace);
+		double tmpStamp = stamp.getSeconds();
+		rsgTimeStampDataset.write(&tmpStamp, H5::PredType::NATIVE_DOUBLE);
+
+		return true;
+	}
 
 	inline static bool addAttributeToHDF5Group(brics_3d::rsg::Attribute attribute, H5::Group& group) {
 		H5::StrType stringType(0, H5T_VARIABLE);

@@ -605,6 +605,7 @@ void HDF5Test::testUpdateObersver() {
 	sourceIs.push_back(cylinderId);
 	vector<Id> targetIs;
 	targetIs.push_back(tfId);
+	targetIs.push_back(utfId);
 	CPPUNIT_ASSERT(wm->scene.addConnection(wm->getRootNodeId(), connId, connectionAttributes, sourceIs, targetIs, wm->now(), wm->now()));
 
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addNodeCounter);
