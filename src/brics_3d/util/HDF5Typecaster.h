@@ -230,15 +230,23 @@ public:
 		/* Go through HDF5 meta-data */
 		int numberOfIds = 0;
 		H5::DataSpace rsgInferredIdDataSpace = rsgIdsDataset.getSpace();
-		numberOfIds = rsgInferredIdDataSpace.getSimpleExtentNpoints();
-		unsigned char rawData [16*numberOfIds];
-//		rsgIdsDataset.read(rawData, H5::PredType::NATIVE_UCHAR);
-//		for (int i = 0; i < numberOfIds; ++i) {
-//			brics_3d::rsg::Id id;
-//			rsgIdsDataset.read(id.begin(), H5::PredType::NATIVE_UCHAR);
-//		}
+		int payloadLength = rsgInferredIdDataSpace.getSimpleExtentNpoints();
+		numberOfIds = payloadLength / brics_3d::rsg::Uuid::arraySize;
+		unsigned char rawData [brics_3d::rsg::Uuid::arraySize * numberOfIds];
+		rsgIdsDataset.read(rawData, H5::PredType::NATIVE_UCHAR);
 
-		return false;
+		/* store every 16 entries (Uuid::arraySize) in ints own Id */
+		for (int i = 0; i < numberOfIds; ++i) {
+			brics_3d::rsg::Id tmpId;
+			brics_3d::rsg::Uuid::iterator j_data = tmpId.begin();
+			for (size_t j = 0; j < brics_3d::rsg::Uuid::arraySize; ++j, ++j_data) {
+				*j_data = rawData[i * brics_3d::rsg::Uuid::arraySize +j];
+			}
+			ids.push_back(tmpId);
+			LOG(DEBUG) << "Adding to " << idName << " ID: " << tmpId;
+		}
+
+		return true;
 	}
 
 	inline static bool addAttributeToHDF5Group(brics_3d::rsg::Attribute attribute, H5::Group& group) {

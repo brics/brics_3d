@@ -632,6 +632,39 @@ void HDF5Test::testUpdateObersver() {
 	CPPUNIT_ASSERT_EQUAL(2, remoteWmNodeCounter.addParentCounter);
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.removeParentCounter);
 
+	/* Check if connection details have been send correctly */
+	vector<Attribute> tmpAttributes;
+	tmpAttributes.clear();
+	CPPUNIT_ASSERT(wmReplica->scene.getConnectionAttributes(connId, tmpAttributes));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(tmpAttributes.size()));
+	CPPUNIT_ASSERT(tmpAttributes[0] == Attribute("rsg::Type","has_geometry"));
+
+	vector<Id> resultParentIds;
+	resultParentIds.clear();
+	CPPUNIT_ASSERT(wmReplica->scene.getConnectionParents(connId, resultParentIds));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultParentIds.size()));
+	CPPUNIT_ASSERT_EQUAL(wm->getRootNodeId(), static_cast<Id>(resultParentIds[0]));
+
+	vector<Id> resultIds;
+	resultIds.clear();
+	tmpAttributes.clear();
+	tmpAttributes.push_back(Attribute("rsg::Type","has_geometry"));
+	CPPUNIT_ASSERT(wmReplica->scene.getConnections(tmpAttributes, resultIds));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultIds.size()));
+	CPPUNIT_ASSERT(resultIds[0] == connId);
+
+	resultIds.clear();
+	CPPUNIT_ASSERT(wmReplica->scene.getConnectionSourceIds(connId, resultIds));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultIds.size()));
+	CPPUNIT_ASSERT_EQUAL(cylinderId, static_cast<Id>(resultIds[0]));
+
+	resultIds.clear();
+	CPPUNIT_ASSERT(wmReplica->scene.getConnectionTargetIds(connId, resultIds));
+	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(resultIds.size()));
+	CPPUNIT_ASSERT_EQUAL(tfId, static_cast<Id>(resultIds[0]));
+	CPPUNIT_ASSERT_EQUAL(utfId, static_cast<Id>(resultIds[1]));
+
+
 }
 
 void HDF5Test::threadFunction(brics_3d::WorldModel* wm) {

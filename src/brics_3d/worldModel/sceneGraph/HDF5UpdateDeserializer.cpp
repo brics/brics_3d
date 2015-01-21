@@ -378,7 +378,8 @@ bool HDF5UpdateDeserializer::doAddConnection(H5::Group& group) {
 
 	LOG(DEBUG) << "H5::Connection has ID " << id;
 	HDF5Typecaster::getAttributesFromHDF5Group(attributes, group);
-	// TODO read IDs
+	HDF5Typecaster::getIdsFromHDF5Group(sourceIds, group, "sourceIds");
+	HDF5Typecaster::getIdsFromHDF5Group(targetIds, group, "targetIds");
 	HDF5Typecaster::getTimeStampFromHDF5Group(start, group, "start");
 	HDF5Typecaster::getTimeStampFromHDF5Group(end, group, "end");
 
