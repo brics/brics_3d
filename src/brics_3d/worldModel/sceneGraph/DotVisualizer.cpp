@@ -115,7 +115,12 @@ void DotVisualizer::printGraph(){
 	/* Save a svg file as snapshopt */
 	// e.g.  "current_graph.gv";
 	output.open((fileName + ".gv").c_str(), std::ios::trunc);
-	output << graphPrinter.getDotGraph();
+	if (!output.fail()) {
+		output << graphPrinter.getDotGraph();
+	} else {
+		LOG(ERROR) << "DotVisualizer: Cannot write to file " << fileName << ".gv";
+	}
+
 	output.flush();
 	output.close();
 
