@@ -605,7 +605,8 @@ void HDF5Test::testUpdateObersver() {
 	sourceIs.push_back(cylinderId);
 	vector<Id> targetIs;
 	targetIs.push_back(tfId);
-	targetIs.push_back(utfId);
+	targetIs.push_back(cylinderId); // TODO utfId ?
+	LOG(DEBUG) << "Adding connection { source = {" << cylinderId << "}, target = {" << tfId << ", "<< cylinderId << "}}";
 	CPPUNIT_ASSERT(wm->scene.addConnection(wm->getRootNodeId(), connId, connectionAttributes, sourceIs, targetIs, wm->now(), wm->now()));
 
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addNodeCounter);
@@ -662,7 +663,7 @@ void HDF5Test::testUpdateObersver() {
 	CPPUNIT_ASSERT(wmReplica->scene.getConnectionTargetIds(connId, resultIds));
 	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(resultIds.size()));
 	CPPUNIT_ASSERT_EQUAL(tfId, static_cast<Id>(resultIds[0]));
-	CPPUNIT_ASSERT_EQUAL(utfId, static_cast<Id>(resultIds[1]));
+	CPPUNIT_ASSERT_EQUAL(cylinderId, static_cast<Id>(resultIds[1]));
 
 
 }

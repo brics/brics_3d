@@ -789,7 +789,7 @@ bool SceneGraphFacade::addConnection(Id parentId, Id& assignedId, vector<Attribu
 			if (targetNode != 0) {
 				newConnection->addTargetNode(targetNode.get()); //TODO: weak pointer in connection?
 			} else {
-				LOG(ERROR) << "Id " << sourceIds[i] << " cannot be added as target ID.";
+				LOG(ERROR) << "Id " << targetIds[i] << " cannot be added as target ID.";
 				operationSucceeded = false;
 				break; // correct program flow?
 			}

@@ -56,7 +56,7 @@ void Connection::removeSourceNode(Node* node)
 }
 
 Node* Connection::getSourceNode(unsigned int index)  {
-	if (index >= getNumberOfParents()) {
+	if (index >= getNumberOfSourceNodes()) {
 		assert(false);
 		return 0;
 	}
@@ -82,7 +82,7 @@ void Connection::removeTargetNode(Node* node)
 }
 
 Node* Connection::getTargetNode(unsigned int index)  {
-	if (index >= getNumberOfParents()) {
+	if (index >= getNumberOfTargetNodes()) {
 		assert(false);
 		return 0;
 	}

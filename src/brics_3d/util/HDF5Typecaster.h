@@ -210,15 +210,23 @@ public:
 
 	inline static bool addIdsToHDF5Group(vector<brics_3d::rsg::Id> ids,  H5::Group& group, std::string idName) {
 		hsize_t rsgIdDimensions[rsgIdRank];
-		rsgIdDimensions[0] = 16 * ids.size(); // 16 * N bytes
+		rsgIdDimensions[0] = brics_3d::rsg::Uuid::arraySize * ids.size(); // 16 * N bytes
 		H5::DataSpace rsgIdDataSpace(rsgIdRank, rsgIdDimensions);
 		H5::IntType rsgIdDataType(H5::PredType::NATIVE_UCHAR); //for byte
 
-		H5::DataSet rsgIdsDataset = group.createDataSet(idName, rsgIdDataType, rsgIdDataSpace);
-		// Write out as continious byte space
+		/* Turn into continous byte array as preferred by HDF5 */
+		unsigned char rawData [brics_3d::rsg::Uuid::arraySize * ids.size()];
+		int offset = 0;
 		for (vector<brics_3d::rsg::Id>::iterator it = ids.begin(); it!=ids.end(); ++it) {
-			rsgIdsDataset.write(it->begin(), H5::PredType::NATIVE_UCHAR);
+			brics_3d::rsg::Uuid::iterator j_data = it->begin();
+			for (size_t j = 0; j < brics_3d::rsg::Uuid::arraySize; ++j, ++j_data) {
+				rawData[offset + j ] = *j_data;
+			}
+			offset += brics_3d::rsg::Uuid::arraySize;
 		}
+
+		H5::DataSet rsgIdsDataset = group.createDataSet(idName, rsgIdDataType, rsgIdDataSpace);
+		rsgIdsDataset.write(&rawData, H5::PredType::NATIVE_UCHAR);
 
 		return true;
 	}
