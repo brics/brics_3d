@@ -83,6 +83,15 @@ extern bool getValuesFromAttributeList(vector<Attribute> attributeList, std::str
 
 }
 
+extern bool attributeListsAreEqual(vector<Attribute> attributeList1, vector<Attribute> attributeList2) {
+	if((attributeList1.size() == 0) && (attributeList2.size() == 0)) {
+		return true;
+	} else if ((attributeList1.size() == 0) || (attributeList2.size() == 0)) {
+		return false;
+	}
+	return std::equal(attributeList1.begin(), attributeList1.end(), attributeList2.begin());
+}
+
 } // namespace brics_3d::RSG
 
 } // namespace brics_3d

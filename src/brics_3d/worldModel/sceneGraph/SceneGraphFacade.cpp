@@ -488,8 +488,12 @@ bool SceneGraphFacade::setNodeAttributes(Id id, vector<Attribute> newAttributes)
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();
 	if (node != 0) {
-		node->setAttributes(newAttributes);
-		operationSucceeded = true;
+		if(!attributeListsAreEqual(newAttributes, node->getAttributes())) {
+			node->setAttributes(newAttributes);
+			operationSucceeded = true;
+		} else {
+			LOG(DEBUG) << "Skipping attributes update for node " << id << " as the attribute lists are identical.";
+		}
 	}
 
 	/* Call all observers depending on the given policy in case an error occured */

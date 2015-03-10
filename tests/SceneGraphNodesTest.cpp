@@ -2215,6 +2215,17 @@ void SceneGraphNodesTest::testAttributeFinder() {
 	CPPUNIT_ASSERT((attributeListContainsAttribute(tmpAttributes, Attribute("name123","Goal Area"))) == false );
 
 
+	vector<Attribute> tmpAttributesCopy;
+	tmpAttributesCopy.push_back(Attribute("taskType","targetArea"));
+	tmpAttributesCopy.push_back(Attribute("name","Goal Area"));
+	CPPUNIT_ASSERT(attributeListsAreEqual(tmpAttributes, tmpAttributesCopy));
+	tmpAttributesCopy.clear();
+	tmpAttributesCopy.push_back(Attribute("name","Goal Area"));
+	tmpAttributesCopy.push_back(Attribute("taskType","targetArea"));
+	CPPUNIT_ASSERT(!attributeListsAreEqual(tmpAttributes, tmpAttributesCopy));
+
+
+
 	Group::GroupPtr root(new Group());
 	root->setId(rootId);
 	tmpAttributes.clear();
@@ -3469,7 +3480,7 @@ void SceneGraphNodesTest::testUpdateObserver() {
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.addUncertainTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.setUncertainTransformCounter);
 
-
+	tmpAttributes.push_back(Attribute("rsg:agent_policy", "no GeometricNodes"));
 	CPPUNIT_ASSERT(scene.addGeometricNode(scene.getRootId(), geodeId, tmpAttributes, cylinder1, dummyTime) == true);
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.addNodeCounter); //poscondition
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.addGroupCounter);
@@ -4635,6 +4646,81 @@ void SceneGraphNodesTest::testNodeStorage() {
 	    CPPUNIT_ASSERT(someOtherBox->getSizeX() == 2);
 
 	}
+
+}
+
+void SceneGraphNodesTest::testDuplicatedInsertions() {
+	Id node1Id = 1;
+	Id group2Id = 2;
+	Id tfId = 3;
+	Id utfId = 4;
+	Id geomId = 5;
+	Id remoteRoot = 6;
+	Id connId = 7;
+
+	brics_3d::rsg::SceneGraphFacade scene;
+	std::vector<Attribute> attributes;
+	std::vector<Id> resultIds;
+	attributes.clear(); //empty dummy
+
+	TimeStamp dummyTime(10.0, Units::Minute);
+	TimeStamp dummyTime2 = dummyTime + TimeStamp(1.0, Units::Second); // s second later
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr dummyTransform(new HomogeneousMatrix44());
+	ITransformUncertainty::ITransformUncertaintyPtr uncertainty123(new CovarianceMatrix66(0.91,0.92,0.93, 0.1,0.2,0.3));
+	Box::BoxPtr dummyBox(new Box());
+
+	/*
+	 * Check every call twice with the same (forced) input
+	 */
+	CPPUNIT_ASSERT(scene.addNode(scene.getRootId(), node1Id, attributes, true));
+	CPPUNIT_ASSERT(!scene.addNode(scene.getRootId(), node1Id, attributes, true));
+
+	CPPUNIT_ASSERT(scene.addGroup(scene.getRootId(), group2Id, attributes, true));
+	CPPUNIT_ASSERT(!scene.addGroup(scene.getRootId(), group2Id, attributes, true));
+
+	CPPUNIT_ASSERT(scene.addParent(node1Id, group2Id));
+	CPPUNIT_ASSERT(!scene.addParent(node1Id, group2Id));
+
+	CPPUNIT_ASSERT(scene.addTransformNode(scene.getRootId(), tfId, attributes, dummyTransform, dummyTime, true));
+	CPPUNIT_ASSERT(!scene.addTransformNode(scene.getRootId(), tfId, attributes, dummyTransform, dummyTime, true));
+
+	CPPUNIT_ASSERT(scene.addUncertainTransformNode(scene.getRootId(), utfId, attributes, dummyTransform, uncertainty123, dummyTime, true));
+	CPPUNIT_ASSERT(!scene.addUncertainTransformNode(scene.getRootId(), utfId, attributes, dummyTransform, uncertainty123, dummyTime, true));
+
+	CPPUNIT_ASSERT(scene.addGeometricNode(scene.getRootId(), geomId, attributes, dummyBox, dummyTime, true));
+	CPPUNIT_ASSERT(!scene.addGeometricNode(scene.getRootId(), geomId, attributes, dummyBox, dummyTime, true));
+
+	CPPUNIT_ASSERT(scene.addRemoteRootNode(remoteRoot, attributes));
+	CPPUNIT_ASSERT(!scene.addRemoteRootNode(remoteRoot, attributes));
+
+	//set attributes
+	CPPUNIT_ASSERT(!scene.setNodeAttributes(node1Id, attributes));
+	std::vector<Attribute> newAttributes;
+	newAttributes.push_back(Attribute("rsg:type", "tf"));
+	CPPUNIT_ASSERT(scene.setNodeAttributes(node1Id, newAttributes));
+	CPPUNIT_ASSERT(!scene.setNodeAttributes(node1Id, newAttributes));
+
+	CPPUNIT_ASSERT(!scene.setTransform(tfId, dummyTransform, dummyTime)); // same values as used during creation
+	CPPUNIT_ASSERT(scene.setTransform(tfId, dummyTransform, dummyTime2));
+	CPPUNIT_ASSERT(!scene.setTransform(tfId, dummyTransform, dummyTime2));
+
+	CPPUNIT_ASSERT(!scene.setUncertainTransform(utfId, dummyTransform, uncertainty123, dummyTime)); // same values as used during creation
+	CPPUNIT_ASSERT(scene.setUncertainTransform(utfId, dummyTransform, uncertainty123, dummyTime2));
+	CPPUNIT_ASSERT(!scene.setUncertainTransform(utfId, dummyTransform, uncertainty123, dummyTime2));
+
+	CPPUNIT_ASSERT(scene.deleteNode(geomId));
+	CPPUNIT_ASSERT(!scene.deleteNode(geomId));
+
+	CPPUNIT_ASSERT(scene.removeParent(node1Id, group2Id));
+	CPPUNIT_ASSERT(!scene.removeParent(node1Id, group2Id));
+
+	vector<Id> sourceIds;
+	vector<Id> targetIds;
+	sourceIds.push_back(node1Id);
+	targetIds.push_back(tfId);
+	targetIds.push_back(utfId);
+	CPPUNIT_ASSERT(scene.addConnection(scene.getRootId(), connId, attributes, sourceIds, targetIds, dummyTime, dummyTime, true));
+	CPPUNIT_ASSERT(!scene.addConnection(scene.getRootId(), connId, attributes, sourceIds, targetIds, dummyTime, dummyTime, true));
 
 }
 

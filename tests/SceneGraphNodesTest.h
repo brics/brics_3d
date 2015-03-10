@@ -234,6 +234,7 @@ class SceneGraphNodesTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testSceneGraphToUpdates );
 	CPPUNIT_TEST( testRemoveParents );
 	CPPUNIT_TEST( testNodeStorage );
+	CPPUNIT_TEST( testDuplicatedInsertions );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -272,6 +273,7 @@ public:
 	void testSceneGraphToUpdates();
 	void testRemoveParents();
 	void testNodeStorage();
+	void testDuplicatedInsertions();
 
 private:
 	  /// Maximum deviation for equality check of double variables

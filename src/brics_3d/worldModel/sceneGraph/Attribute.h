@@ -89,6 +89,14 @@ extern bool attributeListContainsAttribute(vector<Attribute> attributeList, Attr
  */
 extern bool getValuesFromAttributeList(vector<Attribute> attributeList, std::string key, vector<std::string>& resultValues);
 
+/**
+ * Helper tool to ckeck two lists for equality.
+ * @param attributeList1 First list.
+ * @param attributeList2 Second list.
+ * @return True if both list are identical including order of attributes.
+ */
+extern bool attributeListsAreEqual(vector<Attribute> attributeList1, vector<Attribute> attributeList2);
+
 } // namespace brics_3d::RSG
 
 } // namespace brics_3d
