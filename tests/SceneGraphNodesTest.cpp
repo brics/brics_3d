@@ -2695,6 +2695,7 @@ void SceneGraphNodesTest::testSceneGraphFacade(){
 
 	/* make it a graph */
 	CPPUNIT_ASSERT(scene.addParent(geode4Id, group2Id));
+	CPPUNIT_ASSERT(!scene.addParent(geode4Id, group2Id)); //duplications should be prevented
 
 	resultParentIds.clear();
 	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultParentIds.size()) );
@@ -3395,6 +3396,7 @@ void SceneGraphNodesTest::testUpdateObserver() {
 	SceneGraphFacade scene;
 	Id dymmyId = 0;
 	Id tfId = 0;
+	Id utfId = 0;
 	Id geodeId = 0;
 	TimeStamp dummyTime(20);
 	vector<Attribute> tmpAttributes;
@@ -3509,7 +3511,7 @@ void SceneGraphNodesTest::testUpdateObserver() {
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.addUncertainTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.setUncertainTransformCounter);
 
-	CPPUNIT_ASSERT(scene.addUncertainTransformNode(scene.getRootId(), tfId, tmpAttributes, transform123, uncertainty123, dummyTime) == true);
+	CPPUNIT_ASSERT(scene.addUncertainTransformNode(scene.getRootId(), utfId, tmpAttributes, transform123, uncertainty123, dummyTime) == true);
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.addNodeCounter); //poscondition
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.addGroupCounter);
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.addTransformCounter);
@@ -3522,8 +3524,8 @@ void SceneGraphNodesTest::testUpdateObserver() {
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.addUncertainTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(0, testObserver.setUncertainTransformCounter);
 
-	CPPUNIT_ASSERT(scene.setUncertainTransform(tfId, transform123, uncertainty123, dummyTime) == false);
-	CPPUNIT_ASSERT(scene.setUncertainTransform(tfId, transform123, uncertainty123, dummyTime + TimeStamp(1, Units::MilliSecond)) == true);
+	CPPUNIT_ASSERT(scene.setUncertainTransform(utfId, transform123, uncertainty123, dummyTime) == false);
+	CPPUNIT_ASSERT(scene.setUncertainTransform(utfId, transform123, uncertainty123, dummyTime + TimeStamp(1, Units::MilliSecond)) == true);
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.addNodeCounter); //poscondition
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.addGroupCounter);
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.addTransformCounter);
@@ -3550,7 +3552,9 @@ void SceneGraphNodesTest::testUpdateObserver() {
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.setUncertainTransformCounter);
 
 
-	CPPUNIT_ASSERT(scene.addParent(geodeId, scene.getRootId()) == true); //actually same relation twice
+	CPPUNIT_ASSERT(scene.addParent(geodeId, scene.getRootId()) == false); //actually same relation twice - this should be prevented
+	CPPUNIT_ASSERT(scene.addParent(geodeId, tfId) == false); // tfId has been deleted earlier
+	CPPUNIT_ASSERT(scene.addParent(geodeId, utfId) == true);
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.addNodeCounter); //poscondition
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.addGroupCounter);
 	CPPUNIT_ASSERT_EQUAL(1, testObserver.addTransformCounter);

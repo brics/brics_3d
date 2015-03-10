@@ -648,6 +648,7 @@ bool SceneGraphFacade::deleteNode(Id id) {
 bool SceneGraphFacade::addParent(Id id, Id parentId) {
 	bool operationSucceeded = false;
 	bool hasNoCycle = true;
+	bool isNotDuplicated = true;
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();
 	Node::NodeWeakPtr tmpParentNode = findNodeRecerence(parentId);
@@ -657,7 +658,8 @@ bool SceneGraphFacade::addParent(Id id, Id parentId) {
 	if (parentGroup != 0 && node != 0 && (id != parentId)) {
 		/* check for (direct) cycles */
 		Group::GroupPtr nodeAsGroup = boost::dynamic_pointer_cast<Group>(node);
-		if (nodeAsGroup != 0) { // check potential children
+		if (nodeAsGroup != 0) {
+			/* check potential children */
 			for (unsigned int i = 0; i < nodeAsGroup->getNumberOfChildren(); ++i) {
 				if(nodeAsGroup->getChild(i)->getId() == parentId) { // oops this would cases a cycle
 					LOG(ERROR) << "Cycle detected. Parent with ID " << parentId << " and child ID " << id <<
@@ -667,7 +669,15 @@ bool SceneGraphFacade::addParent(Id id, Id parentId) {
 			}
 		}
 
-		if (hasNoCycle) {
+		for (unsigned int i = 0; i < node->getNumberOfParents(); ++i) {
+			if(node->getParent(i)->getId() == parentId) { // oops a duplication
+				LOG(ERROR) << "Duplicate parent-child relation detected. Parent with ID " << parentId << " and child ID " << id <<
+						" have alredy a realtion. Cannot add a new parent-child relation.";
+				isNotDuplicated = false;
+			}
+		}
+
+		if (hasNoCycle && isNotDuplicated) {
 			parentGroup->addChild(node);
 			operationSucceeded = true;
 		} else {
