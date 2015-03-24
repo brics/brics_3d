@@ -60,7 +60,7 @@ void IterativeClosestPointFactoryTest::testUnitTestConfig() {
 	//IterativeClosestPoint* genericIcpImpl;
 	boost::shared_ptr<IterativeClosestPoint> genericIcpImpl;
 //	genericIcpImpl = dynamic_cast<IterativeClosestPoint*>(icp); //polymorph downcast
-	genericIcpImpl = boost::shared_dynamic_cast<IterativeClosestPoint>(icp); //polymorph downcast
+	genericIcpImpl = boost::dynamic_pointer_cast<IterativeClosestPoint>(icp); //polymorph downcast
 
 	IPointCorrespondence* assigner = genericIcpImpl->getAssigner();
 	PointCorrespondenceKDTree assignerReference;
