@@ -239,7 +239,7 @@ void elch6D::graph_balancer(graph_t &g, int f, int l, double *weights)
     dist = -1;
     // find shortest crossing for all vertices on the loop
     for(si = crossings.begin(); si != crossings.end(); si++) {
-      dijkstra_shortest_paths(g, *si, boost::predecessor_map(p).distance_map(d));
+      //dijkstra_shortest_paths(g, *si, boost::predecessor_map(p).distance_map(d));
       ei = si;
       ei++;
       // find shortest crossing for one vertex

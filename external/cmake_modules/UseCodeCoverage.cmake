@@ -41,8 +41,11 @@ if ( ENABLE_CODECOVERAGE )
         find_program( CODECOV_LCOV lcov )
         find_program( CODECOV_GENHTML genhtml )
         add_definitions( -fprofile-arcs -ftest-coverage )
-        link_libraries( gcov )
-        set( CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS} --coverage )
+        #link_libraries( gcov ) #depricated
+        add_definitions( -lgcov )
+        #set( CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS} --coverage )
+        set( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lgcov -coverage") #-lgcov -coverage
+        
         add_custom_target( coverage_init ${CODECOV_LCOV} --base-directory . --directory ${CMAKE_BINARY_DIR} --output-file ${CODECOV_OUTPUTFILE} --capture --initial )
         add_custom_target( coverage ${CODECOV_LCOV} --base-directory . --directory ${CMAKE_BINARY_DIR} --output-file ${CODECOV_OUTPUTFILE} --capture COMMAND genhtml -o ${CODECOV_HTMLOUTPUTDIR} ${CODECOV_OUTPUTFILE} )
     endif ( CMAKE_COMPILER_IS_GNUCXX )

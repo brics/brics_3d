@@ -17,6 +17,7 @@
 *
 ******************************************************************************/
 
+#ifdef BRICS_HDF5_ENABLE
 #include "HDF5Test.h"
 #include "SceneGraphNodesTest.h" // for the observer counter
 #include "brics_3d/core/Logger.h"
@@ -706,5 +707,7 @@ void HDF5Test::threadFunction(brics_3d::WorldModel* wm) {
 }
 
 }  // namespace unitTests
+
+#endif /* BRICS_HDF5_ENABLE */
 
 /* EOF */

@@ -49,6 +49,7 @@ Optional libraries
    - OpenCV 2.0 (or higher) 
    - CPPUNIT
    - XERCES
+   - HDF5 1.8.12 or higher recommended
 
 @section install_preperation Preparation for installation
 
@@ -147,17 +148,29 @@ MICROBLX:
 - Install latest version of the microblx library:
  
  @code 
-		git clone https://github.com/kmarkus/microblx.git
-		git checkout dev # you might want to skip this step
+		https://github.com/UbxTeam/microblx.git
 		cd microblx
 		source env.sh 
 		make
 
-		echo "export MICROBLX_DIR=$PWD" >> ~/.bashrc
+		echo "export UBX_ROOT=$PWD" >> ~/.bashrc
  @endcode
 
  NOTE: enable the USE_MICROBLX cmake variable during invocation of cmake for BRICS_3D and makke sure
  that the MICROBLX_DIR environment varialbe is set up properly.  
+
+HDF5: 
+
+@code 
+		wget www.hdfgroup.org/ftp/HDF5/releases/hdf5-1.8.13/src/hdf5-1.8.13.tar.gz
+		tar -xvf hdf5-1.8.13.tar.gz
+		cd hdf5-1.8.13/
+		mkdir build
+		cd build
+		cmake -DHDF5_BUILD_CPP_LIB=true -DHDF5_BUILD_HL_LIB=true -DBUILD_SHARED_LIBS=true ..
+		make
+		sudo make install
+@endcode
 
 @section brics_3d_compilation Compilation of BRICS_3D
 
