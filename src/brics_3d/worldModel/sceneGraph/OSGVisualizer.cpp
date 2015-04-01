@@ -329,6 +329,8 @@ bool OSGVisualizer::addGeometricNode(Id parentId, Id& assignedId, vector<Attribu
 		box =  boost::dynamic_pointer_cast<rsg::Box>(shape);
 		rsg::Cylinder::CylinderPtr cylinder(new rsg::Cylinder());
 		cylinder =  boost::dynamic_pointer_cast<rsg::Cylinder>(shape);
+		rsg::Sphere::SpherePtr sphere(new rsg::Sphere());
+		sphere =  boost::dynamic_pointer_cast<rsg::Sphere>(shape);
 
 		if (pointCloudIterator !=0) {
 
@@ -390,6 +392,21 @@ bool OSGVisualizer::addGeometricNode(Id parentId, Id& assignedId, vector<Attribu
 			geode->getOrCreateStateSet()->setRenderingHint(osg::StateSet::TRANSPARENT_BIN ); // might comp. expensive
 
 			viewer.addUpdateOperation(new OSGOperationAdd(this, geode, parentGroup));
+
+		} else if (sphere !=0) {
+			LOG(DEBUG) << "                 -> Adding a new sphere.";
+			osg::ref_ptr<osg::Sphere> sphereData = new osg::Sphere();
+			sphereData->setRadius(static_cast<float>(sphere->getRadius()));
+
+			osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+			osg::ref_ptr<osg::ShapeDrawable> geometry = new osg::ShapeDrawable();
+			geometry->setShape(sphereData);
+			geometry->setColor(osg::Vec4(red, green, blue, alpha/2.0));
+			geode->addDrawable(geometry);
+			geode->getOrCreateStateSet()->setRenderingHint(osg::StateSet::TRANSPARENT_BIN ); // might comp. expensive
+
+			viewer.addUpdateOperation(new OSGOperationAdd(this, geode, parentGroup));
+
 //		} else if (...) { //more shapes & geometries to come...
 //
 		} else {

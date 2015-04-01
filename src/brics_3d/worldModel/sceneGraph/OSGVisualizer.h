@@ -25,6 +25,7 @@
 #include "brics_3d/worldModel/sceneGraph/Mesh.h"
 #include "brics_3d/worldModel/sceneGraph/Box.h"
 #include "brics_3d/worldModel/sceneGraph/Cylinder.h"
+#include "brics_3d/worldModel/sceneGraph/Sphere.h"
 #include "brics_3d/worldModel/sceneGraph/Attribute.h"
 #include "brics_3d/worldModel/sceneGraph/VisualizationConfiguration.h"
 #include "brics_3d/util/OSGPointCloudVisualizer.h" //unfortunately libbrics3d_world_model depends now on libbrics3d_util

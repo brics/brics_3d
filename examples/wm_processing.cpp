@@ -273,6 +273,8 @@ int main(int argc, char **argv) {
 	wm->scene.addTransformNode(groupId, tfBox1Id, tmpAttributes, transform, dummyTime);
 	rsg::Box::BoxPtr box1(new rsg::Box(0.2,0.015,0.2));
 	wm->scene.addGeometricNode(tfBox1Id, dummyId, tmpAttributes, box1, dummyTime);
+	rsg::Sphere::SpherePtr sphere1(new rsg::Sphere(0.02, Units::Meter));
+	wm->scene.addGeometricNode(tfBox1Id, dummyId, tmpAttributes, sphere1, dummyTime);
 
 //	HomogeneousMatrix44::IHomogeneousMatrix44Ptr tf2(new HomogeneousMatrix44(1,0,0, 0,1,0, 0,0,1, 0.1,0.05,0));
 //	rsg::Id tfCylinder1Id = 0;
