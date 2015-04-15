@@ -168,7 +168,7 @@ bool FrequencyAwareUpdateFilter::setTransform(Id id,
 
 	} else {
 		LOG(DEBUG) << "FrequencyAwareUpdateFilter: setTransform update is skipped due to a duration since last invokation of " <<
-				durationSinceLastInvocation.getSeconds() << " that is greater than the allowed maximum of " << maxGeometricNodeUpdateDuration.getSeconds() << ".";
+				durationSinceLastInvocation.getSeconds() << " that is greater than the allowed maximum of " << maxTransformUpdateDuration.getSeconds() << ".";
 	}
 
 	return false;
