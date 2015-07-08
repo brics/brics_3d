@@ -281,6 +281,11 @@ void IdTest::testUuidStringIo() {
 
 	parsedId = 1;
 	CPPUNIT_ASSERT(!parsedId.isNil());
+	CPPUNIT_ASSERT(!parsedId.fromString("a9583a360c160-4b72-b3fd-1ce2b383c999"));
+	CPPUNIT_ASSERT(parsedId.isNil());
+
+	parsedId = 1;
+	CPPUNIT_ASSERT(!parsedId.isNil());
 	CPPUNIT_ASSERT(!parsedId.fromString("a9583a36-c160-4b72-b3fd-1ce2b383c99X"));
 	CPPUNIT_ASSERT(parsedId.isNil());
 
