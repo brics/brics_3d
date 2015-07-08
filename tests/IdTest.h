@@ -58,6 +58,10 @@ public:
 	void testUuidGenerator();
 	void testUuidStringIo();
 
+private:
+
+	bool validateUuid(const std::string& uuid);
+
 };
 
 } /* namespace unitTests */

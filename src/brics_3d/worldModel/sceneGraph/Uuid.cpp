@@ -115,7 +115,7 @@ std::string Uuid::toString() const {
 	std::stringstream uuidAsSting;
 	uuidAsSting.str("");
 
-//	uuidAsSting << std::hex;
+	uuidAsSting << std::hex;
 	uuidAsSting.fill(uuidAsSting.widen('0'));
 
      std::size_t i=0;

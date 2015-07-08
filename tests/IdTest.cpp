@@ -17,7 +17,7 @@
  *
  ******************************************************************************/
 #include "IdTest.h"
-
+#include <boost/regex.hpp>
 namespace unitTests {
 
 // Registers the fixture into the 'registry'
@@ -231,19 +231,41 @@ void IdTest::testUuidStringIo() {
 	Uuid id1 = 1;
 	Uuid id;
 	CPPUNIT_ASSERT(id1 == 1);
+	int stringSize = 36; // 32 digits and four "-" hyphens
+
 
 	std::stringstream idAsString("");
 	idAsString << id;
 	CPPUNIT_ASSERT(idAsString.str().compare("00000000-0000-0000-0000-000000000000") == 0);
+	CPPUNIT_ASSERT_EQUAL(stringSize, static_cast<int>(idAsString.str().size()));
+	CPPUNIT_ASSERT(validateUuid(idAsString.str()));
 
 	std::stringstream id1AsString("");
 	id1AsString << id1;
 	CPPUNIT_ASSERT(id1AsString.str().compare("00000000-0000-0000-0000-000000000001") == 0);
+	CPPUNIT_ASSERT_EQUAL(stringSize, static_cast<int>(id1AsString.str().size()));
+	CPPUNIT_ASSERT(validateUuid(id1AsString.str()));
 
 	UuidGenerator genetator;
-//	id
+
+	for (int i = 0; i < 10000; ++i) {
+		id = genetator.getNextValidId();
+		//LOG(ERROR) << "[ID] " << id;
+		idAsString.str(""); // clear
+		idAsString << id;
+		//LOG(ERROR) << "[ID] " << idAsString.str();
+		CPPUNIT_ASSERT_EQUAL(stringSize, static_cast<int>(idAsString.str().size()));
+		CPPUNIT_ASSERT(validateUuid(idAsString.str()));
+	}
 
 
+
+}
+
+bool IdTest::validateUuid(const std::string& uuid){
+//   static const boost::regex e("[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}");
+   static const boost::regex e("[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"); // we are not so strict here to improve testability.
+   return regex_match(uuid, e);
 }
 
 } /* namespace unitTests */
