@@ -148,7 +148,7 @@ MICROBLX:
 - Install latest version of the microblx library:
  
  @code 
-		https://github.com/UbxTeam/microblx.git
+		git clone https://github.com/UbxTeam/microblx.git
 		cd microblx
 		source env.sh 
 		make
@@ -172,6 +172,12 @@ HDF5:
 		sudo make install
 @endcode
 
+	NOTE: on Ubutnu 12.04 the CMake versions do not match. You gan fix this by altering the HDF5 CMake files: 	
+
+@code 
+	grep "2.8.11" -l -r . | xargs sed -i 's/cmake_minimum_required (VERSION 2.8.11)/cmake_minimum_required (VERSION 2.8.7)/g'
+@endcode
+
 @section brics_3d_compilation Compilation of BRICS_3D
 
 @code
@@ -180,6 +186,14 @@ HDF5:
  $ cmake ..
  $ make
  $ sudo make install
+@endcode
+ 
+Instead of the last commad it is also possible to set the BRICS_3D_DIR environment variable as follows:
+
+@code
+ $ cd ..
+ $ echo "export BRICS_3D_DIR=$PWD" >> ~/.bashrc
+ $ source ~/.bashrc . 
 @endcode
 
 Note: Enable the USE_OSG cmake variable to compile all the applications with OSG
