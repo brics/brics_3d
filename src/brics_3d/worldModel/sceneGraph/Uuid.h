@@ -92,9 +92,18 @@ public:
 	 */
 	void setToNil();
 
+	/**
+	 * Convert a UUID into a string.
+	 * @return A string in hhhhhhhh-hhhh-hhhh-hhhh-hhhhhhhhhhhh format.
+	 */
 	std::string toString() const;
 
-	void fromString(std::string uuid);
+	/**
+	 * Convert a string into a UUID.
+	 * @param uuid Sting in hhhhhhhh-hhhh-hhhh-hhhh-hhhhhhhhhhhh format.
+	 * @return True on success. False otherwise. On failure, the data is set to NIL.
+	 */
+	bool fromString(std::string uuid);
 
 	/**
 	 * @brief Overridden << operator.

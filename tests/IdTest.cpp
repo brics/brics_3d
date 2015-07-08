@@ -230,7 +230,10 @@ void IdTest::testIdGenerator() {
 void IdTest::testUuidStringIo() {
 	Uuid id1 = 1;
 	Uuid id;
+	Uuid parsedId;
 	CPPUNIT_ASSERT(id1 == 1);
+	CPPUNIT_ASSERT(id == 0);
+	CPPUNIT_ASSERT(parsedId == 0);
 	int stringSize = 36; // 32 digits and four "-" hyphens
 
 
@@ -239,26 +242,57 @@ void IdTest::testUuidStringIo() {
 	CPPUNIT_ASSERT(idAsString.str().compare("00000000-0000-0000-0000-000000000000") == 0);
 	CPPUNIT_ASSERT_EQUAL(stringSize, static_cast<int>(idAsString.str().size()));
 	CPPUNIT_ASSERT(validateUuid(idAsString.str()));
+	CPPUNIT_ASSERT(parsedId.fromString(idAsString.str()));
+	CPPUNIT_ASSERT(parsedId == id);
 
 	std::stringstream id1AsString("");
 	id1AsString << id1;
 	CPPUNIT_ASSERT(id1AsString.str().compare("00000000-0000-0000-0000-000000000001") == 0);
 	CPPUNIT_ASSERT_EQUAL(stringSize, static_cast<int>(id1AsString.str().size()));
 	CPPUNIT_ASSERT(validateUuid(id1AsString.str()));
+	CPPUNIT_ASSERT(parsedId.fromString(id1AsString.str()));
+	CPPUNIT_ASSERT(parsedId == id1);
 
 	UuidGenerator genetator;
 
 	for (int i = 0; i < 10000; ++i) {
 		id = genetator.getNextValidId();
-		//LOG(ERROR) << "[ID] " << id;
+		//LOG(DEBUG) << "[ID] " << id;
 		idAsString.str(""); // clear
 		idAsString << id;
-		//LOG(ERROR) << "[ID] " << idAsString.str();
+		//LOG(DEBUG) << "[ID] " << idAsString.str();
 		CPPUNIT_ASSERT_EQUAL(stringSize, static_cast<int>(idAsString.str().size()));
 		CPPUNIT_ASSERT(validateUuid(idAsString.str()));
+		CPPUNIT_ASSERT(parsedId.fromString(idAsString.str()));
+		CPPUNIT_ASSERT(parsedId == id);
+		//LOG(DEBUG) << "[ID] parsed: " << parsedId;
 	}
 
+	/* Feed with invalid data */
+	parsedId = 1;
+	CPPUNIT_ASSERT(!parsedId.isNil());
+	CPPUNIT_ASSERT(!parsedId.fromString("invalidString"));
+	CPPUNIT_ASSERT(parsedId.isNil());
 
+	parsedId = 1;
+	CPPUNIT_ASSERT(!parsedId.isNil());
+	CPPUNIT_ASSERT(!parsedId.fromString("0000000000000000000"));
+	CPPUNIT_ASSERT(parsedId.isNil());
+
+	parsedId = 1;
+	CPPUNIT_ASSERT(!parsedId.isNil());
+	CPPUNIT_ASSERT(!parsedId.fromString("a9583a36-c160-4b72-b3fd-1ce2b383c99X"));
+	CPPUNIT_ASSERT(parsedId.isNil());
+
+	parsedId = 1;
+	CPPUNIT_ASSERT(!parsedId.isNil());
+	CPPUNIT_ASSERT(!parsedId.fromString("a9583a36-c160-4b72-b3fd-1ce2b383c9X9"));
+	CPPUNIT_ASSERT(parsedId.isNil());
+
+	parsedId = 1;
+	CPPUNIT_ASSERT(!parsedId.isNil());
+	CPPUNIT_ASSERT(!parsedId.fromString("00000000-0000-0000-0000-0000000000010340430434034034034030430430430430"));
+	CPPUNIT_ASSERT(parsedId.isNil());
 
 }
 

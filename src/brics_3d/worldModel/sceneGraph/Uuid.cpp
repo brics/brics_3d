@@ -18,6 +18,7 @@
  ******************************************************************************/
 
 #include "Uuid.h"
+#include "brics_3d/core/Logger.h"
 #include <sstream>
 
 namespace brics_3d {
@@ -128,6 +129,69 @@ std::string Uuid::toString() const {
      }
 
 	return uuidAsSting.str();
+}
+
+bool Uuid::fromString(std::string uuid) {
+	const size_t expectedStringSize = 36; // 32 digits and four "-" hyphens
+	std::stringstream is(uuid);
+	typedef std::ctype<char> ctype_t;
+	ctype_t const& ctype = std::use_facet<ctype_t>(is.getloc());
+
+	if(uuid.size() != expectedStringSize) {
+		LOG(ERROR) << "Failed to parse UUID. Expected string size of " << expectedStringSize << " does not match actual string size of "<< uuid.size() << ".";
+		this->setToNil();
+		return false;
+	}
+
+	char xdigits[16];
+	{
+		char szdigits[] = "0123456789ABCDEF";
+		ctype.widen(szdigits, szdigits+16, xdigits);
+	}
+	char*const xdigits_end = xdigits+16;
+
+	char c;
+	for (std::size_t i=0; i<this->arraySize && is; ++i) {
+		is >> c;
+		c = ctype.toupper(c);
+
+		char* f = std::find(xdigits, xdigits_end, c);
+		if (f == xdigits_end) {
+			LOG(ERROR) << "Failed to parse UUID with character " << c << " at position "<< i << ".";
+			this->setToNil();
+			return false;
+		}
+
+		unsigned char byte = static_cast<unsigned char>(std::distance(&xdigits[0], f));
+
+		is >> c;
+		c = ctype.toupper(c);
+		f = std::find(xdigits, xdigits_end, c);
+		if (f == xdigits_end) {
+			LOG(ERROR) << "Failed to parse UUID with character " << c << " at position "<< i << ".";
+			this->setToNil();
+			return false;
+		}
+
+		byte <<= 4;
+		byte |= static_cast<unsigned char>(std::distance(&xdigits[0], f));
+
+		this->data[i] = byte;
+
+		if (is) {
+			if (i == 3 || i == 5 || i == 7 || i == 9) {
+				is >> c;
+				if (c != is.widen('-')) {
+					LOG(ERROR) << "Failed to parse UUID. Expected a '-' on position " << i <<" but retrieved chracter " << c << " instead." ;
+					this->setToNil();
+					return false;
+				}
+			}
+		}
+	}
+
+	return true;
+
 }
 
 std::ostream& operator<<(std::ostream &outStream, const Uuid &id) {
