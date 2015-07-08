@@ -227,6 +227,25 @@ void IdTest::testIdGenerator() {
 	CPPUNIT_ASSERT(nullId != idGenerator3.getRootId());
 }
 
+void IdTest::testUuidStringIo() {
+	Uuid id1 = 1;
+	Uuid id;
+	CPPUNIT_ASSERT(id1 == 1);
+
+	std::stringstream idAsString("");
+	idAsString << id;
+	CPPUNIT_ASSERT(idAsString.str().compare("00000000-0000-0000-0000-000000000000") == 0);
+
+	std::stringstream id1AsString("");
+	id1AsString << id1;
+	CPPUNIT_ASSERT(id1AsString.str().compare("00000000-0000-0000-0000-000000000001") == 0);
+
+	UuidGenerator genetator;
+//	id
+
+
+}
+
 } /* namespace unitTests */
 
 /* EOF */
