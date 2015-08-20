@@ -205,6 +205,19 @@ IF(HDF5_1_8_12_OR_HIGHER)
     ADD_DEFINITIONS(-DHDF_1_8_12_OR_HIGHER)  
 ENDIF(HDF5_1_8_12_OR_HIGHER)
 
+# search for Microblx
+OPTION(USE_JSON "Enable JSON Support. Requires libvariant to be installed." OFF)
+IF(USE_JSON)  
+#    FIND_PACKAGE(Variant REQUIRED)
+    FIND_PACKAGE(Variant    )
+    IF (VARIANT_FOUND)
+      MESSAGE(STATUS "SUCCESSFUL: libVARIANT found")
+      ADD_DEFINITIONS(-DBRICS_JSON_ENABLE)     
+    ELSE (VARIANT_FOUND)
+      #MESSAGE(SEND_ERROR "WARNING: VARIANT not found.")
+    ENDIF (UBX_FOUND)
+ENDIF(USE_JSON)
+
 ## perform platform dependant configurations
 IF (WIN32)   # windows
 	SET (CGAL_LIBRARY "") # windows uses auto_linker.h => skip CGAL_LIBRARY for linker

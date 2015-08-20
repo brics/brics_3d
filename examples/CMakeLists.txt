@@ -305,3 +305,20 @@ ADD_SUBDIRECTORY(wm_tutorial_1)
 IF(USE_OSG)
 ADD_SUBDIRECTORY(wm_tutorial_2)
 ENDIF(USE_OSG)
+
+
+IF(USE_JSON)
+    INCLUDE_DIRECTORIES(/home/sblume/sandbox/json/libvariant/include)
+    INCLUDE_DIRECTORIES(/home/sblume/sandbox/json/libvariant/build/include)      
+    ADD_EXECUTABLE(wm_json wm_json)
+    TARGET_LINK_LIBRARIES(wm_json 
+         brics3d_world_model
+         brics3d_core 
+         brics3d_algorithm 
+         brics3d_util 
+        /home/sblume/sandbox/json/libvariant/build/src/libVariant.a 
+        /usr/lib/x86_64-linux-gnu/libxml2.so
+        /usr/lib/x86_64-linux-gnu/libyaml.so
+        /usr/lib/x86_64-linux-gnu/libcurl.so
+     )
+ENDIF(USE_JSON)
