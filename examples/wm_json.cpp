@@ -21,34 +21,20 @@
  * This example shows the usage of the json parser tools.
  */
 
-#include <brics_3d/core/Logger.h>
-#include <brics_3d/worldModel/WorldModel.h>
-#include <brics_3d/util/JSONTypecaster.h>
-
-#include <Variant/Variant.h>
-#include <Variant/Schema.h>
-#include <Variant/Payload.h>
 #include <stdio.h>
 #include <fstream>
 #include <sstream>
 
-// Import Variant from libvariant
-using libvariant::Variant;
-
+#include <brics_3d/core/Logger.h>
+#include <brics_3d/util/JSONTypecaster.h>
+#include <brics_3d/worldModel/WorldModel.h>
+#include <brics_3d/worldModel/sceneGraph/JSONDeserializer.h>
 
 using brics_3d::Logger;
 using namespace brics_3d;
 
-bool handleGraphPrimitive(Variant& atom, rsg::Id parentId);
-bool handleNode(Variant& node, rsg::Id parentId);
-bool handleGroup(Variant& group, rsg::Id parentId);
-brics_3d::rsg::Id getId(Variant& node, string idTag);
-std::vector<rsg::Attribute> getAttributes (Variant& node);
-
 
 int main(int argc, char **argv) {
-
-	Logger::setMinLoglevel(Logger::LOGDEBUG);
 	LOG(INFO) << " JSON parser test.";
 
 	if (argc != 2) {
@@ -62,108 +48,12 @@ int main(int argc, char **argv) {
 	std::stringstream serializedModel;
 	serializedModel << inputFile.rdbuf();
 
-	LOG(DEBUG) << "Input = " << std::endl << serializedModel.str();
-    Variant model = libvariant:: Deserialize(serializedModel.str(), libvariant::SERIALIZE_GUESS); // GUESS seems to be more permissive with parsing than JSON
+	/* Create a world model handle */
+	Logger::setMinLoglevel(Logger::LOGDEBUG);
+	brics_3d::WorldModel* wm = new brics_3d::WorldModel();
 
-	// Pretty print to stdout
-    LOG(INFO) << "---";
-	libvariant::SerializeJSON(stdout, model, true);
-    LOG(INFO) << "---";
-
-    // Start to parse it
-	if(model.Contains("type")) {
-		LOG(INFO) << "Top level model type exists.";
-	}
-
-	handleGraphPrimitive(model, 0);
+	brics_3d::rsg::JSONDeserializer deserializer(wm);
+	deserializer.write(serializedModel.str());
 
 	return 0;
-}
-
-/**
- * Inferes the type and calls the respecive handleXY
- * @param atom
- * @param parentId
- * @return
- */
-bool handleGraphPrimitive(Variant& atom, rsg::Id parentId) {
-	if(atom.Contains("type")) {
-		LOG(DEBUG) << "Atom has type identifier";
-		string type = atom.Get("type").AsString();
-		LOG(DEBUG) << "\t type = " << type;
-
-		if(type.compare("Node") == 0) {
-			handleNode(atom, parentId);
-		} else if (type.compare("Group") == 0) {
-			handleGroup(atom, parentId);
-		} else { // ...
-			LOG(WARNING) << "Unknown atom type. Skippping it.";
-		}
-	} else {
-		LOG(ERROR) << "Atom has no type identifier";
-		return false;
-	}
-
-	return true;
-}
-
-bool handleNode(Variant& node, rsg::Id parentId) {
-	LOG(DEBUG) << "handleNode: type is" << node.Get("type").AsString();
-
-	/* Id */
-	rsg::Id id = rsg::JSONTypecaster::getIdFromJSON(node, "id");
-	assert(!id.isNil());
-
-	/* attributes */
-	std::vector<rsg::Attribute> attributes = rsg::JSONTypecaster::getAttributesFromJSON(node);
-
-	/* create it */
-
-
-	return true;
-}
-
-
-/**
- * Handle paring of a "group" primitive.
- * @param group The JSON version of a group
- * @param parentId For recursion we need to pass the parent Id as extracted from the group on the "upper" level
- *        in the graph.
- * @return true on success
- */
-bool handleGroup(Variant& group, rsg::Id parentId) {
-	LOG(DEBUG) << "handleGroup: type is" << group.Get("type").AsString();
-
-	/* Id */
-	rsg::Id id = rsg::JSONTypecaster::getIdFromJSON(group, "id");
-	assert(!id.isNil());
-
-	/* attributes */
-	std::vector<rsg::Attribute> attributes = rsg::JSONTypecaster::getAttributesFromJSON(group);
-
-	/* childs (recursion) */
-	if(group.Contains("childs")) {
-		LOG(DEBUG) << "Group has the following childs:";
-
-		Variant attributeList = group.Get("childs");
-		if (attributeList.IsList()) {
-			for (Variant::ListIterator i(attributeList.ListBegin()), e(attributeList.ListEnd()); i!=e; ++i) {
-				assert(i->Contains("type"));
-				string childType = i->Get("type").AsString();
-				LOG(DEBUG) << " type = " << childType;
-
-				if(childType.compare("Child") == 0) {
-					Variant child = i->Get("child");
-					handleGraphPrimitive(child, id);
-				} else if (childType.compare("ChildId") == 0) {
-					// TODO stamps
-					assert(i->Contains("childId"));
-					rsg::Id childId = rsg::JSONTypecaster::getIdFromJSON(*i, "childId");
-					LOG(DEBUG) << "Adding parent -> child relation: " << id << " -> " << childId;
-					// add parent
-				}
-			}
-		}
-	}
-	return true;
 }

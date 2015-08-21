@@ -21,6 +21,7 @@
 #define RSG_JSONTYPECASTER_H_
 
 #include "brics_3d/core/Logger.h"
+#include "brics_3d/worldModel/WorldModel.h"
 #include <Variant/Variant.h>
 
 namespace brics_3d {
