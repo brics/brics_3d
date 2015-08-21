@@ -36,6 +36,14 @@ public:
 	int write(const char *dataBuffer, int dataLength, int &transferredBytes);
 	int write(std::string data);
 
+	bool isMapUnknownParentIdsToRootId() const {
+		return mapUnknownParentIdsToRootId;
+	}
+
+	void setMapUnknownParentIdsToRootId(bool mapUnknownParentIdsToRootId) {
+		this->mapUnknownParentIdsToRootId = mapUnknownParentIdsToRootId;
+	}
+
 private:
 
 	virtual bool handleGraphPrimitive(libvariant::Variant& atom, rsg::Id parentId);
@@ -53,6 +61,7 @@ private:
 	virtual bool doRemoveParent(libvariant::Variant& group, rsg::Id parentId);
 
 	WorldModel* wm;
+	bool mapUnknownParentIdsToRootId;
 };
 
 } /* namespace rsg */

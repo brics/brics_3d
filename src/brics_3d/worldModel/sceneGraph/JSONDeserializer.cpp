@@ -25,7 +25,7 @@ namespace rsg {
 
 JSONDeserializer::JSONDeserializer(WorldModel* wm) :
 		wm(wm) {
-
+	mapUnknownParentIdsToRootId = false;
 }
 
 JSONDeserializer::~JSONDeserializer() {
@@ -54,7 +54,13 @@ int JSONDeserializer::write(std::string data) {
 	} else {
 		// This is indented for debugging purposes only
 		LOG(DEBUG) << "JSONDeserializer: Found a model for a graph primitive";
-		handleGraphPrimitive(model, 0);
+
+		Id rootId = 0;
+		if (mapUnknownParentIdsToRootId) {
+			rootId = wm->getRootNodeId();
+		}
+
+		handleGraphPrimitive(model, rootId);
 	}
 
 	return 0;
