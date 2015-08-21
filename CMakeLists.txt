@@ -205,17 +205,16 @@ IF(HDF5_1_8_12_OR_HIGHER)
     ADD_DEFINITIONS(-DHDF_1_8_12_OR_HIGHER)  
 ENDIF(HDF5_1_8_12_OR_HIGHER)
 
-# search for Microblx
+# search for LibVariant to parse JSON files
 OPTION(USE_JSON "Enable JSON Support. Requires libvariant to be installed." OFF)
 IF(USE_JSON)  
-#    FIND_PACKAGE(Variant REQUIRED)
-    FIND_PACKAGE(Variant    )
-    IF (VARIANT_FOUND)
-      MESSAGE(STATUS "SUCCESSFUL: libVARIANT found")
+    FIND_PACKAGE(LibVariant)
+    IF (LIBVARIANT_FOUND)
+      MESSAGE(STATUS "SUCCESSFUL: LIBVARIANT_FOUND found")
       ADD_DEFINITIONS(-DBRICS_JSON_ENABLE)     
-    ELSE (VARIANT_FOUND)
-      #MESSAGE(SEND_ERROR "WARNING: VARIANT not found.")
-    ENDIF (UBX_FOUND)
+    ELSE (LIBVARIANT_FOUND)
+      MESSAGE(SEND_ERROR "WARNING: LIBVARIANT_FOUND not found.")
+    ENDIF (LIBVARIANT_FOUND)
 ENDIF(USE_JSON)
 
 ## perform platform dependant configurations

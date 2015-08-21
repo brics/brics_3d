@@ -53,6 +53,12 @@ IF(UBX_INCLUDE_DIR)
 	list(APPEND WORLD_MODEL_LIBRARY_LIBS        ${UBX_LIBRARIES})
 ENDIF(UBX_INCLUDE_DIR)	
 
+# define optional libraries
+IF(USE_JSON)
+	list(APPEND BRICS_3D_LIBRARIES_INCLUDE_DIRS ${LIBVARIANT_INCLUDE_DIRS})
+	list(APPEND WORLD_MODEL_LIBRARY_LIBS        ${LIBVARIANT_LIBRARIES})
+ENDIF(USE_JSON)	
+
 # define sources lists for libraries (cpp files)
 SET (CORE_LIBRARY_SOURCES
     ./core/IHomogeneousMatrix44
@@ -241,6 +247,10 @@ IF (USE_HDF5)
     list(APPEND WORLD_MODEL_LIBRARY_SOURCES ./worldModel/sceneGraph/HDF5UpdateSerializer)
     list(APPEND WORLD_MODEL_LIBRARY_SOURCES ./worldModel/sceneGraph/HDF5UpdateDeserializer)
 ENDIF(USE_HDF5)
+
+IF (USE_JSON)
+    list(APPEND WORLD_MODEL_LIBRARY_SOURCES ./worldModel/sceneGraph/JSONDeserializer)
+ENDIF(USE_JSON)
 
 # add library directories (-L)
 LINK_DIRECTORIES(

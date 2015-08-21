@@ -23,6 +23,7 @@
 
 #include <brics_3d/core/Logger.h>
 #include <brics_3d/worldModel/WorldModel.h>
+#include <brics_3d/util/JSONTypecaster.h>
 
 #include <Variant/Variant.h>
 #include <Variant/Schema.h>
@@ -110,11 +111,11 @@ bool handleNode(Variant& node, rsg::Id parentId) {
 	LOG(DEBUG) << "handleNode: type is" << node.Get("type").AsString();
 
 	/* Id */
-	rsg::Id id = getId(node, "id");
+	rsg::Id id = rsg::JSONTypecaster::getIdFromJSON(node, "id");
 	assert(!id.isNil());
 
 	/* attributes */
-	std::vector<rsg::Attribute> attributes = getAttributes(node);
+	std::vector<rsg::Attribute> attributes = rsg::JSONTypecaster::getAttributesFromJSON(node);
 
 	/* create it */
 
@@ -134,11 +135,11 @@ bool handleGroup(Variant& group, rsg::Id parentId) {
 	LOG(DEBUG) << "handleGroup: type is" << group.Get("type").AsString();
 
 	/* Id */
-	rsg::Id id = getId(group, "id");
+	rsg::Id id = rsg::JSONTypecaster::getIdFromJSON(group, "id");
 	assert(!id.isNil());
 
 	/* attributes */
-	std::vector<rsg::Attribute> attributes = getAttributes(group);
+	std::vector<rsg::Attribute> attributes = rsg::JSONTypecaster::getAttributesFromJSON(group);
 
 	/* childs (recursion) */
 	if(group.Contains("childs")) {
@@ -157,7 +158,7 @@ bool handleGroup(Variant& group, rsg::Id parentId) {
 				} else if (childType.compare("ChildId") == 0) {
 					// TODO stamps
 					assert(i->Contains("childId"));
-					rsg::Id childId = getId(*i, "childId");
+					rsg::Id childId = rsg::JSONTypecaster::getIdFromJSON(*i, "childId");
 					LOG(DEBUG) << "Adding parent -> child relation: " << id << " -> " << childId;
 					// add parent
 				}
@@ -165,39 +166,4 @@ bool handleGroup(Variant& group, rsg::Id parentId) {
 		}
 	}
 	return true;
-}
-
-brics_3d::rsg::Id getId(Variant& node, string idTag) {
-	rsg::Id id = 0; //NiL
-
-	if(node.Contains(idTag)) { // required
-		id.fromString(node.Get(idTag).AsString());
-		assert(!id.isNil());
-		LOG(DEBUG) << "Id " << idTag << " is = " << id;
-	} else {
-		LOG(ERROR) << "Can not parse model. No node Id " << idTag << " specified.";
-	}
-
-	return id;
-}
-
-std::vector<rsg::Attribute> getAttributes (Variant& node) {
-	std::vector<rsg::Attribute> attributes;
-	attributes.clear();
-
-	if(node.Contains("attributes")) {
-		LOG(DEBUG) << "Node has the following attributes:";
-
-		Variant attributeList = node.Get("attributes");
-		if (attributeList.IsList()) {
-			for (Variant::ListIterator i(attributeList.ListBegin()), e(attributeList.ListEnd()); i!=e; ++i) {
-				assert(i->Contains("key"));
-				assert(i->Contains("value"));
-				LOG(DEBUG) << "\t( " << i->Get("key").AsString() << ", " << i->Get("value").AsString() << " )";
-				attributes.push_back(rsg::Attribute(i->Get("key").AsString(), i->Get("value").AsString()));
-			}
-		}
-	}
-
-	return attributes;
 }
