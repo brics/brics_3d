@@ -25,7 +25,11 @@
 #include <brics_3d/worldModel/WorldModel.h>
 
 #include <Variant/Variant.h>
+#include <Variant/Schema.h>
+#include <Variant/Payload.h>
 #include <stdio.h>
+#include <fstream>
+#include <sstream>
 
 // Import Variant from libvariant
 using libvariant::Variant;
@@ -52,11 +56,20 @@ int main(int argc, char **argv) {
 	}
 
 	const char *fileName = argv[1];
-    Variant model = libvariant::DeserializeJSONFile(fileName);
+	std::ifstream inputFile;
+	inputFile.open (fileName, std::ifstream::in);
+	std::stringstream serializedModel;
+	serializedModel << inputFile.rdbuf();
+
+	LOG(DEBUG) << "Input = " << std::endl << serializedModel.str();
+    Variant model = libvariant:: Deserialize(serializedModel.str(), libvariant::SERIALIZE_GUESS); // GUESS seems to be more permissive with parsing than JSON
 
 	// Pretty print to stdout
+    LOG(INFO) << "---";
 	libvariant::SerializeJSON(stdout, model, true);
+    LOG(INFO) << "---";
 
+    // Start to parse it
 	if(model.Contains("type")) {
 		LOG(INFO) << "Top level model type exists.";
 	}
