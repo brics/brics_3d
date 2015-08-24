@@ -67,20 +67,20 @@ int JSONDeserializer::write(std::string data) {
 }
 
 bool JSONDeserializer::handleGraphPrimitive(libvariant::Variant& atom, rsg::Id parentId) {
+	LOG(DEBUG) << "JSONDeserializer: handleGraphPrimitive";
 	if(atom.Contains("type")) {
-		LOG(DEBUG) << "Atom has type identifier";
 		string type = atom.Get("type").AsString();
-		LOG(DEBUG) << "\t type = " << type;
+		LOG(DEBUG) << "JSONDeserializer: Atom has type identifier = "<< type; ;
 
 		if(type.compare("Node") == 0) {
 			doAddNode(atom, parentId);
 		} else if (type.compare("Group") == 0) {
 			doAddGroup(atom, parentId);
 		} else { // ...
-			LOG(WARNING) << "Unknown atom type. Skippping it.";
+			LOG(WARNING) << "JSONDeserializer: Unknown atom type. Skippping it.";
 		}
 	} else {
-		LOG(ERROR) << "Atom has no type identifier";
+		LOG(ERROR) << "SONDeserializer: Atom has no type identifier";
 		return false;
 	}
 
@@ -88,7 +88,7 @@ bool JSONDeserializer::handleGraphPrimitive(libvariant::Variant& atom, rsg::Id p
 }
 
 bool JSONDeserializer::doAddNode(libvariant::Variant& group, rsg::Id parentId) {
-	LOG(DEBUG) << "doAddNode: type is" << group.Get("type").AsString();
+	LOG(DEBUG) << "JSONDeserializer: doAddNode: type is = " << group.Get("type").AsString();
 
 	/* Id */
 	rsg::Id id = rsg::JSONTypecaster::getIdFromJSON(group, "id");
@@ -104,7 +104,7 @@ bool JSONDeserializer::doAddNode(libvariant::Variant& group, rsg::Id parentId) {
 }
 
 bool JSONDeserializer::doAddGroup(libvariant::Variant& group, rsg::Id parentId) {
-	LOG(DEBUG) << "handleGroup: type is" << group.Get("type").AsString();
+	LOG(DEBUG) << "JSONDeserializer: doAddGroup: type is = " << group.Get("type").AsString();
 
 	/* Id */
 	rsg::Id id = rsg::JSONTypecaster::getIdFromJSON(group, "id");
@@ -114,18 +114,18 @@ bool JSONDeserializer::doAddGroup(libvariant::Variant& group, rsg::Id parentId) 
 	std::vector<rsg::Attribute> attributes = rsg::JSONTypecaster::getAttributesFromJSON(group);
 
 	/* create it */
-	wm->scene.addNode(parentId, id, attributes, true);
+	wm->scene.addGroup(parentId, id, attributes, true);
 
 	/* childs (recursion) */
 	if(group.Contains("childs")) {
-		LOG(DEBUG) << "Group has the following childs:";
+		LOG(DEBUG) << "JSONDeserializer: Group has the following childs:";
 
 		libvariant::Variant attributeList = group.Get("childs");
 		if (attributeList.IsList()) {
 			for (libvariant::Variant::ListIterator i(attributeList.ListBegin()), e(attributeList.ListEnd()); i!=e; ++i) {
 				assert(i->Contains("type"));
 				string childType = i->Get("type").AsString();
-				LOG(DEBUG) << " type = " << childType;
+				LOG(DEBUG) << "JSONDeserializer: \t\t type = " << childType;
 
 				if(childType.compare("Child") == 0) {
 					libvariant::Variant child = i->Get("child");
@@ -134,7 +134,7 @@ bool JSONDeserializer::doAddGroup(libvariant::Variant& group, rsg::Id parentId) 
 					// TODO stamps
 					assert(i->Contains("childId"));
 					rsg::Id childId = rsg::JSONTypecaster::getIdFromJSON(*i, "childId");
-					LOG(DEBUG) << "Adding parent -> child relation: " << id << " -> " << childId;
+					LOG(DEBUG) << "JSONDeserializer: Adding parent -> child relation: " << id << " -> " << childId;
 					// add parent
 				}
 			}

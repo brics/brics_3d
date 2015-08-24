@@ -45,7 +45,7 @@ public:
 		if(node.Contains(idTag)) { // required
 			id.fromString(node.Get(idTag).AsString());
 			assert(!id.isNil());
-			LOG(DEBUG) << "Id " << idTag << " is = " << id;
+			LOG(DEBUG) << "JSONTypecaster: Id " << idTag << " is = " << id;
 		} else {
 			LOG(ERROR) << "Can not parse model. No node Id " << idTag << " specified.";
 		}
@@ -58,7 +58,7 @@ public:
 		attributes.clear();
 
 		if(node.Contains("attributes")) {
-			LOG(DEBUG) << "Node has the following attributes:";
+			LOG(DEBUG) << "JSONTypecaster: Node has the following attributes:";
 
 			libvariant::Variant attributeList = node.Get("attributes");
 			if (attributeList.IsList()) {

@@ -99,11 +99,15 @@ void DotGraphGenerator::doHandleNode(Node* node) {
 	}
 
     if(config.abbreviateIds) {
+    	nodes << "\"";
     	nodes << uuidToUnsignedInt(node->getId());
+    	nodes << "\"";
         nodes << " [label = \"";
     	nodes << "ID [" << uuidToUnsignedInt(node->getId()) << "]\\n";
     } else {
+    	nodes << "\"";
     	nodes << node->getId();
+    	nodes << "\"";
         nodes << " [label = \"";
     	nodes << "ID [" << node->getId() << "]\\n";
 	}
@@ -130,11 +134,15 @@ void DotGraphGenerator::doHandleTransform(Transform* node) {
 
 
     if(config.abbreviateIds) {
+    	nodes << "\"";
     	nodes << uuidToUnsignedInt(node->getId());
+    	nodes << "\"";
         nodes << " [label = \"";
     	nodes << "ID [" << uuidToUnsignedInt(node->getId()) << "]\\n";
     } else {
+    	nodes << "\"";
     	nodes << node->getId();
+    	nodes << "\"";
         nodes << " [label = \"";
     	nodes << "ID [" << node->getId() << "]\\n";
 	}
@@ -161,11 +169,15 @@ void DotGraphGenerator::doHandleGeometricNode(GeometricNode* node) {
 	}
 
     if(config.abbreviateIds) {
+    	nodes << "\"";
     	nodes << uuidToUnsignedInt(node->getId());
+    	nodes << "\"";
         nodes << " [label = \"";
     	nodes << "ID [" << uuidToUnsignedInt(node->getId()) << "]\\n";
     } else {
+    	nodes << "\"";
     	nodes << node->getId();
+    	nodes << "\"";
         nodes << " [label = \"";
     	nodes << "ID [" << node->getId() << "]\\n";
 	}
@@ -185,9 +197,9 @@ void DotGraphGenerator::doHandleEdges(Group* node){
 
 	for (unsigned int childIndex = 0; childIndex < node->getNumberOfChildren(); ++childIndex) {
 	    if(config.abbreviateIds) {
-	    	edges << uuidToUnsignedInt(node->getId()) << " -> " << uuidToUnsignedInt((*node->getChild(childIndex)).getId()) << ";" << std::endl;
+	    	edges << "\"" << uuidToUnsignedInt(node->getId()) << "\"" << " -> " << "\"" <<uuidToUnsignedInt((*node->getChild(childIndex)).getId()) << "\"" << ";" << std::endl;
 	    } else {
-	    	edges << node->getId() << " -> " << (*node->getChild(childIndex)).getId() << ";" << std::endl;
+	    	edges << "\"" << node->getId() << "\"" << " -> " << "\"" << (*node->getChild(childIndex)).getId() << "\"" << ";" << std::endl;
 		}
 	}
 }
