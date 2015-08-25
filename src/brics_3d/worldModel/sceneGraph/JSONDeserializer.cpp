@@ -41,18 +41,23 @@ int JSONDeserializer::write(std::string data) {
 	libvariant::Variant model = libvariant:: Deserialize(data, libvariant::SERIALIZE_GUESS); // GUESS seems to be more permissive with parsing than JSON
 
 	// Start to parse it
-	if(!model.Contains("type")) {
-		LOG(ERROR) << "Top level model type does not exist.";
-		return -1;
+	if(model.Contains("@worldmodeltype")) {
+
+		std::string type = model.Get("@worldmodeltype").AsString();
+		if(type.compare("RSGUpdate") == 0) {
+			LOG(DEBUG) << "JSONDeserializer: Found a model for an update.";
+		} else if (type.compare("WorldModelAgent") == 0) {
+			LOG(DEBUG) << "JSONDeserializer: Found model for a WorldModelAgent.";
+		}
+
+	} else {
+		LOG(WARNING) << "Top level model type does not exist.";
 	}
 
-	std::string type = model.Get("type").AsString();
-	if(type.compare("RSGUpdate") == 0) {
-		LOG(DEBUG) << "JSONDeserializer: Found a model for an update.";
-	} else if (type.compare("WorldModelAgent") == 0) {
-		LOG(DEBUG) << "JSONDeserializer: Found model for a WorldModelAgent.";
-	} else {
-		// This is indented for debugging purposes only
+
+
+	/* This is indented for debugging purposes only */
+	if (model.Contains("@graphtype")) {
 		LOG(DEBUG) << "JSONDeserializer: Found a model for a graph primitive";
 
 		Id rootId = 0;
@@ -68,19 +73,19 @@ int JSONDeserializer::write(std::string data) {
 
 bool JSONDeserializer::handleGraphPrimitive(libvariant::Variant& atom, rsg::Id parentId) {
 	LOG(DEBUG) << "JSONDeserializer: handleGraphPrimitive";
-	if(atom.Contains("type")) {
-		string type = atom.Get("type").AsString();
-		LOG(DEBUG) << "JSONDeserializer: Atom has type identifier = "<< type; ;
+	if(atom.Contains("@graphtype")) {
+		string type = atom.Get("@graphtype").AsString();
+		LOG(DEBUG) << "JSONDeserializer: Atom has graphtype identifier = " << type; ;
 
 		if(type.compare("Node") == 0) {
 			doAddNode(atom, parentId);
 		} else if (type.compare("Group") == 0) {
 			doAddGroup(atom, parentId);
 		} else { // ...
-			LOG(WARNING) << "JSONDeserializer: Unknown atom type. Skippping it.";
+			LOG(WARNING) << "JSONDeserializer: Unknown atom graphtype. Skippping it.";
 		}
 	} else {
-		LOG(ERROR) << "SONDeserializer: Atom has no type identifier";
+		LOG(ERROR) << "JSONDeserializer: Atom has no graphtype identifier";
 		return false;
 	}
 
@@ -88,7 +93,7 @@ bool JSONDeserializer::handleGraphPrimitive(libvariant::Variant& atom, rsg::Id p
 }
 
 bool JSONDeserializer::doAddNode(libvariant::Variant& group, rsg::Id parentId) {
-	LOG(DEBUG) << "JSONDeserializer: doAddNode: type is = " << group.Get("type").AsString();
+	LOG(DEBUG) << "JSONDeserializer: doAddNode: type is = " << group.Get("@graphtype").AsString();
 
 	/* Id */
 	rsg::Id id = rsg::JSONTypecaster::getIdFromJSON(group, "id");
@@ -104,7 +109,7 @@ bool JSONDeserializer::doAddNode(libvariant::Variant& group, rsg::Id parentId) {
 }
 
 bool JSONDeserializer::doAddGroup(libvariant::Variant& group, rsg::Id parentId) {
-	LOG(DEBUG) << "JSONDeserializer: doAddGroup: type is = " << group.Get("type").AsString();
+	LOG(DEBUG) << "JSONDeserializer: doAddGroup: type is = " << group.Get("@graphtype").AsString();
 
 	/* Id */
 	rsg::Id id = rsg::JSONTypecaster::getIdFromJSON(group, "id");
@@ -123,8 +128,8 @@ bool JSONDeserializer::doAddGroup(libvariant::Variant& group, rsg::Id parentId) 
 		libvariant::Variant attributeList = group.Get("childs");
 		if (attributeList.IsList()) {
 			for (libvariant::Variant::ListIterator i(attributeList.ListBegin()), e(attributeList.ListEnd()); i!=e; ++i) {
-				assert(i->Contains("type"));
-				string childType = i->Get("type").AsString();
+				assert(i->Contains("@childtype"));
+				string childType = i->Get("@childtype").AsString();
 				LOG(DEBUG) << "JSONDeserializer: \t\t type = " << childType;
 
 				if(childType.compare("Child") == 0) {
