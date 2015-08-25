@@ -39,7 +39,7 @@ class JSONTypecaster {
 public:
 
 
-	inline static Id getIdFromJSON(libvariant::Variant& node, string idTag) {
+	inline static rsg::Id getIdFromJSON(libvariant::Variant& node, string idTag) {
 		rsg::Id id = 0; //NiL
 
 		if(node.Contains(idTag)) { // required
@@ -52,6 +52,33 @@ public:
 
 		return id;
 	}
+
+	inline static vector<rsg::Id> getIdsFromJSON(libvariant::Variant& node, string idsTag) {
+		vector<rsg::Id> ids;
+
+		LOG(DEBUG) << "JSONTypecaster: Id list " << idsTag << " has the following Ids:";
+		libvariant::Variant idList = node.Get(idsTag);
+		if (idList.IsList()) {
+			for (libvariant::Variant::ListIterator i(idList.ListBegin()), e(idList.ListEnd()); i!=e; ++i) {
+				Id id;
+				id.fromString(i->AsString());
+				assert(!id.isNil());
+				LOG(DEBUG) << "JSONTypecaster: \t " << id;
+				ids.push_back(id);
+			}
+		}
+
+		return ids;
+	}
+
+	inline static rsg::TimeStamp getTimeStampFromJSON(libvariant::Variant& node, string idTag) {
+		rsg::TimeStamp stamp(0); //-inf?
+
+
+
+		return stamp;
+	}
+
 
 	inline static std::vector<rsg::Attribute> getAttributesFromJSON (libvariant::Variant& node) {
 		std::vector<rsg::Attribute> attributes;

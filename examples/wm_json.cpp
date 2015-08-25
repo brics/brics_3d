@@ -53,7 +53,12 @@ int main(int argc, char **argv) {
 	/* Create a world model handle */
 	Logger::setMinLoglevel(Logger::LOGDEBUG);
 	brics_3d::rsg::Id rootId; // Explicitly set the root Id (optinal)
-	rootId.fromString("77fd4353-033b-4c23-a675-602fa0e59804");
+	/*
+	 * The rootId is the one ond only information from the model we
+	 * to obtain at creation time.
+	 */
+	rootId = brics_3d::rsg::JSONDeserializer::getRootIdFromJSONModel(serializedModel.str());
+	//rootId.fromString("77fd4353-033b-4c23-a675-602fa0e59804");
 	brics_3d::WorldModel* wm = new brics_3d::WorldModel(new brics_3d::rsg::UuidGenerator(rootId));
 
 	/* Attach debug visualization */

@@ -44,16 +44,21 @@ public:
 		this->mapUnknownParentIdsToRootId = mapUnknownParentIdsToRootId;
 	}
 
+	static Id getRootIdFromJSONModel(std::string data);
+
 private:
 
+	virtual bool handleWorldModelAgent(libvariant::Variant& model);
 	virtual bool handleGraphPrimitive(libvariant::Variant& atom, rsg::Id parentId);
+	virtual bool handleChilden(libvariant::Variant& group, rsg::Id parentId);
+	virtual bool handleConnections(libvariant::Variant& group, rsg::Id parentId);
 
 	virtual bool doAddNode(libvariant::Variant& group, rsg::Id parentId);
 	virtual bool doAddGroup(libvariant::Variant& group, rsg::Id parentId);
 	virtual bool doAddTransformNode(libvariant::Variant& group, rsg::Id parentId);
 	virtual bool doAddGeometricNode(libvariant::Variant& group, rsg::Id parentId);
 	virtual bool doAddRemoteRootNode(libvariant::Variant& group, rsg::Id parentId);
-	virtual bool doAddConnection(libvariant::Variant& group, rsg::Id parentId);
+	virtual bool doAddConnection(libvariant::Variant& connection, rsg::Id parentId);
 	virtual bool doSetNodeAttributes(libvariant::Variant& group, rsg::Id parentId);
 	virtual bool doSetTransform(libvariant::Variant& group, rsg::Id parentId);
 	virtual bool doDeleteNode(libvariant::Variant& group, rsg::Id parentId);
