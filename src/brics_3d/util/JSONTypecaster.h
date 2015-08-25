@@ -85,7 +85,14 @@ public:
 				if( stampModel.Get("@stamptype").AsString().compare("TimeStampUTCms") == 0 ) {
 
 					stamp = TimeStamp( stampModel.Get("stamp").AsDouble(), Units::MilliSecond);
+
 				} else if ( stampModel.Get("@stamptype").AsString().compare("TimeStampDate") == 0 ) {
+
+					string dateTime =  stampModel.Get("stamp").AsString();
+					struct tm tmlol;
+					strptime(dateTime.c_str(), "%Y-%m-%dT%H:%M:%SZ", &tmlol);
+					time_t t = mktime(&tmlol); // Seconds since epoche
+					stamp = TimeStamp(t, Units::Second);
 
 				} else {
 					LOG(ERROR) << "JSONTypecaster: Time stamp defeinition has unknown type @stamptype identifier";
@@ -98,7 +105,7 @@ public:
 			LOG(ERROR) << "JSONTypecaster: entity has no stamp tag: " << stampTag;
 		}
 
-
+		LOG(DEBUG) << "JSONTypecaster: stamp = " << stamp.getSeconds();
 
 		return stamp;
 	}
