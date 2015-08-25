@@ -21,6 +21,7 @@
 #define RSG_JSONTYPECASTER_H_
 
 #include "brics_3d/core/Logger.h"
+#include "brics_3d/core/HomogeneousMatrix44.h"
 #include "brics_3d/worldModel/WorldModel.h"
 #include <Variant/Variant.h>
 
@@ -71,8 +72,31 @@ public:
 		return ids;
 	}
 
-	inline static rsg::TimeStamp getTimeStampFromJSON(libvariant::Variant& node, string idTag) {
+	inline static rsg::TimeStamp getTimeStampFromJSON(libvariant::Variant& node, string stampTag) {
 		rsg::TimeStamp stamp(0); //-inf?
+
+		if(node.Contains(stampTag)) {
+			LOG(DEBUG) << "JSONTypecaster: entity has the following time stamp:";
+			libvariant::Variant stampModel = node.Get(stampTag);
+
+			if(stampModel.Contains("@stamptype")) {
+				assert(stampModel.Contains("stamp"));
+
+				if( stampModel.Get("@stamptype").AsString().compare("TimeStampUTCms") == 0 ) {
+
+					stamp = TimeStamp( stampModel.Get("stamp").AsDouble(), Units::MilliSecond);
+				} else if ( stampModel.Get("@stamptype").AsString().compare("TimeStampDate") == 0 ) {
+
+				} else {
+					LOG(ERROR) << "JSONTypecaster: Time stamp defeinition has unknown type @stamptype identifier";
+				}
+
+			} else {
+				LOG(ERROR) << "JSONTypecaster: Time stamp fefinition has no type @stamptype identifier";
+			}
+		} else {
+			LOG(ERROR) << "JSONTypecaster: entity has no stamp tag: " << stampTag;
+		}
 
 
 
@@ -99,6 +123,62 @@ public:
 		}
 
 		return attributes;
+	}
+
+	inline static bool getTransformCacheFromJSON(TemporalCache<IHomogeneousMatrix44::IHomogeneousMatrix44Ptr>& history, libvariant::Variant& node) {
+		history.clear();
+
+		if(node.Contains("history")) {
+					LOG(DEBUG) << "JSONTypecaster: Transform has the following history:";
+
+					libvariant::Variant cacheList = node.Get("history");
+					if (cacheList.IsList()) {
+						for (libvariant::Variant::ListIterator i(cacheList.ListBegin()), e(cacheList.ListEnd()); i!=e; ++i) {
+							TimeStamp stamp = getTimeStampFromJSON(*i, "stamp");
+
+							assert(i->Contains("transform"));
+							libvariant::Variant transformModel = i->Get("transform");
+							assert(transformModel.Contains("type"));
+
+							if( transformModel.Get("type").AsString().compare("HomogeneousMatrix44") == 0 ) {
+							     /*
+							      * Coefficient layout for rotation part:
+							      * r0 r1 r2
+							      * r3 r4 r5
+							      * r6 r7 r8
+							      */
+								HomogeneousMatrix44::IHomogeneousMatrix44Ptr transform(new HomogeneousMatrix44(
+										// rotation
+										transformModel.Get("matrix").At(0).At(0).AsDouble(),
+										transformModel.Get("matrix").At(0).At(1).AsDouble(),
+										transformModel.Get("matrix").At(0).At(2).AsDouble(),
+
+										transformModel.Get("matrix").At(1).At(0).AsDouble(),
+										transformModel.Get("matrix").At(1).At(1).AsDouble(),
+										transformModel.Get("matrix").At(1).At(2).AsDouble(),
+
+										transformModel.Get("matrix").At(2).At(0).AsDouble(),
+										transformModel.Get("matrix").At(2).At(1).AsDouble(),
+										transformModel.Get("matrix").At(2).At(2).AsDouble(),
+										// translation
+										transformModel.Get("matrix").At(0).At(3).AsDouble(),
+										transformModel.Get("matrix").At(1).At(3).AsDouble(),
+										transformModel.Get("matrix").At(2).At(3).AsDouble()
+								));
+
+								LOG(DEBUG) << "transform data = " << *transform;
+								history.insertData(transform, stamp);
+
+							} else {
+								LOG(DEBUG) << "JSONTypecaster: Transform uses unknown type";
+							}
+
+						}
+					}
+				}
+
+
+		return true;
 	}
 };
 

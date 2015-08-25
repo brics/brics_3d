@@ -20,6 +20,8 @@
 #include "JSONDeserializer.h"
 #include <assert.h>
 
+#include "brics_3d/core/HomogeneousMatrix44.h"
+
 namespace brics_3d {
 namespace rsg {
 
@@ -202,9 +204,16 @@ bool JSONDeserializer::handleConnections(libvariant::Variant& group, rsg::Id par
 
 					if(graphType.compare("Connection") == 0) {
 
-						// TODO
+						/* check for well known semantic conexts */
+						if(i->Contains("@semanticContext")) {
+							string semanticContext = i->Get("@semanticContext").AsString();
+							LOG(DEBUG) << "JSONDeserializer: \t\t semanticContext = " << semanticContext;
+							doAddTransformNode(*i, parentId);
+						} else { // Default case: a plain Conneciton
+							doAddConnection(*i, parentId);
+						}
 
-						doAddConnection(*i, parentId);
+
 					} else {
 						LOG(ERROR) << "JSONDeserializer: Connection has no type @graphtype identifier.";
 						return false;
@@ -256,7 +265,43 @@ bool JSONDeserializer::doAddGroup(libvariant::Variant& group, rsg::Id parentId) 
 
 bool JSONDeserializer::doAddTransformNode(libvariant::Variant& group,
 		rsg::Id parentId) {
-	return false;
+	LOG(DEBUG) << "JSONDeserializer doAddTransformNode";
+
+	/*
+	 * workaround: current implementation uses a node rather than a connection.
+	 */
+
+	/* Id */
+	rsg::Id id = rsg::JSONTypecaster::getIdFromJSON(group, "id");
+	assert(!id.isNil());
+
+	/* attributes */
+	std::vector<rsg::Attribute> attributes = rsg::JSONTypecaster::getAttributesFromJSON(group);
+
+	/* Id lists */
+//	std::vector<rsg::Id> sourceIds = rsg::JSONTypecaster::getIdsFromJSON(connection, "sourceIds");
+//	std::vector<rsg::Id> targetIds = rsg::JSONTypecaster::getIdsFromJSON(connection, "targetIds");
+//	assert((sourceIds.size() > 0) || (targetIds.size() > 0)); // there should be at least one
+
+	/* stamps */
+	rsg::TimeStamp start = JSONTypecaster::getTimeStampFromJSON(group, "start");
+//	rsg::TimeStamp end = JSONTypecaster::getTimeStampFromJSON(connection, "end");
+
+	/* transform data */
+	HomogeneousMatrix44::IHomogeneousMatrix44Ptr transform(new HomogeneousMatrix44());
+
+	TemporalCache<IHomogeneousMatrix44::IHomogeneousMatrix44Ptr> history;
+	JSONTypecaster::getTransformCacheFromJSON(history, group);
+	LOG(DEBUG) << "JSONDeserializer doAddTransformNode: transfor cache has size = " << history.size();
+
+	transform = history.getData(history.getLatestTimeStamp());
+
+	/* create it */
+	wm->scene.addTransformNode(parentId, id, attributes, transform, history.getLatestTimeStamp(), true);
+//	wm->scene.addConnection(parentId, id, attributes, sourceIds, targetIds, start, end, true);
+
+
+	return true;
 }
 
 bool JSONDeserializer::doAddGeometricNode(libvariant::Variant& group,
