@@ -31,6 +31,7 @@
 #include <brics_3d/worldModel/sceneGraph/UuidGenerator.h>
 #include <brics_3d/worldModel/sceneGraph/JSONDeserializer.h>
 #include <brics_3d/worldModel/sceneGraph/DotVisualizer.h>
+#include <brics_3d/worldModel/sceneGraph/OSGVisualizer.h>
 
 using brics_3d::Logger;
 using namespace brics_3d;
@@ -72,11 +73,26 @@ int main(int argc, char **argv) {
 	graphVizualizer->setFileName("json_graph");
 	wm->scene.attachUpdateObserver(graphVizualizer); // Enable graph visualization
 
+	brics_3d::rsg::OSGVisualizer* geometryVizualizer = new brics_3d::rsg::OSGVisualizer(); // Create the visualizer.
+	brics_3d::rsg::VisualizationConfiguration osgConfiguration; // _Optional_ configuration file.
+	osgConfiguration.visualizeAttributes = true; // Vizualize attributes of a node iff true.
+	osgConfiguration.visualizeIds = true;        // Vizualize Ids of a node iff true.
+	osgConfiguration.abbreviateIds = true;       // Vizualize only the lower 2 bytes of an Id iff true.
+	geometryVizualizer->setConfig(osgConfiguration);
+	wm->scene.attachUpdateObserver(geometryVizualizer); // Enable 3D visualization
+	wm->scene.advertiseRootNode();						// Inform freshly attached opserver about _this_ world model
+
+
 	/* Do the actual JSON parsing. */
 	LOG(INFO) << serializedModel.str();
 	brics_3d::rsg::JSONDeserializer deserializer(wm);
 	deserializer.setMapUnknownParentIdsToRootId(true);
 	deserializer.write(serializedModel.str());
+
+	/* GUI */
+	while(!geometryVizualizer->done()) { // Wait until user closes the GUI-
+		// Nothing to do here.
+	}
 
 	return 0;
 }

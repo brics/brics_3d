@@ -239,6 +239,24 @@ IF (USE_OSG)
         )     
     ENDIF(USE_HDF5)
     
+    IF(USE_JSON)
+        INCLUDE_DIRECTORIES({LIBVARIANT_INCLUDE_DIRS})
+         
+        ADD_EXECUTABLE(wm_json wm_json)
+        TARGET_LINK_LIBRARIES(wm_json 
+            brics3d_world_model
+            brics3d_core 
+            brics3d_algorithm 
+            brics3d_util
+            ${OSG_LIBRARY_DEBUG}
+        	${OSGGA_LIBRARY_DEBUG}
+        	${OSGVIEWER_LIBRARY_DEBUG}
+        	${OSGUTIL_LIBRARY_DEBUG}
+        	${OSGTEXT_LIBRARY_DEBUG} 
+            ${LIBVARIANT_LIBRARIES}
+         )
+    ENDIF(USE_JSON)
+    
 #    ADD_EXECUTABLE(rsg_generated /home/sblume/eclipse_workspaces/runtime-EclipseXtext/WM/src-gen/rsg_main_generated.cpp)
 #    TARGET_LINK_LIBRARIES(rsg_generated 
 #        brics3d_world_model
@@ -272,8 +290,7 @@ ELSE(USE_OSG)
     #    	${HDF5_LIBRARIES}
     #    )
     # TODO does not compile for now            
-    ENDIF(USE_HDF5)
-    
+    ENDIF(USE_HDF5) 
 ENDIF(USE_OSG)
 
 ADD_EXECUTABLE(rigidTransformation_benchmark rigidTransformation_benchmark)
@@ -305,20 +322,3 @@ ADD_SUBDIRECTORY(wm_tutorial_1)
 IF(USE_OSG)
 ADD_SUBDIRECTORY(wm_tutorial_2)
 ENDIF(USE_OSG)
-
-
-	list(APPEND BRICS_3D_LIBRARIES_INCLUDE_DIRS ${LIBVARIANT_INCLUDE_DIRS})
-	list(APPEND WORLD_MODEL_LIBRARY_LIBS        ${LIBVARIANT_LIBRARIES})
-
-IF(USE_JSON)
-    INCLUDE_DIRECTORIES({LIBVARIANT_INCLUDE_DIRS})
-     
-    ADD_EXECUTABLE(wm_json wm_json)
-    TARGET_LINK_LIBRARIES(wm_json 
-         brics3d_world_model
-         brics3d_core 
-         brics3d_algorithm 
-         brics3d_util 
-        ${LIBVARIANT_LIBRARIES}
-     )
-ENDIF(USE_JSON)
