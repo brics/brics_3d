@@ -142,10 +142,26 @@ bool JSONDeserializer::handleGraphPrimitive(libvariant::Variant& atom, rsg::Id p
 	LOG(DEBUG) << "JSONDeserializer: handleGraphPrimitive";
 	if(atom.Contains("@graphtype")) {
 		string type = atom.Get("@graphtype").AsString();
-		LOG(DEBUG) << "JSONDeserializer: Atom has graphtype identifier = " << type; ;
+		LOG(DEBUG) << "JSONDeserializer: Atom has graphtype identifier = " << type;
 
 		if(type.compare("Node") == 0) {
-			doAddNode(atom, parentId);
+
+			string semanticContext = "";
+			if(atom.Contains("@semanticContext")) {
+				semanticContext = atom.Get("@semanticContext").AsString();
+				LOG(DEBUG) << "JSONDeserializer: \t\t semanticContext = " << semanticContext;
+			}
+
+			/* check for well known semantic conexts */
+			if(semanticContext.compare("GeometricNode") == 0) {
+				doAddGeometricNode(atom, parentId);
+
+			// else if (...) potentially more to come
+
+			} else { // Default case: a plain node
+				doAddNode(atom, parentId);
+			}
+
 		} else if (type.compare("Group") == 0) {
 			doAddGroup(atom, parentId);
 		} else if (type.compare("Connection")) {
@@ -204,10 +220,14 @@ bool JSONDeserializer::handleConnections(libvariant::Variant& group, rsg::Id par
 
 					if(graphType.compare("Connection") == 0) {
 
-						/* check for well known semantic conexts */
+						string semanticContext = "";
 						if(i->Contains("@semanticContext")) {
-							string semanticContext = i->Get("@semanticContext").AsString();
+							semanticContext = i->Get("@semanticContext").AsString();
 							LOG(DEBUG) << "JSONDeserializer: \t\t semanticContext = " << semanticContext;
+						}
+
+						/* check for well known semantic conexts */
+						if(semanticContext.compare("Transform")) {
 							doAddTransformNode(*i, parentId);
 						} else { // Default case: a plain Conneciton
 							doAddConnection(*i, parentId);
@@ -306,6 +326,33 @@ bool JSONDeserializer::doAddTransformNode(libvariant::Variant& group,
 
 bool JSONDeserializer::doAddGeometricNode(libvariant::Variant& group,
 		rsg::Id parentId) {
+
+	LOG(DEBUG) << "JSONDeserializer: doAddGeometricNode: type is = " << group.Get("@graphtype").AsString();
+
+	Id id = 0;
+	vector<Attribute> attributes;
+	Shape::ShapePtr shape;
+	TimeStamp timeStamp;
+
+	/* Id */
+	id = rsg::JSONTypecaster::getIdFromJSON(group, "id");
+	assert(!id.isNil());
+
+	/* attributes */
+	attributes = rsg::JSONTypecaster::getAttributesFromJSON(group);
+
+	/* shape */
+	if(!rsg::JSONTypecaster::getShapeFromJSON(shape, group)) {
+		LOG(ERROR) << "JSONDeserializer: doAddGeometricNode: Model  has no Shape";
+		return false;
+	}
+
+
+	/* stamp */
+
+	/* create it */
+	wm->scene.addGeometricNode(parentId, id, attributes, shape, timeStamp, true);
+
 	return false;
 }
 

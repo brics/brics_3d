@@ -187,6 +187,74 @@ public:
 
 		return true;
 	}
+
+	inline static bool getShapeFromJSON(brics_3d::rsg::Shape::ShapePtr& shape, libvariant::Variant& node) {
+
+		brics_3d::rsg::Sphere::SpherePtr newSphere;
+		brics_3d::rsg::Cylinder::CylinderPtr newCylinder;
+		brics_3d::rsg::Box::BoxPtr newBox;
+
+		if(node.Contains("unit")) {
+			LOG(DEBUG) << "JSONTypecaster: GeometricNode has the following unit: " << node.Get("unit").AsString();
+		}
+
+		if(node.Contains("geometry")) {
+			LOG(DEBUG) << "JSONTypecaster: GeometricNode has the following geometry:";
+
+			libvariant::Variant geometry = node.Get("geometry");
+
+			if(geometry.Contains("@geometrytype")) {
+				string geometrytype = geometry.Get("@geometrytype").AsString();
+
+				if(geometrytype.compare("Sphere") == 0) {
+					LOG(DEBUG) << "\t\t found a Sphere.";
+					if(!geometry.Contains("radius")) { LOG(ERROR) << "\t\t radius is missing"; return false;};
+
+					newSphere = brics_3d::rsg::Sphere::SpherePtr(new brics_3d::rsg::Sphere());
+					newSphere->setRadius(geometry.Get("radius").AsDouble());
+					shape = newSphere;
+
+				} else if (geometrytype.compare("Cylinder") == 0) {
+					LOG(DEBUG) << "\t\t found a Cylinder.";
+					if(!geometry.Contains("radius")) { LOG(ERROR) << "\t\t radius is missing"; return false;};
+					if(!geometry.Contains("height")) { LOG(ERROR) << "\t\t height is missing"; return false;};
+
+					newCylinder = brics_3d::rsg::Cylinder::CylinderPtr(new brics_3d::rsg::Cylinder());
+					newCylinder->setRadius(geometry.Get("radius").AsDouble());
+					newCylinder->setHeight(geometry.Get("height").AsDouble());
+					shape = newCylinder;
+
+				} else if (geometrytype.compare("Box") == 0) {
+					LOG(DEBUG) << "\t\t found a Box.";
+					if(!geometry.Contains("sizeX")) { LOG(ERROR) << "\t\t sizeX is missing"; return false;};
+					if(!geometry.Contains("sizeY")) { LOG(ERROR) << "\t\t sizeY is missing"; return false;};
+					if(!geometry.Contains("sizeZ")) { LOG(ERROR) << "\t\t sizeZ is missing"; return false;};
+
+					newBox = brics_3d::rsg::Box::BoxPtr(new brics_3d::rsg::Box());
+					newBox->setSizeX(geometry.Get("sizeX").AsDouble());
+					newBox->setSizeY(geometry.Get("sizeY").AsDouble());
+					newBox->setSizeZ(geometry.Get("sizeZ").AsDouble());
+					shape = newBox;
+
+				} else if (geometrytype.compare("PointCloud3D") == 0) {
+					LOG(DEBUG) << "\t\t found a PointCloud3D.";
+				} else if (geometrytype.compare("PointCloud3DBinaryBlob") == 0) {
+					LOG(DEBUG) << "\t\t found a PointCloud3DBinaryBlob.";
+				} else {
+					LOG(ERROR) << "JSONTypecaster: unkonwn geometry type.";
+					return false;
+				}
+
+			} else {
+				LOG(ERROR) << "JSONTypecaster: GeometricNode has no following @geometrytype contained on geometry:";
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+
 };
 
 } /* namespace rsg */
