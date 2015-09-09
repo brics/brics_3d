@@ -198,6 +198,8 @@ bool JSONDeserializer::handleChilden(libvariant::Variant& group, rsg::Id parentI
 					rsg::Id childId = rsg::JSONTypecaster::getIdFromJSON(*i, "childId");
 					LOG(DEBUG) << "JSONDeserializer: Adding parent -> child relation: " << parentId << " -> " << childId;
 					// add parent
+					// TODO: cache results
+					doAddParent(*i, parentId);
 				}
 			}
 		}
@@ -383,9 +385,7 @@ bool JSONDeserializer::doAddConnection(libvariant::Variant& connection,
 	rsg::TimeStamp end = JSONTypecaster::getTimeStampFromJSON(connection, "end");
 
 	/* create it */
-	wm->scene.addConnection(parentId, id, attributes, sourceIds, targetIds, start, end, true);
-
-	return false;
+	return wm->scene.addConnection(parentId, id, attributes, sourceIds, targetIds, start, end, true);
 }
 
 bool JSONDeserializer::doSetNodeAttributes(libvariant::Variant& group,
@@ -405,7 +405,15 @@ bool JSONDeserializer::doDeleteNode(libvariant::Variant& group,
 
 bool JSONDeserializer::doAddParent(libvariant::Variant& group,
 		rsg::Id parentId) {
-	return false;
+
+	/* id */
+	rsg::Id id = rsg::JSONTypecaster::getIdFromJSON(group, "childId");
+
+	/* stamps */
+	rsg::TimeStamp start = JSONTypecaster::getTimeStampFromJSON(group, "start");
+	rsg::TimeStamp end = JSONTypecaster::getTimeStampFromJSON(group, "end");
+
+	return wm->scene.addParent(id, parentId);
 }
 
 bool JSONDeserializer::doRemoveParent(libvariant::Variant& group,
