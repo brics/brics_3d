@@ -193,9 +193,12 @@ public:
 		brics_3d::rsg::Sphere::SpherePtr newSphere;
 		brics_3d::rsg::Cylinder::CylinderPtr newCylinder;
 		brics_3d::rsg::Box::BoxPtr newBox;
+		brics_3d::Units::DistanceUnit unit;
 
 		if(node.Contains("unit")) {
 			LOG(DEBUG) << "JSONTypecaster: GeometricNode has the following unit: " << node.Get("unit").AsString();
+			string unitAsString = node.Get("unit").AsString();
+			toDistanceUnit(unitAsString, unit);
 		}
 
 		if(node.Contains("geometry")) {
@@ -211,7 +214,7 @@ public:
 					if(!geometry.Contains("radius")) { LOG(ERROR) << "\t\t radius is missing"; return false;};
 
 					newSphere = brics_3d::rsg::Sphere::SpherePtr(new brics_3d::rsg::Sphere());
-					newSphere->setRadius(geometry.Get("radius").AsDouble());
+					newSphere->setRadius(Units::distanceToMeters(geometry.Get("radius").AsDouble(), unit));
 					shape = newSphere;
 
 				} else if (geometrytype.compare("Cylinder") == 0) {
@@ -220,8 +223,9 @@ public:
 					if(!geometry.Contains("height")) { LOG(ERROR) << "\t\t height is missing"; return false;};
 
 					newCylinder = brics_3d::rsg::Cylinder::CylinderPtr(new brics_3d::rsg::Cylinder());
-					newCylinder->setRadius(geometry.Get("radius").AsDouble());
-					newCylinder->setHeight(geometry.Get("height").AsDouble());
+					LOG (DEBUG) << "Units::distanceToMeters(geometry.Get(radius).AsDouble(), unit) " << Units::distanceToMeters(geometry.Get("radius").AsDouble(), unit);
+					newCylinder->setRadius(Units::distanceToMeters(geometry.Get("radius").AsDouble(), unit));
+					newCylinder->setHeight(Units::distanceToMeters(geometry.Get("height").AsDouble(), unit));
 					shape = newCylinder;
 
 				} else if (geometrytype.compare("Box") == 0) {
@@ -231,9 +235,9 @@ public:
 					if(!geometry.Contains("sizeZ")) { LOG(ERROR) << "\t\t sizeZ is missing"; return false;};
 
 					newBox = brics_3d::rsg::Box::BoxPtr(new brics_3d::rsg::Box());
-					newBox->setSizeX(geometry.Get("sizeX").AsDouble());
-					newBox->setSizeY(geometry.Get("sizeY").AsDouble());
-					newBox->setSizeZ(geometry.Get("sizeZ").AsDouble());
+					newBox->setSizeX(Units::distanceToMeters(geometry.Get("sizeX").AsDouble(), unit));
+					newBox->setSizeY(Units::distanceToMeters(geometry.Get("sizeY").AsDouble(), unit));
+					newBox->setSizeZ(Units::distanceToMeters(geometry.Get("sizeZ").AsDouble(), unit));
 					shape = newBox;
 
 				} else if (geometrytype.compare("PointCloud3D") == 0) {
@@ -254,6 +258,32 @@ public:
 		return true;
 	}
 
+	inline static bool toDistanceUnit(string stringAsUnit, Units::DistanceUnit& unit) {
+		if (stringAsUnit.compare("nm") == 0) {
+			unit = Units::NanoMeter;
+		} else if (stringAsUnit.compare("um") == 0) {
+			unit = Units::MicroMeter;
+		} else if (stringAsUnit.compare("mm") == 0) {
+			unit = Units::MilliMeter;
+		} else if (stringAsUnit.compare("cm") == 0) {
+			unit = Units::CentiMeter;
+		} else if (stringAsUnit.compare("dm") == 0) {
+			unit = Units::DeciMeter;
+		} else if (stringAsUnit.compare("m") == 0) {
+			unit = Units::Meter;
+		} else if (stringAsUnit.compare("km") == 0) {
+			unit = Units::KiloMeter;
+		} else {
+			LOG(WARNING) << "JSONTypecaster: toDistanceUnit: unrecognized type:" << stringAsUnit;
+			// Fallback is meter:
+			unit = Units::Meter;
+			return false;
+		}
+
+		LOG(DEBUG) << "JSONTypecaster: unit = " << stringAsUnit << " " << unit;
+
+		return true;
+	}
 
 };
 
