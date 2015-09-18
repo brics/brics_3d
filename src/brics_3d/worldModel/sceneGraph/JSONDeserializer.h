@@ -48,6 +48,7 @@ public:
 
 private:
 
+	virtual bool handleWorldModelUpdate(libvariant::Variant& model);
 	virtual bool handleWorldModelAgent(libvariant::Variant& model);
 	virtual bool handleGraphPrimitive(libvariant::Variant& atom, rsg::Id parentId);
 	virtual bool handleChilden(libvariant::Variant& group, rsg::Id parentId);
@@ -57,11 +58,11 @@ private:
 	virtual bool doAddGroup(libvariant::Variant& group, rsg::Id parentId);
 	virtual bool doAddTransformNode(libvariant::Variant& group, rsg::Id parentId);
 	virtual bool doAddGeometricNode(libvariant::Variant& group, rsg::Id parentId);
-	virtual bool doAddRemoteRootNode(libvariant::Variant& group, rsg::Id parentId);
+	virtual bool doAddRemoteRootNode(libvariant::Variant& group);
 	virtual bool doAddConnection(libvariant::Variant& connection, rsg::Id parentId);
-	virtual bool doSetNodeAttributes(libvariant::Variant& group, rsg::Id parentId);
-	virtual bool doSetTransform(libvariant::Variant& group, rsg::Id parentId);
-	virtual bool doDeleteNode(libvariant::Variant& group, rsg::Id parentId);
+	virtual bool doSetNodeAttributes(libvariant::Variant& group);
+	virtual bool doSetTransform(libvariant::Variant& group);
+	virtual bool doDeleteNode(libvariant::Variant& group);
 	virtual bool doAddParent(libvariant::Variant& group, rsg::Id parentId);
 	virtual bool doRemoveParent(libvariant::Variant& group, rsg::Id parentId);
 

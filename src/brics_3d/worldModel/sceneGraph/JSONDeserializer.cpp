@@ -48,6 +48,7 @@ int JSONDeserializer::write(std::string data) {
 		std::string type = model.Get("@worldmodeltype").AsString();
 		if(type.compare("RSGUpdate") == 0) {
 			LOG(DEBUG) << "JSONDeserializer: Found a model for an update.";
+			handleWorldModelUpdate(model);
 		} else if (type.compare("WorldModelAgent") == 0) {
 			LOG(DEBUG) << "JSONDeserializer: Found model for a WorldModelAgent.";
 			handleWorldModelAgent(model);
@@ -99,6 +100,110 @@ Id JSONDeserializer::getRootIdFromJSONModel(std::string data) {
 	}
 
 	return rootId;
+}
+
+bool JSONDeserializer::handleWorldModelUpdate(libvariant::Variant& model) {
+
+	if(model.Contains("operation")) {
+
+		string operation = model.Get("operation").AsString();
+		if(operation.compare("CREATE") == 0) {
+
+			rsg::Id parentId = rsg::JSONTypecaster::getIdFromJSON(model, "parentId");
+			if(parentId.isNil()) {
+				LOG(ERROR) << "JSONDeserializer: world model update does not contain a parentId as requiresd for a CREATE operation.";
+				return false;
+			}
+
+			if(!model.Contains("node")) {
+				LOG(ERROR) << "JSONDeserializer: world model update does not contain a node as required for a CREATE operation.";
+				return false;
+			}
+			libvariant::Variant node = model.Get("node");
+			return handleGraphPrimitive(node, parentId);
+
+		} else if (operation.compare("CREATE_REMOTE_ROOT_NODE") == 0) {
+
+			if(!model.Contains("node")) {
+				LOG(ERROR) << "JSONDeserializer: world model update does not contain a node as required for a CREATE_REMOTE_ROOT_NODE operation.";
+				return false;
+			}
+			libvariant::Variant node = model.Get("node");
+			return doAddRemoteRootNode(node);
+
+		} else if (operation.compare("CREATE_PARENT") == 0) {
+
+			rsg::Id parentId = rsg::JSONTypecaster::getIdFromJSON(model, "parentId");
+			if(parentId.isNil()) {
+				LOG(ERROR) << "JSONDeserializer: world model update does not contain a parentId as requiresd for a CREATE_PARENT operation.";
+				return false;
+			}
+
+			if(!model.Contains("node")) {
+				LOG(ERROR) << "JSONDeserializer: world model update does not contain a node as required for a CREATE_PARENT operation.";
+				return false;
+			}
+			libvariant::Variant node = model.Get("node");
+			return doAddParent(node, parentId);
+
+		} else if (operation.compare("UPDATE_ATTRIBUTES") == 0) {
+
+			if(!model.Contains("node")) {
+				LOG(ERROR) << "JSONDeserializer: world model update does not contain a node as required for a UPDATE_ATTRIBUTES operation.";
+				return false;
+			}
+			libvariant::Variant node = model.Get("node");
+			return doSetNodeAttributes(node);
+
+		} else if (operation.compare("UPDATE_TRANSFORM") == 0) {
+
+			if(!model.Contains("node")) {
+				LOG(ERROR) << "JSONDeserializer: world model update does not contain a node as required for a UPDATE_ATTRIBUTES operation.";
+				return false;
+			}
+			libvariant::Variant node = model.Get("node");
+			return doSetTransform(node);
+
+		} else if (operation.compare("UPDATE_START") == 0) {
+			//TDB
+		} else if (operation.compare("UPDATE_END") == 0) {
+			//TBD
+		} else if (operation.compare("DELETE_NODE") == 0) {
+
+			if(!model.Contains("node")) {
+				LOG(ERROR) << "JSONDeserializer: world model update does not contain a node as required for a UPDATE_ATTRIBUTES operation.";
+				return false;
+			}
+			libvariant::Variant node = model.Get("node");
+			return doDeleteNode(node);
+
+		} else if (operation.compare("DELETE_PARENT") == 0) {
+
+			rsg::Id parentId = rsg::JSONTypecaster::getIdFromJSON(model, "parentId");
+			if(parentId.isNil()) {
+				LOG(ERROR) << "JSONDeserializer: world model update does not contain a parentId as requiresd for a DELETE_PARENT operation.";
+				return false;
+			}
+
+			if(!model.Contains("node")) {
+				LOG(ERROR) << "JSONDeserializer: world model update does not contain a node as required for a DELETE_PARENT operation.";
+				return false;
+			}
+			libvariant::Variant node = model.Get("node");
+			return doRemoveParent(node, parentId);
+
+		}
+	}
+			//	       "CREATE",
+			//	        "CREATE_REMOTE_ROOT_NODE",
+			//		      "CREATE_PARENT",
+			//		      "CREATE_PARENT",
+			//		      "UPDATE_TRANSFORM",
+			//	        "UPDATE_START",
+			//	        "UPDATE_END",
+			//		      "DELETE_NODE",
+			//		      "DELETE_PARENT"
+	return false;
 }
 
 bool JSONDeserializer::handleWorldModelAgent(libvariant::Variant& model) {
@@ -358,9 +463,20 @@ bool JSONDeserializer::doAddGeometricNode(libvariant::Variant& group,
 	return false;
 }
 
-bool JSONDeserializer::doAddRemoteRootNode(libvariant::Variant& group,
-		rsg::Id parentId) {
-	return false;
+bool JSONDeserializer::doAddRemoteRootNode(libvariant::Variant& group) {
+
+	/* Id */
+	rsg::Id id = rsg::JSONTypecaster::getIdFromJSON(group, "id");
+	if(!id.isNil()) {
+		LOG(ERROR) << "JSONDeserializer: world model update does not contain an id for a doAddRemoteRootNode operation.";
+		return false;
+	}
+
+	/* attributes */
+	std::vector<rsg::Attribute> attributes = rsg::JSONTypecaster::getAttributesFromJSON(group);
+
+	return wm->scene.addRemoteRootNode(id, attributes);
+
 }
 
 bool JSONDeserializer::doAddConnection(libvariant::Variant& connection,
@@ -388,19 +504,59 @@ bool JSONDeserializer::doAddConnection(libvariant::Variant& connection,
 	return wm->scene.addConnection(parentId, id, attributes, sourceIds, targetIds, start, end, true);
 }
 
-bool JSONDeserializer::doSetNodeAttributes(libvariant::Variant& group,
-		rsg::Id parentId) {
+bool JSONDeserializer::doSetNodeAttributes(libvariant::Variant& group) {
+
+	/* Id */
+	rsg::Id id = rsg::JSONTypecaster::getIdFromJSON(group, "id");
+	if(!id.isNil()) {
+		LOG(ERROR) << "JSONDeserializer: world model update does not contain an id for a doSetNodeAttributes operation.";
+		return false;
+	}
+
+	/* attributes */
+	std::vector<rsg::Attribute> attributes = rsg::JSONTypecaster::getAttributesFromJSON(group);
+
+	return wm->scene.setNodeAttributes(id, attributes);
+
 	return false;
 }
 
-bool JSONDeserializer::doSetTransform(libvariant::Variant& group,
-		rsg::Id parentId) {
-	return false;
+bool JSONDeserializer::doSetTransform(libvariant::Variant& group) {
+
+	LOG(DEBUG) << "JSONDeserializer doSetTransform";
+
+
+	/* Id */
+	rsg::Id id = rsg::JSONTypecaster::getIdFromJSON(group, "id");
+	if(!id.isNil()) {
+		LOG(ERROR) << "JSONDeserializer: world model update does not contain an id for a doSetTransform operation.";
+		return false;
+	}
+
+	/* transform data */
+	HomogeneousMatrix44::IHomogeneousMatrix44Ptr transform(new HomogeneousMatrix44());
+
+	TemporalCache<IHomogeneousMatrix44::IHomogeneousMatrix44Ptr> history;
+	JSONTypecaster::getTransformCacheFromJSON(history, group);
+	LOG(DEBUG) << "JSONDeserializer doSetTransform: transform cache has size = " << history.size();
+
+	transform = history.getData(history.getLatestTimeStamp());
+
+	/* create it */
+	return wm->scene.setTransform(id, transform, history.getLatestTimeStamp());
+
 }
 
-bool JSONDeserializer::doDeleteNode(libvariant::Variant& group,
-		rsg::Id parentId) {
-	return false;
+bool JSONDeserializer::doDeleteNode(libvariant::Variant& group) {
+
+	/* Id */
+	rsg::Id id = rsg::JSONTypecaster::getIdFromJSON(group, "id");
+	if(!id.isNil()) {
+		LOG(ERROR) << "JSONDeserializer: world model update does not contain an id for a doDeleteNode operation.";
+		return false;
+	}
+
+	return wm->scene.deleteNode(id);
 }
 
 bool JSONDeserializer::doAddParent(libvariant::Variant& group,
@@ -418,7 +574,15 @@ bool JSONDeserializer::doAddParent(libvariant::Variant& group,
 
 bool JSONDeserializer::doRemoveParent(libvariant::Variant& group,
 		rsg::Id parentId) {
-	return false;
+
+	/* Id */
+	rsg::Id id = rsg::JSONTypecaster::getIdFromJSON(group, "id");
+	if(!id.isNil()) {
+		LOG(ERROR) << "JSONDeserializer: world model update does not contain an id for a doDeleteNode operation.";
+		return false;
+	}
+
+	return wm->scene.removeParent(id, parentId);
 }
 
 } /* namespace rsg */
