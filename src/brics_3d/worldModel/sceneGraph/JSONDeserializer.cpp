@@ -35,13 +35,20 @@ JSONDeserializer::~JSONDeserializer() {
 }
 
 int JSONDeserializer::write(const char *dataBuffer, int dataLength, int &transferredBytes) {
-	return -1;
+
+	libvariant::Variant model = libvariant:: Deserialize(dataBuffer, dataLength, libvariant::SERIALIZE_GUESS); // GUESS seems to be more permissive with parsing than JSON
+	transferredBytes = dataLength;
+
+	return write(model);
 }
 
 int JSONDeserializer::write(std::string data) {
 
 	libvariant::Variant model = libvariant:: Deserialize(data, libvariant::SERIALIZE_GUESS); // GUESS seems to be more permissive with parsing than JSON
+	return write(model);
+}
 
+int JSONDeserializer::write(libvariant::Variant& model) {
 	// Start to parse it
 	if(model.Contains("@worldmodeltype")) {
 

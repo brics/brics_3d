@@ -35,6 +35,7 @@ public:
 
 	int write(const char *dataBuffer, int dataLength, int &transferredBytes);
 	int write(std::string data);
+	int write(libvariant::Variant& model);
 
 	bool isMapUnknownParentIdsToRootId() const {
 		return mapUnknownParentIdsToRootId;
