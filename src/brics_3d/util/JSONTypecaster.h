@@ -123,8 +123,24 @@ public:
 				for (libvariant::Variant::ListIterator i(attributeList.ListBegin()), e(attributeList.ListEnd()); i!=e; ++i) {
 					assert(i->Contains("key"));
 					assert(i->Contains("value"));
-					LOG(DEBUG) << "\t( " << i->Get("key").AsString() << ", " << i->Get("value").AsString() << " )";
-					attributes.push_back(rsg::Attribute(i->Get("key").AsString(), i->Get("value").AsString()));
+
+					try {
+
+						LOG(DEBUG) << "\t( " << i->Get("key").AsString() << ", " << i->Get("value").AsString() << " )";
+						attributes.push_back(rsg::Attribute(i->Get("key").AsString(), i->Get("value").AsString()));
+
+					/*
+					 * Here we are rather permissive on what exactly a value is.
+					 * We actually allow for a complete JSON model here.
+					 */
+					} catch (libvariant::UnableToConvertError e) {
+
+						LOG(DEBUG) << "JSONTypecaster: parsing a non string value";
+						string complexValue = libvariant::Serialize(*i, libvariant::SERIALIZE_JSON);
+
+						LOG(DEBUG) << "\t( " << i->Get("key").AsString() << ", " << complexValue << " )";
+						attributes.push_back(rsg::Attribute(i->Get("key").AsString(), complexValue));
+					}
 				}
 			}
 		}
