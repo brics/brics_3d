@@ -49,36 +49,44 @@ int JSONDeserializer::write(std::string data) {
 }
 
 int JSONDeserializer::write(libvariant::Variant& model) {
-	// Start to parse it
-	if(model.Contains("@worldmodeltype")) {
 
-		std::string type = model.Get("@worldmodeltype").AsString();
-		if(type.compare("RSGUpdate") == 0) {
-			LOG(DEBUG) << "JSONDeserializer: Found a model for an update.";
-			handleWorldModelUpdate(model);
-		} else if (type.compare("WorldModelAgent") == 0) {
-			LOG(DEBUG) << "JSONDeserializer: Found model for a WorldModelAgent.";
-			handleWorldModelAgent(model);
+	try {
+
+		// Start to parse it
+		if(model.Contains("@worldmodeltype")) {
+
+			std::string type = model.Get("@worldmodeltype").AsString();
+			if(type.compare("RSGUpdate") == 0) {
+				LOG(DEBUG) << "JSONDeserializer: Found a model for an update.";
+				handleWorldModelUpdate(model);
+			} else if (type.compare("WorldModelAgent") == 0) {
+				LOG(DEBUG) << "JSONDeserializer: Found model for a WorldModelAgent.";
+				handleWorldModelAgent(model);
+			}
+
+		} else {
+			LOG(WARNING) << "Top level model type @worldmodeltype does not exist.";
 		}
 
-	} else {
-		LOG(WARNING) << "Top level model type @worldmodeltype does not exist.";
-	}
 
+		/* This is indented for debugging purposes only */
+		if (model.Contains("@graphtype")) {
+			LOG(DEBUG) << "JSONDeserializer: Found a model for a graph primitive";
 
-	/* This is indented for debugging purposes only */
-	if (model.Contains("@graphtype")) {
-		LOG(DEBUG) << "JSONDeserializer: Found a model for a graph primitive";
+			Id rootId = 0;
+			if (mapUnknownParentIdsToRootId) {
+				rootId = wm->getRootNodeId();
+			}
 
-		Id rootId = 0;
-		if (mapUnknownParentIdsToRootId) {
-			rootId = wm->getRootNodeId();
+			handleGraphPrimitive(model, rootId);
 		}
 
-		handleGraphPrimitive(model, rootId);
-	}
+		return 0;
 
-	return 0;
+	} catch (std::exception const & e) {
+		LOG(ERROR) << "JSONDeserializer: Generic parser error: " << e.what() << std::endl << "Omitting this update.";
+		return -1;
+	}
 }
 
 Id JSONDeserializer::getRootIdFromJSONModel(std::string data) {
