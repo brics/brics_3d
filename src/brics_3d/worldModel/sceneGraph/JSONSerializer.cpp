@@ -40,6 +40,34 @@ JSONSerializer::~JSONSerializer() {
 bool JSONSerializer::addNode(Id parentId, Id& assignedId,
 		vector<Attribute> attributes, bool forcedId) {
 
+
+	LOG(DEBUG) << "JSONSerializer: adding a Node-" << assignedId.toString();
+	try {
+		std::string fileName = "Node-" + assignedId.toString() + fileSuffix;
+
+		/* header */
+		libvariant::Variant graphUpdate;
+		graphUpdate.Set("@worldmodeltype", libvariant::Variant("RSGUpdate"));
+		graphUpdate.Set("operation", libvariant::Variant("CREATE"));
+		JSONTypecaster::addIdToJSON(parentId, graphUpdate, "parentId");
+
+		/* the actual graph primitive */
+		libvariant::Variant node;
+		node.Set("@graphtype", libvariant::Variant("Node"));
+		JSONTypecaster::addIdToJSON(assignedId, node, "id");
+		JSONTypecaster::addAttributesToJSON(attributes, node);
+
+		/* assebmle it */
+		graphUpdate.Set("node", node);
+
+		/* send it */
+		return doSendMessage(graphUpdate);
+
+	} catch (std::exception e) {
+		LOG(ERROR) << "JSONSerializer addGroup: Cannot create a JSON serialization.";
+		return false;
+	}
+
 	return false;
 }
 
@@ -58,6 +86,7 @@ bool JSONSerializer::addGroup(Id parentId, Id& assignedId,
 
 		/* the actual graph primitive */
 		libvariant::Variant node;
+		node.Set("@graphtype", libvariant::Variant("Group"));
 		JSONTypecaster::addIdToJSON(assignedId, node, "id");
 		JSONTypecaster::addAttributesToJSON(attributes, node);
 
@@ -65,7 +94,7 @@ bool JSONSerializer::addGroup(Id parentId, Id& assignedId,
 		graphUpdate.Set("node", node);
 
 		/* send it */
-		doSendMessage(graphUpdate);
+		return doSendMessage(graphUpdate);
 
 	} catch (std::exception e) {
 		LOG(ERROR) << "JSONSerializer addGroup: Cannot create a JSON serialization.";
