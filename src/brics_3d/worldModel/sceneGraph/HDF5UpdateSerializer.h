@@ -22,18 +22,11 @@
 
 #include "brics_3d/core/Logger.h"
 #include "brics_3d/worldModel/sceneGraph/ISceneGraphUpdateObserver.h"
+#include "brics_3d/worldModel/sceneGraph/IPort.h"
 #include "brics_3d/util/HDF5Typecaster.h"
 
 namespace brics_3d {
 namespace rsg {
-
-
-class IOutputPort {
-public:
-	IOutputPort(){};
-	virtual ~IOutputPort(){};
-	virtual int write(const char *dataBuffer, int dataLength, int &transferredBytes) = 0;
-};
 
 class HDF5UpdateSerializer : public ISceneGraphUpdateObserver {
 public:

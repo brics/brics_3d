@@ -249,6 +249,7 @@ IF (USE_HDF5)
 ENDIF(USE_HDF5)
 
 IF (USE_JSON)
+    list(APPEND WORLD_MODEL_LIBRARY_SOURCES ./worldModel/sceneGraph/JSONSerializer)
     list(APPEND WORLD_MODEL_LIBRARY_SOURCES ./worldModel/sceneGraph/JSONDeserializer)
 ENDIF(USE_JSON)
 
