@@ -30,6 +30,7 @@
 #include <brics_3d/worldModel/WorldModel.h>
 #include <brics_3d/worldModel/sceneGraph/UuidGenerator.h>
 #include <brics_3d/worldModel/sceneGraph/JSONDeserializer.h>
+#include <brics_3d/worldModel/sceneGraph/JSONSerializer.h>
 #include <brics_3d/worldModel/sceneGraph/DotVisualizer.h>
 #include <brics_3d/worldModel/sceneGraph/OSGVisualizer.h>
 
@@ -81,6 +82,11 @@ int main(int argc, char **argv) {
 	geometryVizualizer->setConfig(osgConfiguration);
 	wm->scene.attachUpdateObserver(geometryVizualizer); // Enable 3D visualization
 	wm->scene.advertiseRootNode();						// Inform freshly attached opserver about _this_ world model
+
+	/* Add a JSON serializer (optional) */
+	brics_3d::rsg::JSONSerializer serializer(NULL);
+	wm->scene.attachUpdateObserver(&serializer); // Enable JSON based serialization
+	wm->scene.advertiseRootNode();				 // Inform freshly attached opserver about _this_ world model
 
 
 	/* Do the actual JSON parsing. */

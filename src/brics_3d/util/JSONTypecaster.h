@@ -54,6 +54,13 @@ public:
 		return id;
 	}
 
+	inline static bool addIdToJSON(brics_3d::rsg::Id id, libvariant::Variant& node, string idTag) {
+
+		node.Set(idTag, libvariant::Variant(id.toString()));
+
+		return true;
+	}
+
 	inline static vector<rsg::Id> getIdsFromJSON(libvariant::Variant& node, string idsTag) {
 		vector<rsg::Id> ids;
 
@@ -146,6 +153,21 @@ public:
 		}
 
 		return attributes;
+	}
+
+	inline static bool addAttributesToJSON(std::vector<brics_3d::rsg::Attribute> attributes, libvariant::Variant& node) {
+		libvariant::Variant attributesAsJson(libvariant::VariantDefines::ListType);
+
+		for (std::vector<brics_3d::rsg::Attribute>::iterator it = attributes.begin(); it != attributes.end(); ++it) {
+			libvariant::Variant attributeAsJson;
+			attributeAsJson.Set("key", libvariant::Variant(it->key));
+			attributeAsJson.Set("value", libvariant::Variant(it->value));
+			attributesAsJson.Append(attributeAsJson);
+		}
+
+		node.Set("attributes", attributesAsJson);
+
+		return true;
 	}
 
 	inline static bool getTransformCacheFromJSON(TemporalCache<IHomogeneousMatrix44::IHomogeneousMatrix44Ptr>& history, libvariant::Variant& node) {
