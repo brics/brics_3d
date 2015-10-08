@@ -146,6 +146,31 @@ bool JSONSerializer::addConnection(Id parentId, Id& assignedId,
 bool JSONSerializer::setNodeAttributes(Id id,
 		vector<Attribute> newAttributes) {
 
+	LOG(DEBUG) << "JSONSerializer: : updating Attributes for node " << id.toString();
+	try {
+		std::string fileName = "Attribute-Update-" + id.toString() + fileSuffix;
+
+		/* header */
+		libvariant::Variant graphUpdate;
+		graphUpdate.Set("@worldmodeltype", libvariant::Variant("RSGUpdate"));
+		graphUpdate.Set("operation", libvariant::Variant("UPDATE_ATTRIBUTES"));
+
+		/* the actual graph primitive */
+		libvariant::Variant node;
+		node.Set("@graphtype", libvariant::Variant("Node")); // this is actually a dummy, thoug reqired for correce validation
+		JSONTypecaster::addIdToJSON(id, node, "id");
+		JSONTypecaster::addAttributesToJSON(newAttributes, node);
+
+		/* assebmle it */
+		graphUpdate.Set("node", node);
+
+		/* send it */
+		return doSendMessage(graphUpdate);
+
+	} catch (std::exception e) {
+		LOG(ERROR) << "JSONSerializer setNodeAttributes: Cannot create a JSON serialization.";
+		return false;
+	}
 
 	return false;
 }
