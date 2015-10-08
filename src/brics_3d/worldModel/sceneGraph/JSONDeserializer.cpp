@@ -482,7 +482,7 @@ bool JSONDeserializer::doAddRemoteRootNode(libvariant::Variant& group) {
 
 	/* Id */
 	rsg::Id id = rsg::JSONTypecaster::getIdFromJSON(group, "id");
-	if(!id.isNil()) {
+	if(id.isNil()) {
 		LOG(ERROR) << "JSONDeserializer: world model update does not contain an id for a doAddRemoteRootNode operation.";
 		return false;
 	}
@@ -501,7 +501,7 @@ bool JSONDeserializer::doAddConnection(libvariant::Variant& connection,
 
 	/* Id */
 	rsg::Id id = rsg::JSONTypecaster::getIdFromJSON(connection, "id");
-	assert(!id.isNil());
+	assert(id.isNil());
 
 	/* attributes */
 	std::vector<rsg::Attribute> attributes = rsg::JSONTypecaster::getAttributesFromJSON(connection);
@@ -523,7 +523,7 @@ bool JSONDeserializer::doSetNodeAttributes(libvariant::Variant& group) {
 
 	/* Id */
 	rsg::Id id = rsg::JSONTypecaster::getIdFromJSON(group, "id");
-	if(!id.isNil()) {
+	if(id.isNil()) {
 		LOG(ERROR) << "JSONDeserializer: world model update does not contain an id for a doSetNodeAttributes operation.";
 		return false;
 	}
@@ -543,7 +543,7 @@ bool JSONDeserializer::doSetTransform(libvariant::Variant& group) {
 
 	/* Id */
 	rsg::Id id = rsg::JSONTypecaster::getIdFromJSON(group, "id");
-	if(!id.isNil()) {
+	if(id.isNil()) {
 		LOG(ERROR) << "JSONDeserializer: world model update does not contain an id for a doSetTransform operation.";
 		return false;
 	}
@@ -566,7 +566,7 @@ bool JSONDeserializer::doDeleteNode(libvariant::Variant& group) {
 
 	/* Id */
 	rsg::Id id = rsg::JSONTypecaster::getIdFromJSON(group, "id");
-	if(!id.isNil()) {
+	if(id.isNil()) {
 		LOG(ERROR) << "JSONDeserializer: world model update does not contain an id for a doDeleteNode operation.";
 		return false;
 	}
@@ -592,7 +592,7 @@ bool JSONDeserializer::doRemoveParent(libvariant::Variant& group,
 
 	/* Id */
 	rsg::Id id = rsg::JSONTypecaster::getIdFromJSON(group, "id");
-	if(!id.isNil()) {
+	if(id.isNil()) {
 		LOG(ERROR) << "JSONDeserializer: world model update does not contain an id for a doDeleteNode operation.";
 		return false;
 	}
