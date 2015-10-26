@@ -127,7 +127,8 @@ void HDF5Test::testLoopBack() {
 	/* Add group nodes */
 	std::vector<brics_3d::rsg::Attribute> attributes;
 	attributes.clear();
-	attributes.push_back(rsg::Attribute("taskType", "scene_objecs"));
+	attributes.push_back(rsg::Attribute("taskType", "scene_objects"));
+	attributes.push_back(rsg::Attribute("some:flag", "executing\": 0"));
 	rsg::Id sceneObjectsId;
 	wm->scene.addGroup(wm->getRootNodeId(), sceneObjectsId, attributes);
 
@@ -175,6 +176,15 @@ void HDF5Test::testLoopBack() {
 		rsg::Box::BoxPtr box( new rsg::Box(1,2,x));
 		rsg::Id boxId;
 		CPPUNIT_ASSERT(wm->scene.addGeometricNode(boxTfId, boxId, attributes, box, wm->now()));
+
+		attributes.clear();
+		attributes.push_back(rsg::Attribute("taskType", "scene_objects"));
+		if(i%2 == 1) { // toggling attibutes
+			attributes.push_back(rsg::Attribute("some:flag", "executing\": 0"));
+		} else {
+			attributes.push_back(rsg::Attribute("some:flag", "executing\": 1"));
+		}
+		CPPUNIT_ASSERT(wm->scene.setNodeAttributes(sceneObjectsId, attributes));
 	}
 
 
