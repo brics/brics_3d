@@ -58,6 +58,7 @@ class DistributedWorldModelTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testGraphResender );
 	CPPUNIT_TEST( testAutoMountRemoteNodePolicy );
 	CPPUNIT_TEST( testUpdateFilters );
+	CPPUNIT_TEST( testAttributesLoopBack );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -74,6 +75,7 @@ public:
 	void testGraphResender();
 	void testAutoMountRemoteNodePolicy();
 	void testUpdateFilters();
+	void testAttributesLoopBack();
 
 
 private:
