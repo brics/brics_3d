@@ -25,6 +25,7 @@
 #include <boost/weak_ptr.hpp>
 #include "Id.h"
 #include "Attribute.h"
+#include "TimeStamp.h"
 #include "INodeVisitor.h"
 
 using std::vector;
@@ -74,6 +75,16 @@ public:
 
     unsigned int getNumberOfParents() const;
 
+    TimeStamp getAttributesTimeStamp() const
+    {
+        return attributesTimeStamp;
+    }
+
+    void setAttributesTimeStamp(TimeStamp attributesTimeStamp)
+    {
+        this->attributesTimeStamp = attributesTimeStamp;
+    }
+
     virtual void accept(INodeVisitor* visitor);
 
 
@@ -88,6 +99,9 @@ private:
 
 	/// List of attributes for each node. Can be used to attach (semantic) tags.
 	vector<Attribute> attributes;
+
+	/// Time stamp to represent the last modification
+	TimeStamp attributesTimeStamp;
 
 	/// List of pointers to the parent Nodes.
 	vector<Node*> parents; //these are rather weak references to prevent cyclic strong pointers

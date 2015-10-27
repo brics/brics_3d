@@ -488,11 +488,19 @@ bool SceneGraphFacade::setNodeAttributes(Id id, vector<Attribute> newAttributes,
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();
 	if (node != 0) {
-		if(!attributeListsAreEqual(newAttributes, node->getAttributes())) {
-			node->setAttributes(newAttributes);
-			operationSucceeded = true;
+		if(timeStamp >= node->getAttributesTimeStamp()) { // only insert if it is equal or fresher
+
+			if(!attributeListsAreEqual(newAttributes, node->getAttributes())) {
+				node->setAttributes(newAttributes);
+				node->setAttributesTimeStamp(timeStamp);
+				operationSucceeded = true;
+			} else {
+				LOG(DEBUG) << "Skipping attributes update for node " << id << " as the attribute lists are identical.";
+			}
+
 		} else {
-			LOG(DEBUG) << "Skipping attributes update for node " << id << " as the attribute lists are identical.";
+			LOG(DEBUG) << "Skipping attributes update for node " << id << " as the new timeStamp with "
+					<< timeStamp.getSeconds() << " is older than the stored one with " << node->getAttributesTimeStamp().getSeconds();
 		}
 	}
 
