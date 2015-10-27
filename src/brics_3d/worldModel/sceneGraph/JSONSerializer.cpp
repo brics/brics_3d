@@ -160,6 +160,7 @@ bool JSONSerializer::setNodeAttributes(Id id,
 		node.Set("@graphtype", libvariant::Variant("Node")); // this is actually a dummy, thoug reqired for correce validation
 		JSONTypecaster::addIdToJSON(id, node, "id");
 		JSONTypecaster::addAttributesToJSON(newAttributes, node);
+		// TODO implement addJSONTypecaster::addTimeStampToJSON(timeStamp, node, "attributesTimeStamp");
 
 		/* assebmle it */
 		graphUpdate.Set("node", node);

@@ -531,7 +531,16 @@ bool JSONDeserializer::doSetNodeAttributes(libvariant::Variant& group) {
 	/* attributes */
 	std::vector<rsg::Attribute> attributes = rsg::JSONTypecaster::getAttributesFromJSON(group);
 
-	return wm->scene.setNodeAttributes(id, attributes);
+	/* time stamp with fall back to current time */
+	rsg::TimeStamp attributesTimeStamp;
+	string stampTag = "attributesTimeStamp";
+	if(group.Contains(stampTag)) {
+		attributesTimeStamp = rsg::JSONTypecaster::getTimeStampFromJSON(group, stampTag);
+	} else {
+		attributesTimeStamp = wm->now();
+	}
+
+	return wm->scene.setNodeAttributes(id, attributes, attributesTimeStamp);
 
 	return false;
 }
