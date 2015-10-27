@@ -676,6 +676,71 @@ void HDF5Test::testUpdateObersver() {
 	CPPUNIT_ASSERT_EQUAL(tfId, static_cast<Id>(resultIds[0]));
 	CPPUNIT_ASSERT_EQUAL(cylinderId, static_cast<Id>(resultIds[1]));
 
+	/* check if insertion of outdated attrutes is handeled */
+	vector<Attribute> attributes;
+	attributes.clear();
+	attributes.push_back(rsg::Attribute("name", "myGroup"));
+	attributes.push_back(rsg::Attribute("some:flag", "executing\": 0"));
+	CPPUNIT_ASSERT(wm->scene.setNodeAttributes(wm->getRootNodeId(), attributes, TimeStamp(1.0, Units::Second)));
+
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addRemoteRootNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addConnectionCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.removeParentCounter);
+
+	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(3, remoteWmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(2, remoteWmNodeCounter.addRemoteRootNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addConnectionCounter);
+	CPPUNIT_ASSERT_EQUAL(2, remoteWmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(2, remoteWmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.removeParentCounter);
+
+	attributes.clear();
+	attributes.push_back(rsg::Attribute("name", "myGroup"));
+	attributes.push_back(rsg::Attribute("some:flag", "executing\": 1"));
+	CPPUNIT_ASSERT(!wm->scene.setNodeAttributes(wm->getRootNodeId(), attributes, TimeStamp(0.5, Units::Second)));
+
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addRemoteRootNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addConnectionCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.setNodeAttributesCounter); // NOTE: callObserversEvenIfErrorsOccurred is true as default, which is the case here
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.removeParentCounter);
+
+	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(3, remoteWmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(2, remoteWmNodeCounter.addRemoteRootNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addConnectionCounter);
+	CPPUNIT_ASSERT_EQUAL(3, remoteWmNodeCounter.setNodeAttributesCounter); // NOTE: callObserversEvenIfErrorsOccurred is true as default, which is the case here
+	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(2, remoteWmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.removeParentCounter);
+
+	//Now lets see if the receiver has the same time stamp information as the sender:
+	attributes.clear();
+	attributes.push_back(rsg::Attribute("name", "myGroup"));
+	attributes.push_back(rsg::Attribute("some:flag", "executing\": 2"));
+	CPPUNIT_ASSERT(!wmReplica->scene.setNodeAttributes(wm->getRootNodeId(), attributes, TimeStamp(0.5, Units::Second)));
 
 }
 

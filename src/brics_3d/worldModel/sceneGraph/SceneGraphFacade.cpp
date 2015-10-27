@@ -500,7 +500,7 @@ bool SceneGraphFacade::setNodeAttributes(Id id, vector<Attribute> newAttributes,
 
 		} else {
 			LOG(DEBUG) << "Skipping attributes update for node " << id << " as the new timeStamp with "
-					<< timeStamp.getSeconds() << " is older than the stored one with " << node->getAttributesTimeStamp().getSeconds();
+					<< timeStamp.getSeconds() << "[s] is older than the stored one with " << node->getAttributesTimeStamp().getSeconds() << "[s].";
 		}
 	}
 
@@ -509,7 +509,7 @@ bool SceneGraphFacade::setNodeAttributes(Id id, vector<Attribute> newAttributes,
 		std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
 		for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
 			Id assignedIdcopy = id; // prevent that observer might change this....
-			(*observerIterator)->setNodeAttributes(assignedIdcopy, newAttributes);
+			(*observerIterator)->setNodeAttributes(assignedIdcopy, newAttributes, timeStamp);
 		}
 	}
 

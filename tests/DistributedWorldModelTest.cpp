@@ -1358,7 +1358,7 @@ void DistributedWorldModelTest::testAttributesLoopBack() {
 	attributes.clear();
 	attributes.push_back(rsg::Attribute("name", "myGroup"));
 	attributes.push_back(rsg::Attribute("some:flag", "executing\": 1"));
-	wm->scene.addGroup(wm->getRootNodeId(), groupId, attributes);
+	CPPUNIT_ASSERT(wm->scene.addGroup(wm->getRootNodeId(), groupId, attributes));
 
 	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addNodeCounter); //precondition
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addGroupCounter);
@@ -1388,7 +1388,7 @@ void DistributedWorldModelTest::testAttributesLoopBack() {
 	attributes.clear();
 	attributes.push_back(rsg::Attribute("name", "myGroup"));
 	attributes.push_back(rsg::Attribute("some:flag", "executing\": 0"));
-	wm->scene.setNodeAttributes(groupId, attributes);
+	CPPUNIT_ASSERT(wm->scene.setNodeAttributes(groupId, attributes));
 
 	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addNodeCounter); //precondition
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addGroupCounter);
@@ -1415,7 +1415,7 @@ void DistributedWorldModelTest::testAttributesLoopBack() {
 	attributes.clear();
 	attributes.push_back(rsg::Attribute("name", "myGroup"));
 	attributes.push_back(rsg::Attribute("some:flag", "executing\": 1"));
-	wm->scene.setNodeAttributes(groupId, attributes);
+	CPPUNIT_ASSERT(wm->scene.setNodeAttributes(groupId, attributes));
 
 	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addNodeCounter); //precondition
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addGroupCounter);
@@ -1442,7 +1442,7 @@ void DistributedWorldModelTest::testAttributesLoopBack() {
 	attributes.clear();
 	attributes.push_back(rsg::Attribute("name", "myGroup"));
 	attributes.push_back(rsg::Attribute("some:flag", "executing\": 0"));
-	wm->scene.setNodeAttributes(groupId, attributes);
+	CPPUNIT_ASSERT(wm->scene.setNodeAttributes(groupId, attributes));
 
 	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addNodeCounter); //precondition
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addGroupCounter);
@@ -1469,7 +1469,7 @@ void DistributedWorldModelTest::testAttributesLoopBack() {
 	attributes.clear();
 	attributes.push_back(rsg::Attribute("name", "myGroup"));
 	attributes.push_back(rsg::Attribute("some:flag", "executing\": 1"));
-	remoteWm->scene.setNodeAttributes(groupId, attributes);
+	CPPUNIT_ASSERT(remoteWm->scene.setNodeAttributes(groupId, attributes));
 
 	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addNodeCounter); //precondition
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addGroupCounter);
@@ -1496,7 +1496,7 @@ void DistributedWorldModelTest::testAttributesLoopBack() {
 	attributes.clear();
 	attributes.push_back(rsg::Attribute("name", "myGroup"));
 	attributes.push_back(rsg::Attribute("some:flag", "executing\": 0"));
-	remoteWm->scene.setNodeAttributes(groupId, attributes);
+	CPPUNIT_ASSERT(remoteWm->scene.setNodeAttributes(groupId, attributes));
 
 	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addNodeCounter); //precondition
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addGroupCounter);
@@ -1527,7 +1527,7 @@ void DistributedWorldModelTest::testAttributesLoopBack() {
 	attributes.clear();
 	attributes.push_back(rsg::Attribute("name", "myGroup"));
 	attributes.push_back(rsg::Attribute("some:flag", "executing\": 1"));
-	remoteWm->scene.setNodeAttributes(groupId, attributes, TimeStamp(1, Units::Second));
+	CPPUNIT_ASSERT(remoteWm->scene.setNodeAttributes(groupId, attributes, TimeStamp(1, Units::Second)));
 
 	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addNodeCounter); //precondition
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addGroupCounter);
