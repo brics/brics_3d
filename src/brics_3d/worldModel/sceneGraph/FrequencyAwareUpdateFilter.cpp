@@ -136,12 +136,12 @@ bool FrequencyAwareUpdateFilter::addConnection(Id parentId, Id& assignedId, vect
 }
 
 bool FrequencyAwareUpdateFilter::setNodeAttributes(Id id,
-		vector<Attribute> newAttributes) {
+		vector<Attribute> newAttributes, TimeStamp timeStamp) {
 
 	/* Call _all_ observers  */
 	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
 	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
-		(*observerIterator)->setNodeAttributes(id, newAttributes);
+		(*observerIterator)->setNodeAttributes(id, newAttributes, timeStamp);
 	}
 	return true;
 }

@@ -75,7 +75,7 @@ bool DotVisualizer::addConnection(Id parentId, Id& assignedId, vector<Attribute>
 
 
 
-bool DotVisualizer::setNodeAttributes(Id id, vector<Attribute> newAttributes) {
+bool DotVisualizer::setNodeAttributes(Id id, vector<Attribute> newAttributes, TimeStamp timeStamp) {
 	printGraph();
 	return true;
 }

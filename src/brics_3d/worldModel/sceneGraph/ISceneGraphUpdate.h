@@ -158,10 +158,11 @@ class ISceneGraphUpdate {
      * @brief Override the attributes of a node.
 	 *
 	 * @param id ID the defines the node to be updated.
-	 * @param newAttributes The new attributes. THe old one will be overidden by tis
+	 * @param newAttributes The new attributes. The old one will be overidden by this as long as the timestamp is equal or newer than a previous update.
+	 * @param timeStamp Time stamp associated with the new attributes.
 	 * @return True on success.
 	 */
-	virtual bool setNodeAttributes(Id id, vector<Attribute> newAttributes) = 0;
+	virtual bool setNodeAttributes(Id id, vector<Attribute> newAttributes, TimeStamp timeStamp = TimeStamp(0)) = 0;
 
     /**
      * @brief Update the transformation of an existing Transform node.

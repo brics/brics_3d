@@ -153,7 +153,7 @@ public:
     	return true;
     }
 
-	bool setNodeAttributes(Id id, vector<Attribute> newAttributes) {
+	bool setNodeAttributes(Id id, vector<Attribute> newAttributes, TimeStamp timeStamp = TimeStamp(0)) {
 		setNodeAttributesCounter++;
 		return true;
 	}

@@ -434,7 +434,7 @@ bool OSGVisualizer::addConnection(Id parentId, Id& assignedId, vector<Attribute>
 }
 
 
-bool OSGVisualizer::setNodeAttributes(Id id, vector<Attribute> newAttributes) {
+bool OSGVisualizer::setNodeAttributes(Id id, vector<Attribute> newAttributes, TimeStamp timeStamp) {
 	LOG(DEBUG) << "OSGVisualizer: setting attributes";
 	return true;
 }

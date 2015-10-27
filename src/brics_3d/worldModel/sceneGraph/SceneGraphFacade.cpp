@@ -483,7 +483,7 @@ bool SceneGraphFacade::addGeometricNode(Id parentId, Id& assignedId, vector<Attr
 }
 
 
-bool SceneGraphFacade::setNodeAttributes(Id id, vector<Attribute> newAttributes) {
+bool SceneGraphFacade::setNodeAttributes(Id id, vector<Attribute> newAttributes, TimeStamp timeStamp) {
 	bool operationSucceeded = false;
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();

@@ -252,7 +252,7 @@ bool HDF5UpdateSerializer::addConnection(Id parentId, Id& assignedId, vector<Att
 
 
 bool HDF5UpdateSerializer::setNodeAttributes(Id id,
-		vector<Attribute> newAttributes) {
+		vector<Attribute> newAttributes,  TimeStamp timeStamp) {
 
 	LOG(DEBUG) << "HDF5UpdateSerializer: updating Attributes for node " << id.toString();
 	try {

@@ -144,7 +144,7 @@ bool JSONSerializer::addConnection(Id parentId, Id& assignedId,
 }
 
 bool JSONSerializer::setNodeAttributes(Id id,
-		vector<Attribute> newAttributes) {
+		vector<Attribute> newAttributes, TimeStamp timeStamp) {
 
 	LOG(DEBUG) << "JSONSerializer: : updating Attributes for node " << id.toString();
 	try {

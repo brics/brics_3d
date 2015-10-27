@@ -85,7 +85,7 @@ bool RemoteRootNodeAutoMounter::addConnection(Id parentId, Id& assignedId, vecto
 
 
 bool RemoteRootNodeAutoMounter::setNodeAttributes(Id id,
-		vector<Attribute> newAttributes) {
+		vector<Attribute> newAttributes, TimeStamp timeStamp) {
 	return true;
 }
 
