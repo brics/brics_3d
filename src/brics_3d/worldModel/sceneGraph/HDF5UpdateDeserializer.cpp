@@ -397,8 +397,10 @@ bool HDF5UpdateDeserializer::doSetNodeAttributes(H5::Group& group) {
 	}
 	LOG(DEBUG) << "H5::Group has ID " << id;
 	HDF5Typecaster::getAttributesFromHDF5Group(attributes, group);
+	TimeStamp attributesTimeStamp;
+	HDF5Typecaster::getTimeStampFromHDF5Group(attributesTimeStamp, group, "attributesTimeStamp");
 
-	return wm->scene.setNodeAttributes(id, attributes);
+	return wm->scene.setNodeAttributes(id, attributes, attributesTimeStamp);
 }
 
 bool HDF5UpdateDeserializer::doSetTransform(H5::Group& group) {

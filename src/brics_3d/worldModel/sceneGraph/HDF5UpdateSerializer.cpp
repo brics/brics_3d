@@ -268,6 +268,7 @@ bool HDF5UpdateSerializer::setNodeAttributes(Id id,
 		H5::Group group = scene.createGroup("Attribute-Update-" + id.toString()); // The actual data
 		HDF5Typecaster::addNodeIdToHDF5Group(id, group);
 		HDF5Typecaster::addAttributesToHDF5Group(newAttributes, group);
+		HDF5Typecaster::addTimeStampToHDF5Group(timeStamp, group, "attributesTimeStamp");
 
 		file.flush(H5F_SCOPE_GLOBAL);
 		doSendMessage(file);
