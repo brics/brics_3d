@@ -64,7 +64,7 @@ bool JSONSerializer::addNode(Id parentId, Id& assignedId,
 		return doSendMessage(graphUpdate);
 
 	} catch (std::exception e) {
-		LOG(ERROR) << "JSONSerializer addGroup: Cannot create a JSON serialization.";
+		LOG(ERROR) << "JSONSerializer addGroup: Cannot create a JSON serialization. Exception = " << std::endl << e.what();
 		return false;
 	}
 
@@ -97,7 +97,7 @@ bool JSONSerializer::addGroup(Id parentId, Id& assignedId,
 		return doSendMessage(graphUpdate);
 
 	} catch (std::exception e) {
-		LOG(ERROR) << "JSONSerializer addGroup: Cannot create a JSON serialization.";
+		LOG(ERROR) << "JSONSerializer addGroup: Cannot create a JSON serialization. Exception = " << std::endl << e.what();
 		return false;
 	}
 
@@ -169,7 +169,7 @@ bool JSONSerializer::setNodeAttributes(Id id,
 		return doSendMessage(graphUpdate);
 
 	} catch (std::exception e) {
-		LOG(ERROR) << "JSONSerializer setNodeAttributes: Cannot create a JSON serialization.";
+		LOG(ERROR) << "JSONSerializer setNodeAttributes: Cannot create a JSON serialization. Exception = " << std::endl << e.what();
 		return false;
 	}
 
