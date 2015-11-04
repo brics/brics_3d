@@ -161,6 +161,7 @@ public:
 		for (std::vector<brics_3d::rsg::Attribute>::iterator it = attributes.begin(); it != attributes.end(); ++it) {
 			libvariant::Variant attributeAsJson;
 			attributeAsJson.Set("key", libvariant::Variant(it->key));
+			LOG(DEBUG) << "JSONTypecaster: adding Attributes to JSON: ( " << it->key << ", "<< it->value << " )";
 			libvariant::Variant valueAsModel = libvariant::Deserialize(it->value, libvariant::SERIALIZE_GUESS); // GUESS seems to be more permissive with parsing than JSON
 //			attributeAsJson.Set("value", libvariant::Variant(it->value));
 			attributeAsJson.Set("value", valueAsModel);
