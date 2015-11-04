@@ -162,9 +162,15 @@ public:
 			libvariant::Variant attributeAsJson;
 			attributeAsJson.Set("key", libvariant::Variant(it->key));
 			LOG(DEBUG) << "JSONTypecaster: adding Attributes to JSON: ( " << it->key << ", "<< it->value << " )";
-			libvariant::Variant valueAsModel = libvariant::Deserialize(it->value, libvariant::SERIALIZE_GUESS); // GUESS seems to be more permissive with parsing than JSON
+			try {
+				libvariant::Variant valueAsModel = libvariant::Deserialize(it->value, libvariant::SERIALIZE_GUESS); // GUESS seems to be more permissive with parsing than JSON
+				attributeAsJson.Set("value", valueAsModel);
+			} catch (std::exception e) {
+				LOG(DEBUG) << "JSONTypecaster: using simple value format";
+				attributeAsJson.Set("value", libvariant::Variant(it->value));
+			}
 //			attributeAsJson.Set("value", libvariant::Variant(it->value));
-			attributeAsJson.Set("value", valueAsModel);
+//			attributeAsJson.Set("value", valueAsModel);
 			attributesAsJson.Append(attributeAsJson);
 		}
 
