@@ -58,7 +58,7 @@ int JSONDeserializer::write(libvariant::Variant& model) {
 			std::string type = model.Get("@worldmodeltype").AsString();
 			if(type.compare("RSGUpdate") == 0) {
 				LOG(DEBUG) << "JSONDeserializer: Found a model for an update.";
-				handleWorldModelUpdate(model);
+				return handleWorldModelUpdate(model);
 			} else if (type.compare("WorldModelAgent") == 0) {
 				LOG(DEBUG) << "JSONDeserializer: Found model for a WorldModelAgent.";
 				handleWorldModelAgent(model);
@@ -283,7 +283,7 @@ bool JSONDeserializer::handleGraphPrimitive(libvariant::Variant& atom, rsg::Id p
 			}
 
 		} else if (type.compare("Group") == 0) {
-			doAddGroup(atom, parentId);
+			return doAddGroup(atom, parentId);
 		} else if (type.compare("Connection") == 0) {
 			doAddConnection(atom, parentId);
 		} else { // ...
@@ -394,7 +394,7 @@ bool JSONDeserializer::doAddGroup(libvariant::Variant& group, rsg::Id parentId) 
 	std::vector<rsg::Attribute> attributes = rsg::JSONTypecaster::getAttributesFromJSON(group);
 
 	/* create it */
-	wm->scene.addGroup(parentId, id, attributes, true);
+	if( !wm->scene.addGroup(parentId, id, attributes, true) ) 	{return false;};
 
 	/* childs (recursion) */
 	handleChilden(group, id);

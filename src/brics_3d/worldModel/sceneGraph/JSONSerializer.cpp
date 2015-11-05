@@ -146,7 +146,7 @@ bool JSONSerializer::addConnection(Id parentId, Id& assignedId,
 bool JSONSerializer::setNodeAttributes(Id id,
 		vector<Attribute> newAttributes, TimeStamp timeStamp) {
 
-	LOG(DEBUG) << "JSONSerializer: : updating Attributes for node " << id.toString();
+	LOG(DEBUG) << "JSONSerializer: setNodeAttributes: updating Attributes for node " << id.toString();
 	try {
 		std::string fileName = "Attribute-Update-" + id.toString() + fileSuffix;
 
@@ -160,12 +160,13 @@ bool JSONSerializer::setNodeAttributes(Id id,
 		node.Set("@graphtype", libvariant::Variant("Node")); // this is actually a dummy, thoug reqired for correce validation
 		JSONTypecaster::addIdToJSON(id, node, "id");
 		JSONTypecaster::addAttributesToJSON(newAttributes, node); // can cause a runtime exception
-		// TODO implement addJSONTypecaster::addTimeStampToJSON(timeStamp, node, "attributesTimeStamp");
+		JSONTypecaster::addTimeStampToJSON(timeStamp, node, "attributesTimeStamp");
 
 		/* assebmle it */
 		graphUpdate.Set("node", node);
 
 		/* send it */
+		LOG(DEBUG) << "JSONSerializer: setNodeAttributes: message = " <<  libvariant::Serialize(graphUpdate, libvariant::SERIALIZE_JSON);
 		return doSendMessage(graphUpdate);
 
 	} catch (std::exception e) {

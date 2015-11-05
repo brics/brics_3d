@@ -57,7 +57,6 @@ public:
 
 	int write(const char *dataBuffer, int dataLength, int &transferredBytes) {
 		LOG(DEBUG) << debugTag << ": Feeding data forwards.";
-//		hexdump(dataBuffer, dataLength);
 		return inputPort->write(dataBuffer, dataLength, transferredBytes); // just feed forward
 	};
 
@@ -70,19 +69,15 @@ private:
 void JSONTest::setUp() {
 
 	doRun = false;
-//	wm = new brics_3d::WorldModel();
 	brics_3d::Logger::setMinLoglevel(brics_3d::Logger::LOGDEBUG);
 }
 
 void JSONTest::tearDown() {
-//	delete wm;
-//	wm = 0;
 	brics_3d::Logger::setMinLoglevel(brics_3d::Logger::WARNING);
 }
 
 void JSONTest::testLoopBack() {
 
-	//#ifdef BRICS_JSON_ENABLE
 
 	/* Create the world model instances/handles */
 	brics_3d::WorldModel* wm = new brics_3d::WorldModel(); 		   // first world model agent
@@ -97,6 +92,7 @@ void JSONTest::testLoopBack() {
 	brics_3d::rsg::DotVisualizer* wmStructureVisualizer = new brics_3d::rsg::DotVisualizer(&wm->scene);
 	wmStructureVisualizer->setConfig(visualizationConfig); // we use the same config here
 	wmStructureVisualizer->setKeepHistory(false);
+	wmStructureVisualizer->setFileName("json_test_graph");
 	wm->scene.attachUpdateObserver(wmStructureVisualizer);
 
 	/*
@@ -129,6 +125,7 @@ void JSONTest::testLoopBack() {
 	attributes.push_back(rsg::Attribute("taskType", "scene_objects"));
 //	attributes.push_back(rsg::Attribute("some:flag", "executing\": 0"));
 	rsg::Id sceneObjectsId;
+	return; //FIXME
 	wm->scene.addGroup(wm->getRootNodeId(), sceneObjectsId, attributes);
 
 	/* Box TF for "virtual fence" */
@@ -148,7 +145,7 @@ void JSONTest::testLoopBack() {
 	rsg::Box::BoxPtr box( new rsg::Box(1,2,0));
 	rsg::Id boxId;
 	wm->scene.addGeometricNode(boxTfId, boxId, attributes, box, wm->now());
-
+return;
 	doRun = true;
 	boost::thread* thread = new boost::thread(boost::bind(&JSONTest::threadFunction, this, wm));
 
