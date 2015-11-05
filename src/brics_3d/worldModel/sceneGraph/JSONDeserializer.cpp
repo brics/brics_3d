@@ -284,7 +284,7 @@ bool JSONDeserializer::handleGraphPrimitive(libvariant::Variant& atom, rsg::Id p
 
 		} else if (type.compare("Group") == 0) {
 			doAddGroup(atom, parentId);
-		} else if (type.compare("Connection")) {
+		} else if (type.compare("Connection") == 0) {
 			doAddConnection(atom, parentId);
 		} else { // ...
 			LOG(WARNING) << "JSONDeserializer: Unknown atom graphtype. Skippping it.";
@@ -499,9 +499,21 @@ bool JSONDeserializer::doAddConnection(libvariant::Variant& connection,
 
 	LOG(DEBUG) << "JSONDeserializer: doAddConnection";
 
+	/* check for well known semantic conexts */
+	string semanticContext = "";
+	if(connection.Contains("@semanticContext")) {
+		semanticContext = connection.Get("@semanticContext").AsString();
+		LOG(DEBUG) << "JSONDeserializer: \t\t semanticContext = " << semanticContext;
+
+		if(semanticContext.compare("Transform") == 0) {
+			return doAddTransformNode(connection, parentId);
+		}
+	}
+
+
 	/* Id */
 	rsg::Id id = rsg::JSONTypecaster::getIdFromJSON(connection, "id");
-	assert(id.isNil());
+	assert(!id.isNil());
 
 	/* attributes */
 	std::vector<rsg::Attribute> attributes = rsg::JSONTypecaster::getAttributesFromJSON(connection);
