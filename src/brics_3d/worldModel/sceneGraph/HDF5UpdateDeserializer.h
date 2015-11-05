@@ -22,16 +22,17 @@
 #include "brics_3d/core/Logger.h"
 #include "brics_3d/worldModel/WorldModel.h"
 #include "brics_3d/util/HDF5Typecaster.h"
+#include "brics_3d/worldModel/sceneGraph/IPort.h"
 
 namespace brics_3d {
 namespace rsg {
 
-class IInputPort {
-public:
-	IInputPort(){};
-	virtual ~IInputPort(){};
-	virtual int write(const char *dataBuffer, int dataLength, int &transferredBytes) = 0; // triggers update of WM
-};
+//class IInputPort {
+//public:
+//	IInputPort(){};
+//	virtual ~IInputPort(){};
+//	virtual int write(const char *dataBuffer, int dataLength, int &transferredBytes) = 0; // triggers update of WM
+//};
 
 class HDF5UpdateDeserializer : public IInputPort {
 public:

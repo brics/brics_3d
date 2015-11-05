@@ -33,6 +33,16 @@ public:
 	virtual int write(const char *dataBuffer, int dataLength, int &transferredBytes) = 0;
 };
 
+/**
+ * @brief Generic output input port interface for serialized scene graph updates.
+ */
+class IInputPort {
+public:
+	IInputPort(){};
+	virtual ~IInputPort(){};
+	virtual int write(const char *dataBuffer, int dataLength, int &transferredBytes) = 0; // triggers update of WM
+};
+
 } /* namespace rsg */
 } /* namespace brics_3d */
 

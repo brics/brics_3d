@@ -22,13 +22,14 @@
 
 #include "brics_3d/util/JSONTypecaster.h"
 #include "brics_3d/worldModel/WorldModel.h"
+#include "brics_3d/worldModel/sceneGraph/IPort.h"
 
 namespace brics_3d {
 namespace rsg {
 
 
 
-class JSONDeserializer {
+class JSONDeserializer : public IInputPort  {
 public:
 	JSONDeserializer(WorldModel* wm);
 	virtual ~JSONDeserializer();

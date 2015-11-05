@@ -23,6 +23,15 @@ ELSE(USE_HDF5)
 	SET(HDF5_LIBS "")	
 ENDIF (USE_HDF5)
 
+IF (USE_JSON)
+	INCLUDE_DIRECTORIES( 
+        {LIBVARIANT_INCLUDE_DIRS}
+	 )
+	SET(JSON_LIBS ${LIBVARIANT_LIBRARIES})
+ELSE(USE_JSON)
+	SET(JSON_LIBS "")	
+ENDIF (USE_JSON)
+
 # add library directories (-L)
 LINK_DIRECTORIES(
 
@@ -37,13 +46,13 @@ MESSAGE("CppUnitTests: ${CPPUNITTEST_SOURCES}")
 # compile unit testing executable 
 ADD_EXECUTABLE(run_unit_tests TestRunner.cpp ${CPPUNITTEST_SOURCES})
 #TARGET_LINK_LIBRARIES(run_unit_tests cppunit brics3d_core)
-TARGET_LINK_LIBRARIES(run_unit_tests ${CPPUNIT_LIBRARIES} brics3d_core brics3d_algorithm brics3d_util brics3d_world_model ${HDF5_LIBS})
+TARGET_LINK_LIBRARIES(run_unit_tests ${CPPUNIT_LIBRARIES} brics3d_core brics3d_algorithm brics3d_util brics3d_world_model ${HDF5_LIBS} ${JSON_LIBS})
 
 
 # compile unit testing executable for ECUT eclipse plugin
 ADD_DEFINITIONS(-DECUT_MAIN=main)
 ADD_EXECUTABLE(run_ecut_unit_tests ECUTTestRunner.cpp ${CPPUNITTEST_SOURCES})
 #TARGET_LINK_LIBRARIES(run_ecut_unit_tests cppunit brics3d_core)
-TARGET_LINK_LIBRARIES(run_ecut_unit_tests ${CPPUNIT_LIBRARIES} brics3d_core brics3d_algorithm brics3d_util brics3d_world_model ${HDF5_LIBS})
+TARGET_LINK_LIBRARIES(run_ecut_unit_tests ${CPPUNIT_LIBRARIES} brics3d_core brics3d_algorithm brics3d_util brics3d_world_model ${HDF5_LIBS} ${JSON_LIBS})
 
 
