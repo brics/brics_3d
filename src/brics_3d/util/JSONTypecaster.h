@@ -117,6 +117,16 @@ public:
 		return stamp;
 	}
 
+	inline static bool addTimeStampToJSON(rsg::TimeStamp timeStamp, libvariant::Variant& node, string stampTag) {
+		libvariant::Variant stampModel;
+
+		stampModel.Set("@stamptype", libvariant::Variant("TimeStampUTCms"));
+		stampModel.Set("stamp", timeStamp.getSeconds() * Units::getScale(Units::Second, Units::MilliSecond) );
+
+		node.Set(stampTag, stampModel);
+
+		return true;
+	}
 
 	inline static std::vector<rsg::Attribute> getAttributesFromJSON (libvariant::Variant& node) {
 		std::vector<rsg::Attribute> attributes;
