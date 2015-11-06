@@ -176,17 +176,13 @@ bool JSONSerializer::addGeometricNode(Id parentId,
 		JSONTypecaster::addShapeToJSON(shape, node, "geometry");
 		JSONTypecaster::addTimeStampToJSON(timeStamp, graphUpdate, "timeStamp");
 
-//		HDF5Typecaster::addShapeToHDF5Group(shape, group);
-//		HDF5Typecaster::addTimeStampToHDF5Group(timeStamp, group);
-
 		node.Set("unit", libvariant::Variant("m")); // TODO; better part of geometry?!?
 
-		/* assebmle it */
+		/* assabmle it */
 		graphUpdate.Set("node", node);
 
 		/* send it */
 		return doSendMessage(graphUpdate);
-
 
 	} catch (std::exception e) {
 		LOG(ERROR) << "JSONSerializer addGeometricNode: Cannot create a JSON serialization. Exception = " << std::endl << e.what();
@@ -198,6 +194,32 @@ bool JSONSerializer::addGeometricNode(Id parentId,
 
 bool JSONSerializer::addRemoteRootNode(Id rootId,
 		vector<Attribute> attributes) {
+
+	LOG(DEBUG) << "JSONSerializer: adding a RootNode-" << rootId.toString();
+	try {
+		std::string fileName = "RootNode-" + rootId.toString() + fileSuffix;
+
+		/* header */
+		libvariant::Variant graphUpdate;
+		graphUpdate.Set("@worldmodeltype", libvariant::Variant("RSGUpdate"));
+		graphUpdate.Set("operation", libvariant::Variant("CREATE_REMOTE_ROOT_NODE"));
+
+		/* the actual graph primitive */
+		libvariant::Variant node;
+		node.Set("@graphtype", libvariant::Variant("Group"));
+		JSONTypecaster::addIdToJSON(rootId, node, "id");
+		JSONTypecaster::addAttributesToJSON(attributes, node);
+
+		/* assabmle it */
+		graphUpdate.Set("node", node);
+
+		/* send it */
+		return doSendMessage(graphUpdate);
+
+	} catch (std::exception e) {
+		LOG(ERROR) << "JSONSerializer addRemoteRootNode: Cannot create a JSON serialization. Exception = " << std::endl << e.what();
+		return false;
+	}
 
 	return false;
 }
