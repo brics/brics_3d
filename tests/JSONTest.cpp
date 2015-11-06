@@ -145,7 +145,7 @@ void JSONTest::testLoopBack() {
 	rsg::Box::BoxPtr box( new rsg::Box(1,2,0));
 	rsg::Id boxId;
 	wm->scene.addGeometricNode(boxTfId, boxId, attributes, box, wm->now());
-return;
+
 	doRun = true;
 	boost::thread* thread = new boost::thread(boost::bind(&JSONTest::threadFunction, this, wm));
 

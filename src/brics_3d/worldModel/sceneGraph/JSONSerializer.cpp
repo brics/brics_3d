@@ -109,6 +109,37 @@ bool JSONSerializer::addTransformNode(Id parentId,
 		IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform,
 		TimeStamp timeStamp, bool forcedId) {
 
+	LOG(DEBUG) << "JSONSerializer: adding a Transform-" << assignedId.toString();
+		try {
+			std::string fileName = "Transform-" + assignedId.toString() + fileSuffix;
+
+			/* header */
+			libvariant::Variant graphUpdate;
+			graphUpdate.Set("@worldmodeltype", libvariant::Variant("RSGUpdate"));
+			graphUpdate.Set("operation", libvariant::Variant("CREATE"));
+			JSONTypecaster::addIdToJSON(parentId, graphUpdate, "parentId");
+
+			/* the actual graph primitive */
+			libvariant::Variant node;
+			node.Set("@graphtype", libvariant::Variant("Connection"));
+			node.Set("@semanticContext", libvariant::Variant("Transform"));
+			JSONTypecaster::addIdToJSON(assignedId, node, "id");
+			JSONTypecaster::addAttributesToJSON(attributes, node);
+			TemporalCache<IHomogeneousMatrix44::IHomogeneousMatrix44Ptr> history;
+			history.insertData(transform, timeStamp);
+			JSONTypecaster::addTransformCacheToJSON(history, node);
+
+			/* assebmle it */
+			graphUpdate.Set("node", node);
+
+			/* send it */
+			return doSendMessage(graphUpdate);
+
+		} catch (std::exception e) {
+			LOG(ERROR) << "JSONSerializer addGroup: Cannot create a JSON serialization. Exception = " << std::endl << e.what();
+			return false;
+		}
+
 	return false;
 }
 
