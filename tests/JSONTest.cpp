@@ -577,7 +577,6 @@ void JSONTest::testUpdateObersver() {
 	ITransformUncertainty::ITransformUncertaintyPtr uncertainty456(new CovarianceMatrix66(6, 0.002, 0.002, 0.0000, 0.000000, 0.00000));
 	CPPUNIT_ASSERT(wm->scene.setUncertainTransform(utfId, transform456, uncertainty456 , wm->now()));
 
-
 	CPPUNIT_ASSERT(wm->scene.deleteNode(groupId));
 
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addNodeCounter);

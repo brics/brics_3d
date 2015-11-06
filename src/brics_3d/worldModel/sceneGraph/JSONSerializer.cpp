@@ -270,6 +270,34 @@ bool JSONSerializer::setTransform(Id id,
 		IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform,
 		TimeStamp timeStamp) {
 
+	LOG(DEBUG) << "JSONSerializer: setTransform: updating Transform for node " << id.toString();
+	try {
+		std::string fileName = "Transform-Update-" + id.toString() + fileSuffix;
+
+		/* header */
+		libvariant::Variant graphUpdate;
+		graphUpdate.Set("@worldmodeltype", libvariant::Variant("RSGUpdate"));
+		graphUpdate.Set("operation", libvariant::Variant("UPDATE_TRANSFORM"));
+
+		/* the actual graph primitive */
+		libvariant::Variant node;
+		node.Set("@graphtype", libvariant::Variant("Connection")); // this is actually a dummy, thoug reqired for correce validation
+		JSONTypecaster::addIdToJSON(id, node, "id");
+		TemporalCache<IHomogeneousMatrix44::IHomogeneousMatrix44Ptr> history;
+		history.insertData(transform, timeStamp);
+		JSONTypecaster::addTransformCacheToJSON(history, node);
+
+		/* assebmle it */
+		graphUpdate.Set("node", node);
+
+		/* send it */
+		//LOG(DEBUG) << "JSONSerializer: setTransform: message = " <<  libvariant::Serialize(graphUpdate, libvariant::SERIALIZE_JSON);
+		return doSendMessage(graphUpdate);
+
+	} catch (std::exception e) {
+		LOG(ERROR) << "JSONSerializer setTransform: Cannot create a JSON serialization. Exception = " << std::endl << e.what();
+		return false;
+	}
 
 	return false;
 }
@@ -285,6 +313,30 @@ bool JSONSerializer::setUncertainTransform(Id id,
 
 bool JSONSerializer::deleteNode(Id id) {
 
+	LOG(DEBUG) << "JSONSerializer: deleteNode: removing node " << id.toString();
+	try {
+		std::string fileName = "Node-Deletion-" + id.toString() + fileSuffix;
+
+		/* header */
+		libvariant::Variant graphUpdate;
+		graphUpdate.Set("@worldmodeltype", libvariant::Variant("RSGUpdate"));
+		graphUpdate.Set("operation", libvariant::Variant("DELETE_NODE"));
+
+		/* the actual graph primitive */
+		libvariant::Variant node;
+		node.Set("@graphtype", libvariant::Variant("Node"));
+		JSONTypecaster::addIdToJSON(id, node, "id");
+
+		/* assabmle it */
+		graphUpdate.Set("node", node);
+
+		/* send it */
+		return doSendMessage(graphUpdate);
+
+	} catch (std::exception e) {
+		LOG(ERROR) << "JSONSerializer deleteNode: Cannot create a JSON serialization. Exception = " << std::endl << e.what();
+		return false;
+	}
 
 	return false;
 }
@@ -318,12 +370,36 @@ bool JSONSerializer::addParent(Id id, Id parentId) {
 	}
 
 	return false;
-
-	return false;
 }
 
 bool JSONSerializer::removeParent(Id id, Id parentId) {
 
+	LOG(DEBUG) << "JSONSerializer: removeParent: removing parent " <<
+			parentId.toString() << " from node " << id.toString();
+	try {
+		std::string fileName = "Parent-Deletion-" + id.toString() + fileSuffix;
+
+		/* header */
+		libvariant::Variant graphUpdate;
+		graphUpdate.Set("@worldmodeltype", libvariant::Variant("RSGUpdate"));
+		graphUpdate.Set("operation", libvariant::Variant("DELETE_PARENT"));
+		JSONTypecaster::addIdToJSON(parentId, graphUpdate, "parentId");
+
+		/* the actual graph primitive */
+		libvariant::Variant node;
+		node.Set("@graphtype", libvariant::Variant("Node"));
+		JSONTypecaster::addIdToJSON(id, node, "id");
+
+		/* assabmle it */
+		graphUpdate.Set("node", node);
+
+		/* send it */
+		return doSendMessage(graphUpdate);
+
+	} catch (std::exception e) {
+		LOG(ERROR) << "JSONSerializer removeParent: Cannot create a JSON serialization. Exception = " << std::endl << e.what();
+		return false;
+	}
 
 	return false;
 }
