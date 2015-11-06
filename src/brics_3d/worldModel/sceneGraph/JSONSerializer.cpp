@@ -229,6 +229,47 @@ bool JSONSerializer::addConnection(Id parentId, Id& assignedId,
 		vector<Id> targetIds, TimeStamp start, TimeStamp end, bool forcedId) {
 
 
+
+	LOG(DEBUG) << "addConnection: adding a Connection-" << assignedId.toString();
+	try {
+		std::string fileName = "Connection-" + assignedId.toString() + fileSuffix;
+
+		/* header */
+		libvariant::Variant graphUpdate;
+		graphUpdate.Set("@worldmodeltype", libvariant::Variant("RSGUpdate"));
+		graphUpdate.Set("operation", libvariant::Variant("CREATE"));
+		JSONTypecaster::addIdToJSON(parentId, graphUpdate, "parentId");
+
+		/* the actual graph primitive */
+		libvariant::Variant node;
+		node.Set("@graphtype", libvariant::Variant("Connection"));
+		JSONTypecaster::addIdToJSON(assignedId, node, "id");
+		JSONTypecaster::addAttributesToJSON(attributes, node);
+
+		/* Id lists */
+		JSONTypecaster::addIdsToJSON(sourceIds, node, "sourceIds");
+		JSONTypecaster::addIdsToJSON(targetIds, node, "targetIds");
+//		std::vector<rsg::Id> sourceIds = rsg::JSONTypecaster::getIdsFromJSON(connection, "sourceIds");
+//		std::vector<rsg::Id> targetIds = rsg::JSONTypecaster::getIdsFromJSON(connection, "targetIds");
+//		assert((sourceIds.size() > 0) || (targetIds.size() > 0)); // there should be at least one
+
+		/* stamps */
+		JSONTypecaster::addTimeStampToJSON(start, node, "start");
+		JSONTypecaster::addTimeStampToJSON(end, node, "end");
+
+		/* assebmle it */
+		graphUpdate.Set("node", node);
+
+		/* send it */
+		return doSendMessage(graphUpdate);
+
+	} catch (std::exception e) {
+		LOG(ERROR) << "JSONSerializer addConnection: Cannot create a JSON serialization. Exception = " << std::endl << e.what();
+		return false;
+	}
+
+	return false;
+
 	return false;
 }
 

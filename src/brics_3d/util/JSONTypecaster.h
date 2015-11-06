@@ -80,6 +80,18 @@ public:
 		return ids;
 	}
 
+	inline static bool addIdsToJSON(vector<rsg::Id>& ids, libvariant::Variant& node, string idsTag) {
+		libvariant::Variant idsAsJson(libvariant::VariantDefines::ListType);
+
+		for (std::vector<brics_3d::rsg::Id>::iterator it = ids.begin(); it != ids.end(); ++it) {
+			idsAsJson.Append(libvariant::Variant(it->toString()));
+		}
+
+		node.Set(idsTag, idsAsJson);
+
+		return true;
+	}
+
 	inline static rsg::TimeStamp getTimeStampFromJSON(libvariant::Variant& node, string stampTag) {
 		rsg::TimeStamp stamp(0); //-inf?
 
