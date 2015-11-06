@@ -372,15 +372,13 @@ bool JSONDeserializer::doAddNode(libvariant::Variant& group, rsg::Id parentId) {
 
 	/* Id */
 	rsg::Id id = rsg::JSONTypecaster::getIdFromJSON(group, "id");
-	assert(!id.isNil());
+	//assert(!id.isNil());
 
 	/* attributes */
 	std::vector<rsg::Attribute> attributes = rsg::JSONTypecaster::getAttributesFromJSON(group);
 
 	/* create it */
-	wm->scene.addNode(parentId, id, attributes, true);
-
-	return true;
+	return wm->scene.addNode(parentId, id, attributes, !id.isNil()); // Last parameter makes the "id" field optional
 }
 
 bool JSONDeserializer::doAddGroup(libvariant::Variant& group, rsg::Id parentId) {
@@ -388,13 +386,13 @@ bool JSONDeserializer::doAddGroup(libvariant::Variant& group, rsg::Id parentId) 
 
 	/* Id */
 	rsg::Id id = rsg::JSONTypecaster::getIdFromJSON(group, "id");
-	assert(!id.isNil());
+//	assert(!id.isNil());
 
 	/* attributes */
 	std::vector<rsg::Attribute> attributes = rsg::JSONTypecaster::getAttributesFromJSON(group);
 
 	/* create it */
-	if( !wm->scene.addGroup(parentId, id, attributes, true) ) 	{return false;};
+	if( !wm->scene.addGroup(parentId, id, attributes, !id.isNil()) ) 	{return false;}; // Last parameter makes the "id" field optional
 
 	/* childs (recursion) */
 	handleChilden(group, id);
@@ -415,7 +413,7 @@ bool JSONDeserializer::doAddTransformNode(libvariant::Variant& group,
 
 	/* Id */
 	rsg::Id id = rsg::JSONTypecaster::getIdFromJSON(group, "id");
-	assert(!id.isNil());
+//	assert(!id.isNil());
 
 	/* attributes */
 	std::vector<rsg::Attribute> attributes = rsg::JSONTypecaster::getAttributesFromJSON(group);
@@ -439,11 +437,9 @@ bool JSONDeserializer::doAddTransformNode(libvariant::Variant& group,
 	transform = history.getData(history.getLatestTimeStamp());
 
 	/* create it */
-	wm->scene.addTransformNode(parentId, id, attributes, transform, history.getLatestTimeStamp(), true);
+	return wm->scene.addTransformNode(parentId, id, attributes, transform, history.getLatestTimeStamp(), !id.isNil()); // Last parameter makes the "id" field optional
 //	wm->scene.addConnection(parentId, id, attributes, sourceIds, targetIds, start, end, true);
 
-
-	return true;
 }
 
 bool JSONDeserializer::doAddGeometricNode(libvariant::Variant& group,
@@ -458,7 +454,7 @@ bool JSONDeserializer::doAddGeometricNode(libvariant::Variant& group,
 
 	/* Id */
 	id = rsg::JSONTypecaster::getIdFromJSON(group, "id");
-	assert(!id.isNil());
+//	assert(!id.isNil());
 
 	/* attributes */
 	attributes = rsg::JSONTypecaster::getAttributesFromJSON(group);
@@ -473,9 +469,8 @@ bool JSONDeserializer::doAddGeometricNode(libvariant::Variant& group,
 	/* stamp */
 
 	/* create it */
-	wm->scene.addGeometricNode(parentId, id, attributes, shape, timeStamp, true);
+	return wm->scene.addGeometricNode(parentId, id, attributes, shape, timeStamp, !id.isNil()); // Last parameter makes the "id" field optional
 
-	return false;
 }
 
 bool JSONDeserializer::doAddRemoteRootNode(libvariant::Variant& group) {
@@ -491,7 +486,6 @@ bool JSONDeserializer::doAddRemoteRootNode(libvariant::Variant& group) {
 	std::vector<rsg::Attribute> attributes = rsg::JSONTypecaster::getAttributesFromJSON(group);
 
 	return wm->scene.addRemoteRootNode(id, attributes);
-
 }
 
 bool JSONDeserializer::doAddConnection(libvariant::Variant& connection,
@@ -513,7 +507,7 @@ bool JSONDeserializer::doAddConnection(libvariant::Variant& connection,
 
 	/* Id */
 	rsg::Id id = rsg::JSONTypecaster::getIdFromJSON(connection, "id");
-	assert(!id.isNil());
+//	assert(!id.isNil());
 
 	/* attributes */
 	std::vector<rsg::Attribute> attributes = rsg::JSONTypecaster::getAttributesFromJSON(connection);
@@ -528,7 +522,7 @@ bool JSONDeserializer::doAddConnection(libvariant::Variant& connection,
 	rsg::TimeStamp end = JSONTypecaster::getTimeStampFromJSON(connection, "end");
 
 	/* create it */
-	return wm->scene.addConnection(parentId, id, attributes, sourceIds, targetIds, start, end, true);
+	return wm->scene.addConnection(parentId, id, attributes, sourceIds, targetIds, start, end, !id.isNil()); // Last parameter makes the "id" field optional
 }
 
 bool JSONDeserializer::doSetNodeAttributes(libvariant::Variant& group) {
