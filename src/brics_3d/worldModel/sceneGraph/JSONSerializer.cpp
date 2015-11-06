@@ -291,6 +291,33 @@ bool JSONSerializer::deleteNode(Id id) {
 
 bool JSONSerializer::addParent(Id id, Id parentId) {
 
+	LOG(DEBUG) << "JSONSerializer: addParent: adding << " << parentId.toString() << " to " << id.toString();
+	try {
+		std::string fileName = "Parent-Addition-" + id.toString() + fileSuffix;
+
+		/* header */
+		libvariant::Variant graphUpdate;
+		graphUpdate.Set("@worldmodeltype", libvariant::Variant("RSGUpdate"));
+		graphUpdate.Set("operation", libvariant::Variant("CREATE_PARENT"));
+		JSONTypecaster::addIdToJSON(parentId, graphUpdate, "parentId");
+
+		/* the actual graph primitive */
+		libvariant::Variant node;
+		node.Set("@graphtype", libvariant::Variant("Node"));
+		JSONTypecaster::addIdToJSON(id, node, "childId");//"id");
+
+		/* assabmle it */
+		graphUpdate.Set("node", node);
+
+		/* send it */
+		return doSendMessage(graphUpdate);
+
+	} catch (std::exception e) {
+		LOG(ERROR) << "JSONSerializer addRemoteRootNode: Cannot create a JSON serialization. Exception = " << std::endl << e.what();
+		return false;
+	}
+
+	return false;
 
 	return false;
 }
