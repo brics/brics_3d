@@ -110,35 +110,35 @@ bool JSONSerializer::addTransformNode(Id parentId,
 		TimeStamp timeStamp, bool forcedId) {
 
 	LOG(DEBUG) << "JSONSerializer: adding a Transform-" << assignedId.toString();
-		try {
-			std::string fileName = "Transform-" + assignedId.toString() + fileSuffix;
+	try {
+		std::string fileName = "Transform-" + assignedId.toString() + fileSuffix;
 
-			/* header */
-			libvariant::Variant graphUpdate;
-			graphUpdate.Set("@worldmodeltype", libvariant::Variant("RSGUpdate"));
-			graphUpdate.Set("operation", libvariant::Variant("CREATE"));
-			JSONTypecaster::addIdToJSON(parentId, graphUpdate, "parentId");
+		/* header */
+		libvariant::Variant graphUpdate;
+		graphUpdate.Set("@worldmodeltype", libvariant::Variant("RSGUpdate"));
+		graphUpdate.Set("operation", libvariant::Variant("CREATE"));
+		JSONTypecaster::addIdToJSON(parentId, graphUpdate, "parentId");
 
-			/* the actual graph primitive */
-			libvariant::Variant node;
-			node.Set("@graphtype", libvariant::Variant("Connection"));
-			node.Set("@semanticContext", libvariant::Variant("Transform"));
-			JSONTypecaster::addIdToJSON(assignedId, node, "id");
-			JSONTypecaster::addAttributesToJSON(attributes, node);
-			TemporalCache<IHomogeneousMatrix44::IHomogeneousMatrix44Ptr> history;
-			history.insertData(transform, timeStamp);
-			JSONTypecaster::addTransformCacheToJSON(history, node);
+		/* the actual graph primitive */
+		libvariant::Variant node;
+		node.Set("@graphtype", libvariant::Variant("Connection"));
+		node.Set("@semanticContext", libvariant::Variant("Transform"));
+		JSONTypecaster::addIdToJSON(assignedId, node, "id");
+		JSONTypecaster::addAttributesToJSON(attributes, node);
+		TemporalCache<IHomogeneousMatrix44::IHomogeneousMatrix44Ptr> history;
+		history.insertData(transform, timeStamp);
+		JSONTypecaster::addTransformCacheToJSON(history, node);
 
-			/* assebmle it */
-			graphUpdate.Set("node", node);
+		/* assebmle it */
+		graphUpdate.Set("node", node);
 
-			/* send it */
-			return doSendMessage(graphUpdate);
+		/* send it */
+		return doSendMessage(graphUpdate);
 
-		} catch (std::exception e) {
-			LOG(ERROR) << "JSONSerializer addGroup: Cannot create a JSON serialization. Exception = " << std::endl << e.what();
-			return false;
-		}
+	} catch (std::exception e) {
+		LOG(ERROR) << "JSONSerializer addGroup: Cannot create a JSON serialization. Exception = " << std::endl << e.what();
+		return false;
+	}
 
 	return false;
 }
@@ -156,6 +156,42 @@ bool JSONSerializer::addUncertainTransformNode(Id parentId,
 bool JSONSerializer::addGeometricNode(Id parentId,
 		Id& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape,
 		TimeStamp timeStamp, bool forcedId) {
+
+	LOG(DEBUG) << "JSONSerializer: adding a GeometricNode-" << assignedId.toString();
+	try {
+		std::string fileName = "GeometricNode-" + assignedId.toString() + fileSuffix;
+
+		/* header */
+		libvariant::Variant graphUpdate;
+		graphUpdate.Set("@worldmodeltype", libvariant::Variant("RSGUpdate"));
+		graphUpdate.Set("operation", libvariant::Variant("CREATE"));
+		JSONTypecaster::addIdToJSON(parentId, graphUpdate, "parentId");
+
+		/* the actual graph primitive */
+		libvariant::Variant node;
+		node.Set("@graphtype", libvariant::Variant("Node"));
+		node.Set("@semanticContext", libvariant::Variant("GeometricNode"));
+		JSONTypecaster::addIdToJSON(assignedId, node, "id");
+		JSONTypecaster::addAttributesToJSON(attributes, node);
+		JSONTypecaster::addShapeToJSON(shape, node, "geometry");
+		JSONTypecaster::addTimeStampToJSON(timeStamp, graphUpdate, "timeStamp");
+
+//		HDF5Typecaster::addShapeToHDF5Group(shape, group);
+//		HDF5Typecaster::addTimeStampToHDF5Group(timeStamp, group);
+
+		node.Set("unit", libvariant::Variant("m")); // TODO; better part of geometry?!?
+
+		/* assebmle it */
+		graphUpdate.Set("node", node);
+
+		/* send it */
+		return doSendMessage(graphUpdate);
+
+
+	} catch (std::exception e) {
+		LOG(ERROR) << "JSONSerializer addGeometricNode: Cannot create a JSON serialization. Exception = " << std::endl << e.what();
+		return false;
+	}
 
 	return false;
 }

@@ -22,6 +22,7 @@
 
 #include "brics_3d/core/Logger.h"
 #include "brics_3d/core/HomogeneousMatrix44.h"
+#include "brics_3d/core/ColoredPoint3D.h"
 #include "brics_3d/worldModel/WorldModel.h"
 #include <Variant/Variant.h>
 
@@ -371,6 +372,74 @@ public:
 				LOG(ERROR) << "JSONTypecaster: GeometricNode has no following @geometrytype contained on geometry:";
 				return false;
 			}
+		}
+
+		return true;
+	}
+
+	inline static bool addShapeToJSON(brics_3d::rsg::Shape::ShapePtr& shape, libvariant::Variant& node, string shapeTag) {
+		LOG(DEBUG) << "JSONTypecaster: addShapeToJSON: ";
+
+		rsg::Sphere::SpherePtr sphere(new rsg::Sphere());
+		sphere =  boost::dynamic_pointer_cast<rsg::Sphere>(shape);
+		rsg::Box::BoxPtr box(new rsg::Box());
+		box =  boost::dynamic_pointer_cast<rsg::Box>(shape);
+		rsg::Cylinder::CylinderPtr cylinder(new rsg::Cylinder());
+		cylinder =  boost::dynamic_pointer_cast<rsg::Cylinder>(shape);
+
+		if (sphere !=0) {
+			LOG(DEBUG) << "                 -> Found a sphere.";
+
+			node.Set("@geometrytype", libvariant::Variant("Sphere"));
+			node.Set("radius", libvariant::Variant(sphere->getRadius()));
+
+		} else if (cylinder !=0) {
+			LOG(DEBUG) << "                 -> Found a cylinder.";
+
+			node.Set("@geometrytype", libvariant::Variant("Cylinder"));
+			node.Set("radius", libvariant::Variant(cylinder->getRadius()));
+			node.Set("height", libvariant::Variant(cylinder->getHeight()));
+
+		} else if (box !=0) {
+			LOG(DEBUG) << "                 -> Found a box.";
+
+			node.Set("@geometrytype", libvariant::Variant("Box"));
+			node.Set("sizeX", libvariant::Variant(box->getSizeX()));
+			node.Set("sizeY", libvariant::Variant(box->getSizeY()));
+			node.Set("sizeZ", libvariant::Variant(box->getSizeZ()));
+
+		} else if (shape->getPointCloudIterator() != 0) {
+			LOG(DEBUG) << "                 -> Found a point cloud.";
+
+			node.Set("@geometrytype", libvariant::Variant("PointCloud3D"));
+
+			libvariant::Variant points;
+
+			IPoint3DIterator::IPoint3DIteratorPtr it = shape->getPointCloudIterator();
+			for (it->begin(); !it->end(); it->next()) {
+				libvariant::Variant point;
+
+				point.Set("x", libvariant::Variant(it->getX()));
+				point.Set("y", libvariant::Variant(it->getY()));
+				point.Set("z", libvariant::Variant(it->getZ()));
+
+				if(it->getRawData()->asColoredPoint3D() != 0) {
+					node.Set("@pointtype", libvariant::Variant("ColoredPoint3D"));
+					point.Set("r", libvariant::Variant(it->getRawData()->asColoredPoint3D()->getR()));
+					point.Set("g", libvariant::Variant(it->getRawData()->asColoredPoint3D()->getG()));
+					point.Set("b", libvariant::Variant(it->getRawData()->asColoredPoint3D()->getB()));
+				} else {
+					node.Set("@pointtype", libvariant::Variant("Point3D"));
+				}
+
+				points.Append(point);
+			}
+
+			node.Set("points", points);
+
+		} else {
+			LOG(ERROR) << "JSONTypecaster: addShapeToJSON: Shape type not yet supported.";
+			return false;
 		}
 
 		return true;
