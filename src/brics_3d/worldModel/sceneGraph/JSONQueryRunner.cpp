@@ -22,13 +22,13 @@
 namespace brics_3d {
 namespace rsg {
 
-JSONQueryRunner::JSONQueryRunner() {
-	// TODO Auto-generated constructor stub
+JSONQueryRunner::JSONQueryRunner(WorldModel* wm) :
+		wm(wm) {
 
 }
 
 JSONQueryRunner::~JSONQueryRunner() {
-	// TODO Auto-generated destructor stub
+
 }
 
 } /* namespace rsg */

@@ -31,10 +31,16 @@ namespace rsg {
  */
 class JSONQueryRunner {
 public:
-	JSONQueryRunner();
+	JSONQueryRunner(WorldModel* wm);
 	virtual ~JSONQueryRunner();
 
 	bool query(std::string& queryAsJson, std::string& resultAsJson);
+
+private:
+
+	bool query(libvariant::Variant& query, libvariant::Variant& result);
+
+	WorldModel* wm;
 
 };
 
