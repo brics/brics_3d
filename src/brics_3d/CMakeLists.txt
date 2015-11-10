@@ -251,6 +251,7 @@ ENDIF(USE_HDF5)
 IF (USE_JSON)
     list(APPEND WORLD_MODEL_LIBRARY_SOURCES ./worldModel/sceneGraph/JSONSerializer)
     list(APPEND WORLD_MODEL_LIBRARY_SOURCES ./worldModel/sceneGraph/JSONDeserializer)
+    list(APPEND WORLD_MODEL_LIBRARY_SOURCES ./worldModel/sceneGraph/JSONQueryRunner)
 ENDIF(USE_JSON)
 
 # add library directories (-L)
