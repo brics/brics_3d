@@ -31,6 +31,23 @@ JSONQueryRunner::~JSONQueryRunner() {
 
 }
 
+bool JSONQueryRunner::query(std::string& queryAsJson,
+		std::string& resultAsJson) {
+
+	libvariant::Variant query = libvariant:: Deserialize(queryAsJson, libvariant::SERIALIZE_GUESS); // GUESS seems to be more permissive with parsing than JSON
+	libvariant::Variant result;
+	bool success = this->query(query, result);
+
+	resultAsJson = libvariant::Serialize(result, libvariant::SERIALIZE_JSON); //could also go to heap (?!?)
+	return success;
+}
+
+bool JSONQueryRunner::query(libvariant::Variant& query,
+		libvariant::Variant& result) {
+
+	return true;
+}
+
 } /* namespace rsg */
 } /* namespace brics_3d */
 

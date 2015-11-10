@@ -31,9 +31,24 @@ namespace rsg {
  */
 class JSONQueryRunner {
 public:
+
+	/**
+	 * @brief Constuctor
+	 * @param wm Handle to perform the queries on.
+	 */
 	JSONQueryRunner(WorldModel* wm);
+
+	/**
+	 * @brief Default destructor
+	 */
 	virtual ~JSONQueryRunner();
 
+	/**
+	 * @brief Processes a JSON based queries and returns a JSON based result.
+	 * @param queryAsJson Query that comples to the rsg-query-schema.json Schema.
+	 * @param resultAsJson Result of a query that complies to the rsg-queryResult-schema.json Schema.
+	 * @return True on ssuccess full execution (No coding errors, etc). Though, the result could be empty.
+	 */
 	bool query(std::string& queryAsJson, std::string& resultAsJson);
 
 private:

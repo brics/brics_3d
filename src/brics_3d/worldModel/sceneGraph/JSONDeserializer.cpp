@@ -36,7 +36,7 @@ JSONDeserializer::~JSONDeserializer() {
 
 int JSONDeserializer::write(const char *dataBuffer, int dataLength, int &transferredBytes) {
 
-	libvariant::Variant model = libvariant:: Deserialize(dataBuffer, dataLength, libvariant::SERIALIZE_GUESS); // GUESS seems to be more permissive with parsing than JSON
+	libvariant::Variant model = libvariant::Deserialize(dataBuffer, dataLength, libvariant::SERIALIZE_GUESS); // GUESS seems to be more permissive with parsing than JSON
 	transferredBytes = dataLength;
 
 	return write(model);
