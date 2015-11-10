@@ -57,6 +57,16 @@ private:
 
 	WorldModel* wm;
 
+	bool handleGetNodes(libvariant::Variant& query, libvariant::Variant& result);
+	bool handleGetNodeAttributes(libvariant::Variant& query, libvariant::Variant& result);
+	bool handleGetNodeParents(libvariant::Variant& query, libvariant::Variant& result);
+	bool handleGetGroupChildren(libvariant::Variant& query, libvariant::Variant& result);
+	bool handleGetRootNode(libvariant::Variant& query, libvariant::Variant& result);
+	bool handleGetRemoteRootNodes(libvariant::Variant& query, libvariant::Variant& result);
+	bool handleGetTransform(libvariant::Variant& query, libvariant::Variant& result);
+	bool handleGetGeometry(libvariant::Variant& query, libvariant::Variant& result);
+
+
 };
 
 } /* namespace rsg */

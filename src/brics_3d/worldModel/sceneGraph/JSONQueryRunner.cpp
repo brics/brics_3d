@@ -45,7 +45,117 @@ bool JSONQueryRunner::query(std::string& queryAsJson,
 bool JSONQueryRunner::query(libvariant::Variant& query,
 		libvariant::Variant& result) {
 
-	return true;
+	result.Clear();
+	result.Set("success", libvariant::Variant(false));
+
+	try {
+
+		// Start to parse it
+		if(query.Contains("@worldmodeltype")) {
+
+			std::string type = query.Get("@worldmodeltype").AsString();
+			if(type.compare("RSGQuery") == 0) {
+				LOG(DEBUG) << "JSONQueryRunner: Found a model for a Query.";
+
+				/* The actual query */
+				if(query.Contains("query"))  {
+
+					std::string queryOperation = query.Get("query").AsString();
+					if(queryOperation.compare("GET_NODES") == 0) {
+						return handleGetNodes(query, result);
+
+					} else if (queryOperation.compare("GET_NODE_ATTRIBUTES") == 0) {
+						return handleGetNodeAttributes(query, result);
+
+					} else if (queryOperation.compare("GET_NODE_PARENTS") == 0) {
+						return handleGetNodeParents(query, result);
+
+					} else if (queryOperation.compare("GET_GROUP_CHILDREN") == 0) {
+						return handleGetGroupChildren(query, result);
+
+					} else if (queryOperation.compare("GET_ROOT_NODE") == 0) {
+						return handleGetRootNode(query, result);
+
+					} else if (queryOperation.compare("GET_REMOTE_ROOT_NODES") == 0) {
+						return handleGetRemoteRootNodes(query, result);
+
+					} else if (queryOperation.compare("GET_TRANSFORM") == 0) {
+						return handleGetTransform(query, result);
+
+					} else if (queryOperation.compare("GET_GEOMETRY") == 0) {
+						return handleGetGeometry(query, result);
+
+					} else {
+						LOG(ERROR) << "JSONQueryRunner: Mandatory query fild has unknown value = " << queryOperation;
+						return false;
+					}
+
+				} else {
+					LOG(ERROR) << "JSONQueryRunner: Mandatory query field not set at all.";
+					return false;
+				}
+
+
+			} else {
+				LOG(ERROR) << "JSONQueryRunner: Mandatory type field not set to RSGQuery. Instead it is = " << type;
+				return false;
+			}
+
+		} else {
+			LOG(WARNING) << "Top level model type @worldmodeltype does not exist.";
+		}
+
+
+
+
+		return true;
+
+	} catch (std::exception const & e) {
+		LOG(ERROR) << "JSONQueryRunner: Generic parser error: " << e.what() << std::endl << "Omitting this query.";
+		return false;
+	}
+
+	return false;
+}
+
+bool JSONQueryRunner::handleGetNodes(libvariant::Variant& query,
+		libvariant::Variant& result) {
+	return false;
+}
+
+bool JSONQueryRunner::handleGetNodeAttributes(libvariant::Variant& query,
+		libvariant::Variant& result) {
+	return false;
+}
+
+bool JSONQueryRunner::handleGetNodeParents(libvariant::Variant& query,
+		libvariant::Variant& result) {
+	return false;
+}
+
+bool JSONQueryRunner::handleGetGroupChildren(libvariant::Variant& query,
+		libvariant::Variant& result) {
+	return false;
+}
+
+bool JSONQueryRunner::handleGetRootNode(libvariant::Variant& query,
+		libvariant::Variant& result) {
+	return false;
+}
+
+bool JSONQueryRunner::handleGetRemoteRootNodes(libvariant::Variant& query,
+		libvariant::Variant& result) {
+	return false;
+}
+
+bool JSONQueryRunner::handleGetTransform(libvariant::Variant& query,
+		libvariant::Variant& result) {
+	return false;
+}
+
+bool JSONQueryRunner::handleGetGeometry(libvariant::Variant& query,
+		libvariant::Variant& result) {
+	return false;
 }
 
 } /* namespace rsg */
