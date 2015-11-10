@@ -33,6 +33,7 @@
 #include <brics_3d/worldModel/sceneGraph/JSONSerializer.h>
 #include <brics_3d/worldModel/sceneGraph/DotVisualizer.h>
 #include <brics_3d/worldModel/sceneGraph/OSGVisualizer.h>
+#include <brics_3d/worldModel/sceneGraph/JSONQueryRunner.h>
 
 using brics_3d::Logger;
 using namespace brics_3d;
@@ -41,8 +42,8 @@ using namespace brics_3d;
 int main(int argc, char **argv) {
 	LOG(INFO) << " JSON parser test.";
 
-	if (argc != 2) {
-		printf("Usage: %s input_file\n", *argv);
+	if ((argc != 2) && (argc != 3)) {
+		printf("Usage: %s input_file [input_query_file]\n", *argv);
 		return 1;
 	}
 
@@ -51,6 +52,14 @@ int main(int argc, char **argv) {
 	inputFile.open (fileName, std::ifstream::in);
 	std::stringstream serializedModel;
 	serializedModel << inputFile.rdbuf();
+
+	std::stringstream serializedQuery;
+	if (argc == 3) {
+		const char *queryFileName = argv[2];
+		std::ifstream queryInputFile;
+		queryInputFile.open (queryFileName, std::ifstream::in);
+		serializedQuery << queryInputFile.rdbuf();
+	}
 
 	/* Create a world model handle */
 	Logger::setMinLoglevel(Logger::LOGDEBUG);
@@ -94,6 +103,15 @@ int main(int argc, char **argv) {
 	brics_3d::rsg::JSONDeserializer deserializer(wm);
 	deserializer.setMapUnknownParentIdsToRootId(true);
 	deserializer.write(serializedModel.str());
+
+	/* (Optianlly) apply a query */
+	LOG(INFO) << std::endl <<"--------------------QUERY-----------------------" << std::endl;
+	LOG(INFO) << serializedQuery.str();
+	brics_3d::rsg::JSONQueryRunner queryRunner(wm);
+	string query = serializedQuery.str();
+	string reply;
+	queryRunner.query(query, reply);
+	LOG(INFO) << "Reply = " << std::endl << reply;
 
 	/* GUI */
 	while(!geometryVizualizer->done()) { // Wait until user closes the GUI-

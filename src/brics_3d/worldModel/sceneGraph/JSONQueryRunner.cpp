@@ -150,7 +150,10 @@ bool JSONQueryRunner::handleGetNodeAttributes(libvariant::Variant& query,
 	/* set up result message */
 	result.Set("query", libvariant::Variant("GET_NODE_ATTRIBUTES"));
 	result.Set("querySuccess", libvariant::Variant(success));
-	JSONTypecaster::addAttributesToJSON(attributes, result);
+	if(success) {
+		JSONTypecaster::addAttributesToJSON(attributes, result);
+	}
+
 
 	return success;
 }
@@ -239,7 +242,9 @@ bool JSONQueryRunner::handleGetTransform(libvariant::Variant& query,
 	/* set up result message */
 	result.Set("query", libvariant::Variant("GET_TRANSFORM"));
 	result.Set("querySuccess", libvariant::Variant(success));
-	JSONTypecaster::addTransformToJSON(transform, result, "transform");
+	if (success) {
+		JSONTypecaster::addTransformToJSON(transform, result, "transform");
+	}
 
 	return success;
 }
@@ -258,9 +263,11 @@ bool JSONQueryRunner::handleGetGeometry(libvariant::Variant& query,
 	/* set up result message */
 	result.Set("query", libvariant::Variant("GET_GEOMETRY"));
 	result.Set("querySuccess", libvariant::Variant(success));
-	JSONTypecaster::addShapeToJSON(shape, result, "geometry");
-	result.Set("unit", libvariant::Variant("m"));
-	JSONTypecaster::addTimeStampToJSON(timeStamp, result, "timeStamp");
+	if(success) {
+		JSONTypecaster::addShapeToJSON(shape, result, "geometry");
+		result.Set("unit", libvariant::Variant("m"));
+		JSONTypecaster::addTimeStampToJSON(timeStamp, result, "timeStamp");
+	}
 
 	return success;
 }
