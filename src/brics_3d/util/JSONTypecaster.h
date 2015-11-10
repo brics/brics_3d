@@ -319,6 +319,54 @@ public:
 		return true;
 	}
 
+	inline static bool addTransformToJSON(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform, libvariant::Variant& node, std::string transformTag) {
+
+		/* transform data */
+		const double* matrixData = transform->getRawData();
+		libvariant::Variant transformModel;
+		transformModel.Set("type", libvariant::Variant("HomogeneousMatrix44"));
+
+		libvariant::Variant matrix(libvariant::VariantDefines::ListType);
+		libvariant::Variant matrixRow1(libvariant::VariantDefines::ListType);
+		libvariant::Variant matrixRow2(libvariant::VariantDefines::ListType);
+		libvariant::Variant matrixRow3(libvariant::VariantDefines::ListType);
+		libvariant::Variant matrixRow4(libvariant::VariantDefines::ListType);
+
+		matrixRow1.Append(matrixData[matrixEntry::r11]);
+		matrixRow1.Append(matrixData[matrixEntry::r12]);
+		matrixRow1.Append(matrixData[matrixEntry::r13]);
+		matrixRow1.Append(matrixData[matrixEntry::x]);
+
+		matrixRow2.Append(matrixData[matrixEntry::r21]);
+		matrixRow2.Append(matrixData[matrixEntry::r22]);
+		matrixRow2.Append(matrixData[matrixEntry::r23]);
+		matrixRow2.Append(matrixData[matrixEntry::y]);
+
+		matrixRow3.Append(matrixData[matrixEntry::r31]);
+		matrixRow3.Append(matrixData[matrixEntry::r32]);
+		matrixRow3.Append(matrixData[matrixEntry::r33]);
+		matrixRow3.Append(matrixData[matrixEntry::z]);
+
+		/* We could also directly put it to 0,0,0,1 but we take the real data
+		 * to ease future debugging */
+		matrixRow4.Append(matrixData[3]);
+		matrixRow4.Append(matrixData[7]);
+		matrixRow4.Append(matrixData[11]);
+		matrixRow4.Append(matrixData[15]);
+
+		matrix.Append(matrixRow1);
+		matrix.Append(matrixRow2);
+		matrix.Append(matrixRow3);
+		matrix.Append(matrixRow4);
+
+		transformModel.Set("matrix", matrix);
+		transformModel.Set("unit", libvariant::Variant("m"));
+
+		node.Set(transformTag, transformModel);
+
+		return true;
+	}
+
 	inline static bool getShapeFromJSON(brics_3d::rsg::Shape::ShapePtr& shape, libvariant::Variant& node) {
 
 		brics_3d::rsg::Sphere::SpherePtr newSphere;

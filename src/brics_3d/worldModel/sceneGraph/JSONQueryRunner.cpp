@@ -46,7 +46,8 @@ bool JSONQueryRunner::query(libvariant::Variant& query,
 		libvariant::Variant& result) {
 
 	result.Clear();
-	result.Set("success", libvariant::Variant(false));
+	result.Set("querySuccess", libvariant::Variant(false)); // defult value; to be overriden
+	result.Set("@worldmodeltype", libvariant::Variant("RSGQueryResult"));
 
 	try {
 
@@ -120,42 +121,148 @@ bool JSONQueryRunner::query(libvariant::Variant& query,
 
 bool JSONQueryRunner::handleGetNodes(libvariant::Variant& query,
 		libvariant::Variant& result) {
-	return false;
+
+	/* prepare query */
+	std::vector<rsg::Attribute> attributes = JSONTypecaster::getAttributesFromJSON(query);
+	std::vector<rsg::Id> ids;
+
+	/* perform query */
+	bool success = wm->scene.getNodes(attributes, ids);
+
+	/* set up result message */
+	result.Set("query", libvariant::Variant("GET_NODES"));
+	result.Set("querySuccess", libvariant::Variant(success));
+	JSONTypecaster::addIdsToJSON(ids, result, "ids");
+
+	return success;
 }
 
 bool JSONQueryRunner::handleGetNodeAttributes(libvariant::Variant& query,
 		libvariant::Variant& result) {
-	return false;
+
+	/* prepare query */
+	rsg::Id id = JSONTypecaster::getIdFromJSON(query, "id");
+	std::vector<rsg::Attribute> attributes;
+
+	/* perform query */
+	bool success = wm->scene.getNodeAttributes(id, attributes);
+
+	/* set up result message */
+	result.Set("query", libvariant::Variant("GET_NODE_ATTRIBUTES"));
+	result.Set("querySuccess", libvariant::Variant(success));
+	JSONTypecaster::addAttributesToJSON(attributes, result);
+
+	return success;
 }
 
 bool JSONQueryRunner::handleGetNodeParents(libvariant::Variant& query,
 		libvariant::Variant& result) {
-	return false;
+
+	/* prepare query */
+	rsg::Id id = JSONTypecaster::getIdFromJSON(query, "id");
+	std::vector<rsg::Id> ids;
+
+	/* perform query */
+	bool success = wm->scene.getNodeParents(id, ids);
+
+	/* set up result message */
+	result.Set("query", libvariant::Variant("GET_NODE_PARENTS"));
+	result.Set("querySuccess", libvariant::Variant(success));
+	JSONTypecaster::addIdsToJSON(ids, result, "ids");
+
+	return success;
 }
 
 bool JSONQueryRunner::handleGetGroupChildren(libvariant::Variant& query,
 		libvariant::Variant& result) {
-	return false;
+
+	/* prepare query */
+	rsg::Id id = JSONTypecaster::getIdFromJSON(query, "id");
+	std::vector<rsg::Id> ids;
+
+	/* perform query */
+	bool success = wm->scene.getGroupChildren(id, ids);
+
+	/* set up result message */
+	result.Set("query", libvariant::Variant("GET_GROUP_CHILDREN"));
+	result.Set("querySuccess", libvariant::Variant(success));
+	JSONTypecaster::addIdsToJSON(ids, result, "ids");
+
+	return success;
 }
 
 bool JSONQueryRunner::handleGetRootNode(libvariant::Variant& query,
 		libvariant::Variant& result) {
-	return false;
+
+
+	/* perform query */
+	bool success = true; // There is always a root node.
+	Id rootId = wm->scene.getRootId();
+
+	/* set up result message */
+	result.Set("query", libvariant::Variant("GET_ROOT_NODE"));
+	result.Set("querySuccess", libvariant::Variant(success));
+	JSONTypecaster::addIdToJSON(rootId, result, "rootId");
+
+	return success;
 }
 
 bool JSONQueryRunner::handleGetRemoteRootNodes(libvariant::Variant& query,
 		libvariant::Variant& result) {
-	return false;
+
+	/* prepare query */
+	std::vector<rsg::Id> ids;
+
+	/* perform query */
+	bool success = wm->scene.getRemoteRootNodes(ids);
+
+	/* set up result message */
+	result.Set("query", libvariant::Variant("GET_REMOTE_ROOT_NODES"));
+	result.Set("querySuccess", libvariant::Variant(success));
+	JSONTypecaster::addIdsToJSON(ids, result, "ids");
+
+	return success;
 }
 
 bool JSONQueryRunner::handleGetTransform(libvariant::Variant& query,
 		libvariant::Variant& result) {
-	return false;
+
+	/* prepare query */
+	rsg::Id id = JSONTypecaster::getIdFromJSON(query, "id");
+	rsg::Id idReferenceNode = JSONTypecaster::getIdFromJSON(query, "idReferenceNode");
+	rsg::TimeStamp timeStamp = JSONTypecaster::getTimeStampFromJSON(query, "timeStamp");
+	HomogeneousMatrix44::IHomogeneousMatrix44Ptr transform(new HomogeneousMatrix44());
+
+	/* perform query */
+	bool success = wm->scene.getTransformForNode(id, idReferenceNode, timeStamp, transform);
+
+	/* set up result message */
+	result.Set("query", libvariant::Variant("GET_TRANSFORM"));
+	result.Set("querySuccess", libvariant::Variant(success));
+	JSONTypecaster::addTransformToJSON(transform, result, "transform");
+
+	return success;
 }
 
 bool JSONQueryRunner::handleGetGeometry(libvariant::Variant& query,
 		libvariant::Variant& result) {
-	return false;
+
+	/* prepare query */
+	rsg::Id id = JSONTypecaster::getIdFromJSON(query, "id");
+	Shape::ShapePtr shape;
+	TimeStamp timeStamp;
+
+	/* perform query */
+	bool success = wm->scene.getGeometry(id, shape, timeStamp);
+
+	/* set up result message */
+	result.Set("query", libvariant::Variant("GET_GEOMETRY"));
+	result.Set("querySuccess", libvariant::Variant(success));
+	JSONTypecaster::addShapeToJSON(shape, result, "geometry");
+	result.Set("unit", libvariant::Variant("m"));
+	JSONTypecaster::addTimeStampToJSON(timeStamp, result, "timeStamp");
+
+	return success;
 }
 
 } /* namespace rsg */
