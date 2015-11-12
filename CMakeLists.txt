@@ -168,6 +168,7 @@ ENDIF(USE_MICROBLX)
 # for version 1.8.12 or higher please define the following flag : HDF_1_8_12_OR_HIGHER
 # due to incompatible API changes in the HDF5 library.
 OPTION(USE_HDF5 "Enable HDF5 Support" OFF)
+OPTION(USE_HDF5_DEBUG_LIBS "If enabled, the debug libraries of HDF5 are used." OFF) 
 IF(USE_HDF5)
 
     # only newer versions of FindHDF5.cmake exctract the HDF5_ROOT from the environment variable
@@ -180,15 +181,23 @@ IF(USE_HDF5)
         MESSAGE(STATUS "INFO: HDF5_ROOT set as: $ENV{HDF5_ROOT}")
     ENDIF("$ENV{HDF5_ROOT}" STREQUAL "")
   
+
     FIND_PACKAGE(HDF5 REQUIRED COMPONENTS CXX HL)
     IF(USE_HDF5_NON_DEFAULT_PATH) #override results
         SET(HDF5_CXX_INCLUDE_DIR ${HDF5_ROOT}/include)        
-        SET(HDF5_LIBRARIES 
-            ${HDF5_ROOT}/lib/libhdf5_hl_debug.so
-            ${HDF5_ROOT}/lib/libhdf5_cpp_debug.so
-            ${HDF5_ROOT}/lib/libhdf5_debug.so
-            #CACHE STRING "Accumulated HDF5 libraries."   
-        )
+        IF(USE_HDF5_DEBUG_LIBS) 
+            SET(HDF5_LIBRARIES         
+                ${HDF5_ROOT}/lib/libhdf5_hl_debug.so
+                ${HDF5_ROOT}/lib/libhdf5_cpp_debug.so
+                ${HDF5_ROOT}/lib/libhdf5_debug.so  
+            )
+        ELSE(USE_HDF5_DEBUG_LIBS) 
+            SET(HDF5_LIBRARIES         
+                ${HDF5_ROOT}/lib/libhdf5_hl.so
+                ${HDF5_ROOT}/lib/libhdf5_cpp.so
+                ${HDF5_ROOT}/lib/libhdf5.so    
+            )
+        ENDIF(USE_HDF5_DEBUG_LIBS) 
     ENDIF(USE_HDF5_NON_DEFAULT_PATH)   
     MESSAGE(STATUS "INFO: used HDF5_LIBRARIES: ${HDF5_LIBRARIES}")
 
