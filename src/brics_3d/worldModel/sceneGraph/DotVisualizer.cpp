@@ -28,6 +28,8 @@ namespace rsg {
 
 DotVisualizer::DotVisualizer(brics_3d::rsg::SceneGraphFacade* scene) : scene(scene)  {
 	keepHistory = false;
+	generateSvgFiles = true;
+	isActive = true;
 	counter = 0;
 	fileName = "current_graph";
 }
@@ -107,42 +109,48 @@ bool DotVisualizer::removeParent(Id id, Id parentId) {
 }
 
 
-void DotVisualizer::printGraph(){
-	LOG(DEBUG) << "DotVisualizer: Printing graph to file.";
-	graphPrinter.setConfig(config);
-	scene->executeGraphTraverser(&graphPrinter, scene->getRootId());
+void DotVisualizer::printGraph() {
+	if(isActive) {
+		LOG(DEBUG) << "DotVisualizer: Printing graph to file.";
+		graphPrinter.setConfig(config);
+		scene->executeGraphTraverser(&graphPrinter, scene->getRootId());
 
-	/* Save a svg file as snapshopt */
-	// e.g.  "current_graph.gv";
-	output.open((fileName + ".gv").c_str(), std::ios::trunc);
-	if (!output.fail()) {
-		output << graphPrinter.getDotGraph();
-	} else {
-		LOG(ERROR) << "DotVisualizer: Cannot write to file " << fileName << ".gv";
-	}
+		/* Save a svg file as snapshopt */
+		// e.g.  "current_graph.gv";
+		output.open((fileName + ".gv").c_str(), std::ios::trunc);
+		if (!output.fail()) {
+			output << graphPrinter.getDotGraph();
+		} else {
+			LOG(ERROR) << "DotVisualizer: Cannot write to file " << fileName << ".gv";
+		}
 
-	output.flush();
-	output.close();
+		output.flush();
+		output.close();
 
-	std::stringstream command;
-	command.str("");
-	// e.g. "dot current_graph.gv -Tsvg -o current_graph.gv.svg";
-	command << "dot " << fileName <<".gv -Tsvg -o " << fileName << ".gv.svg";
-	system(command.str().c_str()); //e.g. with gthumb you can observe changes...
-
-	if(keepHistory) {
+		std::stringstream command;
 		command.str("");
+		if(generateSvgFiles) {
+			// e.g. "dot current_graph.gv -Tsvg -o current_graph.gv.svg";
+			command << "dot " << fileName <<".gv -Tsvg -o " << fileName << ".gv.svg";
+			system(command.str().c_str()); //e.g. with gthumb you can observe changes...
+		}
 
-		command << "cp " << fileName <<".gv.svg "<< fileName << "_graph_" << counter << ".gv.svg";
-		system(command.str().c_str());
-		command.str("");
-		command << "cp " << fileName <<".gv "<< fileName << "_graph_" << counter << ".gv";
-		system(command.str().c_str());
-		LOG(DEBUG) << "DotVisualizer:	File name is: "<< fileName << "_graph_" << counter << ".gv.svg";
+		if(keepHistory) {
+			command.str("");
+
+			if(generateSvgFiles) {
+				command << "cp " << fileName <<".gv.svg "<< fileName << "_graph_" << counter << ".gv.svg";
+				system(command.str().c_str());
+			}
+			command.str("");
+			command << "cp " << fileName <<".gv "<< fileName << "_graph_" << counter << ".gv";
+			system(command.str().c_str());
+			LOG(DEBUG) << "DotVisualizer:	File name is: "<< fileName << "_graph_" << counter << ".gv.svg";
+		}
+
+		graphPrinter.reset();
+		counter++;
 	}
-
-	graphPrinter.reset();
-	counter++;
 }
 
 

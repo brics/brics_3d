@@ -83,6 +83,22 @@ public:
 		this->fileName = fileName;
 	}
 
+	bool isGenerateSvgFiles() const {
+		return generateSvgFiles;
+	}
+
+	void setGenerateSvgFiles(bool generateSvgFiles) {
+		this->generateSvgFiles = generateSvgFiles;
+	}
+
+	bool isIsActive() const {
+		return isActive;
+	}
+
+	void setIsActive(bool isActive) {
+		this->isActive = isActive;
+	}
+
 private:
 	///Handle the to the scene to be observed
 	brics_3d::rsg::SceneGraphFacade* scene;
@@ -102,6 +118,12 @@ private:
 
 	/// If true all printaout will be saved to disk with a running number as part of the file name.
 	bool keepHistory;
+
+	/// If true all dot files are automatically converted to svg files.
+	bool generateSvgFiles;
+
+	/// Optinally toggle to pause or un-pause the visualizer.
+	bool isActive;
 
 	unsigned int counter;
 

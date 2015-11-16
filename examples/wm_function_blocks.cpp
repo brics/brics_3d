@@ -57,8 +57,9 @@ int main(int argc, char **argv) {
 	osgConfiguration.visualizeAttributes = true;
 	osgConfiguration.visualizeTransforms = false;
 	wm3DVisualizer->setConfig(osgConfiguration);
+	wmStructureVisualizer->setGenerateSvgFiles(false);
 	wm->scene.attachUpdateObserver(wm3DVisualizer); //enable visualization
-//	wm->scene.attachUpdateObserver(wmStructureVisualizer);
+	wm->scene.attachUpdateObserver(wmStructureVisualizer);
 	wm->scene.advertiseRootNode(); // Don't forget this one! Otherwise the observers cannot correctly handle the updates.
 
 	/* Load a data set */
@@ -95,7 +96,9 @@ int main(int argc, char **argv) {
 	vector<brics_3d::rsg::Id> output;
 	vector<brics_3d::rsg::Id> output2;
 //	wm->executeFunctionBlock("pointcloudloader", input, output);
+	wmStructureVisualizer->setIsActive(false);
 	wm->executeFunctionBlock("osmloader", input, output);
+	wmStructureVisualizer->setIsActive(true);
 	wm->executeFunctionBlock("octreefilter", output, output2); // "stack them together"
 
 	/* Wait until user closes the GUI */
