@@ -434,6 +434,10 @@ public:
 			}
 		}
 
+		if(shape == 0) {
+			return false;
+		}
+
 		return true;
 	}
 
