@@ -36,16 +36,27 @@ JSONDeserializer::~JSONDeserializer() {
 
 int JSONDeserializer::write(const char *dataBuffer, int dataLength, int &transferredBytes) {
 
-	libvariant::Variant model = libvariant::Deserialize(dataBuffer, dataLength, libvariant::SERIALIZE_GUESS); // GUESS seems to be more permissive with parsing than JSON
-	transferredBytes = dataLength;
+	try {
+		libvariant::Variant model = libvariant::Deserialize(dataBuffer, dataLength, libvariant::SERIALIZE_GUESS); // GUESS seems to be more permissive with parsing than JSON
+		transferredBytes = dataLength;
+		return write(model);
+	} catch (std::exception const & e) {
+		LOG(ERROR) << "JSONDeserializer: Generic parser error: " << e.what() << std::endl << "Omitting this update.";
+	}
 
-	return write(model);
+	return -1;
 }
 
 int JSONDeserializer::write(std::string data) {
 
-	libvariant::Variant model = libvariant:: Deserialize(data, libvariant::SERIALIZE_GUESS); // GUESS seems to be more permissive with parsing than JSON
-	return write(model);
+	try {
+		libvariant::Variant model = libvariant:: Deserialize(data, libvariant::SERIALIZE_GUESS); // GUESS seems to be more permissive with parsing than JSON
+		return write(model);
+	} catch (std::exception const & e) {
+		LOG(ERROR) << "JSONDeserializer: Generic parser error: " << e.what() << std::endl << "Omitting this update.";
+	}
+
+	return -1;
 }
 
 int JSONDeserializer::write(libvariant::Variant& model) {
