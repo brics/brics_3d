@@ -23,7 +23,7 @@
 #include <vector>
 #include <brics_3d/core/Logger.h>
 #include "brics_3d/worldModel/sceneGraph/Id.h"
-#include "/opt/src/sandbox/brics_3d_function_blocks/types/rsg/types/rsg_types.h" //FIXME
+//#include "/opt/src/sandbox/brics_3d_function_blocks/types/rsg/types/rsg_types.h" //FIXME
 //#include "rsg_ubx/types/rsg_types.h" // external folder
 
 namespace brics_3d {

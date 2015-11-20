@@ -28,6 +28,7 @@
 #include <dlfcn.h>
 
 /* microblx types for the robot scene graph */
+#include "/opt/src/sandbox/brics_3d_function_blocks/types/rsg/types/rsg_types.h" // TODO use FBX_MODULES path instead
 #include "brics_3d/util/UbxTypecaster.h"
 
 //brics_3d::WorldModel* brics_3d::WorldModel::microBlxWmHandle = 0;
