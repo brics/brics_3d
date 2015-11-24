@@ -2369,6 +2369,28 @@ void SceneGraphNodesTest::testAttributeFinder() {
 	CPPUNIT_ASSERT((*attributeFinder->getMatchingNodes()[0]).getAttributes()[1] == Attribute("taskType","targetArea"));
 	CPPUNIT_ASSERT_EQUAL(geode4Id, (*attributeFinder->getMatchingNodes()[0]).getId());
 
+	/* regex */
+	tmpAttributes.clear();
+	tmpAttributes.push_back(Attribute("name","Goal Area"));
+	tmpAttributes.push_back(Attribute("taskType","targetArea"));
+	Attribute query1("name","^.*");
+	CPPUNIT_ASSERT(attributeListContainsAttribute(tmpAttributes, query1));
+	Attribute query2("name","*");
+	CPPUNIT_ASSERT(attributeListContainsAttribute(tmpAttributes, query2));
+
+
+	attributeFinder->reset();
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(attributeFinder->getMatchingNodes().size()));
+	tmpAttributes.clear();
+	tmpAttributes.push_back(Attribute("taskType","^.*"));
+	attributeFinder->setQueryAttributes(tmpAttributes);
+	root->accept(attributeFinder);
+	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(attributeFinder->getMatchingNodes().size()));
+	CPPUNIT_ASSERT((*attributeFinder->getMatchingNodes()[0]).getAttributes()[1] == Attribute("taskType","targetArea"));
+	CPPUNIT_ASSERT_EQUAL(geode4Id, (*attributeFinder->getMatchingNodes()[0]).getId());
+	CPPUNIT_ASSERT((*attributeFinder->getMatchingNodes()[1]).getAttributes()[0] == Attribute("taskType","targetArea"));
+	CPPUNIT_ASSERT_EQUAL(group2Id, (*attributeFinder->getMatchingNodes()[1]).getId());
+
 	delete attributeFinder;
 
 

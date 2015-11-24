@@ -18,6 +18,7 @@
 ******************************************************************************/
 
 #include "Attribute.h"
+#include <boost/regex.hpp>
 
 namespace brics_3d {
 
@@ -59,10 +60,17 @@ ostream& operator<<(ostream &outStream, const Attribute &attribute) {
 }
 
 extern bool attributeListContainsAttribute(vector<Attribute> attributeList, Attribute queryAttribute) {
-	for (unsigned int i = 0; i < static_cast<unsigned int>(attributeList.size()); ++i) {
-		if (attributeList[i] == queryAttribute) {
-			return true;
+	try {
+		for (unsigned int i = 0; i < static_cast<unsigned int>(attributeList.size()); ++i) {
+			//		if (attributeList[i] == queryAttribute) {
+			boost::regex keyExpression(queryAttribute.key);
+			boost::regex valueExpression(queryAttribute.value);
+			if (regex_match(attributeList[i].key, keyExpression) && regex_match(attributeList[i].value , valueExpression)) {
+				return true;
+			}
 		}
+	} catch (std::exception e) {
+		return false;
 	}
 	return false;
 }
