@@ -23,6 +23,7 @@
 #include "brics_3d/core/Logger.h"
 #include "brics_3d/core/HomogeneousMatrix44.h"
 #include "brics_3d/core/ColoredPoint3D.h"
+#include "brics_3d/core/TriangleMeshImplicit.h"
 #include "brics_3d/worldModel/WorldModel.h"
 #include <Variant/Variant.h>
 
@@ -423,6 +424,52 @@ public:
 					LOG(DEBUG) << "\t\t found a PointCloud3D.";
 				} else if (geometrytype.compare("PointCloud3DBinaryBlob") == 0) {
 					LOG(DEBUG) << "\t\t found a PointCloud3DBinaryBlob.";
+				} else if (geometrytype.compare("TriangleMesh3D") == 0) {
+					LOG(DEBUG) << "\t\t found a TriangleMesh3D.";
+
+//					brics_3d::ITriangleMesh::ITriangleMeshPtr newMesh(new brics_3d::TriangleMeshImplicit());
+					brics_3d::TriangleMeshImplicit::TriangleMeshImplicitPtr newMesh(new brics_3d::TriangleMeshImplicit());
+					brics_3d::rsg::Mesh<brics_3d::ITriangleMesh>::MeshPtr newMeshContainer(new brics_3d::rsg::Mesh<brics_3d::ITriangleMesh>());
+					newMeshContainer->data = newMesh;
+					std::vector<Point3D>* points = newMesh->getVertices();
+					std::vector<int>* indices = newMesh->getIndices();
+
+					if(!geometry.Contains("points")) { LOG(ERROR) << "\t\t points list is missing"; return false;};
+					libvariant::Variant pointList = geometry.Get("points");
+					if (pointList.IsList()) {
+						for (libvariant::Variant::ListIterator i(pointList.ListBegin()), e(pointList.ListEnd()); i!=e; ++i) {
+
+							if(!i->Contains("@pointtype")) { LOG(ERROR) << "\t\t @pointtype list is missing"; return false;};
+
+							if(i->Get("@pointtype").AsString().compare("Point3D") == 0) {
+
+								points->push_back(Point3D(
+										Units::distanceToMeters(i->Get("x").AsDouble(), unit),
+										Units::distanceToMeters(i->Get("y").AsDouble(), unit),
+										Units::distanceToMeters(i->Get("z").AsDouble(), unit)
+								));
+
+								LOG(DEBUG) << "\t\t Point3D = " << points->back();
+
+							} else {
+								LOG(WARNING) << "JSONTypecaster: unknown @geometrytype: " << i->Get("@geometrytype").AsString() ;
+							}
+
+						}
+					}
+
+					if(!geometry.Contains("indices")) { LOG(ERROR) << "\t\t indices list is missing"; return false;};
+					libvariant::Variant indexList = geometry.Get("indices");
+					if (indexList.IsList()) {
+						for (libvariant::Variant::ListIterator i(indexList.ListBegin()), e(indexList.ListEnd()); i!=e; ++i) {
+
+							indices->push_back(i->AsInt());
+							LOG(DEBUG) << "\t\t Index = " << i->AsInt();
+						}
+					}
+
+					shape = newMeshContainer;
+
 				} else {
 					LOG(ERROR) << "JSONTypecaster: unkonwn geometry type.";
 					return false;

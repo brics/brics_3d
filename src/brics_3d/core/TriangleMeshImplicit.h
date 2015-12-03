@@ -31,6 +31,9 @@ namespace brics_3d {
 class TriangleMeshImplicit : public ITriangleMesh {
 public:
 
+	typedef boost::shared_ptr<TriangleMeshImplicit> TriangleMeshImplicitPtr;
+	typedef boost::shared_ptr<TriangleMeshImplicit const> TriangleMeshImplicitConstPtr;
+
 	/**
 	 * @brief Standard constructor
 	 */
