@@ -368,7 +368,7 @@ public:
 		return true;
 	}
 
-	inline static bool getShapeFromJSON(brics_3d::rsg::Shape::ShapePtr& shape, libvariant::Variant& node) {
+	inline static bool getShapeFromJSON(brics_3d::rsg::Shape::ShapePtr& shape, libvariant::Variant& node, string shapeTag = "geometry") {
 
 		brics_3d::rsg::Sphere::SpherePtr newSphere;
 		brics_3d::rsg::Cylinder::CylinderPtr newCylinder;
@@ -384,7 +384,7 @@ public:
 		if(node.Contains("geometry")) {
 			LOG(DEBUG) << "JSONTypecaster: GeometricNode has the following geometry:";
 
-			libvariant::Variant geometry = node.Get("geometry");
+			libvariant::Variant geometry = node.Get(shapeTag);
 
 			if(geometry.Contains("@geometrytype")) {
 				string geometrytype = geometry.Get("@geometrytype").AsString();
