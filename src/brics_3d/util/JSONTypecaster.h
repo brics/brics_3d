@@ -498,31 +498,36 @@ public:
 		rsg::Cylinder::CylinderPtr cylinder(new rsg::Cylinder());
 		cylinder =  boost::dynamic_pointer_cast<rsg::Cylinder>(shape);
 
+		libvariant::Variant geometry;
+
 		if (sphere !=0) {
 			LOG(DEBUG) << "                 -> Found a sphere.";
 
-			node.Set("@geometrytype", libvariant::Variant("Sphere"));
-			node.Set("radius", libvariant::Variant(sphere->getRadius()));
+			geometry.Set("@geometrytype", libvariant::Variant("Sphere"));
+			geometry.Set("radius", libvariant::Variant(sphere->getRadius()));
+			node.Set(shapeTag, geometry);
 
 		} else if (cylinder !=0) {
 			LOG(DEBUG) << "                 -> Found a cylinder.";
 
-			node.Set("@geometrytype", libvariant::Variant("Cylinder"));
-			node.Set("radius", libvariant::Variant(cylinder->getRadius()));
-			node.Set("height", libvariant::Variant(cylinder->getHeight()));
+			geometry.Set("@geometrytype", libvariant::Variant("Cylinder"));
+			geometry.Set("radius", libvariant::Variant(cylinder->getRadius()));
+			geometry.Set("height", libvariant::Variant(cylinder->getHeight()));
+			node.Set(shapeTag, geometry);
 
 		} else if (box !=0) {
 			LOG(DEBUG) << "                 -> Found a box.";
 
-			node.Set("@geometrytype", libvariant::Variant("Box"));
-			node.Set("sizeX", libvariant::Variant(box->getSizeX()));
-			node.Set("sizeY", libvariant::Variant(box->getSizeY()));
-			node.Set("sizeZ", libvariant::Variant(box->getSizeZ()));
+			geometry.Set("@geometrytype", libvariant::Variant("Box"));
+			geometry.Set("sizeX", libvariant::Variant(box->getSizeX()));
+			geometry.Set("sizeY", libvariant::Variant(box->getSizeY()));
+			geometry.Set("sizeZ", libvariant::Variant(box->getSizeZ()));
+			node.Set(shapeTag, geometry);
 
 		} else if (shape->getPointCloudIterator() != 0) {
 			LOG(DEBUG) << "                 -> Found a point cloud.";
 
-			node.Set("@geometrytype", libvariant::Variant("PointCloud3D"));
+			geometry.Set("@geometrytype", libvariant::Variant("PointCloud3D"));
 
 			libvariant::Variant points;
 
@@ -535,23 +540,25 @@ public:
 				point.Set("z", libvariant::Variant(it->getZ()));
 
 				if(it->getRawData()->asColoredPoint3D() != 0) {
-					node.Set("@pointtype", libvariant::Variant("ColoredPoint3D"));
+					geometry.Set("@pointtype", libvariant::Variant("ColoredPoint3D"));
 					point.Set("r", libvariant::Variant(it->getRawData()->asColoredPoint3D()->getR()));
 					point.Set("g", libvariant::Variant(it->getRawData()->asColoredPoint3D()->getG()));
 					point.Set("b", libvariant::Variant(it->getRawData()->asColoredPoint3D()->getB()));
 				} else {
-					node.Set("@pointtype", libvariant::Variant("Point3D"));
+					geometry.Set("@pointtype", libvariant::Variant("Point3D"));
 				}
 
 				points.Append(point);
 			}
 
-			node.Set("points", points);
+			geometry.Set("points", points);
+			node.Set(shapeTag, geometry);
 
 		} else {
 			LOG(ERROR) << "JSONTypecaster: addShapeToJSON: Shape type not yet supported.";
 			return false;
 		}
+
 
 		return true;
 	}
