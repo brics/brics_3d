@@ -497,6 +497,8 @@ public:
 		box =  boost::dynamic_pointer_cast<rsg::Box>(shape);
 		rsg::Cylinder::CylinderPtr cylinder(new rsg::Cylinder());
 		cylinder =  boost::dynamic_pointer_cast<rsg::Cylinder>(shape);
+		rsg::Mesh<brics_3d::ITriangleMesh>::MeshPtr mesh(new rsg::Mesh<brics_3d::ITriangleMesh>());
+		mesh = boost::dynamic_pointer_cast<rsg::Mesh<brics_3d::ITriangleMesh> >(shape);
 
 		libvariant::Variant geometry;
 
@@ -552,6 +554,62 @@ public:
 			}
 
 			geometry.Set("points", points);
+			node.Set(shapeTag, geometry);
+
+		} else if (mesh != 0) {
+			LOG(DEBUG) << "                 -> Found a mesh.";
+
+			geometry.Set("@geometrytype", libvariant::Variant("TriangleMesh3D"));
+
+			libvariant::Variant points;
+			libvariant::Variant indices(libvariant::VariantDefines::ListType);
+
+			TriangleMeshImplicit* meshImplicit = dynamic_cast<TriangleMeshImplicit*>(mesh.get());
+			if (meshImplicit != NULL) { //here we exploit knowledge about the implicit triangle representation
+
+				LOG(DEBUG) << "              	   -> It is a TriangleMeshImplicit.";
+				std::vector<brics_3d::Point3D>::const_iterator it;
+				for (it = meshImplicit->getVertices()->begin(); it != meshImplicit->getVertices()->end(); ++it) {
+
+					libvariant::Variant point;
+					point.Set("x", libvariant::Variant(it->getX()));
+					point.Set("y", libvariant::Variant(it->getY()));
+					point.Set("z", libvariant::Variant(it->getZ()));
+					geometry.Set("@pointtype", libvariant::Variant("Point3D"));
+					points.Append(point);
+				}
+
+				for (std::vector<int>::const_iterator it = meshImplicit->getIndices()->begin(); it != meshImplicit->getIndices()->end(); ++it) {
+					indices.Append(*it);
+				}
+			} else { // here we go with the generic (possible less efficient) representation
+
+					Point3D tmpVertex;
+					int indexCount = 0;
+
+					for (int i =0 ; i < mesh->data->getSize(); ++i) { // loop over all triangles
+						for (int j = 0; j <= 2; ++j) { // loop over the three vertices per triangle
+
+							/* vertex/point */
+							tmpVertex = *mesh->data->getTriangleVertex(i,j);
+							libvariant::Variant point;
+							point.Set("x", libvariant::Variant(tmpVertex.getX()));
+							point.Set("y", libvariant::Variant(tmpVertex.getY()));
+							point.Set("z", libvariant::Variant(tmpVertex.getZ()));
+							geometry.Set("@pointtype", libvariant::Variant("Point3D"));
+							points.Append(point);
+
+							/* index */
+							indices.Append(indexCount); //one-to-one mapping
+							indexCount++;
+
+						}
+					}
+
+			}
+
+			geometry.Set("points", points);
+			geometry.Set("indices", indices);
 			node.Set(shapeTag, geometry);
 
 		} else {
