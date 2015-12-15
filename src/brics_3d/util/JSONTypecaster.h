@@ -575,7 +575,7 @@ public:
 					point.Set("x", libvariant::Variant(it->getX()));
 					point.Set("y", libvariant::Variant(it->getY()));
 					point.Set("z", libvariant::Variant(it->getZ()));
-					geometry.Set("@pointtype", libvariant::Variant("Point3D"));
+					point.Set("@pointtype", libvariant::Variant("Point3D"));
 					points.Append(point);
 				}
 
@@ -596,7 +596,7 @@ public:
 							point.Set("x", libvariant::Variant(tmpVertex.getX()));
 							point.Set("y", libvariant::Variant(tmpVertex.getY()));
 							point.Set("z", libvariant::Variant(tmpVertex.getZ()));
-							geometry.Set("@pointtype", libvariant::Variant("Point3D"));
+							point.Set("@pointtype", libvariant::Variant("Point3D"));
 							points.Append(point);
 
 							/* index */

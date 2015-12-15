@@ -22,6 +22,7 @@
 #include "SceneGraphNodesTest.h" // for the observer counter
 #include "brics_3d/core/Logger.h"
 #include "brics_3d/core/HomogeneousMatrix44.h"
+#include "brics_3d/core/TriangleMeshExplicit.h"
 #include "brics_3d/worldModel/sceneGraph/DotGraphGenerator.h"
 
 #include <brics_3d/worldModel/sceneGraph/JSONSerializer.h>
@@ -432,12 +433,43 @@ void JSONTest::testUpdateObersver() {
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addParentCounter);
 	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.removeParentCounter);
 
+	/* create some mesh */
+	brics_3d::ITriangleMesh::ITriangleMeshPtr newMesh(new brics_3d::TriangleMeshExplicit());
+	brics_3d::rsg::Mesh<brics_3d::ITriangleMesh>::MeshPtr newMeshContainer(new brics_3d::rsg::Mesh<brics_3d::ITriangleMesh>());
+	newMeshContainer->data = newMesh;
+	newMeshContainer->data->addTriangle(Point3D(0,0,0), Point3D (0,1,0), Point3D (0,0,3));
+
+	rsg::Id meshId;
+	CPPUNIT_ASSERT(wm->scene.addGeometricNode(wm->getRootNodeId(), meshId, dummyAttributes, newMeshContainer, wm->now()));
+
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addRemoteRootNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.removeParentCounter);
+
+	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(4, remoteWmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addRemoteRootNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.removeParentCounter);;
+
 	CPPUNIT_ASSERT(wm->scene.addParent(utfId, tfId));
 
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addGroupCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addTransformCounter);
-	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addGeometricNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addRemoteRootNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.setNodeAttributesCounter);
 	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.setTransformCounter);
@@ -448,7 +480,7 @@ void JSONTest::testUpdateObersver() {
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addGroupCounter);
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addTransformCounter);
-	CPPUNIT_ASSERT_EQUAL(3, remoteWmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(4, remoteWmNodeCounter.addGeometricNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addRemoteRootNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.setNodeAttributesCounter);
 	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.setTransformCounter);
@@ -461,7 +493,7 @@ void JSONTest::testUpdateObersver() {
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addGroupCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addTransformCounter);
-	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addGeometricNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addRemoteRootNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.setNodeAttributesCounter);
 	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.setTransformCounter);
@@ -472,7 +504,7 @@ void JSONTest::testUpdateObersver() {
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addGroupCounter);
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addTransformCounter);
-	CPPUNIT_ASSERT_EQUAL(3, remoteWmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(4, remoteWmNodeCounter.addGeometricNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addRemoteRootNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.setNodeAttributesCounter);
 	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.setTransformCounter);
@@ -486,7 +518,7 @@ void JSONTest::testUpdateObersver() {
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addGroupCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addTransformCounter);
-	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addGeometricNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addRemoteRootNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.setNodeAttributesCounter);
 	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.setTransformCounter);
@@ -497,7 +529,7 @@ void JSONTest::testUpdateObersver() {
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addGroupCounter);
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addTransformCounter);
-	CPPUNIT_ASSERT_EQUAL(3, remoteWmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(4, remoteWmNodeCounter.addGeometricNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(2, remoteWmNodeCounter.addRemoteRootNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.setNodeAttributesCounter);
 	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.setTransformCounter);
@@ -512,7 +544,7 @@ void JSONTest::testUpdateObersver() {
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addGroupCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addTransformCounter);
-	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addGeometricNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addRemoteRootNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.setNodeAttributesCounter);
 	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.setTransformCounter);
@@ -523,7 +555,7 @@ void JSONTest::testUpdateObersver() {
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addGroupCounter);
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addTransformCounter);
-	CPPUNIT_ASSERT_EQUAL(3, remoteWmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(4, remoteWmNodeCounter.addGeometricNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(2, remoteWmNodeCounter.addRemoteRootNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.setNodeAttributesCounter);
 	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.setTransformCounter);
@@ -546,7 +578,7 @@ void JSONTest::testUpdateObersver() {
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addGroupCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addTransformCounter);
-	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addGeometricNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addRemoteRootNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.setNodeAttributesCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.setTransformCounter);
@@ -557,7 +589,7 @@ void JSONTest::testUpdateObersver() {
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addGroupCounter);
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addTransformCounter);
-	CPPUNIT_ASSERT_EQUAL(3, remoteWmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(4, remoteWmNodeCounter.addGeometricNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(2, remoteWmNodeCounter.addRemoteRootNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.setNodeAttributesCounter);
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.setTransformCounter);
@@ -582,7 +614,7 @@ void JSONTest::testUpdateObersver() {
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addGroupCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addTransformCounter);
-	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addGeometricNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addRemoteRootNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addConnectionCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.setNodeAttributesCounter);
@@ -594,7 +626,7 @@ void JSONTest::testUpdateObersver() {
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addGroupCounter);
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addTransformCounter);
-	CPPUNIT_ASSERT_EQUAL(3, remoteWmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(4, remoteWmNodeCounter.addGeometricNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(2, remoteWmNodeCounter.addRemoteRootNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(0, remoteWmNodeCounter.addConnectionCounter);
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.setNodeAttributesCounter);
@@ -618,7 +650,7 @@ void JSONTest::testUpdateObersver() {
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addGroupCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addTransformCounter);
-	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addGeometricNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addRemoteRootNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addConnectionCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.setNodeAttributesCounter);
@@ -630,7 +662,7 @@ void JSONTest::testUpdateObersver() {
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addGroupCounter);
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addTransformCounter);
-	CPPUNIT_ASSERT_EQUAL(3, remoteWmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(4, remoteWmNodeCounter.addGeometricNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(2, remoteWmNodeCounter.addRemoteRootNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addConnectionCounter);
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.setNodeAttributesCounter);
@@ -681,7 +713,7 @@ void JSONTest::testUpdateObersver() {
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addGroupCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addTransformCounter);
-	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addGeometricNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addRemoteRootNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addConnectionCounter);
 	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.setNodeAttributesCounter);
@@ -693,7 +725,7 @@ void JSONTest::testUpdateObersver() {
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addGroupCounter);
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addTransformCounter);
-	CPPUNIT_ASSERT_EQUAL(3, remoteWmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(4, remoteWmNodeCounter.addGeometricNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(2, remoteWmNodeCounter.addRemoteRootNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addConnectionCounter);
 	CPPUNIT_ASSERT_EQUAL(2, remoteWmNodeCounter.setNodeAttributesCounter);
@@ -710,7 +742,7 @@ void JSONTest::testUpdateObersver() {
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addGroupCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addTransformCounter);
-	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addGeometricNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addRemoteRootNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addConnectionCounter);
 	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.setNodeAttributesCounter); // NOTE: callObserversEvenIfErrorsOccurred is true as default, which is the case here
@@ -722,7 +754,7 @@ void JSONTest::testUpdateObersver() {
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addGroupCounter);
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addTransformCounter);
-	CPPUNIT_ASSERT_EQUAL(3, remoteWmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(4, remoteWmNodeCounter.addGeometricNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(2, remoteWmNodeCounter.addRemoteRootNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, remoteWmNodeCounter.addConnectionCounter);
 	CPPUNIT_ASSERT_EQUAL(3, remoteWmNodeCounter.setNodeAttributesCounter); // NOTE: callObserversEvenIfErrorsOccurred is true as default, which is the case here
