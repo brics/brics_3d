@@ -34,12 +34,21 @@ JSONQueryRunner::~JSONQueryRunner() {
 bool JSONQueryRunner::query(std::string& queryAsJson,
 		std::string& resultAsJson) {
 
-	libvariant::Variant query = libvariant:: Deserialize(queryAsJson, libvariant::SERIALIZE_GUESS); // GUESS seems to be more permissive with parsing than JSON
-	libvariant::Variant result;
-	bool success = this->query(query, result);
+	try {
 
-	resultAsJson = libvariant::Serialize(result, libvariant::SERIALIZE_JSON); //could also go to heap (?!?)
-	return success;
+		libvariant::Variant query = libvariant:: Deserialize(queryAsJson, libvariant::SERIALIZE_GUESS); // GUESS seems to be more permissive with parsing than JSON
+		libvariant::Variant result;
+		bool success = this->query(query, result);
+
+		resultAsJson = libvariant::Serialize(result, libvariant::SERIALIZE_JSON); //could also go to heap (?!?)
+		return success;
+
+	} catch (std::exception const & e) {
+		LOG(ERROR) << "JSONQueryRunner: Parser error at input query: " << e.what() << std::endl << "Omitting this query.";
+		resultAsJson = "{}";
+		return false;
+	}
+
 }
 
 bool JSONQueryRunner::query(libvariant::Variant& query,
