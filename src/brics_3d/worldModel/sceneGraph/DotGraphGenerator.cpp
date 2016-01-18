@@ -46,7 +46,13 @@ void DotGraphGenerator::visit(Node* node){
 	visitedNodes = find (alreadyVisitedNodes.begin(), alreadyVisitedNodes.end(), node);
 
 	if (visitedNodes == alreadyVisitedNodes.end()) { // if not in list: insert and handle node
-		doHandleNode(node);
+		Connection* connection = dynamic_cast<Connection*>(node);
+		if (connection != 0) { // TODO refactor dowards visitor
+			LOG(DEBUG) << " DotGraphGenerator::visit(Node* node): Connection found";
+			doHandleConnection(connection);
+		} else {
+			doHandleNode(node);
+		}
 		alreadyVisitedNodes.push_back(node);
 	}
 }
@@ -113,6 +119,42 @@ void DotGraphGenerator::doHandleNode(Node* node) {
 	}
     nodes << aggregatedAttributes.str();
     nodes << "\"]";
+	nodes << ";" << std::endl;
+}
+
+void DotGraphGenerator::doHandleConnection(Connection* connection) {
+	assert (connection !=0);
+//	LOG(DEBUG) << "Adding node " << node->getId() << " to dot graph.";
+
+	//Each node should add a line like this: 2 [label = "ID [2]\n(name = point_cloud_1)\n"];
+
+	std::stringstream aggregatedAttributes;
+	vector<Attribute> attributeList = connection->getAttributes();
+	for (unsigned int i = 0; i < static_cast<unsigned int>(attributeList.size()); ++i) {
+		aggregatedAttributes << attributeList[i];
+		aggregatedAttributes << "\\n";
+	}
+
+    if(config.abbreviateIds) {
+    	nodes << "\"";
+    	nodes << uuidToUnsignedInt(connection->getId());
+    	nodes << "\"";
+        nodes << " [label = \"";
+    	nodes << "ID [" << uuidToUnsignedInt(connection->getId()) << "]\\n";
+    } else {
+    	nodes << "\"";
+    	nodes << connection->getId();
+    	nodes << "\"";
+        nodes << " [label = \"";
+    	nodes << "ID [" << connection->getId() << "]\\n";
+	}
+	nodes << "Connection\\n";
+    nodes << aggregatedAttributes.str();
+    nodes << "\"";
+    nodes << "style=\"rounded,filled\" shape=diamond ";
+//    nodes << "style=\"filled\" ";
+    nodes << "fillcolor=lightblue ";
+    nodes <<"]";
 	nodes << ";" << std::endl;
 }
 

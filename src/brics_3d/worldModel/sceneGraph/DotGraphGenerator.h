@@ -22,6 +22,7 @@
 
 #include "Node.h"
 #include "Group.h"
+#include "Connection.h"
 #include "Transform.h"
 #include "GeometricNode.h"
 #include "INodeVisitor.h"
@@ -62,6 +63,7 @@ public:
 protected:
 
 	virtual void doHandleNode(Node* node); //could be overidden by more advanced/beautiful handlers
+	virtual void doHandleConnection(Connection* connection);
 	virtual void doHandleTransform(Transform* node);
 	virtual void doHandleGeometricNode(GeometricNode* node);
 	virtual void doHandleEdges(Group* node);
