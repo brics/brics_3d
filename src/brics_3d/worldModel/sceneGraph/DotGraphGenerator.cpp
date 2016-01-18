@@ -156,6 +156,24 @@ void DotGraphGenerator::doHandleConnection(Connection* connection) {
     nodes << "fillcolor=lightblue ";
     nodes <<"]";
 	nodes << ";" << std::endl;
+
+	/* Add further edges for in going arcs */
+	for (unsigned int sourceIndex = 0; sourceIndex < connection->getNumberOfSourceNodes(); ++sourceIndex) {
+		if(config.abbreviateIds) {
+			edges << "\"" << uuidToUnsignedInt(connection->getSourceNode(sourceIndex)->getId()) << "\"" << " -> " << "\"" << uuidToUnsignedInt(connection->getId()) << "\"" << " [ style=dashed, label=\"in\" ] " << ";" << std::endl;
+		} else {
+			edges << "\"" << connection->getSourceNode(sourceIndex)->getId() << "\"" << " -> " << "\"" << connection->getId() << "\"" << " [ style=dashed, label=\"in\" ] " << ";" << std::endl;
+		}
+	}
+	/* Add further edges for out going arcs */
+	for (unsigned int targetIndex = 0; targetIndex < connection->getNumberOfTargetNodes(); ++targetIndex) {
+		if(config.abbreviateIds) {
+			edges << "\"" << uuidToUnsignedInt(connection->getId())  << "\"" << " -> " << "\"" << uuidToUnsignedInt(connection->getTargetNode(targetIndex)->getId()) << "\"" << " [ style=dashed, label=\"out\" ] " << ";" << std::endl;
+		} else {
+			edges << "\"" << connection->getId() << "\"" << " -> " << "\"" << connection->getTargetNode(targetIndex)->getId() << "\"" << " [ style=dashed, label=\"out\" ] " << ";" << std::endl;
+		}
+	}
+
 }
 
 void DotGraphGenerator::doHandleTransform(Transform* node) {

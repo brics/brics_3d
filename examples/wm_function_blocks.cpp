@@ -96,7 +96,7 @@ int main(int argc, char **argv) {
 	vector<brics_3d::rsg::Id> output;
 	vector<brics_3d::rsg::Id> output2;
 //	wm->executeFunctionBlock("pointcloudloader", input, output);
-	wmStructureVisualizer->setIsActive(false);
+	wmStructureVisualizer->setIsActive(true);
 	wm->executeFunctionBlock("osmloader", input, output);
 	wmStructureVisualizer->setIsActive(true);
 	wm->executeFunctionBlock("octreefilter", output, output2); // "stack them together"
