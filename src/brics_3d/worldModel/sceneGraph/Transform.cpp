@@ -47,9 +47,10 @@ IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransform(Node::NodePtr n
 	PathCollector* pathCollector = new PathCollector();
 	node->accept(pathCollector);
 	if (static_cast<unsigned int>(pathCollector->getNodePaths().size()) > 0) { // != root
-		*result = *((*result) * (*(getGlobalTransformAlongPath(pathCollector->getNodePaths()[0], timeStamp))));
+		//*result = *((*result) * (*(getGlobalTransformAlongPath(pathCollector->getNodePaths()[0], timeStamp))));
+		*result = *((*result) * (*(getGlobalTransformAlongPath(pathCollector->getNodePaths().back(), timeStamp))));
 		if (static_cast<unsigned int>(pathCollector->getNodePaths().size()) > 1) {
-			LOG(WARNING) << "Multiple transform paths to this node detected. Taking fist path and ignoring the rest.";
+			LOG(WARNING) << "Multiple transform paths to this node detected. Taking last path and ignoring the rest.";
 		}
 	}
 

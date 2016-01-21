@@ -60,6 +60,8 @@ ostream& operator<<(ostream &outStream, const Attribute &attribute) {
 }
 
 extern bool attributeListContainsAttribute(vector<Attribute> attributeList, Attribute queryAttribute) {
+
+
 	try {
 		for (unsigned int i = 0; i < static_cast<unsigned int>(attributeList.size()); ++i) {
 			//		if (attributeList[i] == queryAttribute) {

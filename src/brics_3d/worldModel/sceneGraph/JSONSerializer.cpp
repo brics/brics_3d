@@ -454,13 +454,14 @@ bool JSONSerializer::doSendMessage(libvariant::Variant& message) {
 bool JSONSerializer::doSendMessage(std::string& message) {
 	int transferredBytes = 0;
 	int returnValue = -1;
+	LOG(DEBUG) << "JSONSerializer: send message = " << message;
 
 	if(port != 0) {
 		returnValue = port->write(message.c_str(), message.size(), transferredBytes);
 	} else {
 		LOG(WARNING) << "JSONSerializer: message could not be send as the output port is not specified: " << std::endl << message;
 	}
-	LOG(DEBUG) << "JSONSerializer: \t" << transferredBytes << " bytes transferred.";
+	LOG(DEBUG) << "JSONSerializer: \t" << transferredBytes << " bytes transferred of message with " << message.size() << " bytes.";
 
 	return (returnValue >= 0);
 }

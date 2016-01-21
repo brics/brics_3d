@@ -2098,9 +2098,9 @@ void SceneGraphNodesTest::testGlobalTransformCalculation() {
 
 	resultTransform = getGlobalTransform(node5, dummyTime);
 	matrixPtr = resultTransform->getRawData();
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(8.0, matrixPtr[12], maxTolerance); //check (just) translation
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(10.0, matrixPtr[13], maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(11.0, matrixPtr[14], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(6/*8.0*/, matrixPtr[12], maxTolerance); //check (just) translation
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(5 /*10.0*/, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3 /*11.0*/, matrixPtr[14], maxTolerance);
 
 	resultTransform = getGlobalTransform(tf2, dummyTime);
 	matrixPtr = resultTransform->getRawData();
@@ -2140,9 +2140,9 @@ void SceneGraphNodesTest::testGlobalTransformCalculation() {
 
 	resultTransform = getGlobalTransform(node5, dummyTime + TimeStamp(5, Units::MilliSecond));
 	matrixPtr = resultTransform->getRawData();
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(108.0, matrixPtr[12], maxTolerance); //check (just) translation
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(110.0, matrixPtr[13], maxTolerance);
-	CPPUNIT_ASSERT_DOUBLES_EQUAL(111.0, matrixPtr[14], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(106.0 /*108.0*/, matrixPtr[12], maxTolerance); //check (just) translation
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(105.0 /*110.0*/, matrixPtr[13], maxTolerance);
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(103.0 /*111.0*/, matrixPtr[14], maxTolerance);
 
 	resultTransform = getGlobalTransform(tf2, dummyTime + TimeStamp(5, Units::MilliSecond));
 	matrixPtr = resultTransform->getRawData();
@@ -2375,7 +2375,7 @@ void SceneGraphNodesTest::testAttributeFinder() {
 	tmpAttributes.push_back(Attribute("taskType","targetArea"));
 	Attribute query1("name","^.*");
 	CPPUNIT_ASSERT(attributeListContainsAttribute(tmpAttributes, query1));
-	Attribute query2("name","*");
+	Attribute query2("name","*"); // this is not POSIX regex...
 	CPPUNIT_ASSERT(attributeListContainsAttribute(tmpAttributes, query2));
 
 
@@ -3044,8 +3044,10 @@ void SceneGraphNodesTest::testSceneGraphFacadeTransforms() {
 	/*check root to node5 */
 	CPPUNIT_ASSERT(scene.getTransformForNode(node5Id, scene.getRootId(), dummyTime, resultTransform));
 	*expectedTransform = *identity;
-	*expectedTransform = *( (*expectedTransform) * (*transform001) );
-	*expectedTransform = *( (*expectedTransform) * (*transform654) );
+//	*expectedTransform = *( (*expectedTransform) * (*transform001) );
+//	*expectedTransform = *( (*expectedTransform) * (*transform654) );
+	*expectedTransform = *( (*expectedTransform) * (*transform123) );
+
 
 	resultMatrixData = resultTransform->getRawData();
 	desiredMatrixData = expectedTransform->getRawData();
@@ -3126,11 +3128,12 @@ void SceneGraphNodesTest::testSceneGraphFacadeTransforms() {
 	TimeStamp dummyTime2 = dummyTime + TimeStamp(1, Units::MilliSecond);
 	CPPUNIT_ASSERT(scene.setTransform(tf3Id, transform789, dummyTime2));
 
-	/*check root to node5 (involves tf3) @ dummyTime */
+	/*check root to node5 (involves tf3 incase of firt path - now it is t2) @ dummyTime */
 	CPPUNIT_ASSERT(scene.getTransformForNode(node5Id, scene.getRootId(), dummyTime, resultTransform)); // query stll at dummy time -> result shoudlbe unschneged
 	*expectedTransform = *identity;
-	*expectedTransform = *( (*expectedTransform) * (*transform001) );
-	*expectedTransform = *( (*expectedTransform) * (*transform654) );
+//	*expectedTransform = *( (*expectedTransform) * (*transform001) );
+//	*expectedTransform = *( (*expectedTransform) * (*transform654) );
+	*expectedTransform = *( (*expectedTransform) * (*transform123) );
 
 	resultMatrixData = resultTransform->getRawData();
 	desiredMatrixData = expectedTransform->getRawData();
@@ -3138,11 +3141,12 @@ void SceneGraphNodesTest::testSceneGraphFacadeTransforms() {
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[13], resultMatrixData[13], maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[14], resultMatrixData[14], maxTolerance);
 
-	/*check root to node5 (involves tf3) @ dummyTime2 */
+	/*check root to node5 (involves tf3 incase of firt path - now it is t2) @ dummyTime2 */
 	CPPUNIT_ASSERT(scene.getTransformForNode(node5Id, scene.getRootId(), dummyTime2, resultTransform)); // query stll at dummy time -> result shoudlbe unschneged
 	*expectedTransform = *identity;
-	*expectedTransform = *( (*expectedTransform) * (*transform001) );
-	*expectedTransform = *( (*expectedTransform) * (*transform789) ); // this is the update @ dummyTime2
+//	*expectedTransform = *( (*expectedTransform) * (*transform001) );
+//	*expectedTransform = *( (*expectedTransform) * (*transform789) ); // this is the update @ dummyTime2
+	*expectedTransform = *( (*expectedTransform) * (*transform123) );
 
 	resultMatrixData = resultTransform->getRawData();
 	desiredMatrixData = expectedTransform->getRawData();
@@ -3153,11 +3157,12 @@ void SceneGraphNodesTest::testSceneGraphFacadeTransforms() {
 
 	CPPUNIT_ASSERT(!scene.setTransform(tf3Id, transform123, dummyTime2));
 
-	/*check root to node5 (involved tf3) @ dummyTime */
+	/*check root to node5 (involves tf3 incase of firt path - now it is t2) @ dummyTime */
 	CPPUNIT_ASSERT(scene.getTransformForNode(node5Id, scene.getRootId(), dummyTime, resultTransform)); // query stll at dummy time -> result shoudlbe unschneged
 	*expectedTransform = *identity;
-	*expectedTransform = *( (*expectedTransform) * (*transform001) );
-	*expectedTransform = *( (*expectedTransform) * (*transform654) );
+//	*expectedTransform = *( (*expectedTransform) * (*transform001) );
+//	*expectedTransform = *( (*expectedTransform) * (*transform654) );
+	*expectedTransform = *( (*expectedTransform) * (*transform123) );
 
 	resultMatrixData = resultTransform->getRawData();
 	desiredMatrixData = expectedTransform->getRawData();
@@ -3165,11 +3170,12 @@ void SceneGraphNodesTest::testSceneGraphFacadeTransforms() {
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[13], resultMatrixData[13], maxTolerance);
 	CPPUNIT_ASSERT_DOUBLES_EQUAL(desiredMatrixData[14], resultMatrixData[14], maxTolerance);
 
-	/*check root to node5 (involved tf3) @ dummyTime2 */
+	/*check root to node5 (involved  -tf3- tf2) @ dummyTime2 */
 	CPPUNIT_ASSERT(scene.getTransformForNode(node5Id, scene.getRootId(), dummyTime2, resultTransform)); // query stll at dummy time -> result shoudlbe unschneged
 	*expectedTransform = *identity;
-	*expectedTransform = *( (*expectedTransform) * (*transform001) );
-	*expectedTransform = *( (*expectedTransform) * (*transform789) );
+//	*expectedTransform = *( (*expectedTransform) * (*transform001) );
+//	*expectedTransform = *( (*expectedTransform) * (*transform789) );
+	*expectedTransform = *( (*expectedTransform) * (*transform123) );
 
 	resultMatrixData = resultTransform->getRawData();
 	desiredMatrixData = expectedTransform->getRawData();
