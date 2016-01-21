@@ -66,18 +66,23 @@ public:
 	inline static vector<rsg::Id> getIdsFromJSON(libvariant::Variant& node, string idsTag) {
 		vector<rsg::Id> ids;
 
-		LOG(DEBUG) << "JSONTypecaster: Id list " << idsTag << " has the following Ids:";
-		libvariant::Variant idList = node.Get(idsTag);
-		if (idList.IsList()) {
-			for (libvariant::Variant::ListIterator i(idList.ListBegin()), e(idList.ListEnd()); i!=e; ++i) {
-				Id id;
-				id.fromString(i->AsString());
-				assert(!id.isNil());
-				LOG(DEBUG) << "JSONTypecaster: \t " << id;
-				ids.push_back(id);
+		try {
+			LOG(DEBUG) << "JSONTypecaster: Id list " << idsTag << " has the following Ids:";
+			libvariant::Variant idList = node.Get(idsTag);
+			if (idList.IsList()) {
+				for (libvariant::Variant::ListIterator i(idList.ListBegin()), e(idList.ListEnd()); i!=e; ++i) {
+					Id id;
+					id.fromString(i->AsString());
+					assert(!id.isNil());
+					LOG(DEBUG) << "JSONTypecaster: \t " << id;
+					ids.push_back(id);
+				}
 			}
-		}
 
+		} catch (std::exception const & e) {
+			//simply return am empty list
+			ids.clear();
+		}
 		return ids;
 	}
 

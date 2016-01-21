@@ -429,10 +429,7 @@ bool JSONDeserializer::doAddTransformNode(libvariant::Variant& group,
 	/* attributes */
 	std::vector<rsg::Attribute> attributes = rsg::JSONTypecaster::getAttributesFromJSON(group);
 
-	/* Id lists */
-//	std::vector<rsg::Id> sourceIds = rsg::JSONTypecaster::getIdsFromJSON(connection, "sourceIds");
-//	std::vector<rsg::Id> targetIds = rsg::JSONTypecaster::getIdsFromJSON(connection, "targetIds");
-//	assert((sourceIds.size() > 0) || (targetIds.size() > 0)); // there should be at least one
+	//	assert((sourceIds.size() > 0) || (targetIds.size() > 0)); // there should be at least one
 
 	/* stamps */
 	rsg::TimeStamp start = JSONTypecaster::getTimeStampFromJSON(group, "start");
@@ -447,9 +444,30 @@ bool JSONDeserializer::doAddTransformNode(libvariant::Variant& group,
 
 	transform = history.getData(history.getLatestTimeStamp());
 
+	/* Id lists */
+	std::vector<rsg::Id> sourceIds = rsg::JSONTypecaster::getIdsFromJSON(group, "sourceIds");
+	std::vector<rsg::Id> targetIds = rsg::JSONTypecaster::getIdsFromJSON(group, "targetIds");
+	if((sourceIds.size() == 0) || (targetIds.size() == 0)) {
+		LOG(DEBUG) << "JSONDeserializer doAddTransformNode: There must be at least one source or target id.";
+
+		/* For backwards compatibility: this is the oldish way of adding a transform */
+		return wm->scene.addTransformNode(parentId, id, attributes, transform, history.getLatestTimeStamp(), !id.isNil()); // Last parameter makes the "id" field optional
+	}
+
 	/* create it */
-	return wm->scene.addTransformNode(parentId, id, attributes, transform, history.getLatestTimeStamp(), !id.isNil()); // Last parameter makes the "id" field optional
-//	wm->scene.addConnection(parentId, id, attributes, sourceIds, targetIds, start, end, true);
+	/* For now we insert it with the following parent child relations:
+	 *  n1
+	 *  |
+	 *  v
+	 *  tf
+	 *  |
+	 *  n2
+	 */
+	parentId = sourceIds[0]; // This has still to be refactored by the connection type.
+	bool success = wm->scene.addTransformNode(parentId, id, attributes, transform, history.getLatestTimeStamp(), !id.isNil()); // Last parameter makes the "id" field optional
+	wm->scene.addParent(targetIds[0],id);
+	return success;
+	//	wm->scene.addConnection(parentId, id, attributes, sourceIds, targetIds, start, end, true);
 
 }
 
