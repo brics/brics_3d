@@ -61,6 +61,13 @@ ostream& operator<<(ostream &outStream, const Attribute &attribute) {
 
 extern bool attributeListContainsAttribute(vector<Attribute> attributeList, Attribute queryAttribute) {
 
+	/* Convenience substitution */
+	if (queryAttribute.key.compare("*") == 0) {
+		queryAttribute.key = "^.*";
+	}
+	if (queryAttribute.value.compare("*") == 0) {
+		queryAttribute.value = "^.*";
+	}
 
 	try {
 		for (unsigned int i = 0; i < static_cast<unsigned int>(attributeList.size()); ++i) {
