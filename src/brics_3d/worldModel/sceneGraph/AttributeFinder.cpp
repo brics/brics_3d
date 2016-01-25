@@ -62,6 +62,10 @@ void AttributeFinder::visit(Node* node) {
 	}
 }
 
+void AttributeFinder::visit(Connection* connection) {
+	this->visit(dynamic_cast<Node*>(connection)); //just feed forward to be handled as node
+}
+
 void AttributeFinder::visit(Group* node){
 	this->visit(dynamic_cast<Node*>(node)); //just feed forward to be handled as node
 }

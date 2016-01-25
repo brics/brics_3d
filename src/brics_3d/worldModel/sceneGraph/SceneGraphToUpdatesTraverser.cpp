@@ -70,6 +70,33 @@ void SceneGraphToUpdatesTraverser::visit(GeometricNode* node) {
 	}
 }
 
+void SceneGraphToUpdatesTraverser::visit(Connection* connection) {
+	Id connectionId = connection->getId();
+	Id parentId;
+	if(!handleExistingNode(connection, parentId)) {
+		vector<Id> sourceIds;
+		vector<Id> targetIds;
+		for (unsigned int i = 0; i < connection->getNumberOfSourceNodes(); ++i) {
+			sourceIds.push_back(connection->getSourceNode(i)->getId());
+		}
+		for (unsigned int i = 0; i < connection->getNumberOfTargetNodes(); ++i) {
+			targetIds.push_back(connection->getTargetNode(i)->getId());
+		}
+
+		updatesRecieverHandle->addConnection(parentId,
+				connectionId,
+				connection->getAttributes(),
+				sourceIds,
+				targetIds,
+				connection->getStart(),
+				connection->getEnd(),
+				enableForcedIds);
+	}
+
+}
+
+
+
 void SceneGraphToUpdatesTraverser::reset() {
 	alreadyVisitedNodesWithPendingStatus.clear();
 }

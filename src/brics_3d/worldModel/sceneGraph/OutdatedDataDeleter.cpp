@@ -76,6 +76,11 @@ void OutdatedDataDeleter::visit(GeometricNode* node){
 	}
 }
 
+void OutdatedDataDeleter::visit(Connection* connection) {
+
+}
+
+
 bool OutdatedDataDeleter::getPerformAutomaticHistoryUpdates() const {
     return performAutomaticHistoryUpdates;
 }

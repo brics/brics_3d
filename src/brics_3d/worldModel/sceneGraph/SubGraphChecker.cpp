@@ -54,6 +54,11 @@ void SubGraphChecker::visit(GeometricNode* node){
 	this->visit(dynamic_cast<Node*>(node)); //just feed forward to be handled as node
 }
 
+void SubGraphChecker::visit(Connection* connection) {
+	this->visit(dynamic_cast<Node*>(connection)); //just feed forward to be handled as node
+}
+
+
 void SubGraphChecker::reset(Id subGraphNodeId) {
 	this->subGraphNodeId = subGraphNodeId;
 	isInSubGraph = false;

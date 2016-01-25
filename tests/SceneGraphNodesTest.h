@@ -92,6 +92,11 @@ public:
 //		cout << "GeometricNode ID = " << node->getId() << endl;
 		collectedIDs.push_back(node->getId());
 	};
+	void visit(rsg::Connection* connection){
+//		cout << "GeometricNode ID = " << node->getId() << endl;
+		collectedIDs.push_back(connection->getId());
+	};
+
 
 	std::vector<Id> collectedIDs;
 };

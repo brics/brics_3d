@@ -1,6 +1,6 @@
 /******************************************************************************
- * BRICS_3D - 3D Perception and Modeling Library
  * Copyright (c) 2014, KU Leuven
+ * BRICS_3D - 3D Perception and Modeling Library
  *
  * Author: Sebastian Blumenthal
  *

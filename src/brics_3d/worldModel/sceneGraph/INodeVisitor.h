@@ -28,6 +28,7 @@ class Node;
 class Group;
 class Transform;
 class GeometricNode;
+class Connection;
 
 /**
  * @brief Abstract interface for visitors of the scene graph (Visitor pattern).
@@ -48,6 +49,7 @@ public:
 	virtual void visit(Group* node){};
 	virtual void visit(Transform* node){};
 	virtual void visit(GeometricNode* node){};
+	virtual void visit(Connection* connection) = 0;//{};
 
     TraverseDirection getDirection() const
     {

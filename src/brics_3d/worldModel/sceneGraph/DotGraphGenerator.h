@@ -25,6 +25,7 @@
 #include "Connection.h"
 #include "Transform.h"
 #include "GeometricNode.h"
+#include "Connection.h"
 #include "INodeVisitor.h"
 #include "VisualizationConfiguration.h"
 
@@ -47,6 +48,7 @@ public:
 	virtual void visit(Group* node);
 	virtual void visit(Transform* node);
 	virtual void visit(GeometricNode* node);
+	virtual void visit(Connection* connection);
 
 	virtual void reset();
 

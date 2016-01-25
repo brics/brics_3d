@@ -24,6 +24,7 @@
 #include "Group.h"
 #include "Transform.h"
 #include "GeometricNode.h"
+#include "Connection.h"
 #include "INodeVisitor.h"
 
 #include "brics_3d/util/Timer.h"
@@ -51,6 +52,8 @@ public:
 	void visit(Group* node);
 	void visit(Transform* node);
 	void visit(GeometricNode* node);
+	void visit(Connection* connection);
+
 
     bool getPerformAutomaticHistoryUpdates() const;
     void setPerformAutomaticHistoryUpdates(bool performAutomaticHistoryUpdates);

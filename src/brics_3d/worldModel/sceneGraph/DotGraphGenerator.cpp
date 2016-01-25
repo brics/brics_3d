@@ -46,13 +46,13 @@ void DotGraphGenerator::visit(Node* node){
 	visitedNodes = find (alreadyVisitedNodes.begin(), alreadyVisitedNodes.end(), node);
 
 	if (visitedNodes == alreadyVisitedNodes.end()) { // if not in list: insert and handle node
-		Connection* connection = dynamic_cast<Connection*>(node);
-		if (connection != 0) { // TODO refactor dowards visitor
-			LOG(DEBUG) << " DotGraphGenerator::visit(Node* node): Connection found";
-			doHandleConnection(connection);
-		} else {
+//		Connection* connection = dynamic_cast<Connection*>(node);
+//		if (connection != 0) { // TODO refactor dowards visitor
+//			LOG(DEBUG) << " DotGraphGenerator::visit(Node* node): Connection found";
+//			doHandleConnection(connection);
+//		} else {
 			doHandleNode(node);
-		}
+//		}
 		alreadyVisitedNodes.push_back(node);
 	}
 }
@@ -90,6 +90,18 @@ void DotGraphGenerator::visit(GeometricNode* node){
 		alreadyVisitedNodes.push_back(node);
 	}
 }
+
+void DotGraphGenerator::visit(Connection* connection) {
+	vector<Node*>::iterator visitedNodes;
+	visitedNodes = find (alreadyVisitedNodes.begin(), alreadyVisitedNodes.end(), connection);
+
+	if (visitedNodes == alreadyVisitedNodes.end()) { // if not in list: insert and handle node
+		LOG(DEBUG) << " DotGraphGenerator::visit(Node* node): Connection found";
+		doHandleConnection(connection);
+		alreadyVisitedNodes.push_back(connection);
+	}
+}
+
 
 void DotGraphGenerator::doHandleNode(Node* node) {
 	assert (node !=0);

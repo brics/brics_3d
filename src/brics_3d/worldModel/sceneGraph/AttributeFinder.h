@@ -25,6 +25,7 @@
 #include "Group.h"
 #include "Transform.h"
 #include "GeometricNode.h"
+#include "Connection.h"
 #include "Attribute.h"
 
 using std::vector;
@@ -34,7 +35,7 @@ namespace brics_3d {
 namespace rsg {
 
 /**
- * Special graph traversal to find those nodes that contain a certain subset of Attributes.
+ * Special graph traversal to find those nodes and connections that contain a certain subset of Attributes.
  * @ingroup sceneGraph
  */
 class AttributeFinder: public INodeVisitor {
@@ -46,6 +47,8 @@ public:
 	virtual void visit(Group* node);
 	virtual void visit(Transform* node);
 	virtual void visit(GeometricNode* node);
+	virtual void visit(Connection* connection);
+
 
 	virtual void reset();
 

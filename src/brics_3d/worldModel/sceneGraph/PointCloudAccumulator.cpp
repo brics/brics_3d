@@ -73,6 +73,11 @@ void PointCloudAccumulator::visit(GeometricNode* node){
 	}
 }
 
+void PointCloudAccumulator::visit(Connection* connection) {
+	/* do nothing */
+}
+
+
 IHomogeneousMatrix44::IHomogeneousMatrix44Ptr PointCloudAccumulator::doGetTransformFromReferenceToPointCloud(GeometricNode* node) {
 	assert (node != 0);
 	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transformFromReferenceToPointCloud;

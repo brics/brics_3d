@@ -24,6 +24,7 @@
 #include "Group.h"
 #include "Transform.h"
 #include "GeometricNode.h"
+#include "Connection.h"
 #include "INodeVisitor.h"
 
 #include "brics_3d/core/PointCloud3DIterator.h"
@@ -59,6 +60,7 @@ public:
 	virtual void visit(Group* node);
 	virtual void visit(Transform* node);
 	virtual void visit(GeometricNode* node);
+	virtual void visit(Connection* connection);
 
 	/**
 	 * @brief Reinitialize the internal iterator. Invoke this before travasing more then once. Otherwise data will be appended.
