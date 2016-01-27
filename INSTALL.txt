@@ -33,7 +33,7 @@ Installing required libraries:
 -----------------------------
 
 Boost: 
- $ sudo apt-get install libboost-dev
+ $ sudo apt-get install libboost-dev libboost-regex-dev
 
 Eigen2/3: 
 

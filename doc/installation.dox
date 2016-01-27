@@ -66,7 +66,7 @@ Install build-essential and cmake package.
 
 Boost: 
 @code
- $ sudo apt-get install libboost-dev libboost-thread-dev
+ $ sudo apt-get install libboost-dev libboost-thread-dev libboost-regex-dev
 @endcode
 
 Eigen3/2: 
