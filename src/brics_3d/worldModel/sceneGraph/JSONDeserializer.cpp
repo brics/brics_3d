@@ -360,7 +360,7 @@ bool JSONDeserializer::handleConnections(libvariant::Variant& group, rsg::Id par
 						}
 
 						/* check for well known semantic conexts */
-						if(semanticContext.compare("Transform")) {
+						if(semanticContext.compare("Transform") == 0) {
 							doAddTransformNode(*i, parentId);
 						} else { // Default case: a plain Conneciton
 							doAddConnection(*i, parentId);
