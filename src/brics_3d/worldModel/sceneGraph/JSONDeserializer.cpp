@@ -465,7 +465,9 @@ bool JSONDeserializer::doAddTransformNode(libvariant::Variant& group,
 	 */
 	parentId = sourceIds[0]; // This has still to be refactored by the connection type.
 	bool success = wm->scene.addTransformNode(parentId, id, attributes, transform, history.getLatestTimeStamp(), !id.isNil()); // Last parameter makes the "id" field optional
-	wm->scene.addParent(targetIds[0],id);
+	if(success) {
+		wm->scene.addParent(targetIds[0],id);
+	}
 	return success;
 	//	wm->scene.addConnection(parentId, id, attributes, sourceIds, targetIds, start, end, true);
 
