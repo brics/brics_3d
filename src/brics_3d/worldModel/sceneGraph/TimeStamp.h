@@ -21,6 +21,7 @@
 #define RSG_TIMESTAMP_H
 
 #include "brics_3d/core/Units.h"
+#include <string>
 
 namespace brics_3d {
 
@@ -87,6 +88,8 @@ class TimeStamp {
 	 * @return Time in [s]
 	 */
 	double getSeconds() const;
+
+	static TimeStamp fromString(std::string stampAsString);
 
 private:
 	/// Internal representation in [s].

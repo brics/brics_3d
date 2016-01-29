@@ -348,7 +348,20 @@ bool SceneGraphFacade::addTransformNode(Id parentId, Id& assignedId, vector<Attr
 	}
 
 	if ((parentGroup != 0) && (idIsOk)) {
-		rsg::Transform::TransformPtr newTransform(new Transform());
+
+		/* Retrive maximum durarion from tag */
+		TimeStamp maxHistoryDuration = TimeStamp(10, Units::Second);
+		vector<std::string> resultValues;
+		if(getValuesFromAttributeList(attributes, "tf:max_duration", resultValues)){
+			LOG(DEBUG) << "addTransformNode: tf:max_duration is set to " << resultValues[0];
+			maxHistoryDuration = TimeStamp::fromString(resultValues[0]);
+			if (maxHistoryDuration == TimeStamp(0)) {
+				LOG(ERROR) << "addTransformNode: tf:max_duration " << resultValues[0] << " Can not be parsed.";
+				return false;
+			}
+		}
+		rsg::Transform::TransformPtr newTransform(new Transform(maxHistoryDuration));
+
 		newTransform->setId(id);
 		newTransform->setAttributes(attributes);
 		newTransform->insertTransform(transform, timeStamp);

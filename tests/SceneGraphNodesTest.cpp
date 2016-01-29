@@ -4752,6 +4752,46 @@ void SceneGraphNodesTest::testDuplicatedInsertions() {
 
 }
 
+void SceneGraphNodesTest::testTransformDurationConfig() {
+	Id tfId = 1;
+
+	brics_3d::rsg::SceneGraphFacade scene;
+	std::vector<Attribute> attributes;
+
+
+	TimeStamp dummyTime(10.0, Units::Minute);
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr dummyTransform(new HomogeneousMatrix44());
+
+	attributes.clear();
+	attributes.push_back(Attribute("tf:max_duration","120s")); // this is valid
+	CPPUNIT_ASSERT(scene.addTransformNode(scene.getRootId(), tfId, attributes, dummyTransform, dummyTime));
+
+
+	attributes.clear();
+	attributes.push_back(Attribute("tf:max_duration","120"));
+	CPPUNIT_ASSERT(!scene.addTransformNode(scene.getRootId(), tfId, attributes, dummyTransform, dummyTime));
+
+	attributes.clear();
+	attributes.push_back(Attribute("tf:max_duration","s"));
+	CPPUNIT_ASSERT(!scene.addTransformNode(scene.getRootId(), tfId, attributes, dummyTransform, dummyTime));
+
+	attributes.clear();
+	attributes.push_back(Attribute("tf:max_duration","zughm5"));
+	CPPUNIT_ASSERT(!scene.addTransformNode(scene.getRootId(), tfId, attributes, dummyTransform, dummyTime));
+
+
+	attributes.clear();
+	attributes.push_back(Attribute("tf:max_duration","\0x0u4g5wj8qp3998pf3w46n09f87	25mß3"));
+	CPPUNIT_ASSERT(!scene.addTransformNode(scene.getRootId(), tfId, attributes, dummyTransform, dummyTime));
+
+
+	attributes.clear();
+	attributes.push_back(Attribute("tf:max_duration","9oß0ivw3m90e4vt ß48 bmß9m br09 z\t"));
+	CPPUNIT_ASSERT(!scene.addTransformNode(scene.getRootId(), tfId, attributes, dummyTransform, dummyTime));
+
+
+}
+
 }  // namespace unitTests
 
 /* EOF */

@@ -18,6 +18,7 @@
 ******************************************************************************/
 
 #include "TimeStamp.h"
+#include <cstdlib>
 
 namespace brics_3d {
 
@@ -96,6 +97,23 @@ bool TimeStamp::operator<=(const TimeStamp &rhs) const {
 double TimeStamp::getSeconds() const {
 	return timeStamp;
 }
+
+TimeStamp TimeStamp::fromString(std::string stampAsString) {
+	TimeStamp result;
+	//pattern": "^[0-9]{1,}( )?(ps|ns|us|ms|s|min|h|d|wk|mo|a)$", right now only s supported
+
+	std::size_t pos = stampAsString.find("s");
+    if (pos == std::string::npos) { // no seconds found
+      return result;
+    } else {
+      std::string value(stampAsString, 0, pos);
+      std::string secondsUnit(stampAsString, pos + 1);
+      result = TimeStamp(atof(value.c_str()), Units::Second);
+    }
+
+	return result;
+}
+
 
 } // namespace brics_3d::RSG
 
