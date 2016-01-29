@@ -4766,6 +4766,17 @@ void SceneGraphNodesTest::testTransformDurationConfig() {
 	attributes.push_back(Attribute("tf:max_duration","120s")); // this is valid
 	CPPUNIT_ASSERT(scene.addTransformNode(scene.getRootId(), tfId, attributes, dummyTransform, dummyTime));
 
+	attributes.clear();
+	attributes.push_back(Attribute("tf:max_duration","3600 s")); // this is valid
+	CPPUNIT_ASSERT(scene.addTransformNode(scene.getRootId(), tfId, attributes, dummyTransform, dummyTime));
+
+	attributes.clear();
+	attributes.push_back(Attribute("tf:max_duration","0s"));
+	CPPUNIT_ASSERT(!scene.addTransformNode(scene.getRootId(), tfId, attributes, dummyTransform, dummyTime));
+
+	attributes.clear();
+	attributes.push_back(Attribute("tf:max_duration","-120s"));
+	CPPUNIT_ASSERT(!scene.addTransformNode(scene.getRootId(), tfId, attributes, dummyTransform, dummyTime));
 
 	attributes.clear();
 	attributes.push_back(Attribute("tf:max_duration","120"));

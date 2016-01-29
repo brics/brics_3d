@@ -108,7 +108,9 @@ TimeStamp TimeStamp::fromString(std::string stampAsString) {
     } else {
       std::string value(stampAsString, 0, pos);
       std::string secondsUnit(stampAsString, pos + 1);
-      result = TimeStamp(atof(value.c_str()), Units::Second);
+      if(atof(value.c_str()) > 0) {
+    	  result = TimeStamp(atof(value.c_str()), Units::Second);
+      }
     }
 
 	return result;
