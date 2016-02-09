@@ -95,6 +95,12 @@ bool JSONQueryRunner::query(libvariant::Variant& query,
 					} else if (queryOperation.compare("GET_GEOMETRY") == 0) {
 						return handleGetGeometry(query, result);
 
+					} else if (queryOperation.compare("GET_CONNECTION_SOURCE_IDS") == 0) {
+						return handleGetSourceIds(query, result);
+
+					} else if (queryOperation.compare("GET_CONNECTION_TARGET_IDS") == 0) {
+						return handleGetTargetIds(query, result);
+
 					} else {
 						LOG(ERROR) << "JSONQueryRunner: Mandatory query fild has unknown value = " << queryOperation;
 						return false;
@@ -277,6 +283,42 @@ bool JSONQueryRunner::handleGetGeometry(libvariant::Variant& query,
 		result.Set("unit", libvariant::Variant("m"));
 		JSONTypecaster::addTimeStampToJSON(timeStamp, result, "timeStamp");
 	}
+
+	return success;
+}
+
+bool JSONQueryRunner::handleGetSourceIds(libvariant::Variant& query,
+		libvariant::Variant& result) {
+
+	/* prepare query */
+	rsg::Id id = JSONTypecaster::getIdFromJSON(query, "id");
+	std::vector<rsg::Id> ids;
+
+	/* perform query */
+	bool success = wm->scene.getConnectionSourceIds(id, ids);
+
+	/* set up result message */
+	result.Set("query", libvariant::Variant("GET_CONNECTION_SOURCE_IDS"));
+	result.Set("querySuccess", libvariant::Variant(success));
+	JSONTypecaster::addIdsToJSON(ids, result, "ids");
+
+	return success;
+}
+
+bool JSONQueryRunner::handleGetTargetIds(libvariant::Variant& query,
+		libvariant::Variant& result) {
+
+	/* prepare query */
+	rsg::Id id = JSONTypecaster::getIdFromJSON(query, "id");
+	std::vector<rsg::Id> ids;
+
+	/* perform query */
+	bool success = wm->scene.getConnectionTargetIds(id, ids);
+
+	/* set up result message */
+	result.Set("query", libvariant::Variant("GET_CONNECTION_TARGET_IDS"));
+	result.Set("querySuccess", libvariant::Variant(success));
+	JSONTypecaster::addIdsToJSON(ids, result, "ids");
 
 	return success;
 }

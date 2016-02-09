@@ -65,6 +65,8 @@ private:
 	bool handleGetRemoteRootNodes(libvariant::Variant& query, libvariant::Variant& result);
 	bool handleGetTransform(libvariant::Variant& query, libvariant::Variant& result);
 	bool handleGetGeometry(libvariant::Variant& query, libvariant::Variant& result);
+	bool handleGetSourceIds(libvariant::Variant& query, libvariant::Variant& result);
+	bool handleGetTargetIds(libvariant::Variant& query, libvariant::Variant& result);
 
 
 };
