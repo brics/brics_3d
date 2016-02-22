@@ -35,6 +35,7 @@
 #include "brics_3d/worldModel/sceneGraph/SceneGraphToUpdatesTraverser.h"
 #include "brics_3d/worldModel/sceneGraph/UncertainTransform.h"
 #include "brics_3d/worldModel/sceneGraph/Connection.h"
+#include "brics_3d/worldModel/sceneGraph/SemanticContextUpdateFilter.h"
 #include "brics_3d/core/PointCloud3D.h"
 #include "brics_3d/core/PointCloud3DIterator.h"
 
@@ -241,6 +242,7 @@ class SceneGraphNodesTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testNodeStorage );
 	CPPUNIT_TEST( testDuplicatedInsertions );
 	CPPUNIT_TEST( testTransformDurationConfig );
+	CPPUNIT_TEST( testSemanticContextUpdateFilter );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -281,6 +283,7 @@ public:
 	void testNodeStorage();
 	void testDuplicatedInsertions();
 	void testTransformDurationConfig();
+	void testSemanticContextUpdateFilter();
 
 private:
 	  /// Maximum deviation for equality check of double variables

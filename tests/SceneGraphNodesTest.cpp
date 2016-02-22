@@ -4803,6 +4803,12 @@ void SceneGraphNodesTest::testTransformDurationConfig() {
 
 }
 
+void SceneGraphNodesTest::testSemanticContextUpdateFilter() {
+
+	SemanticContextUpdateFilter contextFilter;
+	CPPUNIT_FAIL("TODO: implement me");
+}
+
 }  // namespace unitTests
 
 /* EOF */
