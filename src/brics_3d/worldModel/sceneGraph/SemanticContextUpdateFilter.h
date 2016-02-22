@@ -49,12 +49,23 @@ public:
     bool attachUpdateObserver(ISceneGraphUpdateObserver* observer);
     bool detachUpdateObserver(ISceneGraphUpdateObserver* observer);
 
+	const string& getNameSpaceIdentifier() const;
+
+	void setNameSpaceIdentifier(const string& nameSpaceIdentifier);
+
 private:
 
-    /// Set of observers that will be notified when the update function will be called and the LoD contraints are satisfied.
+    /// Set of observers that will be notified when the update function will be called and the Semantic Context constraints are satisfied.
     std::vector<ISceneGraphUpdateObserver*> updateObservers;
 
+    /// A SemnticContext is identified by its name space prefix.
+    string nameSpaceIdentifier;
+
+    /// Internal query used to check if at least one attribute has belongs to a Semantic Context
+    string query;
+
 };
+
 
 } /* namespace rsg */
 } /* namespace brics_3d */

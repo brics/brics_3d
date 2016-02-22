@@ -24,16 +24,20 @@ namespace brics_3d {
 namespace rsg {
 
 SemanticContextUpdateFilter::SemanticContextUpdateFilter() {
-	// TODO Auto-generated constructor stub
-
+	this->nameSpaceIdentifier = "unknown_namespace";
 }
 
 SemanticContextUpdateFilter::~SemanticContextUpdateFilter() {
-	// TODO Auto-generated destructor stub
+
 }
 
 bool SemanticContextUpdateFilter::addNode(Id parentId, Id& assignedId,
 		vector<Attribute> attributes, bool forcedId) {
+
+	if (attributeListContainsAttribute(attributes, Attribute(query, "*"))) {
+		LOG(DEBUG) << "SemanticContextUpdateFilter:addNode update is skipped because attributes contain (" << query << ", *)";
+		return false;
+	}
 
 	/* Call _all_ observers  */
 	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
@@ -45,6 +49,11 @@ bool SemanticContextUpdateFilter::addNode(Id parentId, Id& assignedId,
 
 bool SemanticContextUpdateFilter::addGroup(Id parentId, Id& assignedId,
 		vector<Attribute> attributes, bool forcedId) {
+
+	if (attributeListContainsAttribute(attributes, Attribute(query, "*"))) {
+		LOG(DEBUG) << "SemanticContextUpdateFilter:addNode update is skipped because attributes contain (" << query << ", *)";
+		return false;
+	}
 
 	/* Call _all_ observers  */
 	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
@@ -58,6 +67,11 @@ bool SemanticContextUpdateFilter::addTransformNode(Id parentId, Id& assignedId,
 		vector<Attribute> attributes,
 		IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform,
 		TimeStamp timeStamp, bool forcedId) {
+
+	if (attributeListContainsAttribute(attributes, Attribute(query, "*"))) {
+		LOG(DEBUG) << "SemanticContextUpdateFilter:addNode update is skipped because attributes contain (" << query << ", *)";
+		return false;
+	}
 
 	/* Call _all_ observers  */
 	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
@@ -75,6 +89,11 @@ bool SemanticContextUpdateFilter::addUncertainTransformNode(Id parentId,
 		ITransformUncertainty::ITransformUncertaintyPtr uncertainty,
 		TimeStamp timeStamp, bool forcedId) {
 
+	if (attributeListContainsAttribute(attributes, Attribute(query, "*"))) {
+		LOG(DEBUG) << "SemanticContextUpdateFilter:addNode update is skipped because attributes contain (" << query << ", *)";
+		return false;
+	}
+
 	/* Call _all_ observers  */
 	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
 	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
@@ -89,26 +108,24 @@ bool SemanticContextUpdateFilter::addGeometricNode(Id parentId, Id& assignedId,
 		vector<Attribute> attributes, Shape::ShapePtr shape,
 		TimeStamp timeStamp, bool forcedId) {
 
-
-
-	if (true) {
-
-		/* Inform related observer(s) */
-		std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
-		for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
-			(*observerIterator)->addGeometricNode(parentId, assignedId, attributes, shape, timeStamp, forcedId);
-		}
-
-		return true;
-
-	} else {
-		LOG(DEBUG) << "SemanticContextUpdateFilter:GeometricNode update is skipped due to TODO";
+	if (attributeListContainsAttribute(attributes, Attribute(query, "*"))) {
+		LOG(DEBUG) << "SemanticContextUpdateFilter:addNode update is skipped because attributes contain (" << query << ", *)";
+		return false;
 	}
 
-	return false;
+
+	/* Inform related observer(s) */
+	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
+	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
+		(*observerIterator)->addGeometricNode(parentId, assignedId, attributes, shape, timeStamp, forcedId);
+	}
+
+	return true;
 }
 
 bool SemanticContextUpdateFilter::addRemoteRootNode(Id rootId, vector<Attribute> attributes) {
+
+	/* THIS MUST NOT BE FILTERED */
 
 	/* Call _all_ observers  */
 	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
@@ -120,6 +137,11 @@ bool SemanticContextUpdateFilter::addRemoteRootNode(Id rootId, vector<Attribute>
 }
 
 bool SemanticContextUpdateFilter::addConnection(Id parentId, Id& assignedId, vector<Attribute> attributes, vector<Id> sourceIds, vector<Id> targetIds, TimeStamp start, TimeStamp end, bool forcedId) {
+
+	if (attributeListContainsAttribute(attributes, Attribute(query, "*"))) {
+		LOG(DEBUG) << "SemanticContextUpdateFilter:addNode update is skipped because attributes contain (" << query << ", *)";
+		return false;
+	}
 
 	/* Call _all_ observers  */
 	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
@@ -228,6 +250,16 @@ bool SemanticContextUpdateFilter::detachUpdateObserver(
     }
     LOG(ERROR) << "Cannot detach update observer. Provided reference does not match with any in the observers list.";
 	return false;
+}
+
+const string& SemanticContextUpdateFilter::getNameSpaceIdentifier() const {
+	return nameSpaceIdentifier;
+}
+
+void SemanticContextUpdateFilter::setNameSpaceIdentifier(
+		const string& nameSpaceIdentifier) {
+	this->nameSpaceIdentifier = nameSpaceIdentifier;
+	this->query =  "^"  + nameSpaceIdentifier + ":.*"; // wildcard = ^.*
 }
 
 } /* namespace rsg */

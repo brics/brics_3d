@@ -4806,7 +4806,158 @@ void SceneGraphNodesTest::testTransformDurationConfig() {
 void SceneGraphNodesTest::testSemanticContextUpdateFilter() {
 
 	SemanticContextUpdateFilter contextFilter;
-	CPPUNIT_FAIL("TODO: implement me");
+	Id id; //dummy
+	vector<Attribute> attributes;
+	LOG(ERROR) << "SceneGraphNodesTest::testSemanticContextUpdateFilter()";
+	Logger::setMinLoglevel(Logger::LOGDEBUG);
+
+	attributes.clear();
+	attributes.push_back(Attribute("name", "ok"));
+	CPPUNIT_ASSERT(contextFilter.addNode(id, id, attributes));
+	attributes.clear();
+	attributes.push_back(Attribute("osm:name", "not_ok"));
+	CPPUNIT_ASSERT(contextFilter.addNode(id, id, attributes));
+
+	contextFilter.setNameSpaceIdentifier("osm");
+
+	/* Nodes */
+	attributes.clear();
+	attributes.push_back(Attribute("name", "ok"));
+	CPPUNIT_ASSERT(contextFilter.addNode(id, id, attributes));
+	attributes.clear();
+	attributes.push_back(Attribute("osmname", "still_ok"));
+	CPPUNIT_ASSERT(contextFilter.addNode(id, id, attributes));
+	attributes.clear();
+	attributes.push_back(Attribute("some", "fine"));
+	attributes.push_back(Attribute("thing", "\tfine"));
+	CPPUNIT_ASSERT(contextFilter.addNode(id, id, attributes));
+	attributes.clear();
+	attributes.push_back(Attribute("f09eufr4rlflmdfsd", "vw9erw43r,w4w:,vw0#rc,}e"));
+	CPPUNIT_ASSERT(contextFilter.addNode(id, id, attributes));
+	attributes.clear();
+	attributes.push_back(Attribute("osm:name", "not_ok"));
+	CPPUNIT_ASSERT(!contextFilter.addNode(id, id, attributes));
+	attributes.clear();
+	attributes.push_back(Attribute("osm:name", "vw9erw43r,w4w:,vw0#rc,}e"));
+	CPPUNIT_ASSERT(!contextFilter.addNode(id, id, attributes));
+	attributes.clear();
+	attributes.push_back(Attribute("name", "ok"));
+	attributes.push_back(Attribute("osm:name", "not_ok"));
+	CPPUNIT_ASSERT(!contextFilter.addNode(id, id, attributes));
+
+	/* Groups */
+	attributes.clear();
+	attributes.push_back(Attribute("name", "ok"));
+	CPPUNIT_ASSERT(contextFilter.addGroup(id, id, attributes));
+	attributes.clear();
+	attributes.push_back(Attribute("osmname", "still_ok"));
+	CPPUNIT_ASSERT(contextFilter.addGroup(id, id, attributes));
+	attributes.clear();
+	attributes.push_back(Attribute("some", "fine"));
+	attributes.push_back(Attribute("thing", "\tfine"));
+	CPPUNIT_ASSERT(contextFilter.addGroup(id, id, attributes));
+	attributes.clear();
+	attributes.push_back(Attribute("f09eufr4rlflmdfsd", "vw9erw43r,w4w:,vw0#rc,}e"));
+	CPPUNIT_ASSERT(contextFilter.addGroup(id, id, attributes));
+	attributes.clear();
+	attributes.push_back(Attribute("osm:name", "not_ok"));
+	CPPUNIT_ASSERT(!contextFilter.addGroup(id, id, attributes));
+	attributes.clear();
+	attributes.push_back(Attribute("osm:name", "vw9erw43r,w4w:,vw0#rc,}e"));
+	CPPUNIT_ASSERT(!contextFilter.addGroup(id, id, attributes));
+	attributes.clear();
+	attributes.push_back(Attribute("name", "ok"));
+	attributes.push_back(Attribute("osm:name", "not_ok"));
+	CPPUNIT_ASSERT(!contextFilter.addGroup(id, id, attributes));
+
+	/* Transforms */
+	TimeStamp dummyTime(10.0, Units::Minute);
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr dummyTransform(new HomogeneousMatrix44());
+	attributes.clear();
+	attributes.push_back(Attribute("name", "ok"));
+	CPPUNIT_ASSERT(contextFilter.addTransformNode(id, id, attributes, dummyTransform, dummyTime));
+	attributes.clear();
+	attributes.push_back(Attribute("osmname", "still_ok"));
+	CPPUNIT_ASSERT(contextFilter.addTransformNode(id, id, attributes, dummyTransform, dummyTime));
+	attributes.clear();
+	attributes.push_back(Attribute("some", "fine"));
+	attributes.push_back(Attribute("thing", "\tfine"));
+	CPPUNIT_ASSERT(contextFilter.addTransformNode(id, id, attributes, dummyTransform, dummyTime));
+	attributes.clear();
+	attributes.push_back(Attribute("f09eufr4rlflmdfsd", "vw9erw43r,w4w:,vw0#rc,}e"));
+	CPPUNIT_ASSERT(contextFilter.addGroup(id, id, attributes));
+	attributes.clear();
+	attributes.push_back(Attribute("osm:name", "not_ok"));
+	CPPUNIT_ASSERT(!contextFilter.addTransformNode(id, id, attributes, dummyTransform, dummyTime)); // negations
+	attributes.clear();
+	attributes.push_back(Attribute("osm:name", "vw9erw43r,w4w:,vw0#rc,}e"));
+	CPPUNIT_ASSERT(!contextFilter.addTransformNode(id, id, attributes, dummyTransform, dummyTime));
+	attributes.clear();
+	attributes.push_back(Attribute("name", "ok"));
+	attributes.push_back(Attribute("osm:name", "not_ok"));
+	CPPUNIT_ASSERT(!contextFilter.addTransformNode(id, id, attributes, dummyTransform, dummyTime));
+
+	/* Geometric nodes */
+	Box::BoxPtr dummyBox(new Box());
+	attributes.clear();
+	attributes.push_back(Attribute("name", "ok"));
+	CPPUNIT_ASSERT(contextFilter.addGeometricNode(id, id, attributes, dummyBox, dummyTime));
+	attributes.clear();
+	attributes.push_back(Attribute("osmname", "still_ok"));
+	CPPUNIT_ASSERT(contextFilter.addGeometricNode(id, id, attributes, dummyBox, dummyTime));
+	attributes.clear();
+	attributes.push_back(Attribute("some", "fine"));
+	attributes.push_back(Attribute("thing", "\tfine"));
+	CPPUNIT_ASSERT(contextFilter.addGeometricNode(id, id, attributes, dummyBox, dummyTime));
+	attributes.clear();
+	attributes.push_back(Attribute("f09eufr4rlflmdfsd", "vw9erw43r,w4w:,vw0#rc,}e"));
+	CPPUNIT_ASSERT(contextFilter.addGeometricNode(id, id, attributes, dummyBox, dummyTime));
+	attributes.clear();
+	attributes.push_back(Attribute("osm:name", "not_ok"));
+	CPPUNIT_ASSERT(!contextFilter.addGeometricNode(id, id, attributes, dummyBox, dummyTime));// negations
+	attributes.clear();
+	attributes.push_back(Attribute("osm:name", "vw9erw43r,w4w:,vw0#rc,}e"));
+	CPPUNIT_ASSERT(!contextFilter.addGeometricNode(id, id, attributes, dummyBox, dummyTime));
+	attributes.clear();
+	attributes.push_back(Attribute("name", "ok"));
+	attributes.push_back(Attribute("osm:name", "not_ok"));
+	CPPUNIT_ASSERT(!contextFilter.addGeometricNode(id, id, attributes, dummyBox, dummyTime));
+
+	/* Connections */
+
+	attributes.clear();
+	vector<Id> ids;
+	attributes.push_back(Attribute("name", "ok"));
+	CPPUNIT_ASSERT(contextFilter.addConnection(id, id, attributes, ids, ids, dummyTime, dummyTime));
+	attributes.clear();
+	attributes.push_back(Attribute("osmname", "still_ok"));
+	CPPUNIT_ASSERT(contextFilter.addConnection(id, id, attributes, ids, ids, dummyTime, dummyTime));
+	attributes.clear();
+	attributes.push_back(Attribute("some", "fine"));
+	attributes.push_back(Attribute("thing", "\tfine"));
+	CPPUNIT_ASSERT(contextFilter.addConnection(id, id, attributes, ids, ids, dummyTime, dummyTime));
+	attributes.clear();
+	attributes.push_back(Attribute("f09eufr4rlflmdfsd", "vw9erw43r,w4w:,vw0#rc,}e"));
+	CPPUNIT_ASSERT(contextFilter.addConnection(id, id, attributes, ids, ids, dummyTime, dummyTime));
+	attributes.clear();
+	attributes.push_back(Attribute("osm:name", "not_ok"));
+	CPPUNIT_ASSERT(!contextFilter.addConnection(id, id, attributes, ids, ids, dummyTime, dummyTime));// negations
+	attributes.clear();
+	attributes.push_back(Attribute("osm:name", "vw9erw43r,w4w:,vw0#rc,}e"));
+	CPPUNIT_ASSERT(!contextFilter.addConnection(id, id, attributes, ids, ids, dummyTime, dummyTime));
+	attributes.clear();
+	attributes.push_back(Attribute("name", "ok"));
+	attributes.push_back(Attribute("osm:name", "not_ok"));
+	CPPUNIT_ASSERT(!contextFilter.addConnection(id, id, attributes, ids, ids, dummyTime, dummyTime));
+
+
+	/* Transform updates */
+
+	/* Attribute updates */
+
+	/* Parent child operaions */
+
+	/* Deletion*/
 }
 
 }  // namespace unitTests
