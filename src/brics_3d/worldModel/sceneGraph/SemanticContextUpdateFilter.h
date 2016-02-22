@@ -20,15 +20,16 @@
 #ifndef RSG_SEMANTICCONTEXTUPDATEFILTER_H_
 #define RSG_SEMANTICCONTEXTUPDATEFILTER_H_
 
-#include <brics_3d/worldModel/sceneGraph/ISceneGraphUpdateObserver.h>
-#include <brics_3d/worldModel/sceneGraph/Attribute.h>
+#include "brics_3d/worldModel/sceneGraph/ISceneGraphUpdateObserver.h"
+#include "brics_3d/worldModel/sceneGraph/SceneGraphFacade.h"
+#include "brics_3d/worldModel/sceneGraph/Attribute.h"
 
 namespace brics_3d {
 namespace rsg {
 
 class SemanticContextUpdateFilter :  public ISceneGraphUpdateObserver {
 public:
-	SemanticContextUpdateFilter();
+	SemanticContextUpdateFilter(SceneGraphFacade* scene);
 	virtual ~SemanticContextUpdateFilter();
 
 	/* implemetntations of observer interface */
@@ -64,6 +65,8 @@ private:
     /// Internal query used to check if at least one attribute has belongs to a Semantic Context
     string query;
 
+    /// Handle for internal queries
+    SceneGraphFacade* scene;
 };
 
 

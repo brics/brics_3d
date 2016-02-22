@@ -4805,11 +4805,12 @@ void SceneGraphNodesTest::testTransformDurationConfig() {
 
 void SceneGraphNodesTest::testSemanticContextUpdateFilter() {
 
-	SemanticContextUpdateFilter contextFilter;
+	brics_3d::rsg::SceneGraphFacade scene;
+	SemanticContextUpdateFilter contextFilter(&scene);
 	Id id; //dummy
 	vector<Attribute> attributes;
-	LOG(ERROR) << "SceneGraphNodesTest::testSemanticContextUpdateFilter()";
-	Logger::setMinLoglevel(Logger::LOGDEBUG);
+//	LOG(ERROR) << "SceneGraphNodesTest::testSemanticContextUpdateFilter()";
+//	Logger::setMinLoglevel(Logger::LOGDEBUG);
 
 	attributes.clear();
 	attributes.push_back(Attribute("name", "ok"));
@@ -4952,10 +4953,30 @@ void SceneGraphNodesTest::testSemanticContextUpdateFilter() {
 
 
 	/* Transform updates */
+	Id tfId;
+	Id osmTfId;
+	attributes.clear();
+	attributes.push_back(Attribute("name", "ok"));
+	CPPUNIT_ASSERT(scene.addTransformNode(scene.getRootId(), tfId, attributes, dummyTransform, dummyTime));
+	attributes.clear();
+	attributes.push_back(Attribute("osm:name", "not_ok"));
+	CPPUNIT_ASSERT(scene.addTransformNode(scene.getRootId(), osmTfId, attributes, dummyTransform, dummyTime));
+
+	dummyTime += Duration(1, Units::Second);
+//	LOG(ERROR) << "SceneGraphNodesTest::testSemanticContextUpdateFilter() 2";
+	CPPUNIT_ASSERT(contextFilter.setTransform(tfId, dummyTransform, dummyTime));
+	CPPUNIT_ASSERT(!contextFilter.setTransform(osmTfId, dummyTransform, dummyTime));
 
 	/* Attribute updates */
+	attributes.clear();
+	attributes.push_back(Attribute("does not matters", "as context is taken form already stored node"));
+	CPPUNIT_ASSERT(contextFilter.setNodeAttributes(tfId, attributes, dummyTime));
+	attributes.clear();
+	attributes.push_back(Attribute("does not matters", "as context is taken form already stored node"));
+	CPPUNIT_ASSERT(!contextFilter.setNodeAttributes(osmTfId, attributes, dummyTime));
 
-	/* Parent child operaions */
+
+	/* Parent child operations */
 
 	/* Deletion*/
 }

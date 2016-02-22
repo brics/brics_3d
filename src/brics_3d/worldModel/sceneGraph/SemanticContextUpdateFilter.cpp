@@ -23,8 +23,9 @@
 namespace brics_3d {
 namespace rsg {
 
-SemanticContextUpdateFilter::SemanticContextUpdateFilter() {
+SemanticContextUpdateFilter::SemanticContextUpdateFilter(SceneGraphFacade* scene) : scene(scene) {
 	this->nameSpaceIdentifier = "unknown_namespace";
+	assert(this->scene != 0);
 }
 
 SemanticContextUpdateFilter::~SemanticContextUpdateFilter() {
@@ -35,7 +36,7 @@ bool SemanticContextUpdateFilter::addNode(Id parentId, Id& assignedId,
 		vector<Attribute> attributes, bool forcedId) {
 
 	if (attributeListContainsAttribute(attributes, Attribute(query, "*"))) {
-		LOG(DEBUG) << "SemanticContextUpdateFilter:addNode update is skipped because attributes contain (" << query << ", *)";
+		LOG(DEBUG) << "SemanticContextUpdateFilter:addNode creation is skipped because attributes contain (" << query << ", *)";
 		return false;
 	}
 
@@ -51,7 +52,7 @@ bool SemanticContextUpdateFilter::addGroup(Id parentId, Id& assignedId,
 		vector<Attribute> attributes, bool forcedId) {
 
 	if (attributeListContainsAttribute(attributes, Attribute(query, "*"))) {
-		LOG(DEBUG) << "SemanticContextUpdateFilter:addNode update is skipped because attributes contain (" << query << ", *)";
+		LOG(DEBUG) << "SemanticContextUpdateFilter:addGroup creation is skipped because attributes contain (" << query << ", *)";
 		return false;
 	}
 
@@ -69,7 +70,7 @@ bool SemanticContextUpdateFilter::addTransformNode(Id parentId, Id& assignedId,
 		TimeStamp timeStamp, bool forcedId) {
 
 	if (attributeListContainsAttribute(attributes, Attribute(query, "*"))) {
-		LOG(DEBUG) << "SemanticContextUpdateFilter:addNode update is skipped because attributes contain (" << query << ", *)";
+		LOG(DEBUG) << "SemanticContextUpdateFilter:addTransformNode creation is skipped because attributes contain (" << query << ", *)";
 		return false;
 	}
 
@@ -90,7 +91,7 @@ bool SemanticContextUpdateFilter::addUncertainTransformNode(Id parentId,
 		TimeStamp timeStamp, bool forcedId) {
 
 	if (attributeListContainsAttribute(attributes, Attribute(query, "*"))) {
-		LOG(DEBUG) << "SemanticContextUpdateFilter:addNode update is skipped because attributes contain (" << query << ", *)";
+		LOG(DEBUG) << "SemanticContextUpdateFilter:addUncertainTransformNode creation is skipped because attributes contain (" << query << ", *)";
 		return false;
 	}
 
@@ -109,7 +110,7 @@ bool SemanticContextUpdateFilter::addGeometricNode(Id parentId, Id& assignedId,
 		TimeStamp timeStamp, bool forcedId) {
 
 	if (attributeListContainsAttribute(attributes, Attribute(query, "*"))) {
-		LOG(DEBUG) << "SemanticContextUpdateFilter:addNode update is skipped because attributes contain (" << query << ", *)";
+		LOG(DEBUG) << "SemanticContextUpdateFilter:addGeometricNode creation is skipped because attributes contain (" << query << ", *)";
 		return false;
 	}
 
@@ -139,7 +140,7 @@ bool SemanticContextUpdateFilter::addRemoteRootNode(Id rootId, vector<Attribute>
 bool SemanticContextUpdateFilter::addConnection(Id parentId, Id& assignedId, vector<Attribute> attributes, vector<Id> sourceIds, vector<Id> targetIds, TimeStamp start, TimeStamp end, bool forcedId) {
 
 	if (attributeListContainsAttribute(attributes, Attribute(query, "*"))) {
-		LOG(DEBUG) << "SemanticContextUpdateFilter:addNode update is skipped because attributes contain (" << query << ", *)";
+		LOG(DEBUG) << "SemanticContextUpdateFilter:addConnection creation is skipped because attributes contain (" << query << ", *)";
 		return false;
 	}
 
@@ -154,6 +155,18 @@ bool SemanticContextUpdateFilter::addConnection(Id parentId, Id& assignedId, vec
 bool SemanticContextUpdateFilter::setNodeAttributes(Id id,
 		vector<Attribute> newAttributes, TimeStamp timeStamp) {
 
+	/* NOTE: here we check the _existing_ attributes to be consistent with other update functions. Not the new ones. */
+	vector<Attribute> attributes;
+	if(!scene->getNodeAttributes(id, attributes)) {
+		LOG(ERROR) << "semanticContextUpdateFilter:setNodeAttributes cannot query existing attributes for id " << id << " Skipping update.";
+		return false;
+	}
+
+	if (attributeListContainsAttribute(attributes, Attribute(query, "*"))) {
+		LOG(DEBUG) << "SemanticContextUpdateFilter:setNodeAttributes update is skipped because attributes contain (" << query << ", *)";
+		return false;
+	}
+
 	/* Call _all_ observers  */
 	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
 	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
@@ -166,21 +179,24 @@ bool SemanticContextUpdateFilter::setTransform(Id id,
 		IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform,
 		TimeStamp timeStamp) {
 
-
-	if (true) {
-
-		/* Inform related observer(s) */
-		std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
-		for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
-			(*observerIterator)->setTransform(id, transform, timeStamp);
-		}
-
-
-	} else {
-		LOG(DEBUG) << "SemanticContextUpdateFilter: setTransform update is skipped due TODO";
+	vector<Attribute> attributes;
+	if(!scene->getNodeAttributes(id, attributes)) {
+		LOG(ERROR) << "semanticContextUpdateFilter:setTransform cannot query existing attributes for id " << id << " Skipping update.";
+		return false;
 	}
 
-	return false;
+	if (attributeListContainsAttribute(attributes, Attribute(query, "*"))) {
+		LOG(DEBUG) << "SemanticContextUpdateFilter:setTransform update is skipped because attributes contain (" << query << ", *)";
+		return false;
+	}
+
+	/* Inform related observer(s) */
+	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
+	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
+		(*observerIterator)->setTransform(id, transform, timeStamp);
+	}
+
+	return true;
 }
 
 bool SemanticContextUpdateFilter::setUncertainTransform(Id id,
@@ -188,25 +204,40 @@ bool SemanticContextUpdateFilter::setUncertainTransform(Id id,
 		ITransformUncertainty::ITransformUncertaintyPtr uncertainty,
 		TimeStamp timeStamp) {
 
-
-	if (true) {
-
-		/* Inform related observer(s) */
-		std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
-		for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
-			(*observerIterator)->setUncertainTransform(id, transform, uncertainty, timeStamp);
-		}
-
-
-	} else {
-		LOG(DEBUG) << "SemanticContextUpdateFilter: setUncertainTransform update is skipped due to TODO";
+	vector<Attribute> attributes;
+	if(!scene->getNodeAttributes(id, attributes)) {
+		LOG(ERROR) << "semanticContextUpdateFilter:setUncertainTransform cannot query existing attributes for id " << id << " Skipping update.";
+		return false;
 	}
 
-	return false;
+	if (attributeListContainsAttribute(attributes, Attribute(query, "*"))) {
+		LOG(DEBUG) << "SemanticContextUpdateFilter:setUncertainTransform update is skipped because attributes contain (" << query << ", *)";
+		return false;
+	}
+
+	/* Inform related observer(s) */
+	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
+	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
+		(*observerIterator)->setUncertainTransform(id, transform, uncertainty, timeStamp);
+	}
+
+	return true;
 }
 
 bool SemanticContextUpdateFilter::deleteNode(Id id) {
 	/* Call _all_ observers  */
+
+	vector<Attribute> attributes;
+	if(!scene->getNodeAttributes(id, attributes)) {
+		LOG(ERROR) << "semanticContextUpdateFilter:deleteNode cannot query existing attributes for id " << id << " Skipping update.";
+		return false;
+	}
+
+	if (attributeListContainsAttribute(attributes, Attribute(query, "*"))) {
+		LOG(DEBUG) << "SemanticContextUpdateFilter:deleteNode deletion is skipped because attributes contain (" << query << ", *)";
+		return false;
+	}
+
 	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
 	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
 		(*observerIterator)->deleteNode(id);
@@ -215,6 +246,18 @@ bool SemanticContextUpdateFilter::deleteNode(Id id) {
 }
 
 bool SemanticContextUpdateFilter::addParent(Id id, Id parentId) {
+
+	vector<Attribute> attributes;
+	if(!scene->getNodeAttributes(id, attributes)) {
+		LOG(ERROR) << "semanticContextUpdateFilter:addParent cannot query existing attributes for id " << id << " Skipping update.";
+		return false;
+	}
+
+	if (attributeListContainsAttribute(attributes, Attribute(query, "*"))) {
+		LOG(DEBUG) << "SemanticContextUpdateFilter:addParent creation is skipped because attributes contain (" << query << ", *)";
+		return false;
+	}
+
 	/* Call _all_ observers  */
 	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
 	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
@@ -224,6 +267,18 @@ bool SemanticContextUpdateFilter::addParent(Id id, Id parentId) {
 }
 
 bool SemanticContextUpdateFilter::removeParent(Id id, Id parentId) {
+
+	vector<Attribute> attributes;
+	if(!scene->getNodeAttributes(id, attributes)) {
+		LOG(ERROR) << "semanticContextUpdateFilter:removeParent cannot query existing attributes for id " << id << " Skipping update.";
+		return false;
+	}
+
+	if (attributeListContainsAttribute(attributes, Attribute(query, "*"))) {
+		LOG(DEBUG) << "SemanticContextUpdateFilter:removeParent deletion is skipped because attributes contain (" << query << ", *)";
+		return false;
+	}
+
 	/* Call _all_ observers  */
 	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
 	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
