@@ -36,6 +36,7 @@ class JSONTest : public CPPUNIT_NS::TestFixture {
 #ifdef BRICS_JSON_ENABLE
 	CPPUNIT_TEST( testLoopBack );
 	CPPUNIT_TEST( testUpdateObersver );
+	CPPUNIT_TEST( testInputFilter );
 #endif /* BRICS_JSON_ENABLE */
 	CPPUNIT_TEST_SUITE_END();
 
@@ -46,6 +47,7 @@ public:
 
 	void testLoopBack();
 	void testUpdateObersver();
+	void testInputFilter();
 	void threadFunction(brics_3d::WorldModel* wm);
 
 private:

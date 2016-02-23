@@ -446,7 +446,7 @@ bool JSONDeserializer::doAddTransformNode(libvariant::Variant& group,
 
 	TemporalCache<IHomogeneousMatrix44::IHomogeneousMatrix44Ptr> history;
 	JSONTypecaster::getTransformCacheFromJSON(history, group);
-	LOG(DEBUG) << "JSONDeserializer doAddTransformNode: transfor cache has size = " << history.size();
+	LOG(DEBUG) << "JSONDeserializer doAddTransformNode: transform cache has size = " << history.size();
 
 	transform = history.getData(history.getLatestTimeStamp());
 
