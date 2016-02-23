@@ -62,8 +62,8 @@ public:
 	};
 
 private:
-	std::string debugTag;
 	brics_3d::rsg::IInputPort* inputPort;
+	std::string debugTag;
 };
 
 

@@ -31,7 +31,19 @@ namespace rsg {
 
 class JSONDeserializer : public IInputPort  {
 public:
+	/**
+	 * @brief Default constructor.
+	 * @param wm The WorldModel to be updated.
+	 */
 	JSONDeserializer(WorldModel* wm);
+
+	/**
+	 * @brief Constructor to be used with intermediate filters
+	 * @param wm The WorldModel for querying the root Id and time.
+	 * @param sceneUpdater The scene to be updated. Typically an update filter.
+	 */
+	JSONDeserializer(WorldModel* wm, ISceneGraphUpdate* sceneUpdater);
+
 	virtual ~JSONDeserializer();
 
 	int write(const char *dataBuffer, int dataLength, int &transferredBytes);
@@ -69,6 +81,7 @@ private:
 	virtual bool doRemoveParent(libvariant::Variant& group, rsg::Id parentId);
 
 	WorldModel* wm;
+	ISceneGraphUpdate* sceneUpdater;
 	bool mapUnknownParentIdsToRootId;
 };
 

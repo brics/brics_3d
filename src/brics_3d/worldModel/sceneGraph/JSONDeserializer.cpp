@@ -27,6 +27,12 @@ namespace rsg {
 
 JSONDeserializer::JSONDeserializer(WorldModel* wm) :
 		wm(wm) {
+	assert (wm != 0);
+	sceneUpdater = &wm->scene;
+	mapUnknownParentIdsToRootId = false;
+}
+
+JSONDeserializer::JSONDeserializer(WorldModel* wm, ISceneGraphUpdate* sceneUpdater) : wm(wm), sceneUpdater(sceneUpdater) {
 	mapUnknownParentIdsToRootId = false;
 }
 
@@ -252,7 +258,7 @@ bool JSONDeserializer::handleWorldModelAgent(libvariant::Variant& model) {
 		wm->scene.getNodeAttributes(wm->getRootNodeId(), rootAttributes);
 		std::vector<rsg::Attribute> attributes = rsg::JSONTypecaster::getAttributesFromJSON(rootNode);
 		rootAttributes.insert(rootAttributes.end(), attributes.begin(), attributes.end());
-		wm->scene.setNodeAttributes(wm->getRootNodeId(), rootAttributes);
+		sceneUpdater->setNodeAttributes(wm->getRootNodeId(), rootAttributes);
 
 		/* handle children & connections*/
 		handleChilden(rootNode, wm->getRootNodeId());
@@ -389,7 +395,7 @@ bool JSONDeserializer::doAddNode(libvariant::Variant& group, rsg::Id parentId) {
 	std::vector<rsg::Attribute> attributes = rsg::JSONTypecaster::getAttributesFromJSON(group);
 
 	/* create it */
-	return wm->scene.addNode(parentId, id, attributes, !id.isNil()); // Last parameter makes the "id" field optional
+	return sceneUpdater->addNode(parentId, id, attributes, !id.isNil()); // Last parameter makes the "id" field optional
 }
 
 bool JSONDeserializer::doAddGroup(libvariant::Variant& group, rsg::Id parentId) {
@@ -403,7 +409,7 @@ bool JSONDeserializer::doAddGroup(libvariant::Variant& group, rsg::Id parentId) 
 	std::vector<rsg::Attribute> attributes = rsg::JSONTypecaster::getAttributesFromJSON(group);
 
 	/* create it */
-	if( !wm->scene.addGroup(parentId, id, attributes, !id.isNil()) ) 	{return false;}; // Last parameter makes the "id" field optional
+	if( !sceneUpdater->addGroup(parentId, id, attributes, !id.isNil()) ) 	{return false;}; // Last parameter makes the "id" field optional
 
 	/* childs (recursion) */
 	handleChilden(group, id);
@@ -451,7 +457,7 @@ bool JSONDeserializer::doAddTransformNode(libvariant::Variant& group,
 		LOG(DEBUG) << "JSONDeserializer doAddTransformNode: There must be at least one source or target id.";
 
 		/* For backwards compatibility: this is the oldish way of adding a transform */
-		return wm->scene.addTransformNode(parentId, id, attributes, transform, history.getLatestTimeStamp(), !id.isNil()); // Last parameter makes the "id" field optional
+		return sceneUpdater->addTransformNode(parentId, id, attributes, transform, history.getLatestTimeStamp(), !id.isNil()); // Last parameter makes the "id" field optional
 	}
 
 	/* create it */
@@ -464,12 +470,12 @@ bool JSONDeserializer::doAddTransformNode(libvariant::Variant& group,
 	 *  n2
 	 */
 	parentId = sourceIds[0]; // This has still to be refactored by the connection type.
-	bool success = wm->scene.addTransformNode(parentId, id, attributes, transform, history.getLatestTimeStamp(), !id.isNil()); // Last parameter makes the "id" field optional
+	bool success = sceneUpdater->addTransformNode(parentId, id, attributes, transform, history.getLatestTimeStamp(), !id.isNil()); // Last parameter makes the "id" field optional
 	if(success) {
-		wm->scene.addParent(targetIds[0],id);
+		sceneUpdater->addParent(targetIds[0],id);
 	}
 	return success;
-	//	wm->scene.addConnection(parentId, id, attributes, sourceIds, targetIds, start, end, true);
+	//	sceneUpdater->addConnection(parentId, id, attributes, sourceIds, targetIds, start, end, true);
 
 }
 
@@ -500,7 +506,7 @@ bool JSONDeserializer::doAddGeometricNode(libvariant::Variant& group,
 	/* stamp */
 
 	/* create it */
-	return wm->scene.addGeometricNode(parentId, id, attributes, shape, timeStamp, !id.isNil()); // Last parameter makes the "id" field optional
+	return sceneUpdater->addGeometricNode(parentId, id, attributes, shape, timeStamp, !id.isNil()); // Last parameter makes the "id" field optional
 
 }
 
@@ -516,7 +522,7 @@ bool JSONDeserializer::doAddRemoteRootNode(libvariant::Variant& group) {
 	/* attributes */
 	std::vector<rsg::Attribute> attributes = rsg::JSONTypecaster::getAttributesFromJSON(group);
 
-	return wm->scene.addRemoteRootNode(id, attributes);
+	return sceneUpdater->addRemoteRootNode(id, attributes);
 }
 
 bool JSONDeserializer::doAddConnection(libvariant::Variant& connection,
@@ -553,7 +559,7 @@ bool JSONDeserializer::doAddConnection(libvariant::Variant& connection,
 	rsg::TimeStamp end = JSONTypecaster::getTimeStampFromJSON(connection, "end");
 
 	/* create it */
-	return wm->scene.addConnection(parentId, id, attributes, sourceIds, targetIds, start, end, !id.isNil()); // Last parameter makes the "id" field optional
+	return sceneUpdater->addConnection(parentId, id, attributes, sourceIds, targetIds, start, end, !id.isNil()); // Last parameter makes the "id" field optional
 }
 
 bool JSONDeserializer::doSetNodeAttributes(libvariant::Variant& group) {
@@ -577,7 +583,7 @@ bool JSONDeserializer::doSetNodeAttributes(libvariant::Variant& group) {
 		attributesTimeStamp = wm->now();
 	}
 
-	return wm->scene.setNodeAttributes(id, attributes, attributesTimeStamp);
+	return sceneUpdater->setNodeAttributes(id, attributes, attributesTimeStamp);
 
 	return false;
 }
@@ -604,7 +610,7 @@ bool JSONDeserializer::doSetTransform(libvariant::Variant& group) {
 	transform = history.getData(history.getLatestTimeStamp());
 
 	/* create it */
-	return wm->scene.setTransform(id, transform, history.getLatestTimeStamp());
+	return sceneUpdater->setTransform(id, transform, history.getLatestTimeStamp());
 
 }
 
@@ -617,7 +623,7 @@ bool JSONDeserializer::doDeleteNode(libvariant::Variant& group) {
 		return false;
 	}
 
-	return wm->scene.deleteNode(id);
+	return sceneUpdater->deleteNode(id);
 }
 
 bool JSONDeserializer::doAddParent(libvariant::Variant& group,
@@ -630,7 +636,7 @@ bool JSONDeserializer::doAddParent(libvariant::Variant& group,
 	rsg::TimeStamp start = JSONTypecaster::getTimeStampFromJSON(group, "start");
 	rsg::TimeStamp end = JSONTypecaster::getTimeStampFromJSON(group, "end");
 
-	return wm->scene.addParent(id, parentId);
+	return sceneUpdater->addParent(id, parentId);
 }
 
 bool JSONDeserializer::doRemoveParent(libvariant::Variant& group,
@@ -643,7 +649,7 @@ bool JSONDeserializer::doRemoveParent(libvariant::Variant& group,
 		return false;
 	}
 
-	return wm->scene.removeParent(id, parentId);
+	return sceneUpdater->removeParent(id, parentId);
 }
 
 } /* namespace rsg */
