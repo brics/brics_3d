@@ -121,11 +121,11 @@ public:
 					stamp = TimeStamp(t, Units::Second);
 
 				} else {
-					LOG(ERROR) << "JSONTypecaster: Time stamp defeinition has unknown type @stamptype identifier";
+					LOG(ERROR) << "JSONTypecaster: Time stamp definition has unknown type @stamptype identifier";
 				}
 
 			} else {
-				LOG(ERROR) << "JSONTypecaster: Time stamp fefinition has no type @stamptype identifier";
+				LOG(ERROR) << "JSONTypecaster: Time stamp definition has no type @stamptype identifier";
 			}
 		} else {
 			LOG(ERROR) << "JSONTypecaster: entity has no stamp tag: " << stampTag;

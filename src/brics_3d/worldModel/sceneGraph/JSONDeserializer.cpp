@@ -244,7 +244,7 @@ bool JSONDeserializer::handleWorldModelAgent(libvariant::Variant& model) {
 	if(model.Contains("rootNode")) {
 		libvariant::Variant rootNode = model.Get("rootNode");
 
-		/* extract and compare root Id to existin world model */
+		/* extract and compare root Id to existing world model */
 		Id extractedRootId = rsg::JSONTypecaster::getIdFromJSON(rootNode, "id");
 		if( (!extractedRootId.isNil()) && (extractedRootId != wm->getRootNodeId()) ) {
 			LOG(ERROR) << "JSONDeserializer: Root Id mismatch. Model file has Id = " << extractedRootId
@@ -269,8 +269,24 @@ bool JSONDeserializer::handleWorldModelAgent(libvariant::Variant& model) {
 		return false;
 	}
 
-	/* extrinisic world model data */
+	/* extrinsic world model data */
+	if(model.Contains("remoteRootNodes")) {
+		LOG(DEBUG) << "JSONDeserializer: reading remoteRootNodes";
+		libvariant::Variant remoteRootNodesList = model.Get("remoteRootNodes");
+		if (remoteRootNodesList.IsList()) {
+			for (libvariant::Variant::ListIterator i(remoteRootNodesList.ListBegin()), e(remoteRootNodesList.ListEnd()); i!=e; ++i) {
 
+				/* add new remote root node */
+				std::vector<rsg::Attribute> attributes = rsg::JSONTypecaster::getAttributesFromJSON(*i);
+				Id id = rsg::JSONTypecaster::getIdFromJSON(*i, "id");
+				sceneUpdater->addRemoteRootNode(id, attributes);
+
+				/* handle children & connections*/
+				handleChilden(*i, id);
+				handleConnections(*i, id);
+			}
+		}
+	}
 
 	return true;
 }
