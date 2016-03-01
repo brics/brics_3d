@@ -115,6 +115,15 @@ void DotVisualizer::printGraph() {
 		graphPrinter.setConfig(config);
 		scene->executeGraphTraverser(&graphPrinter, scene->getRootId());
 
+		bool printRemoteRootNodes = true;
+		if(printRemoteRootNodes) {
+			vector<Id> remoteRootNodeIds;
+			scene->getRemoteRootNodes(remoteRootNodeIds);
+			for(vector<Id>::const_iterator it = remoteRootNodeIds.begin(); it != remoteRootNodeIds.end(); ++it) {
+				scene->executeGraphTraverser(&graphPrinter, *it);
+			}
+		}
+
 		/* Save a svg file as snapshopt */
 		// e.g.  "current_graph.gv";
 		output.open((fileName + ".gv").c_str(), std::ios::trunc);
