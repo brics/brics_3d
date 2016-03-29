@@ -119,10 +119,12 @@ Id JSONDeserializer::getRootIdFromJSONModel(std::string data) {
 			if(model.Contains("rootNode")) {
 				libvariant::Variant rootNode = model.Get("rootNode");
 				rootId = rsg::JSONTypecaster::getIdFromJSON(rootNode, "id");
-				assert(!rootId.isNil());
-				LOG(INFO) << "JSONDeserializer: Extraxted root Id is = " << rootId;
+				if(rootId.isNil()) {
+					LOG (ERROR) << "JSONDeserializer: getRootId: WorldModelAgent has an invalid rootID";
+				}
+				LOG(INFO) << "JSONDeserializer: Extracted root Id is = " << rootId;
 			} else {
-				LOG (ERROR) << "JSONDeserializer:  getRootId: WorldModelAgent has no rootID";
+				LOG (ERROR) << "JSONDeserializer: getRootId: WorldModelAgent has no rootID";
 				return false;
 			}
 		}
@@ -338,7 +340,10 @@ bool JSONDeserializer::handleChilden(libvariant::Variant& group, rsg::Id parentI
 		libvariant::Variant attributeList = group.Get("childs");
 		if (attributeList.IsList()) {
 			for (libvariant::Variant::ListIterator i(attributeList.ListBegin()), e(attributeList.ListEnd()); i!=e; ++i) {
-				assert(i->Contains("@childtype"));
+				if(!i->Contains("@childtype")){
+					LOG(DEBUG) << "JSONDeserializer: @childtype tag for Group child is missing.";
+					return false;
+				}
 				string childType = i->Get("@childtype").AsString();
 				LOG(DEBUG) << "JSONDeserializer: \t\t type = " << childType;
 
@@ -347,7 +352,10 @@ bool JSONDeserializer::handleChilden(libvariant::Variant& group, rsg::Id parentI
 					handleGraphPrimitive(child, parentId);
 				} else if (childType.compare("ChildId") == 0) {
 					// TODO stamps
-					assert(i->Contains("childId"));
+					if(!i->Contains("@childtype")){
+						LOG(DEBUG) << "JSONDeserializer: childId tag for child is missing.";
+						return false;
+					}
 					rsg::Id childId = rsg::JSONTypecaster::getIdFromJSON(*i, "childId");
 					LOG(DEBUG) << "JSONDeserializer: Adding parent -> child relation: " << parentId << " -> " << childId;
 					// add parent
@@ -369,7 +377,11 @@ bool JSONDeserializer::handleConnections(libvariant::Variant& group, rsg::Id par
 			libvariant::Variant connectionList = group.Get("connections");
 			if (connectionList.IsList()) {
 				for (libvariant::Variant::ListIterator i(connectionList.ListBegin()), e(connectionList.ListEnd()); i!=e; ++i) {
-					assert(i->Contains("@graphtype"));
+//					assert(i->Contains("@graphtype"));
+					if(!i->Contains("@graphtype")) {
+						LOG(DEBUG) << "JSONDeserializer: @graphtype tag for Connection is missing.";
+						return false;
+					}
 					string graphType = i->Get("@graphtype").AsString();
 					LOG(DEBUG) << "JSONDeserializer: \t\t type = " << graphType;
 
@@ -568,7 +580,11 @@ bool JSONDeserializer::doAddConnection(libvariant::Variant& connection,
 	/* Id lists */
 	std::vector<rsg::Id> sourceIds = rsg::JSONTypecaster::getIdsFromJSON(connection, "sourceIds");
 	std::vector<rsg::Id> targetIds = rsg::JSONTypecaster::getIdsFromJSON(connection, "targetIds");
-	assert((sourceIds.size() > 0) || (targetIds.size() > 0)); // there should be at least one
+	//assert((sourceIds.size() > 0) || (targetIds.size() > 0)); // there should be at least one
+	if( !((sourceIds.size() > 0) || (targetIds.size() > 0))) { // there should be at least one
+		LOG(ERROR) << "JSONDeserializer: Connection has no sourceIds or targetIds. Aborting.";
+		return false;
+	}
 
 	/* stamps */
 	rsg::TimeStamp start = JSONTypecaster::getTimeStampFromJSON(connection, "start");
