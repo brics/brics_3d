@@ -46,8 +46,9 @@ public:
 	/**
 	 * @brief Processes a JSON based queries and returns a JSON based result.
 	 * @param queryAsJson Query that comples to the rsg-query-schema.json Schema.
-	 * @param resultAsJson Result of a query that complies to the rsg-queryResult-schema.json Schema.
-	 * @return True on ssuccess full execution (No coding errors, etc). Though, the result could be empty.
+	 * @param resultAsJson Result of a query that complies to the rsg-queryResult-schema.json Schema or an error object.
+	 *                     The error object is inspired by the Google JSON guidelines.
+	 * @return True on success full execution (No coding errors, etc). Though, the result could be empty.
 	 */
 	bool query(std::string& queryAsJson, std::string& resultAsJson);
 
@@ -68,6 +69,12 @@ private:
 	bool handleGetSourceIds(libvariant::Variant& query, libvariant::Variant& result);
 	bool handleGetTargetIds(libvariant::Variant& query, libvariant::Variant& result);
 
+	/**
+	 * @brief Sets up an error message as as result.
+	 * @param[in] message Message text to be written. Currently there are no error codes.
+	 * @param[out] result Reference to the result message. The data will be _replaced: by the error message.
+	 */
+	void handleError(std::string message, libvariant::Variant& result);
 
 };
 

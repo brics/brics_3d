@@ -102,32 +102,34 @@ bool JSONQueryRunner::query(libvariant::Variant& query,
 						return handleGetTargetIds(query, result);
 
 					} else {
-						LOG(ERROR) << "JSONQueryRunner: Mandatory query fild has unknown value = " << queryOperation;
+						LOG(ERROR) << "JSONQueryRunner: Mandatory query field has unknown value = " << queryOperation;
+						handleError("Syntax error: Mandatory query field has unknown value in RSGQuery", result);
 						return false;
 					}
 
 				} else {
-					LOG(ERROR) << "JSONQueryRunner: Mandatory query field not set at all.";
+					handleError("Syntax error: Mandatory query field not set in RSGQuery", result);
 					return false;
 				}
 
 
 			} else {
-				LOG(ERROR) << "JSONQueryRunner: Mandatory type field not set to RSGQuery. Instead it is = " << type;
+				LOG(ERROR) << "JSONQueryRunner: Syntax error: Mandatory @worldmodeltype field not set in RSGQuery. Instead it is = " << type;
+				handleError("Syntax error: Mandatory @worldmodeltype field not set in RSGQuery", result);
 				return false;
 			}
 
 		} else {
-			LOG(WARNING) << "Top level model type @worldmodeltype does not exist.";
+			handleError("Syntax error: Top level model type @worldmodeltype does not exist.", result);
+			return false;
 		}
-
-
 
 
 		return true;
 
 	} catch (std::exception const & e) {
 		LOG(ERROR) << "JSONQueryRunner: Generic parser error: " << e.what() << std::endl << "Omitting this query.";
+		handleError("Syntax error: Generic parser error.", result);
 		return false;
 	}
 
@@ -157,6 +159,10 @@ bool JSONQueryRunner::handleGetNodeAttributes(libvariant::Variant& query,
 
 	/* prepare query */
 	rsg::Id id = JSONTypecaster::getIdFromJSON(query, "id");
+	if(id.isNil()) {
+		handleError("Syntax error: Wrong or missing id.", result);
+		return false;
+	}
 	std::vector<rsg::Attribute> attributes;
 
 	/* perform query */
@@ -321,6 +327,14 @@ bool JSONQueryRunner::handleGetTargetIds(libvariant::Variant& query,
 	JSONTypecaster::addIdsToJSON(ids, result, "ids");
 
 	return success;
+}
+
+void JSONQueryRunner::handleError(std::string message, libvariant::Variant& result) {
+	LOG(ERROR) << "JSONQueryRunner::handleError: " << message;
+	result.Clear();
+	libvariant::Variant error;
+	error.Set("message", libvariant::Variant(message));
+	result.Set("error", error);
 }
 
 } /* namespace rsg */

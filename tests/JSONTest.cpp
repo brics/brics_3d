@@ -17,7 +17,7 @@
 *
 ******************************************************************************/
 
-//#define BRICS_JSON_ENABLE
+#define BRICS_JSON_ENABLE
 #ifdef BRICS_JSON_ENABLE
 #include "JSONTest.h"
 #include "SceneGraphNodesTest.h" // for the observer counter
@@ -29,6 +29,7 @@
 #include <brics_3d/worldModel/sceneGraph/UpdatesToSceneGraphListener.h>
 #include <brics_3d/worldModel/sceneGraph/JSONSerializer.h>
 #include <brics_3d/worldModel/sceneGraph/JSONDeserializer.h>
+#include <brics_3d/worldModel/sceneGraph/JSONQueryRunner.h>
 #include <brics_3d/worldModel/sceneGraph/DotVisualizer.h>
 #include <brics_3d/util/JSONTypecaster.h>
 
@@ -1839,6 +1840,76 @@ void JSONTest::threadFunction(brics_3d::WorldModel* wm) {
 		}
 	}
 	LOG(INFO) << "JSONTest::threadFunction: stop.";
+}
+
+void JSONTest::testQuerys() {
+	brics_3d::WorldModel* wm = new brics_3d::WorldModel();
+	brics_3d::rsg::JSONQueryRunner queryRunner(wm);
+
+	std::string queryAsJson = "";
+	std::string resultAsJson = "";
+
+	CPPUNIT_ASSERT(!queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"error\": {\"message\": \"Syntax error: Top level model type @worldmodeltype does not exist.\"}}") == 0);
+
+	queryAsJson = "xdkvmsdpj0ßr98w3ß9+ vrsßvvr8ameg+ß9vw4 ";
+	CPPUNIT_ASSERT(!queryRunner.query(queryAsJson, resultAsJson));
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"error\": {\"message\": \"Syntax error: Top level model type @worldmodeltype does not exist.\"}}") == 0);
+
+
+	std::stringstream queryAsJson2;
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_NODE_ATTRIBUTES\","
+	    << "\"id\": \"d0483c43-4a36-4197-be49-de829cdd66c9\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(!queryRunner.query(queryAsJson, resultAsJson)); // correctly parsed, but the node does not exist.
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": false}") == 0); // "{}" means parser error;
+
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_NODE_ATTRIBUTES\","
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(!queryRunner.query(queryAsJson, resultAsJson)); // missing id
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"error\": {\"message\": \"Syntax error: Wrong or missing id.\"}}") == 0);
+
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+	    << "\"id\": \"d0483c43-4a36-4197-be49-de829cdd66c9\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(!queryRunner.query(queryAsJson, resultAsJson)); // missing query
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"error\": {\"message\": \"Syntax error: Mandatory query field not set in RSGQuery\"}}") == 0);
+
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"query\": \"GET_NODE_ATTRIBUTES\","
+	    << "\"id\": \"d0483c43-4a36-4197-be49-de829cdd66c9\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(!queryRunner.query(queryAsJson, resultAsJson)); // missing @worldmodeltype
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"error\": {\"message\": \"Syntax error: Top level model type @worldmodeltype does not exist.\"}}") == 0);
+
+
+	queryAsJson = "xdkvmsdpj0ßr98w3ß9+ vrsßvvr8ameg+ß9vw4 ";
+	CPPUNIT_ASSERT(!queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"error\": {\"message\": \"Syntax error: Top level model type @worldmodeltype does not exist.\"}}") == 0);
+
+	delete wm;
 }
 
 }  // namespace unitTests
