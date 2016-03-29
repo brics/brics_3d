@@ -97,6 +97,11 @@ int main(int argc, char **argv) {
 	wm->scene.attachUpdateObserver(&serializer); // Enable JSON based serialization
 	wm->scene.advertiseRootNode();				 // Inform freshly attached opserver about _this_ world model
 
+	/* Start with a prior set attribute  for the rootIS (optional - but JSONModel should only append) */
+	std::vector<brics_3d::rsg::Attribute> attributes;
+	wm->scene.getNodeAttributes(rootId, attributes); 				// Get potentially existing attributes
+	attributes.push_back(brics_3d::rsg::Attribute("name", "uav_view"));	// Append new attribute
+	wm->scene.setNodeAttributes(rootId, attributes);				// Update node
 
 	/* Do the actual JSON parsing. */
 	LOG(INFO) << serializedModel.str();
@@ -104,7 +109,7 @@ int main(int argc, char **argv) {
 	deserializer.setMapUnknownParentIdsToRootId(true);
 	deserializer.write(serializedModel.str());
 
-	/* (Optianlly) apply a query */
+	/* (Optionally) apply a query */
 	LOG(INFO) << std::endl <<"--------------------QUERY-----------------------" << std::endl;
 	LOG(INFO) << serializedQuery.str();
 	brics_3d::rsg::JSONQueryRunner queryRunner(wm);

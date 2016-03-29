@@ -417,7 +417,10 @@ bool JSONDeserializer::doAddNode(libvariant::Variant& group, rsg::Id parentId) {
 
 	/* Id */
 	rsg::Id id = rsg::JSONTypecaster::getIdFromJSON(group, "id");
-	//assert(!id.isNil());
+	if(id.isNil()){
+		LOG(ERROR) << "JSONDeserializer doAddNode: Invalid id. Aborting.";
+		return false;
+	}
 
 	/* attributes */
 	std::vector<rsg::Attribute> attributes = rsg::JSONTypecaster::getAttributesFromJSON(group);
@@ -431,7 +434,10 @@ bool JSONDeserializer::doAddGroup(libvariant::Variant& group, rsg::Id parentId) 
 
 	/* Id */
 	rsg::Id id = rsg::JSONTypecaster::getIdFromJSON(group, "id");
-//	assert(!id.isNil());
+	if(id.isNil()){
+		LOG(ERROR) << "JSONDeserializer doAddGroup: Invalid id. Aborting.";
+		return false;
+	}
 
 	/* attributes */
 	std::vector<rsg::Attribute> attributes = rsg::JSONTypecaster::getAttributesFromJSON(group);
@@ -458,7 +464,10 @@ bool JSONDeserializer::doAddTransformNode(libvariant::Variant& group,
 
 	/* Id */
 	rsg::Id id = rsg::JSONTypecaster::getIdFromJSON(group, "id");
-//	assert(!id.isNil());
+	if(id.isNil()){
+		LOG(ERROR) << "JSONDeserializer doAddTransformNode: Invalid id. Aborting.";
+		return false;
+	}
 
 	/* attributes */
 	std::vector<rsg::Attribute> attributes = rsg::JSONTypecaster::getAttributesFromJSON(group);
@@ -475,6 +484,10 @@ bool JSONDeserializer::doAddTransformNode(libvariant::Variant& group,
 	TemporalCache<IHomogeneousMatrix44::IHomogeneousMatrix44Ptr> history;
 	JSONTypecaster::getTransformCacheFromJSON(history, group);
 	LOG(DEBUG) << "JSONDeserializer doAddTransformNode: transform cache has size = " << history.size();
+	if(history.size() == 0) {
+		LOG(ERROR) << "JSONDeserializer doAddTransformNode: transform cache for Transform " << id << " is empty. Aborting.";
+		return false;
+	}
 
 	transform = history.getData(history.getLatestTimeStamp());
 
@@ -519,7 +532,10 @@ bool JSONDeserializer::doAddGeometricNode(libvariant::Variant& group,
 
 	/* Id */
 	id = rsg::JSONTypecaster::getIdFromJSON(group, "id");
-//	assert(!id.isNil());
+	if(id.isNil()){
+		LOG(ERROR) << "JSONDeserializer doAddGeometricNode: Invalid id. Aborting.";
+		return false;
+	}
 
 	/* attributes */
 	attributes = rsg::JSONTypecaster::getAttributesFromJSON(group);
@@ -572,7 +588,10 @@ bool JSONDeserializer::doAddConnection(libvariant::Variant& connection,
 
 	/* Id */
 	rsg::Id id = rsg::JSONTypecaster::getIdFromJSON(connection, "id");
-//	assert(!id.isNil());
+	if(id.isNil()){
+		LOG(ERROR) << "JSONDeserializer doAddConnection: Invalid id. Aborting.";
+		return false;
+	}
 
 	/* attributes */
 	std::vector<rsg::Attribute> attributes = rsg::JSONTypecaster::getAttributesFromJSON(connection);
