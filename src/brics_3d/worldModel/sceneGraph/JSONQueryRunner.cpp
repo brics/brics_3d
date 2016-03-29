@@ -184,6 +184,10 @@ bool JSONQueryRunner::handleGetNodeParents(libvariant::Variant& query,
 
 	/* prepare query */
 	rsg::Id id = JSONTypecaster::getIdFromJSON(query, "id");
+	if(id.isNil()) {
+		handleError("Syntax error: Wrong or missing id.", result);
+		return false;
+	}
 	std::vector<rsg::Id> ids;
 
 	/* perform query */
@@ -202,6 +206,10 @@ bool JSONQueryRunner::handleGetGroupChildren(libvariant::Variant& query,
 
 	/* prepare query */
 	rsg::Id id = JSONTypecaster::getIdFromJSON(query, "id");
+	if(id.isNil()) {
+		handleError("Syntax error: Wrong or missing id.", result);
+		return false;
+	}
 	std::vector<rsg::Id> ids;
 
 	/* perform query */
@@ -253,6 +261,10 @@ bool JSONQueryRunner::handleGetTransform(libvariant::Variant& query,
 
 	/* prepare query */
 	rsg::Id id = JSONTypecaster::getIdFromJSON(query, "id");
+	if(id.isNil()) {
+		handleError("Syntax error: Wrong or missing id.", result);
+		return false;
+	}
 	rsg::Id idReferenceNode = JSONTypecaster::getIdFromJSON(query, "idReferenceNode");
 	rsg::TimeStamp timeStamp = JSONTypecaster::getTimeStampFromJSON(query, "timeStamp");
 	HomogeneousMatrix44::IHomogeneousMatrix44Ptr transform(new HomogeneousMatrix44());
@@ -275,6 +287,10 @@ bool JSONQueryRunner::handleGetGeometry(libvariant::Variant& query,
 
 	/* prepare query */
 	rsg::Id id = JSONTypecaster::getIdFromJSON(query, "id");
+	if(id.isNil()) {
+		handleError("Syntax error: Wrong or missing id.", result);
+		return false;
+	}
 	Shape::ShapePtr shape;
 	TimeStamp timeStamp;
 
@@ -298,6 +314,10 @@ bool JSONQueryRunner::handleGetSourceIds(libvariant::Variant& query,
 
 	/* prepare query */
 	rsg::Id id = JSONTypecaster::getIdFromJSON(query, "id");
+	if(id.isNil()) {
+		handleError("Syntax error: Wrong or missing id.", result);
+		return false;
+	}
 	std::vector<rsg::Id> ids;
 
 	/* perform query */
@@ -316,6 +336,10 @@ bool JSONQueryRunner::handleGetTargetIds(libvariant::Variant& query,
 
 	/* prepare query */
 	rsg::Id id = JSONTypecaster::getIdFromJSON(query, "id");
+	if(id.isNil()) {
+		handleError("Syntax error: Wrong or missing id.", result);
+		return false;
+	}
 	std::vector<rsg::Id> ids;
 
 	/* perform query */

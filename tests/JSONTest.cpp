@@ -31,6 +31,7 @@
 #include <brics_3d/worldModel/sceneGraph/JSONDeserializer.h>
 #include <brics_3d/worldModel/sceneGraph/JSONQueryRunner.h>
 #include <brics_3d/worldModel/sceneGraph/DotVisualizer.h>
+#include <brics_3d/worldModel/sceneGraph/UuidGenerator.h>
 #include <brics_3d/util/JSONTypecaster.h>
 
 #include "boost/thread.hpp"
@@ -1843,7 +1844,10 @@ void JSONTest::threadFunction(brics_3d::WorldModel* wm) {
 }
 
 void JSONTest::testQuerys() {
-	brics_3d::WorldModel* wm = new brics_3d::WorldModel();
+	Id rootId;
+	rootId.fromString("00000000-0000-0000-0000-000000000042");
+	rsg::IIdGenerator* idGenerator = new brics_3d::rsg::UuidGenerator(rootId);
+	brics_3d::WorldModel* wm = new brics_3d::WorldModel(idGenerator);
 	brics_3d::rsg::JSONQueryRunner queryRunner(wm);
 
 	std::string queryAsJson = "";
@@ -1895,6 +1899,29 @@ void JSONTest::testQuerys() {
 	queryAsJson2.str("");
 	queryAsJson2
 	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"INVALID query\","
+	    << "\"id\": \"d0483c43-4a36-4197-be49-de829cdd66c9\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(!queryRunner.query(queryAsJson, resultAsJson)); // missing query
+	LOG(DEBUG) << "resultAsJson invalid query " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"error\": {\"message\": \"Syntax error: Mandatory query field has unknown value in RSGQuery\"}}") == 0);
+
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQueryINVALID\","
+	    << "\"id\": \"d0483c43-4a36-4197-be49-de829cdd66c9\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(!queryRunner.query(queryAsJson, resultAsJson)); // missing query
+	LOG(DEBUG) << "resultAsJson invalid type " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"error\": {\"message\": \"Syntax error: Mandatory @worldmodeltype field not set in RSGQuery\"}}") == 0);
+
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
 		<< "\"query\": \"GET_NODE_ATTRIBUTES\","
 	    << "\"id\": \"d0483c43-4a36-4197-be49-de829cdd66c9\""
 	<<"}";
@@ -1919,6 +1946,168 @@ void JSONTest::testQuerys() {
 	queryAsJson = queryAsJson2.str();
 	CPPUNIT_ASSERT(!queryRunner.query(queryAsJson, resultAsJson)); // correctly parsed, but the node does not exist.
 	CPPUNIT_ASSERT(resultAsJson.compare("{\"error\": {\"message\": \"Syntax error: Wrong or missing id.\"}}") == 0);
+
+	/*
+	 * Now go for some other query types
+	 */
+
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_NODE_PARENTS\","
+	    << "\"id\": \"INVALID-ID\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(!queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"error\": {\"message\": \"Syntax error: Wrong or missing id.\"}}") == 0);
+
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_GROUP_CHILDREN\","
+	    << "\"id\": \"INVALID-ID\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(!queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"error\": {\"message\": \"Syntax error: Wrong or missing id.\"}}") == 0);
+
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_ROOT_NODE\","
+	    << "\"id\": \"INVALID-ID\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson)); // id is not required, thus an invalid one is ignored
+	LOG(DEBUG) << "resultAsJson root id" << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"query\": \"GET_ROOT_NODE\",\"querySuccess\": true,\"rootId\": \"00000000-0000-0000-0000-000000000042\"}") == 0);
+
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_REMOTE_ROOT_NODES\","
+	    << "\"id\": \"INVALID-ID\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));  // id is not required, thus an invalid one is ignored
+	LOG(DEBUG) << "resultAsJson remote roots" << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"ids\": [],\"query\": \"GET_REMOTE_ROOT_NODES\",\"querySuccess\": true}") == 0);
+
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_TRANSFORM\","
+	    << "\"id\": \"INVALID-ID\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(!queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"error\": {\"message\": \"Syntax error: Wrong or missing id.\"}}") == 0);
+
+
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_GEOMETRY\","
+	    << "\"id\": \"INVALID-ID\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(!queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"error\": {\"message\": \"Syntax error: Wrong or missing id.\"}}") == 0);
+
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_CONNECTION_SOURCE_IDS\","
+	    << "\"id\": \"INVALID-ID\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(!queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"error\": {\"message\": \"Syntax error: Wrong or missing id.\"}}") == 0);
+
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_CONNECTION_TARGET_IDS\","
+	    << "\"id\": \"INVALID-ID\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(!queryRunner.query(queryAsJson, resultAsJson)); // correctly parsed, but the node does not exist.
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"error\": {\"message\": \"Syntax error: Wrong or missing id.\"}}") == 0);
+
+	/*
+	 * Well formatted but false quieries
+	 */
+
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_NODE_PARENTS\","
+	    << "\"id\": \"d0483c43-4a36-4197-be49-de829cdd66c9\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(!queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"ids\": [],\"query\": \"GET_NODE_PARENTS\",\"querySuccess\": false}") == 0);
+
+	/*
+	 * Now go for some working queries
+	 */
+
+	Id id;
+	CPPUNIT_ASSERT(id.fromString("d0483c43-4a36-4197-be49-de829cdd66c9"));
+	vector<Attribute> attributes;
+	wm->scene.addNode(wm->getRootNodeId(),id, attributes, true);
+
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_NODE_ATTRIBUTES\","
+	    << "\"id\": \"d0483c43-4a36-4197-be49-de829cdd66c9\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson)); // This should work
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_NODE_PARENTS\","
+	    << "\"id\": \"d0483c43-4a36-4197-be49-de829cdd66c9\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"ids\": [\"00000000-0000-0000-0000-000000000042\"],\"query\": \"GET_NODE_PARENTS\",\"querySuccess\": true}") == 0);
+
+	/*
+	 * Broken query
+	 */
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{{{{{{{{{{{{{{{{{{{{{{{{{{{{";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(!queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{}") == 0);
+
 
 	delete wm;
 }
