@@ -46,8 +46,9 @@ public:
 		rsg::Id id = 0; //NiL
 
 		if(node.Contains(idTag)) { // required
-			id.fromString(node.Get(idTag).AsString());
-			assert(!id.isNil());
+			if(!id.fromString(node.Get(idTag).AsString())) {
+				LOG(ERROR) << "Can not parse model. Invalid value = " << node.Get(idTag).AsString() << " for node Id " << idTag << " specified.";
+			}
 			LOG(DEBUG) << "JSONTypecaster: Id " << idTag << " is = " << id;
 		} else {
 			LOG(ERROR) << "Can not parse model. No node Id " << idTag << " specified.";
@@ -72,10 +73,12 @@ public:
 			if (idList.IsList()) {
 				for (libvariant::Variant::ListIterator i(idList.ListBegin()), e(idList.ListEnd()); i!=e; ++i) {
 					Id id;
-					id.fromString(i->AsString());
-					assert(!id.isNil());
-					LOG(DEBUG) << "JSONTypecaster: \t " << id;
-					ids.push_back(id);
+					if(!id.fromString(i->AsString())) {
+						LOG(ERROR) << "Can not parse model. Invalid value = " << i->AsString() << " for node Id in " << idsTag << " specified.";
+					} else {
+						LOG(DEBUG) << "JSONTypecaster: \t " << id;
+						ids.push_back(id);
+					}
 				}
 			}
 
@@ -99,14 +102,17 @@ public:
 	}
 
 	inline static rsg::TimeStamp getTimeStampFromJSON(libvariant::Variant& node, string stampTag) {
-		rsg::TimeStamp stamp(0); //-inf?
+		rsg::TimeStamp stamp(-1.0); //-inf?
 
 		if(node.Contains(stampTag)) {
 			LOG(DEBUG) << "JSONTypecaster: entity has the following time stamp:";
 			libvariant::Variant stampModel = node.Get(stampTag);
 
 			if(stampModel.Contains("@stamptype")) {
-				assert(stampModel.Contains("stamp"));
+				if(!stampModel.Contains("stamp")) {
+					LOG(ERROR) << "JSONTypecaster: Time stamp entity has no @stamptype tag.";
+					return stamp;
+				}
 
 				if( stampModel.Get("@stamptype").AsString().compare("TimeStampUTCms") == 0 ) {
 
@@ -128,7 +134,7 @@ public:
 				LOG(ERROR) << "JSONTypecaster: Time stamp definition has no type @stamptype identifier";
 			}
 		} else {
-			LOG(ERROR) << "JSONTypecaster: entity has no stamp tag: " << stampTag;
+			LOG(ERROR) << "JSONTypecaster: Time stamp entity has no stamp tag: " << stampTag;
 		}
 
 		LOG(DEBUG) << "JSONTypecaster: stamp = " << stamp.getSeconds();
@@ -157,8 +163,16 @@ public:
 			libvariant::Variant attributeList = node.Get("attributes");
 			if (attributeList.IsList()) {
 				for (libvariant::Variant::ListIterator i(attributeList.ListBegin()), e(attributeList.ListEnd()); i!=e; ++i) {
-					assert(i->Contains("key"));
-					assert(i->Contains("value"));
+					if(!i->Contains("key")) {
+						LOG(ERROR) << "JSONTypecaster: Attribute has no key tag. Aborting.";
+						attributes.clear(); // This is a rather strict abort.
+						return attributes;
+					}
+					if(!i->Contains("value")) {
+						LOG(ERROR) << "JSONTypecaster: Attribute has no value tag. Aborting.";
+						attributes.clear(); // This is a rather strict abort.
+						return attributes;
+					}
 
 					try {
 
@@ -218,10 +232,25 @@ public:
 					if (cacheList.IsList()) {
 						for (libvariant::Variant::ListIterator i(cacheList.ListBegin()), e(cacheList.ListEnd()); i!=e; ++i) {
 							TimeStamp stamp = getTimeStampFromJSON(*i, "stamp");
+							if(stamp <= TimeStamp(0.0)) {
+								LOG(ERROR) << "JSONTypecaster: Transform history contains an invalid time stamp. Aborting.";
+								// We keep the so far history, to allow parsing until first occurrence of corrupted data (in larger time series).
+								return false;
+							}
 
-							assert(i->Contains("transform"));
+							if(!i->Contains("transform")) {
+								LOG(ERROR) << "JSONTypecaster: Transform history has no transform tag. Aborting.";
+								// We keep the so far history, to allow parsing until first occurrence of corrupted data (in larger time series).
+								return false;
+							}
 							libvariant::Variant transformModel = i->Get("transform");
-							assert(transformModel.Contains("type"));
+
+							if(!transformModel.Contains("type")) {
+								LOG(ERROR) << "JSONTypecaster: Transform history has no transform type. Aborting.";
+								// We keep the so far history, to allow parsing until first occurrence of corrupted data (in larger time series).
+								return false;
+							}
+
 
 							if( transformModel.Get("type").AsString().compare("HomogeneousMatrix44") == 0 ) {
 							     /*

@@ -17,7 +17,7 @@
 *
 ******************************************************************************/
 
-#define BRICS_JSON_ENABLE
+//#define BRICS_JSON_ENABLE
 #ifdef BRICS_JSON_ENABLE
 #include "JSONTest.h"
 #include "SceneGraphNodesTest.h" // for the observer counter
@@ -1908,6 +1908,17 @@ void JSONTest::testQuerys() {
 	CPPUNIT_ASSERT(!queryRunner.query(queryAsJson, resultAsJson));
 	LOG(DEBUG) << "resultAsJson " << resultAsJson;
 	CPPUNIT_ASSERT(resultAsJson.compare("{\"error\": {\"message\": \"Syntax error: Top level model type @worldmodeltype does not exist.\"}}") == 0);
+
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_NODE_ATTRIBUTES\","
+	    << "\"id\": \"INVALID-ID\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(!queryRunner.query(queryAsJson, resultAsJson)); // correctly parsed, but the node does not exist.
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"error\": {\"message\": \"Syntax error: Wrong or missing id.\"}}") == 0);
 
 	delete wm;
 }
