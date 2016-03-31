@@ -259,7 +259,15 @@ bool JSONDeserializer::handleWorldModelAgent(libvariant::Variant& model) {
 		std::vector<rsg::Attribute> rootAttributes;
 		wm->scene.getNodeAttributes(wm->getRootNodeId(), rootAttributes);
 		std::vector<rsg::Attribute> attributes = rsg::JSONTypecaster::getAttributesFromJSON(rootNode);
+		LOG(DEBUG) << "JSONDeserializer::handleWorldModelAgent existing root Attributes = ";
+		for(std::vector<Attribute>::iterator it = rootAttributes.begin(); it != rootAttributes.end() ;++it) {
+			LOG(DEBUG) << "\t (" << it->key << ", " << it->value << ")";
+		}
 		rootAttributes.insert(rootAttributes.end(), attributes.begin(), attributes.end());
+		LOG(DEBUG) << "JSONDeserializer::handleWorldModelAgent resulting root Attributes = ";
+		for(std::vector<Attribute>::iterator it = rootAttributes.begin(); it != rootAttributes.end() ;++it) {
+			LOG(DEBUG) << "\t (" << it->key << ", " << it->value << ")";
+		}
 		sceneUpdater->setNodeAttributes(wm->getRootNodeId(), rootAttributes);
 
 		/* handle children & connections*/
@@ -418,8 +426,8 @@ bool JSONDeserializer::doAddNode(libvariant::Variant& group, rsg::Id parentId) {
 	/* Id */
 	rsg::Id id = rsg::JSONTypecaster::getIdFromJSON(group, "id");
 	if(id.isNil()){
-		LOG(ERROR) << "JSONDeserializer doAddNode: Invalid id. Aborting.";
-		return false;
+		LOG(WARNING) << "JSONDeserializer doAddNode: Invalid id. Aborting.";
+//		return false;
 	}
 
 	/* attributes */
@@ -435,8 +443,8 @@ bool JSONDeserializer::doAddGroup(libvariant::Variant& group, rsg::Id parentId) 
 	/* Id */
 	rsg::Id id = rsg::JSONTypecaster::getIdFromJSON(group, "id");
 	if(id.isNil()){
-		LOG(ERROR) << "JSONDeserializer doAddGroup: Invalid id. Aborting.";
-		return false;
+		LOG(WARNING) << "JSONDeserializer doAddGroup: Invalid id. Aborting.";
+		//return false; // This prevents id" field to be optional... :-(
 	}
 
 	/* attributes */
@@ -465,8 +473,8 @@ bool JSONDeserializer::doAddTransformNode(libvariant::Variant& group,
 	/* Id */
 	rsg::Id id = rsg::JSONTypecaster::getIdFromJSON(group, "id");
 	if(id.isNil()){
-		LOG(ERROR) << "JSONDeserializer doAddTransformNode: Invalid id. Aborting.";
-		return false;
+		LOG(WARNING) << "JSONDeserializer doAddTransformNode: Invalid id. Aborting.";
+//		return false;
 	}
 
 	/* attributes */
@@ -533,8 +541,8 @@ bool JSONDeserializer::doAddGeometricNode(libvariant::Variant& group,
 	/* Id */
 	id = rsg::JSONTypecaster::getIdFromJSON(group, "id");
 	if(id.isNil()){
-		LOG(ERROR) << "JSONDeserializer doAddGeometricNode: Invalid id. Aborting.";
-		return false;
+		LOG(WARNING) << "JSONDeserializer doAddGeometricNode: Invalid id. Aborting.";
+//		return false;
 	}
 
 	/* attributes */
@@ -589,8 +597,8 @@ bool JSONDeserializer::doAddConnection(libvariant::Variant& connection,
 	/* Id */
 	rsg::Id id = rsg::JSONTypecaster::getIdFromJSON(connection, "id");
 	if(id.isNil()){
-		LOG(ERROR) << "JSONDeserializer doAddConnection: Invalid id. Aborting.";
-		return false;
+		LOG(WARNING) << "JSONDeserializer doAddConnection: Invalid id. Aborting.";
+//		return false;
 	}
 
 	/* attributes */

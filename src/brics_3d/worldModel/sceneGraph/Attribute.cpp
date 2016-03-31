@@ -19,6 +19,7 @@
 
 #include "Attribute.h"
 #include <boost/regex.hpp>
+#include <iostream>
 
 namespace brics_3d {
 
@@ -105,6 +106,10 @@ extern bool attributeListsAreEqual(vector<Attribute> attributeList1, vector<Attr
 		return true;
 	} else if ((attributeList1.size() == 0) || (attributeList2.size() == 0)) {
 		return false;
+	} else if (attributeList1.begin() == attributeList1.end()) {
+		std::cout << "attributeListsAreEqual: attributeList1 is empty" << std::endl;
+	} else if (attributeList2.begin() == attributeList2.end()) {
+		std::cout << "attributeListsAreEqual: attributeList2 is empty" << std::endl;
 	}
 	return std::equal(attributeList1.begin(), attributeList1.end(), attributeList2.begin());
 }
