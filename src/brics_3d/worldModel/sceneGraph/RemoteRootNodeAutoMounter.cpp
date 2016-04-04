@@ -78,6 +78,12 @@ bool RemoteRootNodeAutoMounter::addGeometricNode(Id parentId, Id& assignedId,
 
 bool RemoteRootNodeAutoMounter::addRemoteRootNode(Id rootId, vector<Attribute> attributes) {
 	LOG(DEBUG) << "RemoteRootNodeAutoMounter::addRemoteRootNode with ID: " << rootId;
+
+	if(rootId == mountPoint) {
+		LOG(DEBUG) << "RemoteRootNodeAutoMounter::addRemoteRootNode rootId and mountPoint are identical, so they are skipped. ( = " << rootId  << ")";
+		return false;
+	}
+
 	if(this->createMountPointIfItDoesNotExist) {
 		LOG(DEBUG) << "RemoteRootNodeAutoMounter::addRemoteRootNode createMountPointIfItDoesNotExist is activated.";
 		vector<Attribute> tmpAttributes;
@@ -85,14 +91,11 @@ bool RemoteRootNodeAutoMounter::addRemoteRootNode(Id rootId, vector<Attribute> a
 		if(!mountPointExists) {
 			LOG(DEBUG) << "RemoteRootNodeAutoMounter::addRemoteRootNode mountPoint does not exist. Creating a new one as remote root.";
 			tmpAttributes.clear();
-			tmpAttributes.push_back(Attribute("rsg::dbg","added_by_auto_mounter"));
+			tmpAttributes.push_back(Attribute("rsg:dbg","added_by_auto_mounter"));
 			observedScene->addRemoteRootNode(mountPoint, tmpAttributes);
 		}
-	}
-
-	if(rootId == mountPoint) {
-		LOG(DEBUG) << "RemoteRootNodeAutoMounter::addRemoteRootNode rootId and mountPoint are identical, so they are skipped. ( = " << rootId  << ")";
-		return false;
+	} else {
+		LOG(DEBUG) << "RemoteRootNodeAutoMounter::addRemoteRootNode createMountPointIfItDoesNotExist is deactivated.";
 	}
 
 	return observedScene->addParent(rootId, mountPoint);
