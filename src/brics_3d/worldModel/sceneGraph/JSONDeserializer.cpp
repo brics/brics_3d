@@ -483,7 +483,7 @@ bool JSONDeserializer::doAddTransformNode(libvariant::Variant& group,
 	//	assert((sourceIds.size() > 0) || (targetIds.size() > 0)); // there should be at least one
 
 	/* stamps */
-	rsg::TimeStamp start = JSONTypecaster::getTimeStampFromJSON(group, "start");
+//	rsg::TimeStamp start = JSONTypecaster::getTimeStampFromJSON(group, "start");
 //	rsg::TimeStamp end = JSONTypecaster::getTimeStampFromJSON(connection, "end");
 
 	/* transform data */

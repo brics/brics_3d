@@ -51,7 +51,7 @@ public:
 			}
 			LOG(DEBUG) << "JSONTypecaster: Id " << idTag << " is = " << id;
 		} else {
-			LOG(ERROR) << "Can not parse model. No node Id " << idTag << " specified.";
+			LOG(WARNING) << "Can not parse model. No node Id " << idTag << " specified.";
 		}
 
 		return id;
@@ -232,7 +232,7 @@ public:
 					if (cacheList.IsList()) {
 						for (libvariant::Variant::ListIterator i(cacheList.ListBegin()), e(cacheList.ListEnd()); i!=e; ++i) {
 							TimeStamp stamp = getTimeStampFromJSON(*i, "stamp");
-							if(stamp <= TimeStamp(0.0)) {
+							if(stamp < TimeStamp(0.0)) {
 								LOG(ERROR) << "JSONTypecaster: Transform history contains an invalid time stamp. Aborting.";
 								// We keep the so far history, to allow parsing until first occurrence of corrupted data (in larger time series).
 								return false;
