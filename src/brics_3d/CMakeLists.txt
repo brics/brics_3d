@@ -193,6 +193,7 @@ SET (WORLD_MODEL_LIBRARY_SOURCES
     ./worldModel/sceneGraph/UncertainTransform
     ./worldModel/sceneGraph/PathCollector
     ./worldModel/sceneGraph/AttributeFinder
+    ./worldModel/sceneGraph/RootFinder
     ./worldModel/sceneGraph/DotGraphGenerator    
     ./worldModel/sceneGraph/OutdatedDataDeleter
     ./worldModel/sceneGraph/OutdatedDataIdAwareDeleter

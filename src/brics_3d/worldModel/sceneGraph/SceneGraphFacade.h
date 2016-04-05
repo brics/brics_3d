@@ -126,15 +126,15 @@ class SceneGraphFacade : public ISceneGraphQuery, public ISceneGraphUpdate {
      * This essentially calls the addRemoteRootNode() function on all attached
      * observers.
      *
-     * Note, a manual self advetisement is not possible, beacause
+     * Note, a manual self advertisement is not possible, because
 	 * addRemoteRootNode(getRootId, attributes) i.e. adding the own root node
-	 * as Root node causes an error, which in turn is not beeing propagated
-	 * to potential obeservers when using the below error policy:
+	 * as Root node causes an error, which in turn is not being propagated
+	 * to potential observers when using the below error policy:
 	 * setCallObserversEvenIfErrorsOccurred(false);
-	 * Thugh, this policy is required for a distibuted setting including
+	 * Though, this policy is required for a distributed setting including
 	 * loop back connections.
      *
-     * The advertiseRootNode() circumvetns this problem beacuse it sends it
+     * The advertiseRootNode() circumvents this problem because it sends it
      * regardless the given error policy.
      *
      */
@@ -180,6 +180,12 @@ class SceneGraphFacade : public ISceneGraphQuery, public ISceneGraphUpdate {
     /// Policy on error propagation (e.g. duplicated IDs) to the observers. Default is true.
     bool callObserversEvenIfErrorsOccurred;
 
+    /**
+     * @brief Get the global root ID by traversing the graph upwards. It will be mostly the rootID,
+     * unless it is contained in a more global (and complex) composition.
+     * @return The global root node Id.
+     */
+    Id getGlobalRootId();
 
 };
 

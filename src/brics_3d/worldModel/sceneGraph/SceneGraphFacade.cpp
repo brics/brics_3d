@@ -22,6 +22,7 @@
 #include "UuidGenerator.h"
 #include "brics_3d/core/Logger.h"
 #include "AttributeFinder.h"
+#include "RootFinder.h"
 
 #include <iomanip> // setprecision
 
@@ -74,7 +75,7 @@ bool SceneGraphFacade::addRemoteRootNode(Id rootId, vector<Attribute> attributes
 	if( (!doesIdExist(rootId)) && (idGenerator->removeIdFromPool(rootId)) ) {
 		idIsOk = true;
 	} else {
-		LOG(WARNING) << "Remote root ID " << rootId << " cannot be assigend. Probably another object with that ID exists already!";
+		LOG(WARNING) << "Remote root ID " << rootId << " cannot be assigned. Probably another object with that ID exists already!";
 		idIsOk = false;
 	}
 
@@ -89,7 +90,7 @@ bool SceneGraphFacade::addRemoteRootNode(Id rootId, vector<Attribute> attributes
 		operationSucceeded = true;
 	}
 
-	/* Call all observers depending on the given policy in case an error occured */
+	/* Call all observers depending on the given policy in case an error occurred */
 	if (operationSucceeded || callObserversEvenIfErrorsOccurred) {
 		std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
 		for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
@@ -112,9 +113,10 @@ bool SceneGraphFacade::getRemoteRootNodes(vector<Id>& ids) {
 }
 
 bool SceneGraphFacade::getNodes(vector<Attribute> attributes, vector<Id>& ids) {
-	LOG(DEBUG) << " Current idLookUpTable lenght = " << idLookUpTable.size();
+	LOG(DEBUG) << " Current idLookUpTable length = " << idLookUpTable.size();
 	ids.clear();
-	Node::NodeWeakPtr tmpNode = findNodeRecerence(getRootId());
+//	Node::NodeWeakPtr tmpNode = findNodeRecerence(getRootId());
+	Node::NodeWeakPtr tmpNode = findNodeRecerence(getGlobalRootId());
 	Node::NodePtr node = tmpNode.lock();
 	if (node != 0) {
 			AttributeFinder attributeFinder;
@@ -736,9 +738,9 @@ bool SceneGraphFacade::removeParent(Id id, Id parentId) {
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();
 	if (node != 0) {
-		if (node->getNumberOfParents() == 0) { // oops we are trying to delete the root node, but this on has no parents...
-			assert (id == getRootId()); // just to be sure something really strange did not happend...
-			LOG(WARNING) << "The root node with ID " << id << " has no parents that could be removed.";
+		if (node->getNumberOfParents() == 0) { // oops we are trying to delete a root node or a remote root node, but this on has no parents...
+			//assert (id == getRootId()); // just to be sure something really strange did not happend...
+			LOG(WARNING) << "The (remote) root node with ID " << id << " has no parents that could be removed.";
 			operationSucceeded = false;
 
 		} else {
@@ -947,13 +949,13 @@ bool SceneGraphFacade::advertiseRootNode() {
 
 	operationSucceeded = getNodeAttributes(getRootId(), rootAttributes);
 
-	if (operationSucceeded) { // Note, we ignore he error policy becauese this function will not be called in a possible loop back
+	if (operationSucceeded) { // Note, we ignore the error policy because this function will not be called in a possible loop back
 		std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
 		for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
 			(*observerIterator)->addRemoteRootNode(getRootId(), rootAttributes);
 		}
 	} else {
-		LOG(ERROR) << "Cannot obtain atributes for loacal root node with id " << getRootId().toString();
+		LOG(ERROR) << "Cannot obtain attributes for local root node with id " << getRootId().toString();
 	}
 
 	return operationSucceeded;
@@ -983,6 +985,20 @@ bool SceneGraphFacade::doesIdExist(Id id) {
 		return true;
 	}
 	return false;
+}
+
+Id SceneGraphFacade::getGlobalRootId() {
+	Node::NodeWeakPtr tmpNode = findNodeRecerence(getRootId());
+	Node::NodePtr node = tmpNode.lock();
+	if (node != 0) {
+		RootFinder rootFinder;
+		node->accept(&rootFinder);
+		if(!rootFinder.getRootNode().isNil()) {
+			return rootFinder.getRootNode();
+		}
+	}
+	LOG(WARNING) << "Cannot find root node. Aborting getGlobalRootId search. Returning local root instead.";
+	return this->getRootId();
 }
 
 } // namespace brics_3d::RSG

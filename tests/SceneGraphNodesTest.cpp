@@ -4981,6 +4981,39 @@ void SceneGraphNodesTest::testSemanticContextUpdateFilter() {
 	/* Deletion*/
 }
 
+void SceneGraphNodesTest::testGlobalRootNodeQueries() {
+	Logger::setMinLoglevel(Logger::LOGDEBUG);
+	brics_3d::rsg::SceneGraphFacade scene;
+	Id id; //dummy
+	Id remoteId = 42;
+	vector<Attribute> attributes;
+	vector<Id> resultIds;
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","myremote_root"));
+	LOG(DEBUG) << "myremote_root";
+	CPPUNIT_ASSERT(scene.addRemoteRootNode(remoteId, attributes));
+
+	resultIds.clear();
+	CPPUNIT_ASSERT(scene.getNodes(attributes, resultIds));
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultIds.size()));
+
+	scene.addParent(scene.getRootId(), remoteId);
+
+	resultIds.clear();
+	CPPUNIT_ASSERT(scene.getNodes(attributes, resultIds));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultIds.size()));
+	CPPUNIT_ASSERT(resultIds[0] == remoteId);
+
+	scene.removeParent(scene.getRootId(), remoteId);
+
+	resultIds.clear();
+	CPPUNIT_ASSERT(scene.getNodes(attributes, resultIds));
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultIds.size()));
+
+
+}
+
 }  // namespace unitTests
 
 /* EOF */
