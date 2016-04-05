@@ -30,12 +30,14 @@ RemoteRootNodeAutoMounter::RemoteRootNodeAutoMounter(SceneGraphFacade* observedS
 	assert(observedScene != 0);
 	this->observedScene = observedScene;
 	this->mountPoint = observedScene->getRootId();
+	this->createMountPointIfItDoesNotExist = false;
 }
 
-RemoteRootNodeAutoMounter::RemoteRootNodeAutoMounter(SceneGraphFacade* observedScene, Id mountPoint) {
+RemoteRootNodeAutoMounter::RemoteRootNodeAutoMounter(SceneGraphFacade* observedScene, Id mountPoint, bool createMountPointIfItDoesNotExist) {
 	assert(observedScene != 0);
 	this->observedScene = observedScene;
 	this->mountPoint = mountPoint;
+	this->createMountPointIfItDoesNotExist = createMountPointIfItDoesNotExist;
 }
 
 RemoteRootNodeAutoMounter::~RemoteRootNodeAutoMounter() {
@@ -76,6 +78,26 @@ bool RemoteRootNodeAutoMounter::addGeometricNode(Id parentId, Id& assignedId,
 
 bool RemoteRootNodeAutoMounter::addRemoteRootNode(Id rootId, vector<Attribute> attributes) {
 	LOG(DEBUG) << "RemoteRootNodeAutoMounter::addRemoteRootNode with ID: " << rootId;
+
+	if(rootId == mountPoint) {
+		LOG(DEBUG) << "RemoteRootNodeAutoMounter::addRemoteRootNode rootId and mountPoint are identical, so they are skipped. ( = " << rootId  << ")";
+		return false;
+	}
+
+	if(this->createMountPointIfItDoesNotExist) {
+		LOG(DEBUG) << "RemoteRootNodeAutoMounter::addRemoteRootNode createMountPointIfItDoesNotExist is activated.";
+		vector<Attribute> tmpAttributes;
+		bool mountPointExists = observedScene->getNodeAttributes(mountPoint, tmpAttributes);
+		if(!mountPointExists) {
+			LOG(DEBUG) << "RemoteRootNodeAutoMounter::addRemoteRootNode mountPoint does not exist. Creating a new one as remote root.";
+			tmpAttributes.clear();
+			tmpAttributes.push_back(Attribute("rsg:dbg","added_by_auto_mounter"));
+			observedScene->addRemoteRootNode(mountPoint, tmpAttributes);
+		}
+	} else {
+		LOG(DEBUG) << "RemoteRootNodeAutoMounter::addRemoteRootNode createMountPointIfItDoesNotExist is deactivated.";
+	}
+
 	return observedScene->addParent(rootId, mountPoint);
 }
 

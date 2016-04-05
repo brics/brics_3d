@@ -29,7 +29,7 @@ namespace rsg {
 /**
  * @brief Automatically connects new remote nodes to the scene graph.
  *
- * This class observes all changes to the romote root nodes
+ * This class observes all changes to the remote root nodes
  * i.e. invocations of addRemoteRootNode().
  * For each new remote node a new parent-child relation will be added,
  * whereas the node as specifies by mountPoint serves as parent.
@@ -40,24 +40,29 @@ class RemoteRootNodeAutoMounter : public ISceneGraphUpdateObserver {
 public:
 
 	/**
-	 * @brief Constructor with locl root node as default mount point.
+	 * @brief Constructor with local root node as default mount point.
 	 * @param observedScene Pointer to the observed scene. Required to
-	 *        automitically add a parent child relation to it.
+	 *        automatically add a parent child relation to it.
 	 *
 	 */
 	RemoteRootNodeAutoMounter(SceneGraphFacade* observedScene);
 
 	/**
-	 * @brief Constructor with abitrary mount point.
+	 * @brief Constructor with arbitrary mount point.
 	 * @param observedScene Pointer to the observed scene. Required to
-	 *        automitically add a parent child relation to it.
+	 *        automatically add a parent child relation to it.
 	 * @param mountPoint Any new remote root node will be added as child to
 	 *        this node.
+	 * @param createlMountPointIfItDoesNotExist It set to true, this option activates to
+	 *        create a new mount point if it does not exist yet. It will be created as a
+	 *        remote root node. This option allows rather simple setups with one commonly
+	 *        known application root node, where any number of agents can be dynamically
+	 *        added (= contained) without further prior knowledge.
 	 */
-	RemoteRootNodeAutoMounter(SceneGraphFacade* observedScene, Id mountPoint);
+	RemoteRootNodeAutoMounter(SceneGraphFacade* observedScene, Id mountPoint, bool createMountPointIfItDoesNotExist = false);
 	virtual ~RemoteRootNodeAutoMounter();
 
-	/* implemetntations of observer interface */
+	/* implementations of observer interface */
 	bool addNode(Id parentId, Id& assignedId, vector<Attribute> attributes, bool forcedId = false);
 	bool addGroup(Id parentId, Id& assignedId, vector<Attribute> attributes, bool forcedId = false);
 	bool addTransformNode(Id parentId, Id& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp, bool forcedId = false);
@@ -75,7 +80,7 @@ public:
 private:
 
     Id mountPoint;
-
+    bool createMountPointIfItDoesNotExist;
     SceneGraphFacade* observedScene;
 
 };
