@@ -226,7 +226,21 @@ bool JSONDeserializer::handleWorldModelUpdate(libvariant::Variant& model) {
 			libvariant::Variant node = model.Get("node");
 			return doRemoveParent(node, parentId);
 
+		} else {
+			LOG(ERROR) << "JSONDeserializer: world model update defines an unknown operation: " << operation
+				<< " Possible values are: " << std::endl
+				<< "\t" << "CREATE"                  << std::endl
+				<< "\t" << "CREATE_REMOTE_ROOT_NODE" << std::endl
+				<< "\t" << "CREATE_PARENT"           << std::endl
+				<< "\t" << "CREATE_PARENT"           << std::endl
+				<< "\t" << "UPDATE_TRANSFORM"        << std::endl
+				<< "\t" << "UPDATE_START"            << std::endl
+				<< "\t" << "UPDATE_END"              << std::endl
+				<< "\t" << "DELETE_NODE"             << std::endl
+				<< "\t" << "DELETE_PARENT";
 		}
+	} else {
+		LOG(ERROR) << "JSONDeserializer: world model update does not contain an operation as required for an RSGUpdate.";
 	}
 			//	       "CREATE",
 			//	        "CREATE_REMOTE_ROOT_NODE",
