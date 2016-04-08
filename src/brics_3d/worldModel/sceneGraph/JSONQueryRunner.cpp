@@ -24,11 +24,14 @@ namespace rsg {
 
 JSONQueryRunner::JSONQueryRunner(WorldModel* wm) :
 		wm(wm) {
-
+	updateOperationRunner = new JSONDeserializer(wm);
 }
 
 JSONQueryRunner::~JSONQueryRunner() {
-
+	if(updateOperationRunner) {
+		delete updateOperationRunner;
+		updateOperationRunner = 0;
+	}
 }
 
 bool JSONQueryRunner::query(std::string& queryAsJson,
@@ -112,7 +115,17 @@ bool JSONQueryRunner::query(libvariant::Variant& query,
 					return false;
 				}
 
-
+			} else if (type.compare("RSGUpdate") == 0) {
+				LOG(DEBUG) << "JSONQueryRunner: Found a model for an Update.";
+				result.Clear();
+				result.Set("updateSuccess", libvariant::Variant(false));
+				result.Set("@worldmodeltype", libvariant::Variant("RSGUpdateResult"));
+				int error = updateOperationRunner->write(query);
+				LOG(DEBUG) <<"JSONQueryRunner: error code for update = " << error;
+				if(error > 0) {
+					result.Set("updateSuccess", libvariant::Variant(true));
+				}
+				//NOTE: we dont't have this elaborated error messaging (yet) for RSGUpdate here as compared to the queries.
 			} else {
 				LOG(ERROR) << "JSONQueryRunner: Syntax error: Mandatory @worldmodeltype field not set in RSGQuery. Instead it is = " << type;
 				handleError("Syntax error: Mandatory @worldmodeltype field not set in RSGQuery", result);

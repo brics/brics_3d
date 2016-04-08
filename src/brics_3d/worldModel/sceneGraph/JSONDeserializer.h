@@ -83,6 +83,7 @@ private:
 	WorldModel* wm;
 	ISceneGraphUpdate* sceneUpdater;
 	bool mapUnknownParentIdsToRootId;
+
 };
 
 } /* namespace rsg */

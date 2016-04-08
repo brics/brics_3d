@@ -22,6 +22,7 @@
 
 #include "brics_3d/util/JSONTypecaster.h"
 #include "brics_3d/worldModel/WorldModel.h"
+#include "brics_3d/worldModel/sceneGraph/JSONDeserializer.h"
 
 namespace brics_3d {
 namespace rsg {
@@ -45,7 +46,7 @@ public:
 
 	/**
 	 * @brief Processes a JSON based queries and returns a JSON based result.
-	 * @param queryAsJson Query that comples to the rsg-query-schema.json Schema.
+	 * @param queryAsJson Query that compiles to the rsg-query-schema.json or rsg-update-schema.json Schema.
 	 * @param resultAsJson Result of a query that complies to the rsg-queryResult-schema.json Schema or an error object.
 	 *                     The error object is inspired by the Google JSON guidelines.
 	 * @return True on success full execution (No coding errors, etc). Though, the result could be empty.
@@ -57,6 +58,9 @@ private:
 	bool query(libvariant::Variant& query, libvariant::Variant& result);
 
 	WorldModel* wm;
+
+	/// Responsible for update queries. In particular useful to get feedback if a node has been created.
+	JSONDeserializer* updateOperationRunner;
 
 	bool handleGetNodes(libvariant::Variant& query, libvariant::Variant& result);
 	bool handleGetNodeAttributes(libvariant::Variant& query, libvariant::Variant& result);

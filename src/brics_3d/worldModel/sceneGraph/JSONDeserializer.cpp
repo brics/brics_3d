@@ -331,18 +331,18 @@ bool JSONDeserializer::handleGraphPrimitive(libvariant::Variant& atom, rsg::Id p
 
 			/* check for well known semantic conexts */
 			if(semanticContext.compare("GeometricNode") == 0) {
-				doAddGeometricNode(atom, parentId);
+				return doAddGeometricNode(atom, parentId);
 
 			// else if (...) potentially more to come
 
 			} else { // Default case: a plain node
-				doAddNode(atom, parentId);
+				return doAddNode(atom, parentId);
 			}
 
 		} else if (type.compare("Group") == 0) {
 			return doAddGroup(atom, parentId);
 		} else if (type.compare("Connection") == 0) {
-			doAddConnection(atom, parentId);
+			return doAddConnection(atom, parentId);
 		} else { // ...
 			LOG(WARNING) << "JSONDeserializer: Unknown atom graphtype. Skippping it.";
 		}
