@@ -289,8 +289,8 @@ bool JSONDeserializer::handleWorldModelAgent(libvariant::Variant& model) {
 		handleConnections(rootNode, wm->getRootNodeId());
 
 	} else {
-		LOG (ERROR) << "JSONDeserializer: WorldModelAgent has no rootID";
-		return false;
+		LOG (WARNING) << "JSONDeserializer: WorldModelAgent has no rootID";
+		//return false;
 	}
 
 	/* extrinsic world model data */

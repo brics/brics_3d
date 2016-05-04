@@ -70,6 +70,11 @@ bool JSONQueryRunner::query(libvariant::Variant& query,
 			if(type.compare("RSGQuery") == 0) {
 				LOG(DEBUG) << "JSONQueryRunner: Found a model for a Query.";
 
+				/* Optional queryId */
+				if(query.Contains("queryId"))  {
+					result.Set("queryId", query.Get("queryId"));
+				}
+
 				/* The actual query */
 				if(query.Contains("query"))  {
 

@@ -2098,6 +2098,23 @@ void JSONTest::testQuerys() {
 	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"ids\": [\"00000000-0000-0000-0000-000000000042\"],\"query\": \"GET_NODE_PARENTS\",\"querySuccess\": true}") == 0);
 
 	/*
+	 * Query with queryId
+	 */
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_NODE_PARENTS\","
+		<< "\"queryId\": \"some-query-id-12345\","
+	    << "\"id\": \"d0483c43-4a36-4197-be49-de829cdd66c9\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"ids\": [\"00000000-0000-0000-0000-000000000042\"],\"query\": \"GET_NODE_PARENTS\",\"queryId\": \"some-query-id-12345\",\"querySuccess\": true}") == 0);
+
+
+	/*
 	 * Broken query
 	 */
 	queryAsJson2.str("");
