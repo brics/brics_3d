@@ -17,7 +17,7 @@
 *
 ******************************************************************************/
 
-//#define BRICS_JSON_ENABLE
+#define BRICS_JSON_ENABLE  //FIXME
 #ifdef BRICS_JSON_ENABLE
 #include "JSONTest.h"
 #include "SceneGraphNodesTest.h" // for the observer counter
@@ -2125,6 +2125,37 @@ void JSONTest::testQuerys() {
 	LOG(DEBUG) << "resultAsJson " << resultAsJson;
 	CPPUNIT_ASSERT(resultAsJson.compare("{}") == 0);
 
+
+	delete wm;
+}
+
+void JSONTest::testFunctionBlockQuerys() {
+	Id rootId;
+	rootId.fromString("00000000-0000-0000-0000-000000000042");
+	rsg::IIdGenerator* idGenerator = new brics_3d::rsg::UuidGenerator(rootId);
+	brics_3d::WorldModel* wm = new brics_3d::WorldModel(idGenerator);
+	brics_3d::rsg::JSONQueryRunner queryRunner(wm);
+
+	std::string queryAsJson = "";
+	std::string resultAsJson = "";
+
+	std::stringstream queryAsJson2;
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGFunctionBlock\","
+		<< "\"metamodel\":       \"rsg-functionBlock-schema.json\","
+		<< "\"name\":            \"roifilter\","
+		<< "\"operation\":       \"EXECUTE\","
+		<< "\"input\": ["
+		<< "	\"943ba6f4-5c70-46ec-83af-0d5434953e5f\","
+		<< "	\"631ba6f4-5c70-46ec-83af-0d5434953e5f\""
+		<<   "]"
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(!queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGFunctionBlockResult\",\"metamodel\": \"rsg-functionBlock-schema.json\",\"operation\": \"EXECUTE\",\"operationSuccess\": false,\"output\": []}") == 0); // "{}" means parser error;
 
 	delete wm;
 }
