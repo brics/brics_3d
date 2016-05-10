@@ -21,6 +21,7 @@
 #include "brics_3d/core/Logger.h"
 #include "brics_3d/core/HomogeneousMatrix44.h"
 
+//#define BRICS_MICROBLX_ENABLE
 #ifdef BRICS_MICROBLX_ENABLE
 #include <ubx.h>
 #include <stdio.h>
@@ -57,13 +58,13 @@ void WorldModel::initializeMicroblx() {
 	/* init microblx */
 	microBlxNodeHandle = new ubx_node_info_t(); // holds all microblx
 	std::string microBlxNodeName = "functionBlocks";
+	LOG(DEBUG) << "WorldModel::initializeMicroblx handle with name " << microBlxNodeName << " created.";
 
-//	LOG(DEBUG) << "WorldModel::initialize: 1";
 	if (ubx_node_init(microBlxNodeHandle, microBlxNodeName.c_str()) != 0 ) { //segfaults if started from ubx lua
 		LOG(ERROR) << "WorldModel::initialize: Cannot initialize the microblx node handle.";
 		microBlxNodeHandle = 0;
 	}
-//	LOG(DEBUG) << "WorldModel::initialize: 2";
+	LOG(DEBUG) << "WorldModel::initializeMicroblx ubx node created.";
 
 	/* load the standard types */
 	std::string moduleFile = microBlxPath + "std_types/stdtypes/stdtypes.so";
