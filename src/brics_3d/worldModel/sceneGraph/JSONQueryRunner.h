@@ -62,6 +62,7 @@ private:
 	/// Responsible for update queries. In particular useful to get feedback if a node has been created.
 	JSONDeserializer* updateOperationRunner;
 
+	/* Query related handlers */
 	bool handleGetNodes(libvariant::Variant& query, libvariant::Variant& result);
 	bool handleGetNodeAttributes(libvariant::Variant& query, libvariant::Variant& result);
 	bool handleGetNodeParents(libvariant::Variant& query, libvariant::Variant& result);
@@ -79,6 +80,13 @@ private:
 	 * @param[out] result Reference to the result message. The data will be _replaced: by the error message.
 	 */
 	void handleError(std::string message, libvariant::Variant& result);
+
+	/* FunctionBlock (query) related handlers */
+	bool handleLoadFunctionBlock(libvariant::Variant& query, libvariant::Variant& result);
+	bool handleUnloadFunctionBlock(libvariant::Variant& query, libvariant::Variant& result);
+	bool handleExecuteFunctionBlock(libvariant::Variant& query, libvariant::Variant& result);
+	bool handleConfigureFunctionBlock(libvariant::Variant& query, libvariant::Variant& result);
+	bool handleGetMetaModelOfFunctionBlock(libvariant::Variant& query, libvariant::Variant& result);
 
 };
 

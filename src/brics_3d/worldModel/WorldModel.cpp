@@ -45,6 +45,9 @@ namespace brics_3d {
 WorldModel::WorldModel() {
 	this->microBlxPath = "MICROBLX_ROOT_DIR-NOT-FOUND";
 	microBloxIsInitialized = false;
+#ifdef BRICS_MICROBLX_ENABLE
+	microBlxNodeHandle = 0;
+#endif /* BRICS_MICROBLX_ENABLE */
 }
 
 void WorldModel::initializeMicroblx() {
@@ -180,7 +183,11 @@ WorldModel::~WorldModel() {
 }
 
 WorldModel::WorldModel(rsg::IIdGenerator* idGenerator) : scene(idGenerator) {
+	this->microBlxPath = "MICROBLX_ROOT_DIR-NOT-FOUND";
 	microBloxIsInitialized = false;
+#ifdef BRICS_MICROBLX_ENABLE
+	microBlxNodeHandle = 0;
+#endif /* BRICS_MICROBLX_ENABLE */
 }
 
 

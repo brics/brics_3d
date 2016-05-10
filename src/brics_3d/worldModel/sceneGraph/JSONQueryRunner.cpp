@@ -131,9 +131,61 @@ bool JSONQueryRunner::query(libvariant::Variant& query,
 					result.Set("updateSuccess", libvariant::Variant(true));
 				}
 				//NOTE: we dont't have this elaborated error messaging (yet) for RSGUpdate here as compared to the queries.
+			} else if (type.compare("RSGFunctionBlock") == 0) {
+				LOG(DEBUG) << "JSONQueryRunner: Found a model for a FunctionBlock operation.";
+				result.Clear();
+				result.Set("operationSuccess", libvariant::Variant(false));
+				result.Set("@worldmodeltype", libvariant::Variant("RSGFunctionBlockResult"));
+				result.Set("metamodel", libvariant::Variant("rsg-functionBlock-schema.json"));
+
+				/* Optional operationId (similar to a queryId in case of a query) */
+				if(query.Contains("operationId"))  {
+					result.Set("operationId", query.Get("operationId"));
+				}
+
+				/* The actual operation
+			    "functionBlockOperation": {
+			      "enum": [
+			        "LOAD",
+			        "UNLOAD",
+			        "EXECUTE",
+			        "CONFIGURE",
+			        "GET_METAMODEL"
+			      ]
+			    },
+			    */
+				if(query.Contains("operation"))  {
+
+					std::string queryOperation = query.Get("operation").AsString();
+					if(queryOperation.compare("LOAD") == 0) {
+						return handleLoadFunctionBlock(query, result);
+
+					} else if (queryOperation.compare("UNLOAD") == 0) {
+						return handleUnloadFunctionBlock(query, result);
+
+					} else if (queryOperation.compare("EXECUTE") == 0) {
+						return handleExecuteFunctionBlock(query, result);
+
+					} else if (queryOperation.compare("CONFIGURE") == 0) {
+						return handleConfigureFunctionBlock(query, result);
+
+					} else if (queryOperation.compare("GET_METAMODEL") == 0) {
+						return handleGetMetaModelOfFunctionBlock(query, result);
+
+					} else {
+						LOG(ERROR) << "JSONQueryRunner: Mandatory operation field has unknown value = " << queryOperation;
+						handleError("Syntax error: Mandatory operation field has unknown value in RSGFunctionBlock", result);
+						return false;
+					}
+
+				} else {
+					handleError("Syntax error: Mandatory operation field not set in RSGFunctionBlock", result);
+					return false;
+				}
+
 			} else {
-				LOG(ERROR) << "JSONQueryRunner: Syntax error: Mandatory @worldmodeltype field not set in RSGQuery. Instead it is = " << type;
-				handleError("Syntax error: Mandatory @worldmodeltype field not set in RSGQuery", result);
+				LOG(ERROR) << "JSONQueryRunner: Syntax error: Mandatory @worldmodeltype field not set in RSGQuery or RSGFunctionBlock. Instead it is = " << type;
+				handleError("Syntax error: Mandatory @worldmodeltype field not set in RSGQuery or RSGFunctionBlock", result);
 				return false;
 			}
 
@@ -378,6 +430,78 @@ void JSONQueryRunner::handleError(std::string message, libvariant::Variant& resu
 	error.Set("message", libvariant::Variant(message));
 	result.Set("error", error);
 }
+
+bool JSONQueryRunner::handleLoadFunctionBlock(libvariant::Variant& query, libvariant::Variant& result) {
+	result.Set("operation", libvariant::Variant("LOAD"));
+
+	if(query.Contains("name"))  {
+		bool operationSuccess = false;
+		string name = query.Get("name").AsString();
+		if(query.Contains("input")) { // with path
+			libvariant::Variant input = query.Get("input");
+			if(!input.Contains("metamodel")) {
+				LOG(WARNING) << "JSONQueryRunner::handleLoadFunctionBlock: no metamodel defined. Skipping evaluation.";
+			}
+			if(input.Contains("path")) { // optional path input parameter
+				string path = input.Get("path").AsString();
+				LOG(DEBUG) << "JSONQueryRunner::handleLoadFunctionBlock: loading block = " << name << " with path = " << path;
+				operationSuccess = wm->loadFunctionBlock(name, path);
+			}
+		} else { // without path
+			LOG(DEBUG) << "JSONQueryRunner::handleLoadFunctionBlock: loading block = " << name << " with default path.";
+			operationSuccess = wm->loadFunctionBlock(name);
+		}
+
+		result.Set("operationSuccess", libvariant::Variant(operationSuccess));
+		return operationSuccess;
+	} else {
+		handleError("Syntax error: Mandatory name field not set in RSGFunctionBlock", result);
+	}
+	return false;
+
+}
+
+bool JSONQueryRunner::handleUnloadFunctionBlock(libvariant::Variant& query, libvariant::Variant& result) {
+	return false;
+}
+
+bool JSONQueryRunner::handleExecuteFunctionBlock(libvariant::Variant& query, libvariant::Variant& result) {
+	result.Set("operation", libvariant::Variant("EXECUTE"));
+
+	if(query.Contains("name"))  {
+		bool operationSuccess = false;
+		string name = query.Get("name").AsString();
+		if(query.Contains("input")) {
+			libvariant::Variant input = query.Get("input");
+			if(input.Contains("metamodel")) {
+				LOG(DEBUG) << "JSONQueryRunner::handleLoadFunctionBlock:  metamodel defined. Not yet implemented.";
+			} else {
+				LOG(DEBUG) << "JSONQueryRunner::handleLoadFunctionBlock: no metamodel defined. Using Id list instead.";
+				std::vector<rsg::Id> inputIds = rsg::JSONTypecaster::getIdsFromJSON(query, "input");
+				std::vector<rsg::Id> outputIds;
+				operationSuccess = wm->executeFunctionBlock(name, inputIds, outputIds);
+				JSONTypecaster::addIdsToJSON(outputIds, result, "output");
+			}
+
+		} else {
+			handleError("Syntax error: Mandatory input field not set in RSGFunctionBlock", result);
+		}
+		result.Set("operationSuccess", libvariant::Variant(operationSuccess));
+		return operationSuccess;
+	} else {
+		handleError("Syntax error: Mandatory name field not set in RSGFunctionBlock", result);
+	}
+	return false;
+}
+
+bool JSONQueryRunner::handleConfigureFunctionBlock(libvariant::Variant& query, libvariant::Variant& result) {
+	return false;
+}
+
+bool JSONQueryRunner::handleGetMetaModelOfFunctionBlock(libvariant::Variant& query, libvariant::Variant& result) {
+	return false;
+}
+
 
 } /* namespace rsg */
 } /* namespace brics_3d */

@@ -38,7 +38,9 @@ class JSONTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testUpdateObersver );
 	CPPUNIT_TEST( testInputFilter );
 	CPPUNIT_TEST( testQuerys );
+#ifdef BRICS_MICROBLX_ENABLE
 	CPPUNIT_TEST( testFunctionBlockQuerys );
+#endif /* BRICS_MICROBLX_ENABLE */
 #endif /* BRICS_JSON_ENABLE */
 	CPPUNIT_TEST_SUITE_END();
 
@@ -61,6 +63,7 @@ private:
 //	brics_3d::WorldModel* wm;
 	volatile bool doRun;
 
+	std::string blockRepositoryPath;
 };
 
 }  // namespace unitTests

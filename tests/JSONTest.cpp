@@ -75,6 +75,14 @@ void JSONTest::setUp() {
 
 	doRun = false;
 	brics_3d::Logger::setMinLoglevel(brics_3d::Logger::LOGDEBUG);
+
+	if(getenv("FBX_MODULES") != 0) {
+		string functionBlocksModulesPath(getenv("FBX_MODULES"));
+		blockRepositoryPath = functionBlocksModulesPath + "/lib/";
+	} else {
+		blockRepositoryPath = "/opt/src/sandbox/brics_3d_function_blocks/lib/";
+	}
+	LOG(DEBUG) << "JSONTest::setUp: using blockRepositoryPath = " << blockRepositoryPath;
 }
 
 void JSONTest::tearDown() {
@@ -1917,7 +1925,7 @@ void JSONTest::testQuerys() {
 	queryAsJson = queryAsJson2.str();
 	CPPUNIT_ASSERT(!queryRunner.query(queryAsJson, resultAsJson)); // missing query
 	LOG(DEBUG) << "resultAsJson invalid type " << resultAsJson;
-	CPPUNIT_ASSERT(resultAsJson.compare("{\"error\": {\"message\": \"Syntax error: Mandatory @worldmodeltype field not set in RSGQuery\"}}") == 0);
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"error\": {\"message\": \"Syntax error: Mandatory @worldmodeltype field not set in RSGQuery or RSGFunctionBlock\"}}") == 0);
 
 	queryAsJson2.str("");
 	queryAsJson2
@@ -2156,6 +2164,72 @@ void JSONTest::testFunctionBlockQuerys() {
 	CPPUNIT_ASSERT(!queryRunner.query(queryAsJson, resultAsJson));
 	LOG(DEBUG) << "resultAsJson " << resultAsJson;
 	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGFunctionBlockResult\",\"metamodel\": \"rsg-functionBlock-schema.json\",\"operation\": \"EXECUTE\",\"operationSuccess\": false,\"output\": []}") == 0); // "{}" means parser error;
+
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGFunctionBlock\","
+		<< "\"metamodel\":       \"rsg-functionBlock-schema.json\","
+		<< "\"name\":            \"roifilter\","
+		<< "\"operation\":       \"LOAD\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(!queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGFunctionBlockResult\",\"metamodel\": \"rsg-functionBlock-schema.json\",\"operation\": \"LOAD\",\"operationSuccess\": false}") == 0); // "{}" means parser error;
+
+
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGFunctionBlock\","
+		<< "\"metamodel\":       \"rsg-functionBlock-schema.json\","
+		<< "\"name\":            \"roifilter\","
+		<< "\"operation\":       \"LOAD\","
+		<< "\"input\": {"
+		<< "	\"metamodel\": \"rsg-functionBlock-path-schema.json\","
+		<< "	\"path\": " << blockRepositoryPath
+		<<   "}"
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGFunctionBlockResult\",\"metamodel\": \"rsg-functionBlock-schema.json\",\"operation\": \"LOAD\",\"operationSuccess\": true}") == 0); // "{}" means parser error;
+
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGFunctionBlock\","
+		<< "\"metamodel\":       \"rsg-functionBlock-schema.json\","
+		<< "\"name\":            \"roifilter\","
+		<< "\"operation\":       \"EXECUTE\","
+		<< "\"input\": ["
+		<< "	\"943ba6f4-5c70-46ec-83af-0d5434953e5f\","
+		<< "	\"631ba6f4-5c70-46ec-83af-0d5434953e5f\""
+		<<   "]"
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGFunctionBlockResult\",\"metamodel\": \"rsg-functionBlock-schema.json\",\"operation\": \"EXECUTE\",\"operationSuccess\": true,\"output\": []}") == 0); // "{}" means parser error;
+
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGFunctionBlock\","
+		<< "\"metamodel\":       \"rsg-functionBlock-schema.json\","
+		<< "\"name\":            \"roifilter\","
+		<< "\"operation\":       \"EXECUTE\","
+		<< "\"input\": ["
+		<< "	\"943ba6f4-5c70-46ec-83af-0d5434953e5f\","
+		<< "	\"631ba6f4-5c70-46ec-83af-0d5434953e5f\""
+		<<   "]"
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGFunctionBlockResult\",\"metamodel\": \"rsg-functionBlock-schema.json\",\"operation\": \"EXECUTE\",\"operationSuccess\": true,\"output\": []}") == 0); // "{}" means parser error;
+
 
 	delete wm;
 }
