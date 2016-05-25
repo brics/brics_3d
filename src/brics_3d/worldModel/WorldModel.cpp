@@ -21,7 +21,7 @@
 #include "brics_3d/core/Logger.h"
 #include "brics_3d/core/HomogeneousMatrix44.h"
 
-#define BRICS_MICROBLX_ENABLE
+//#define BRICS_MICROBLX_ENABLE
 #ifdef BRICS_MICROBLX_ENABLE
 #include <ubx.h>
 #include <stdio.h>
