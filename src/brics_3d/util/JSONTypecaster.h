@@ -186,7 +186,7 @@ public:
 					} catch (libvariant::UnableToConvertError e) {
 
 						LOG(DEBUG) << "JSONTypecaster: parsing a non string value";
-						string complexValue = libvariant::Serialize(*i, libvariant::SERIALIZE_JSON);
+						string complexValue = libvariant::Serialize(i->Get("value"), libvariant::SERIALIZE_JSON);
 
 						LOG(DEBUG) << "\t( " << i->Get("key").AsString() << ", " << complexValue << " )";
 						attributes.push_back(rsg::Attribute(i->Get("key").AsString(), complexValue));
