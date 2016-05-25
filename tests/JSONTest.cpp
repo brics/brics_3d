@@ -2234,6 +2234,179 @@ void JSONTest::testFunctionBlockQuerys() {
 	delete wm;
 }
 
+void JSONTest::testComplexAttributeValues() {
+	Id rootId;
+	rootId.fromString("00000000-0000-0000-0000-000000000042");
+	rsg::IIdGenerator* idGenerator = new brics_3d::rsg::UuidGenerator(rootId);
+	brics_3d::WorldModel* wm = new brics_3d::WorldModel(idGenerator);
+	brics_3d::rsg::JSONQueryRunner queryRunner(wm);
+
+	std::string queryAsJson = "";
+	std::string resultAsJson = "";
+	std::stringstream queryAsJson2;
+	vector<Attribute> attributes;
+
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_NODE_ATTRIBUTES\","
+	    << "\"id\": \"00000000-0000-0000-0000-000000000042\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson)); // This should work
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+
+
+//	JSON attributes;
+//	  {"key": "sherpa:command", "value": "follow me"},
+//    {"key": "sherpa:target_agent_name", "value": "donkey"},
+//    {"key": "sherpa:command_pointing_gesture", "value": {"direction":[0.3, 0.7, 0.0]}},
+
+	/* Set a "simple" attribute */
+	attributes.clear();
+	attributes.push_back(Attribute("sherpa:command", "follow me"));
+	wm->scene.setNodeAttributes(rootId, attributes);
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_NODE_ATTRIBUTES\","
+	    << "\"id\": \"00000000-0000-0000-0000-000000000042\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson)); // This should work
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"sherpa:command\",\"value\": \"follow me\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+
+	/* Set the "simple" attribute again to see that nothing get appended. */
+	attributes.clear();
+	attributes.push_back(Attribute("sherpa:command", "follow me"));
+	wm->scene.setNodeAttributes(rootId, attributes);
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_NODE_ATTRIBUTES\","
+	    << "\"id\": \"00000000-0000-0000-0000-000000000042\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"sherpa:command\",\"value\": \"follow me\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+
+
+	/* Set the "complex" attribute. */
+	attributes.clear();
+	attributes.push_back(Attribute("sherpa:command", "{\"direction\":[0.3, 0.7, 0.0]}"));
+	wm->scene.setNodeAttributes(rootId, attributes);
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_NODE_ATTRIBUTES\","
+	    << "\"id\": \"00000000-0000-0000-0000-000000000042\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"sherpa:command\",\"value\": {\"direction\": [0.29999999999999999,0.69999999999999996,0.0000000000000000]}}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+
+	/*
+	 * Now with the JSON interface :
+	 */
+
+	/* Set a "simple" attribute */
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGUpdate\","
+		<< "\"operation\": \"UPDATE_ATTRIBUTES\","
+	    << "\"node\": {"
+		<< "  \"@graphtype\": \"Node\","
+		<< "  \"id\": \"00000000-0000-0000-0000-000000000042\","
+		<< "  \"attributes\": ["
+		<< "       {\"key\": \"sherpa:command\", \"value\": \"follow me\"},"
+		<< "  ],"
+		<< " },"
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_NODE_ATTRIBUTES\","
+	    << "\"id\": \"00000000-0000-0000-0000-000000000042\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"sherpa:command\",\"value\": \"follow me\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+
+	/* Set the "simple" attribute again to see that nothing get appended. */
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGUpdate\","
+		<< "\"operation\": \"UPDATE_ATTRIBUTES\","
+	    << "\"node\": {"
+		<< "  \"@graphtype\": \"Node\","
+		<< "  \"id\": \"00000000-0000-0000-0000-000000000042\","
+		<< "  \"attributes\": ["
+		<< "       {\"key\": \"sherpa:command\", \"value\": \"follow me\"},"
+		<< "  ],"
+		<< " },"
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_NODE_ATTRIBUTES\","
+	    << "\"id\": \"00000000-0000-0000-0000-000000000042\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"sherpa:command\",\"value\": \"follow me\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+
+	/* Set the "complex" attribute. */
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGUpdate\","
+		<< "\"operation\": \"UPDATE_ATTRIBUTES\","
+	    << "\"node\": {"
+		<< "  \"@graphtype\": \"Node\","
+		<< "  \"id\": \"00000000-0000-0000-0000-000000000042\","
+		<< "  \"attributes\": ["
+		<< "       {\"key\": \"sherpa:command\", \"value\": {\"direction\":[0.3, 0.7, 0.0]}},"
+		<< "  ],"
+		<< " },"
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_NODE_ATTRIBUTES\","
+	    << "\"id\": \"00000000-0000-0000-0000-000000000042\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"sherpa:command\",\"value\": {\"direction\": [0.29999999999999999,0.69999999999999996,0.0000000000000000]}}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+
+
+}
+
 }  // namespace unitTests
 
 #endif /* BRICS_JSON_ENABLE */
