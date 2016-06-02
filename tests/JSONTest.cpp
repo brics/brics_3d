@@ -2232,6 +2232,52 @@ void JSONTest::testFunctionBlockQuerys() {
 
 
 	delete wm;
+
+	/* Just to be on the safe side:
+	 * Check if construction and destruction life cycle have no side effects.
+	 */
+	LOG(DEBUG) << "JSONTest::testFunctionBlockQuerys: Check if construction and destruction life cycle have no side effects.";
+
+	rsg::IIdGenerator* idGenerator2 = new brics_3d::rsg::UuidGenerator(rootId);
+	wm = new brics_3d::WorldModel(idGenerator2);
+	brics_3d::rsg::JSONQueryRunner queryRunner2(wm);
+
+
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGFunctionBlock\","
+		<< "\"metamodel\":       \"rsg-functionBlock-schema.json\","
+		<< "\"name\":            \"roifilter\","
+		<< "\"operation\":       \"LOAD\","
+		<< "\"input\": {"
+		<< "	\"metamodel\": \"rsg-functionBlock-path-schema.json\","
+		<< "	\"path\": " << blockRepositoryPath
+		<<   "}"
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(queryRunner2.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGFunctionBlockResult\",\"metamodel\": \"rsg-functionBlock-schema.json\",\"operation\": \"LOAD\",\"operationSuccess\": true}") == 0); // "{}" means parser error;
+
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGFunctionBlock\","
+		<< "\"metamodel\":       \"rsg-functionBlock-schema.json\","
+		<< "\"name\":            \"roifilter\","
+		<< "\"operation\":       \"EXECUTE\","
+		<< "\"input\": ["
+		<< "	\"943ba6f4-5c70-46ec-83af-0d5434953e5f\","
+		<< "	\"631ba6f4-5c70-46ec-83af-0d5434953e5f\""
+		<<   "]"
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(queryRunner2.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGFunctionBlockResult\",\"metamodel\": \"rsg-functionBlock-schema.json\",\"operation\": \"EXECUTE\",\"operationSuccess\": true,\"output\": []}") == 0); // "{}" means parser error;
+
+	delete wm;
 }
 
 void JSONTest::testComplexAttributeValues() {
