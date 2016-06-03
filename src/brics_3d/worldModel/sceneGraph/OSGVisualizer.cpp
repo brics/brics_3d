@@ -20,6 +20,7 @@
 #include "OSGVisualizer.h"
 #include "brics_3d/core/Logger.h"
 #include "brics_3d/core/PointCloud3DIterator.h"
+#include "brics_3d/util/CoordinateConversions.h"
 
 namespace brics_3d {
 
@@ -219,8 +220,13 @@ bool OSGVisualizer::addTransformNode(Id parentId, Id& assignedId, vector<Attribu
 	noVisualisation = attributeListContainsAttribute(attributes, noVisualisationTag);
 
 	bool isACameraReferenceFrame = false;
-	Attribute cameraReferenceFrameTag("osg::camera","home");
+	Attribute cameraReferenceFrameTag("osg:camera","home");
 	isACameraReferenceFrame = attributeListContainsAttribute(attributes, cameraReferenceFrameTag);
+
+	bool isWGS84Representation = false;
+	Attribute wgs84Tag("tf:type","wgs84");
+	isWGS84Representation = attributeListContainsAttribute(attributes, wgs84Tag);
+
 
 	osg::ref_ptr<osg::Node> node = findNodeRecerence(parentId);
 	osg::ref_ptr<osg::Group> parentGroup = 0;
@@ -228,9 +234,24 @@ bool OSGVisualizer::addTransformNode(Id parentId, Id& assignedId, vector<Attribu
 		parentGroup = node->asGroup();
 	}
 	if (parentGroup != 0) {
+		double x = transform->getRawData()[brics_3d::matrixEntry::x];
+		double y = transform->getRawData()[brics_3d::matrixEntry::y];
+		double z = transform->getRawData()[brics_3d::matrixEntry::z];
+
 		osg::ref_ptr<osg::MatrixTransform> newTransformNode = new osg::MatrixTransform();
 		osg::Matrixd transformMatrix;
 		transformMatrix.set(transform->getRawData());
+		if(isWGS84Representation) {
+			string zone;
+			double utmX = 0;
+			double utmY = 0;
+			CoordinateConversions::convertLatLontoUTM(x,y, utmX,utmY,zone);
+			LOG(DEBUG) << "OSGVisualizer: converting WGS84 (" << x << ", " << y <<") to UTM (" << utmX << ", " << utmY << ", " << z << ")  with zone = " << zone;
+			x = utmX; // Note, this might be later used later for the camera positioning.
+			y = utmY;
+			transformMatrix.setTrans(osg::Vec3d(x,y,z));
+		}
+		LOG(DEBUG)<< "T = " << transformMatrix.getTrans().x() << ", " << transformMatrix.getTrans().y();
 		newTransformNode->setMatrix(transformMatrix);
 		if (noVisualisation || !config.visualizeTransforms) {
 			LOG(DEBUG) << "OSGVisualizer: transform has no_visualization debug tag. Skipping visualization.";
@@ -245,10 +266,6 @@ bool OSGVisualizer::addTransformNode(Id parentId, Id& assignedId, vector<Attribu
 
 		if(isACameraReferenceFrame) {
 			LOG(DEBUG) << "OSGVisualizer: resetting pose of camera";
-
-			double x = transform->getRawData()[brics_3d::matrixEntry::x];
-			double y = transform->getRawData()[brics_3d::matrixEntry::y];
-			double z = transform->getRawData()[brics_3d::matrixEntry::z];
 			moveCameraToPosition(x,y,z);
 		}
 
