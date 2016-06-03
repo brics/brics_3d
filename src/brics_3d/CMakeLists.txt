@@ -166,6 +166,7 @@ SET (UTIL_LIBRARY_SOURCES
 	./util/Timer
 	./util/Benchmark
 	./util/SimplePointCloudGeneratorCube
+	./util/CoordinateConversions
 )	
 
 SET (WORLD_MODEL_LIBRARY_SOURCES
