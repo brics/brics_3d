@@ -34,6 +34,11 @@ void CoordinateConversionTest::tearDown() {
 
 void CoordinateConversionTest::testLatLonToUTM() {
 
+	/*
+	 * Delta for latitude:   1m =~ 0.000009
+	 * Delta for longitude:  1m =~ 0.000014
+	 */
+
 	double lat1 = 50.7756807;
 	double lon1 = 7.1849999;
 	double lat2 = 50.7757212;

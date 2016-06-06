@@ -20,6 +20,7 @@
 #include "OSGVisualizer.h"
 #include "brics_3d/core/Logger.h"
 #include "brics_3d/core/PointCloud3DIterator.h"
+#include "brics_3d/core/TriangleMeshExplicit.h"
 #include "brics_3d/util/CoordinateConversions.h"
 
 namespace brics_3d {
@@ -339,6 +340,10 @@ bool OSGVisualizer::addGeometricNode(Id parentId, Id& assignedId, vector<Attribu
 			return true;
 		}
 
+		bool isWGS84Representation = false;
+		Attribute wgs84Tag("geo:crs","wgs84");
+		isWGS84Representation = attributeListContainsAttribute(attributes, wgs84Tag);
+
 		IPoint3DIterator::IPoint3DIteratorPtr pointCloudIterator = shape->getPointCloudIterator(); // this one is independent of the underlying point cloud type
 		rsg::Mesh<brics_3d::ITriangleMesh>::MeshPtr mesh(new rsg::Mesh<brics_3d::ITriangleMesh>());
 		mesh = boost::dynamic_pointer_cast<rsg::Mesh<brics_3d::ITriangleMesh> >(shape);
@@ -392,7 +397,42 @@ bool OSGVisualizer::addGeometricNode(Id parentId, Id& assignedId, vector<Attribu
 
 		} else if (mesh !=0) {
 			LOG(DEBUG) << "                 -> Adding a new mesh.";
-			osg::ref_ptr<osg::Node> meshNode = OSGTriangleMeshVisualizer::createTriangleMeshNode(mesh->data.get(), red, green, blue, alpha);
+			osg::ref_ptr<osg::Node> meshNode;
+			if(isWGS84Representation) {
+				string zone = "";
+				double utmX = 0;
+				double utmY = 0;
+				double x = 0;
+				double y = 0;
+				double z = 0;
+
+				brics_3d::ITriangleMesh::ITriangleMeshPtr meshInUTM(new brics_3d::TriangleMeshExplicit());
+				for (int i = 0; i < mesh->data->getSize(); ++i) { // one triangle
+
+					const int TRAINGLE_VERTEX_NUMBER = 3;
+					Point3D tmpTriangle[TRAINGLE_VERTEX_NUMBER];
+					for (int j = 0; j < TRAINGLE_VERTEX_NUMBER; ++j) { // every point/vertex of a triangle
+
+						x = mesh->data->getTriangleVertex(i,j)->getX();
+						y = mesh->data->getTriangleVertex(i,j)->getY();
+						z = mesh->data->getTriangleVertex(i,j)->getZ();
+
+						CoordinateConversions::convertLatLontoUTM(x,y, utmX,utmY,zone);
+						LOG(DEBUG) << "OSGVisualizer:addGeometricNode: converting mesh from WGS84 (" << x << ", " << y <<") to UTM (" << utmX << ", " << utmY << ", " << z << ")  with zone = " << zone;
+						x = utmX;
+						y = utmY;
+
+						tmpTriangle[j].setX(x);
+						tmpTriangle[j].setY(y);
+						tmpTriangle[j].setZ(z);
+					}
+					meshInUTM->addTriangle(tmpTriangle[0], tmpTriangle[1], tmpTriangle[2]);
+
+				}
+				meshNode = OSGTriangleMeshVisualizer::createTriangleMeshNode(meshInUTM.get(), red, green, blue, alpha);
+			} else {
+				meshNode = OSGTriangleMeshVisualizer::createTriangleMeshNode(mesh->data.get(), red, green, blue, alpha);
+			}
 			viewer.addUpdateOperation(new OSGOperationAdd(this, meshNode, parentGroup));
 			idLookUpTable.insert(std::make_pair(assignedId, meshNode));
 
@@ -446,7 +486,6 @@ bool OSGVisualizer::addRemoteRootNode(Id rootId, vector<Attribute> attributes) {
 }
 
 bool OSGVisualizer::addConnection(Id parentId, Id& assignedId, vector<Attribute> attributes, vector<Id> sourceIds, vector<Id> targetIds, TimeStamp start, TimeStamp end, bool forcedId) {
-	LOG(DEBUG) << "OSGVisualizer: Skipping visualiation of Connection. This is not implemented.";
 	return true;
 }
 
