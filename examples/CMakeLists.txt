@@ -322,3 +322,5 @@ ADD_SUBDIRECTORY(wm_tutorial_1)
 IF(USE_OSG)
 ADD_SUBDIRECTORY(wm_tutorial_2)
 ENDIF(USE_OSG)
+
+ADD_SUBDIRECTORY(wm_function_blocks)
