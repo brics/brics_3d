@@ -12,6 +12,7 @@ LINK_DIRECTORIES(${BRICS_3D_LINK_DIRECTORIES})
 
 # compile and link the executables
 ADD_LIBRARY(testblock SHARED testblock.cpp) 
+SET_TARGET_PROPERTIES(testblock PROPERTIES PREFIX "") # Remove preceeding "lib" prefix
 TARGET_LINK_LIBRARIES(testblock 
         ${BRICS_3D_LIBRARIES}     	
 )

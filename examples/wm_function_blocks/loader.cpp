@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
 	WorldModel wm;
 
 	if(argc <= 1) {
-		LOG(ERROR) << argc << "Please use ./loader <libBlockName.so>";
+		LOG(ERROR) << argc << "Please use ./loader <blockName.so>";
 		return -1;
 	}
 	string blockName = argv[1];
