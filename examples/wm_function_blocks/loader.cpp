@@ -19,6 +19,7 @@
 
 /* BRICS_3D includes */
 #include <brics_3d/worldModel/sceneGraph/IFunctionBlock.h>
+#include <brics_3d/worldModel/sceneGraph/FunctionBlockLoader.h>
 #include <brics_3d/core/Logger.h>
 
 #include <dlfcn.h>
@@ -35,43 +36,25 @@ int main(int argc, char **argv) {
 	Logger::setMinLoglevel(Logger::LOGDEBUG);
 	WorldModel wm;
 
-	if(argc <= 1) {
-		LOG(ERROR) << argc << "Please use ./loader <blockName.so>";
+	if(argc <= 2) {
+		LOG(ERROR) << "Please use ./loader <path> <blockName>";
 		return -1;
 	}
-	string blockName = argv[1];
+	string blockName = argv[2];
+	string blockPath = argv[1];
+
 	LOG(INFO) << "Loading.";
-
-
-	// load the triangle library
-	void* blockHandle = dlopen(blockName.c_str(), RTLD_LAZY);
-	if (!blockHandle) {
-		LOG(ERROR) << "Cannot load library: " << dlerror() << '\n';
-		return 1;
+	FunctionBlockLoader loader;
+	FunctionBlockModuleInfo blockInfo;
+	if(!loader.loadFunctionBlock(blockName, blockPath, &wm, blockInfo)) {
+		LOG(ERROR) << "Cannot load block "<< blockName;
+		return -1;
 	}
+	IFunctionBlock* functionBlock1 = blockInfo.functionBlock;
 
-	// reset errors
-	dlerror();
 
-	// load the symbols
-	create_t* create_block = (create_t*) dlsym(blockHandle, "create");
-	const char* dlsym_error = dlerror();
-	if (dlsym_error) {
-		LOG(ERROR) << "Cannot load symbol create: " << dlsym_error << '\n';
-		return 1;
-	}
 
-	destroy_t* destroy_block = (destroy_t*) dlsym(blockHandle, "destroy");
-	dlsym_error = dlerror();
-	if (dlsym_error) {
-		LOG(ERROR) << "Cannot load symbol destroy: " << dlsym_error << '\n';
-		return 1;
-	}
-
-	// create an instance of the class
-	IFunctionBlock* functionBlock1 = create_block(&wm);
-
-	// do something
+	/* do something */
 	functionBlock1->execute();
 	functionBlock1->execute();
 	std::vector<Id> ids;
@@ -84,12 +67,14 @@ int main(int argc, char **argv) {
 	functionBlock1->setData(ids);
 	functionBlock1->execute();
 
-	// destroy the class
-	destroy_block(functionBlock1);
-
-	// unload
-	dlclose(blockHandle);
-
+	/* unload */
+	loader.unloadFunctionBlock(blockInfo);
+	loader.unloadFunctionBlock(blockInfo);
+	loader.loadFunctionBlock(blockName, blockPath, &wm, blockInfo);
+	FunctionBlockModuleInfo blockInfo2;
+	loader.loadFunctionBlock(blockName, blockPath, &wm, blockInfo2);
+	loader.unloadFunctionBlock(blockInfo);
+	loader.unloadFunctionBlock(blockInfo2);
 }
 
 /* EOF */
