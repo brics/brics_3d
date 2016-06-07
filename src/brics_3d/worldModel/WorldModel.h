@@ -27,6 +27,7 @@
 #include "sceneGraph/OutdatedDataDeleter.h"
 #include "sceneGraph/OutdatedDataIdAwareDeleter.h"
 #include "sceneGraph/TimeStamp.h"
+#include "sceneGraph/FunctionBlockModuleInfo.h"
 #include "brics_3d/util/Timer.h"
 
 struct ubx_node_info; // forward declaration to hide microblx internals from wm users
@@ -98,6 +99,9 @@ class WorldModel : public IWorldModelQuery, public IWorldModelUpdate, public IWo
 //    static WorldModel* microBlxWmHandle; //workaround for wm as a shared resource among the microblx
 #endif
 
+	/// Map with the names of the function blocks as keys. Note, this will be not used when
+	/// BRICS_MICROBLX_ENABLE is defined.
+	std::map<std::string, brics_3d::rsg::FunctionBlockModuleInfo> loadedFunctionBlocks;
 };
 
 } // namespace brics_3d

@@ -50,7 +50,7 @@ int main(int argc, char **argv) {
 		LOG(ERROR) << "Cannot load block "<< blockName;
 		return -1;
 	}
-	IFunctionBlock* functionBlock1 = blockInfo.functionBlock;
+	IFunctionBlock* functionBlock1 = FunctionBlockLoader::moduleToBlock(blockInfo);
 
 	/* execute */
 	functionBlock1->execute();

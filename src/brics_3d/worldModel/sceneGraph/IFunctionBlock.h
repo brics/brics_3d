@@ -29,7 +29,7 @@ namespace brics_3d {
 namespace rsg {
 
 /**
- * A function block as it will be used for percetion algorithms within the world model.
+ * A function block as it will be used for perception algorithms or advanced queries within the world model.
  */
 class IFunctionBlock {
 public:

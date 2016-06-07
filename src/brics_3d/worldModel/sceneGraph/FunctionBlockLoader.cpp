@@ -103,7 +103,7 @@ bool FunctionBlockLoader::unloadFunctionBlock(brics_3d::rsg::FunctionBlockModule
 	}
 
 	// destroy the class
-	destroy_block(module.functionBlock);
+	destroy_block(FunctionBlockLoader::moduleToBlock(module));
 	module.functionBlock = 0;
 
 	// unload
@@ -113,6 +113,11 @@ bool FunctionBlockLoader::unloadFunctionBlock(brics_3d::rsg::FunctionBlockModule
 	LOG(DEBUG) << "FunctionBlockLoader: block " << module.name << " successfully unloaded.";
 	return true;
 }
+
+IFunctionBlock* FunctionBlockLoader::moduleToBlock(brics_3d::rsg::FunctionBlockModuleInfo& module) {
+	return reinterpret_cast<brics_3d::rsg::IFunctionBlock*>(module.functionBlock);
+}
+
 
 } /* namespace rsg */
 } /* namespace brics_3d */

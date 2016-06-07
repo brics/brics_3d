@@ -21,18 +21,21 @@
 #define RSG_FUNCTIONBLOCKLOADER_H_
 
 #include <brics_3d/worldModel/sceneGraph/IFunctionBlock.h>
+#include <brics_3d/worldModel/sceneGraph/FunctionBlockModuleInfo.h>
 #include <brics_3d/core/Logger.h>
 
 #include <dlfcn.h>
 
 namespace brics_3d {
+
 namespace rsg {
 
-struct FunctionBlockModuleInfo {
-	std::string name; 				// Name as used during loading.
-	IFunctionBlock* functionBlock; 	// Pointer to the actual block.
-	void* moduleHandle;  			// Pointer to the shared library.
-};
+//struct FunctionBlockModuleInfo {
+//	std::string name; 				// Name as used during loading.
+////	IFunctionBlock* functionBlock; 	// Pointer to the actual block.
+//	void* functionBlock; 			// Pointer to the actual block.
+//	void* moduleHandle;  			// Pointer to the shared library.
+//};
 
 /// Definitions for class factories that are part of the plugin.
 typedef IFunctionBlock* create_t(brics_3d::WorldModel* wmHandle);
@@ -59,6 +62,8 @@ public:
     		brics_3d::rsg::FunctionBlockModuleInfo& module);
 
     bool unloadFunctionBlock(brics_3d::rsg::FunctionBlockModuleInfo& module);
+
+    static IFunctionBlock* moduleToBlock(brics_3d::rsg::FunctionBlockModuleInfo& module);
 
 private:
 

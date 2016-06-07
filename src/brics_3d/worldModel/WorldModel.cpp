@@ -20,6 +20,7 @@
 #include "WorldModel.h"
 #include "brics_3d/core/Logger.h"
 #include "brics_3d/core/HomogeneousMatrix44.h"
+#include "sceneGraph/FunctionBlockLoader.h"
 
 //#define BRICS_MICROBLX_ENABLE
 #ifdef BRICS_MICROBLX_ENABLE
@@ -48,6 +49,8 @@ WorldModel::WorldModel() {
 	microBloxIsInitialized = false;
 #ifdef BRICS_MICROBLX_ENABLE
 	microBlxNodeHandle = 0;
+#else
+	loadedFunctionBlocks.clear();
 #endif /* BRICS_MICROBLX_ENABLE */
 }
 
