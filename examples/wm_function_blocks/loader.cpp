@@ -28,10 +28,9 @@ using namespace brics_3d;
 using namespace brics_3d::rsg;
 using brics_3d::Logger;
 
-// the types of the class factories
-typedef IFunctionBlock* create_t(brics_3d::WorldModel* wmHandle);
-typedef void destroy_t(IFunctionBlock*);
-
+/**
+ * Example to test if a block can be loaded, executed and unloaded.
+ */
 int main(int argc, char **argv) {
 	Logger::setMinLoglevel(Logger::LOGDEBUG);
 	WorldModel wm;
@@ -43,6 +42,7 @@ int main(int argc, char **argv) {
 	string blockName = argv[2];
 	string blockPath = argv[1];
 
+	/* load the block */
 	LOG(INFO) << "Loading.";
 	FunctionBlockLoader loader;
 	FunctionBlockModuleInfo blockInfo;
@@ -52,9 +52,7 @@ int main(int argc, char **argv) {
 	}
 	IFunctionBlock* functionBlock1 = blockInfo.functionBlock;
 
-
-
-	/* do something */
+	/* execute */
 	functionBlock1->execute();
 	functionBlock1->execute();
 	std::vector<Id> ids;
@@ -69,12 +67,6 @@ int main(int argc, char **argv) {
 
 	/* unload */
 	loader.unloadFunctionBlock(blockInfo);
-	loader.unloadFunctionBlock(blockInfo);
-	loader.loadFunctionBlock(blockName, blockPath, &wm, blockInfo);
-	FunctionBlockModuleInfo blockInfo2;
-	loader.loadFunctionBlock(blockName, blockPath, &wm, blockInfo2);
-	loader.unloadFunctionBlock(blockInfo);
-	loader.unloadFunctionBlock(blockInfo2);
 }
 
 /* EOF */
