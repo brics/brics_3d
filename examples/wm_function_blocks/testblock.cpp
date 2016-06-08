@@ -42,14 +42,15 @@ public:
 		LOG(INFO) << name << ": Stopping block " << name;
 	};
 
-	void configure(brics_3d::ParameterSet parameters) {
+	bool configure(brics_3d::ParameterSet parameters) {
 		LOG(INFO) << name << ": Configuring parameters.";
+		return true;
 	}
 
 
-	void execute() {
+	bool execute() {
 		LOG(INFO) << name << ": Executing block " << name << " with " << inputDataIds.size() << " ids as input.";
-
+		return true;
 	}
 
 private:

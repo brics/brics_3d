@@ -191,6 +191,8 @@ WorldModel::WorldModel(rsg::IIdGenerator* idGenerator) : scene(idGenerator) {
 	microBloxIsInitialized = false;
 #ifdef BRICS_MICROBLX_ENABLE
 	microBlxNodeHandle = 0;
+#else
+	loadedFunctionBlocks.clear();
 #endif /* BRICS_MICROBLX_ENABLE */
 }
 
@@ -370,11 +372,28 @@ bool WorldModel::loadFunctionBlock(std::string name, std::string path) {
 
 	LOG(INFO) << "WorldModel::loadFunctionBlock: function block " << name << " has been successfully loaded.";
 	return true;
+#else
+
+	blockIterator = loadedFunctionBlocks.find(name);
+	if (blockIterator == loadedFunctionBlocks.end()) { // does not exists yet
+		LOG(DEBUG) << "WorldModel::loadFunctionBlock: block " << name << " not loaded yet. Trying to load it now.";
+		FunctionBlockLoader loader;
+		FunctionBlockModuleInfo block;
+		if(loader.loadFunctionBlock(name, path, this, block)) {
+			loadedFunctionBlocks.insert(std::make_pair(name, block));
+		} else {
+			LOG(ERROR) << "WorldModel::loadFunctionBlock: can not load a function " << name << " block via FunctionBlockLoader";
+			return false;
+		}
+	} else { // block exist already
+		LOG(WARNING) << "WorldModel::loadFunctionBlock: block " << name << " already loaded yet. Skipping attempt to load it.";
+	}
 
 #endif
-	LOG(ERROR) << "Microblx support not enabled. Cannot load a function block.";
-	return false;
+//	LOG(ERROR) << "Microblx support not enabled. Cannot load a function block.";
+//	return false;
 
+	return true;
 }
 
 bool WorldModel::executeFunctionBlock(std::string name, std::vector<rsg::Id>& input, std::vector<rsg::Id>& output) {
@@ -459,9 +478,29 @@ bool WorldModel::executeFunctionBlock(std::string name, std::vector<rsg::Id>& in
 	}
 
 	return true;
+#else
+
+	blockIterator = loadedFunctionBlocks.find(name);
+	if (blockIterator != loadedFunctionBlocks.end()) {
+		LOG(DEBUG) << "WorldModel::executeFunctionBlock: executing block " << name << ".";
+		if (blockIterator->second.functionBlock != 0) {
+			FunctionBlockModuleInfo module = blockIterator->second;
+			IFunctionBlock* block = FunctionBlockLoader::moduleToBlock(module);
+			return block->execute();
+		} else {
+			LOG(ERROR) << "WorldModel::executeFunctionBlock: Loaded block is invalid. Aborting execution.";
+			return false;
+		}
+
+	} else {
+		LOG(WARNING) << "WorldModel::executeFunctionBlock: can not find block " << name << " because it is is not yet loaded. Skipping attempt to execute it.";
+		return false;
+	}
+
+	return true;
 #endif
-	LOG(ERROR) << "Microblx support not enabled. Cannot load a function block.";
-	return false;
+//	LOG(ERROR) << "Microblx support not enabled. Cannot load a function block.";
+//	return false;
 }
 
 bool WorldModel::getLoadedFunctionBlocks(std::vector<std::string>& functionBlocks) {

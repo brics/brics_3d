@@ -19,8 +19,7 @@ void FunctionBlockTest::setUp() {
 
 	wm = new brics_3d::WorldModel();
 
-//	functionBlockFile = "cppdemo";
-
+//#ifdef BRICS_MICROBLX_ENABLE
 	/*
 	 * NOTE: This one is located in the brics_3d_function_blocks repository.
 	 * If it is not installed the tests will fail.
@@ -33,6 +32,11 @@ void FunctionBlockTest::setUp() {
 	} else {
 		blockRepositoryPath = "/opt/src/sandbox/brics_3d_function_blocks/lib/";
 	}
+//#else
+	functionBlockFile = "testblock";
+	blockRepositoryPath = "./lib";
+//#endif /* BRICS_MICROBLX_ENABLE */
+
 
 	brics_3d::Logger::setMinLoglevel(brics_3d::Logger::LOGDEBUG);
 }
@@ -43,11 +47,17 @@ void FunctionBlockTest::tearDown() {
 }
 
 void FunctionBlockTest::testFunctionBlockLoader() {
+#ifndef BRICS_MICROBLX_ENABLE
+	blockRepositoryPath = "./lib";
+#endif
 	CPPUNIT_ASSERT(!wm->loadFunctionBlock("wrongFileName"));
 	CPPUNIT_ASSERT(wm->loadFunctionBlock(functionBlockFile, blockRepositoryPath));
 }
 
 void FunctionBlockTest::testFunctionBlockExecution() {
+#ifndef BRICS_MICROBLX_ENABLE
+	blockRepositoryPath = "./lib";
+#endif
 	CPPUNIT_ASSERT(wm->loadFunctionBlock(functionBlockFile, blockRepositoryPath));
 
 	vector<brics_3d::rsg::Id> input;

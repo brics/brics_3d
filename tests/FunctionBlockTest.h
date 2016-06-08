@@ -23,11 +23,11 @@ namespace unitTests {
 class FunctionBlockTest : public CPPUNIT_NS::TestFixture {
 
 	CPPUNIT_TEST_SUITE( FunctionBlockTest );
-#ifdef BRICS_MICROBLX_ENABLE
+//#ifdef BRICS_MICROBLX_ENABLE
 	CPPUNIT_TEST( testFunctionBlockLoader );
 	CPPUNIT_TEST( testFunctionBlockExecution );
 	CPPUNIT_TEST( testExternalFunctionBlockExecution );
-#endif
+//#endif
 	CPPUNIT_TEST_SUITE_END();
 
 public:

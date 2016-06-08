@@ -99,9 +99,14 @@ class WorldModel : public IWorldModelQuery, public IWorldModelUpdate, public IWo
 //    static WorldModel* microBlxWmHandle; //workaround for wm as a shared resource among the microblx
 #endif
 
-	/// Map with the names of the function blocks as keys. Note, this will be not used when
-	/// BRICS_MICROBLX_ENABLE is defined.
+	/**
+	 * Map with the names of the function blocks as keys. Note, this will be not used when
+	 * BRICS_MICROBLX_ENABLE is defined.
+	 */
 	std::map<std::string, brics_3d::rsg::FunctionBlockModuleInfo> loadedFunctionBlocks;
+
+    /// Iterator for loadedFunctionBlocks
+    std::map<std::string, brics_3d::rsg::FunctionBlockModuleInfo>::const_iterator blockIterator;
 };
 
 } // namespace brics_3d

@@ -38,14 +38,14 @@ public:
 	};
 	virtual ~IFunctionBlock(){};
 
-	virtual void configure(brics_3d::ParameterSet parameters) = 0;
+	virtual bool configure(brics_3d::ParameterSet parameters) = 0;
 
-	virtual void setData(std::vector<Id>& inputDataIds) {
+	virtual bool setData(std::vector<Id>& inputDataIds) {
 		this->inputDataIds = inputDataIds;
 	}
-	virtual void execute() = 0;
+	virtual bool execute() = 0;
 
-	virtual void getData(std::vector<Id>& newDataIds) {
+	virtual bool getData(std::vector<Id>& newDataIds) {
 		newDataIds = this->outputDataIds;
 	}
 
