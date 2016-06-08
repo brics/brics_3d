@@ -484,9 +484,15 @@ bool WorldModel::executeFunctionBlock(std::string name, std::vector<rsg::Id>& in
 	if (blockIterator != loadedFunctionBlocks.end()) {
 		LOG(DEBUG) << "WorldModel::executeFunctionBlock: executing block " << name << ".";
 		if (blockIterator->second.functionBlock != 0) {
+			/* Get the block */
 			FunctionBlockModuleInfo module = blockIterator->second;
 			IFunctionBlock* block = FunctionBlockLoader::moduleToBlock(module);
-			return block->execute();
+
+			/* Set data, execute and write pack the results */
+			block->setData(input);
+			bool success = block->execute();
+			block->getData(output);
+			return success;
 		} else {
 			LOG(ERROR) << "WorldModel::executeFunctionBlock: Loaded block is invalid. Aborting execution.";
 			return false;
