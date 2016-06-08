@@ -47,7 +47,6 @@ public:
 		return true;
 	}
 
-
 	bool execute() {
 		LOG(INFO) << name << ": Executing block " << name << " with " << inputDataIds.size() << " ids as input.";
 		return true;
@@ -59,12 +58,9 @@ private:
 
 };
 
-extern "C" IFunctionBlock* create(brics_3d::WorldModel* wmHandle) {
-    return new TestBlock(wmHandle);
-}
+/* Mandatory macros. The define the symbols */
+FUNCTION_BLOCK_CREATE(TestBlock)
+FUNCTION_BLOCK_DESTROY
 
-extern "C" void destroy(IFunctionBlock* block) {
-    delete block;
-}
 
 /* EOF */

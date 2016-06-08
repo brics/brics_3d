@@ -28,6 +28,13 @@ namespace brics_3d {
 
 namespace rsg {
 
+/* Macros that define the symbols that are searched on the shared libraries  */
+#define FUNCTION_BLOCK_CREATE(BlockImplementation) \
+extern "C" IFunctionBlock* create(brics_3d::WorldModel* wmHandle) {return new BlockImplementation(wmHandle);}
+
+#define FUNCTION_BLOCK_DESTROY \
+extern "C" void destroy(IFunctionBlock* block) {delete block;}
+
 /**
  * A function block as it will be used for perception algorithms or advanced queries within the world model.
  */
