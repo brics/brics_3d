@@ -510,12 +510,42 @@ bool WorldModel::getLoadedFunctionBlocks(std::vector<std::string>& functionBlock
 			<< "\t" << ubx_num_types(microBlxNodeHandle) << " type(s)"  << std::endl
 			<< "\t" << ubx_num_modules(microBlxNodeHandle)<< " module(s)";
 	return false;
+#else
+	functionBlocks.clear();
+	LOG(DEBUG) << "WorldModel::getLoadedFunctionBlocks:";
+	for(blockIterator = loadedFunctionBlocks.begin(); blockIterator != loadedFunctionBlocks.end(); ++blockIterator) {
+		functionBlocks.push_back(blockIterator->first);
+		LOG(DEBUG) <<  "\t" << " * " << blockIterator->first;
+	}
+	return true;
 #endif
 	return false;
 }
 
 bool WorldModel::setFunctionBlockConfiguration(std::string name, std::vector<rsg::Attribute> configuration) {
+#ifdef BRICS_MICROBLX_ENABLE
 	return false;
+#endif
+	blockIterator = loadedFunctionBlocks.find(name);
+	if (blockIterator != loadedFunctionBlocks.end()) {
+		LOG(DEBUG) << "WorldModel::setFunctionBlockConfiguration: configuring block " << name << ".";
+		if (blockIterator->second.functionBlock != 0) {
+			FunctionBlockModuleInfo module = blockIterator->second;
+			IFunctionBlock* block = FunctionBlockLoader::moduleToBlock(module);
+			brics_3d::ParameterSet parameters;
+			for(std::vector<rsg::Attribute>::const_iterator it = configuration.begin(); it != configuration.end() ; ++it) {
+				parameters.insert(make_pair(it->key, it->value));
+			}
+			return block->configure(parameters);
+		} else {
+			LOG(ERROR) << "WorldModel::setFunctionBlockConfiguration: Loaded block is invalid. Aborting execution.";
+			return false;
+		}
+
+	} else {
+		LOG(WARNING) << "WorldModel::setFunctionBlockConfiguration: can not find block " << name << " because it is is not yet loaded. Skipping attempt to configure it.";
+		return false;
+	}
 }
 
 rsg::Id WorldModel::getRootNodeId() {
