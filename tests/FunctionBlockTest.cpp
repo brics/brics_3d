@@ -46,11 +46,17 @@ void FunctionBlockTest::tearDown() {
 }
 
 void FunctionBlockTest::testFunctionBlockLoader() {
+#ifndef BRICS_MICROBLX_ENABLE
+	string blockRepositoryPath = "./lib";
+#endif
 	CPPUNIT_ASSERT(!wm->loadFunctionBlock("wrongFileName"));
 	CPPUNIT_ASSERT(wm->loadFunctionBlock(functionBlockFile, blockRepositoryPath));
 }
 
 void FunctionBlockTest::testFunctionBlockExecution() {
+#ifndef BRICS_MICROBLX_ENABLE
+	string blockRepositoryPath = "./lib";
+#endif
 	CPPUNIT_ASSERT(wm->loadFunctionBlock(functionBlockFile, blockRepositoryPath));
 
 	vector<brics_3d::rsg::Id> input;
