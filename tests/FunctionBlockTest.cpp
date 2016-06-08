@@ -33,8 +33,7 @@ void FunctionBlockTest::setUp() {
 		blockRepositoryPath = "/opt/src/sandbox/brics_3d_function_blocks/lib/";
 	}
 //#else
-	functionBlockFile = "testblock";
-	blockRepositoryPath = "./lib";
+//	blockRepositoryPath = "./lib";
 //#endif /* BRICS_MICROBLX_ENABLE */
 
 
@@ -47,17 +46,11 @@ void FunctionBlockTest::tearDown() {
 }
 
 void FunctionBlockTest::testFunctionBlockLoader() {
-#ifndef BRICS_MICROBLX_ENABLE
-	blockRepositoryPath = "./lib";
-#endif
 	CPPUNIT_ASSERT(!wm->loadFunctionBlock("wrongFileName"));
 	CPPUNIT_ASSERT(wm->loadFunctionBlock(functionBlockFile, blockRepositoryPath));
 }
 
 void FunctionBlockTest::testFunctionBlockExecution() {
-#ifndef BRICS_MICROBLX_ENABLE
-	blockRepositoryPath = "./lib";
-#endif
 	CPPUNIT_ASSERT(wm->loadFunctionBlock(functionBlockFile, blockRepositoryPath));
 
 	vector<brics_3d::rsg::Id> input;
@@ -71,9 +64,11 @@ void FunctionBlockTest::testFunctionBlockExecution() {
 }
 
 void FunctionBlockTest::testExternalFunctionBlockExecution() {
+	brics_3d::Logger::setMinLoglevel(brics_3d::Logger::LOGDEBUG);
 	string blockName = "roifilter";//"testblock";
 	string blockPath = blockRepositoryPath;
 
+	LOG(WARNING) << "FunctionBlockTest::testExternalFunctionBlockExecution";
 	CPPUNIT_ASSERT(wm->loadFunctionBlock(blockName, blockPath));
 
 

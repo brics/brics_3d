@@ -58,7 +58,7 @@ private:
 
 };
 
-/* Mandatory macros. The define the symbols */
+/* Mandatory macros. They define the symbols in this shared library. */
 FUNCTION_BLOCK_CREATE(TestBlock)
 FUNCTION_BLOCK_DESTROY
 

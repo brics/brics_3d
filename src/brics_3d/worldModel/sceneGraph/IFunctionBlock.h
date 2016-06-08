@@ -30,10 +30,10 @@ namespace rsg {
 
 /* Macros that define the symbols that are searched on the shared libraries  */
 #define FUNCTION_BLOCK_CREATE(BlockImplementation) \
-extern "C" IFunctionBlock* create(brics_3d::WorldModel* wmHandle) {return new BlockImplementation(wmHandle);}
+extern "C" __attribute__ ((visibility("default"))) brics_3d::rsg::IFunctionBlock* create(brics_3d::WorldModel* wmHandle) {return new BlockImplementation(wmHandle);}
 
 #define FUNCTION_BLOCK_DESTROY \
-extern "C" void destroy(IFunctionBlock* block) {delete block;}
+extern "C" __attribute__ ((visibility("default"))) void destroy(brics_3d::rsg::IFunctionBlock* block) {delete block;}
 
 /**
  * A function block as it will be used for perception algorithms or advanced queries within the world model.
@@ -49,11 +49,13 @@ public:
 
 	virtual bool setData(std::vector<Id>& inputDataIds) {
 		this->inputDataIds = inputDataIds;
+		return true;
 	}
 	virtual bool execute() = 0;
 
 	virtual bool getData(std::vector<Id>& newDataIds) {
 		newDataIds = this->outputDataIds;
+		return true;
 	}
 
 
