@@ -475,10 +475,11 @@ bool JSONQueryRunner::handleExecuteFunctionBlock(libvariant::Variant& query, lib
 			libvariant::Variant input = query.Get("input");
 			if(input.Contains("metamodel")) {
 				LOG(DEBUG) << "JSONQueryRunner::handleLoadFunctionBlock: metamodel defined. Using model based input.";
-				string inputModel = input.AsString();
+				string inputModel = libvariant::Serialize(input, libvariant::SERIALIZE_JSON);
 				string outputModel = "";
 				operationSuccess = wm->executeFunctionBlock(name, inputModel, outputModel);
-				result.Set("output", libvariant::Variant(outputModel));
+				libvariant::Variant outputModelAsJSON = libvariant::Deserialize(outputModel, libvariant::SERIALIZE_GUESS); // GUESS seems to be more permissive with parsing than JSON
+				result.Set("output", outputModelAsJSON);
 			} else {
 				LOG(DEBUG) << "JSONQueryRunner::handleLoadFunctionBlock: no metamodel defined. Using Id list instead.";
 				std::vector<rsg::Id> inputIds = rsg::JSONTypecaster::getIdsFromJSON(query, "input");
