@@ -387,6 +387,8 @@ bool WorldModel::loadFunctionBlock(std::string name, std::string path) {
 		}
 	} else { // block exist already
 		LOG(WARNING) << "WorldModel::loadFunctionBlock: block " << name << " already loaded yet. Skipping attempt to load it.";
+		// We don't return false, as a second attempt to load is not an error. This might happen if multiple modules load the
+		// same block.
 	}
 
 #endif
@@ -489,10 +491,7 @@ bool WorldModel::executeFunctionBlock(std::string name, std::vector<rsg::Id>& in
 			IFunctionBlock* block = FunctionBlockLoader::moduleToBlock(module);
 
 			/* Set data, execute and write pack the results */
-			block->setData(input);
-			bool success = block->execute();
-			block->getData(output);
-			return success;
+			return block->execute(input, output);
 		} else {
 			LOG(ERROR) << "WorldModel::executeFunctionBlock: Loaded block is invalid. Aborting execution.";
 			return false;
@@ -507,6 +506,35 @@ bool WorldModel::executeFunctionBlock(std::string name, std::vector<rsg::Id>& in
 #endif
 //	LOG(ERROR) << "Microblx support not enabled. Cannot load a function block.";
 //	return false;
+}
+
+bool WorldModel::executeFunctionBlock(std::string name, std::string inputModel, std::string& outputModel) {
+#ifdef BRICS_MICROBLX_ENABLE
+	LOG(ERROR) << "Microblx support enabled. Cannot execute a function block with model based input and output.";
+	return false;
+#else
+	blockIterator = loadedFunctionBlocks.find(name);
+	if (blockIterator != loadedFunctionBlocks.end()) {
+		LOG(DEBUG) << "WorldModel::executeFunctionBlock: executing block " << name << ".";
+		if (blockIterator->second.functionBlock != 0) {
+			/* Get the block */
+			FunctionBlockModuleInfo module = blockIterator->second;
+			IFunctionBlock* block = FunctionBlockLoader::moduleToBlock(module);
+
+			/* Set data, execute and write pack the results */
+			return block->execute(inputModel, outputModel);
+		} else {
+			LOG(ERROR) << "WorldModel::executeFunctionBlock: Loaded block is invalid. Aborting execution.";
+			return false;
+		}
+
+	} else {
+		LOG(WARNING) << "WorldModel::executeFunctionBlock: can not find block " << name << " because it is is not yet loaded. Skipping attempt to execute it.";
+		return false;
+	}
+
+
+#endif
 }
 
 bool WorldModel::getLoadedFunctionBlocks(std::vector<std::string>& functionBlocks) {

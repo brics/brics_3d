@@ -47,24 +47,15 @@ public:
 
 	virtual bool configure(brics_3d::ParameterSet parameters) = 0;
 
-	virtual bool setData(std::vector<Id>& inputDataIds) {
-		this->inputDataIds = inputDataIds;
-		return true;
-	}
-	virtual bool execute() = 0;
+	virtual bool execute(std::vector<Id>& inputDataIds, std::vector<Id>& outputDataIds) = 0;
 
-	virtual bool getData(std::vector<Id>& newDataIds) {
-		newDataIds = this->outputDataIds;
-		return true;
-	}
-
+	virtual bool execute(std::string inputModel, std::string& outputModel) = 0;
 
 protected:
+
 	/// Handle to the world model that stores all 3D data.
 	brics_3d::WorldModel* wm;
 
-	std::vector<Id> inputDataIds;
-	std::vector<Id> outputDataIds;
 
 private:
 	IFunctionBlock(){};

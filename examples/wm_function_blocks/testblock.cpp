@@ -47,9 +47,14 @@ public:
 		return true;
 	}
 
-	bool execute() {
+	bool execute(std::vector<Id>& inputDataIds, std::vector<Id>& outputDataIds) {
 		LOG(INFO) << name << ": Executing block " << name << " with " << inputDataIds.size() << " ids as input.";
 		return true;
+	}
+
+	bool execute(std::string inputModel, std::string& outputModel) {
+		LOG(INFO) << name << ": Executing block " << name << " with " << inputModel << " as input model. This is not supported.";
+		return false;
 	}
 
 private:

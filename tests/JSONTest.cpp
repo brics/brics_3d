@@ -17,7 +17,7 @@
 *
 ******************************************************************************/
 
-#define BRICS_JSON_ENABLE  //FIXME
+//#define BRICS_JSON_ENABLE  //FIXME
 #ifdef BRICS_JSON_ENABLE
 #include "JSONTest.h"
 #include "SceneGraphNodesTest.h" // for the observer counter

@@ -53,17 +53,20 @@ int main(int argc, char **argv) {
 	IFunctionBlock* functionBlock1 = FunctionBlockLoader::moduleToBlock(blockInfo);
 
 	/* execute */
-	functionBlock1->execute();
-	functionBlock1->execute();
 	std::vector<Id> ids;
+	functionBlock1->execute(ids, ids);
+	functionBlock1->execute(ids, ids);
 	Id id1 = 1;
 	Id id2 = 2;
 	Id id3 = 3;
 	ids.push_back(id1);
 	ids.push_back(id2);
 	ids.push_back(id3);
-	functionBlock1->setData(ids);
-	functionBlock1->execute();
+	functionBlock1->execute(ids, ids);
+
+	string inputModel = "{}";
+	string outputModel = "";
+	functionBlock1->execute(inputModel,  outputModel);
 
 	/* unload */
 	loader.unloadFunctionBlock(blockInfo);
