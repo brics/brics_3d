@@ -57,6 +57,12 @@ public:
 		return false;
 	}
 
+	bool getMetaModel(std::string& inputMetaModel, std::string& outputMetaModel) {
+		inputMetaModel = "{}";
+		outputMetaModel = "{}";
+		return false;
+	}
+
 private:
 
 	string name;

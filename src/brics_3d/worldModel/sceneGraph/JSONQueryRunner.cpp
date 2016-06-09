@@ -474,7 +474,11 @@ bool JSONQueryRunner::handleExecuteFunctionBlock(libvariant::Variant& query, lib
 		if(query.Contains("input")) {
 			libvariant::Variant input = query.Get("input");
 			if(input.Contains("metamodel")) {
-				LOG(DEBUG) << "JSONQueryRunner::handleLoadFunctionBlock:  metamodel defined. Not yet implemented.";
+				LOG(DEBUG) << "JSONQueryRunner::handleLoadFunctionBlock: metamodel defined. Using model based input.";
+				string inputModel = input.AsString();
+				string outputModel = "";
+				operationSuccess = wm->executeFunctionBlock(name, inputModel, outputModel);
+				result.Set("output", libvariant::Variant(outputModel));
 			} else {
 				LOG(DEBUG) << "JSONQueryRunner::handleLoadFunctionBlock: no metamodel defined. Using Id list instead.";
 				std::vector<rsg::Id> inputIds = rsg::JSONTypecaster::getIdsFromJSON(query, "input");
