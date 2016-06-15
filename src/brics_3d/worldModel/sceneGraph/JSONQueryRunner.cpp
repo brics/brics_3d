@@ -534,6 +534,30 @@ bool JSONQueryRunner::handleConfigureFunctionBlock(libvariant::Variant& query, l
 }
 
 bool JSONQueryRunner::handleGetMetaModelOfFunctionBlock(libvariant::Variant& query, libvariant::Variant& result) {
+	result.Set("operation", libvariant::Variant("GET_METAMODEL"));
+
+	if(query.Contains("name"))  {
+		bool operationSuccess = false;
+		string name = query.Get("name").AsString();
+		string inputMetaModel = "{}";
+		string outputMataModel = "{}";
+
+		operationSuccess = wm->getFunctionBlockMetaModel(name, inputMetaModel, outputMataModel);
+
+		libvariant::Variant inputMetaModelAsJSON = libvariant::Deserialize(inputMetaModel, libvariant::SERIALIZE_GUESS); // GUESS seems to be more permissive with parsing than JSON
+		libvariant::Variant outputMetaModelAsJSON = libvariant::Deserialize(outputMataModel, libvariant::SERIALIZE_GUESS); // GUESS seems to be more permissive with parsing than JSON
+
+		/* Concatenat both models */
+		libvariant::Variant blockMetaModelAsJSON;
+		blockMetaModelAsJSON.Set("inputMetaModel", inputMetaModelAsJSON);
+		blockMetaModelAsJSON.Set("outputMetaModel", outputMetaModelAsJSON);
+		result.Set("output", blockMetaModelAsJSON);
+
+		result.Set("operationSuccess", libvariant::Variant(operationSuccess));
+		return operationSuccess;
+	} else {
+		handleError("Syntax error: Mandatory name field not set in RSGFunctionBlock", result);
+	}
 	return false;
 }
 

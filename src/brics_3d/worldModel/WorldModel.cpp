@@ -582,6 +582,34 @@ bool WorldModel::getLoadedFunctionBlocks(std::vector<std::string>& functionBlock
 	return false;
 }
 
+bool WorldModel::getFunctionBlockMetaModel(std::string name, std::string& inputMetaModel, std::string& outputMetaModel) {
+#ifdef BRICS_MICROBLX_ENABLE
+	LOG(ERROR) << "Microblx support enabled. Cannot execute a function block with model based input and output.";
+	return false;
+#else
+	blockIterator = loadedFunctionBlocks.find(name);
+	if (blockIterator != loadedFunctionBlocks.end()) {
+		LOG(DEBUG) << "WorldModel::getFunctionBlockMetaModel: requesting meta model for block " << name << ".";
+		if (blockIterator->second.functionBlock != 0) {
+			/* Get the block */
+			FunctionBlockModuleInfo module = blockIterator->second;
+			IFunctionBlock* block = FunctionBlockLoader::moduleToBlock(module);
+
+			/* Perform getter */
+			return block->getMetaModel(inputMetaModel, outputMetaModel);
+		} else {
+			LOG(ERROR) << "WorldModel::getFunctionBlockMetaModel: Loaded block is invalid. Aborting attempt to retrieve meta model.";
+			return false;
+		}
+
+	} else {
+		LOG(WARNING) << "WorldModel::getFunctionBlockMetaModel: can not find block " << name << " because it is not yet loaded. Skipping attempt to retrieve meta model.";
+		return false;
+	}
+	return true;
+#endif
+}
+
 bool WorldModel::setFunctionBlockConfiguration(std::string name, std::vector<rsg::Attribute> configuration) {
 #ifdef BRICS_MICROBLX_ENABLE
 	return false;

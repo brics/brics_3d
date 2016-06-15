@@ -66,6 +66,7 @@ class WorldModel : public IWorldModelQuery, public IWorldModelUpdate, public IWo
     bool executeFunctionBlock(std::string name, std::vector<rsg::Id>& input, std::vector<rsg::Id>& output);
     bool executeFunctionBlock(std::string name, std::string inputModel, std::string& outputModel);
     bool getLoadedFunctionBlocks(std::vector<std::string>& functionBlocks);
+	bool getFunctionBlockMetaModel(std::string name, std::string& inputMetaModel, std::string& outputMetaModel);
     bool setFunctionBlockConfiguration(std::string name, std::vector<rsg::Attribute> configuration); // a generic Attribute-value list is provided
 
     /* Helper functions */
