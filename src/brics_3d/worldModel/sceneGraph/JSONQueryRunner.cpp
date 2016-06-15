@@ -512,6 +512,24 @@ bool JSONQueryRunner::handleExecuteFunctionBlock(libvariant::Variant& query, lib
 }
 
 bool JSONQueryRunner::handleConfigureFunctionBlock(libvariant::Variant& query, libvariant::Variant& result) {
+	result.Set("operation", libvariant::Variant("CONFIGURE"));
+
+	if(query.Contains("name"))  {
+		bool operationSuccess = false;
+		string name = query.Get("name").AsString();
+		if(query.Contains("input")) {
+
+			std::vector<rsg::Attribute> configuration = JSONTypecaster::getAttributesFromJSON(query,"input");
+			operationSuccess = wm->setFunctionBlockConfiguration(name, configuration);
+
+		} else {
+			handleError("Syntax error: Mandatory input field not set in RSGFunctionBlock", result);
+		}
+		result.Set("operationSuccess", libvariant::Variant(operationSuccess));
+		return operationSuccess;
+	} else {
+		handleError("Syntax error: Mandatory name field not set in RSGFunctionBlock", result);
+	}
 	return false;
 }
 

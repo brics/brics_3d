@@ -172,14 +172,14 @@ public:
 		return true;
 	}
 
-	inline static std::vector<rsg::Attribute> getAttributesFromJSON (libvariant::Variant& node) {
+	inline static std::vector<rsg::Attribute> getAttributesFromJSON (libvariant::Variant& node, std::string attributesTag = "attributes") {
 		std::vector<rsg::Attribute> attributes;
 		attributes.clear();
 
-		if(node.Contains("attributes")) {
+		if(node.Contains(attributesTag)) {
 			LOG(DEBUG) << "JSONTypecaster: Node has the following attributes:";
 
-			libvariant::Variant attributeList = node.Get("attributes");
+			libvariant::Variant attributeList = node.Get(attributesTag);
 			if (attributeList.IsList()) {
 				for (libvariant::Variant::ListIterator i(attributeList.ListBegin()), e(attributeList.ListEnd()); i!=e; ++i) {
 					if(!i->Contains("key")) {
@@ -217,7 +217,7 @@ public:
 		return attributes;
 	}
 
-	inline static bool addAttributesToJSON(std::vector<brics_3d::rsg::Attribute> attributes, libvariant::Variant& node) {
+	inline static bool addAttributesToJSON(std::vector<brics_3d::rsg::Attribute> attributes, libvariant::Variant& node, std::string attributesTag = "attributes") {
 		libvariant::Variant attributesAsJson(libvariant::VariantDefines::ListType);
 
 		for (std::vector<brics_3d::rsg::Attribute>::iterator it = attributes.begin(); it != attributes.end(); ++it) {
@@ -236,7 +236,7 @@ public:
 			attributesAsJson.Append(attributeAsJson);
 		}
 
-		node.Set("attributes", attributesAsJson);
+		node.Set(attributesTag, attributesAsJson);
 
 		return true;
 	}

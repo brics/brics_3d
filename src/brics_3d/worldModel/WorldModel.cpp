@@ -598,7 +598,7 @@ bool WorldModel::setFunctionBlockConfiguration(std::string name, std::vector<rsg
 			}
 			return block->configure(parameters);
 		} else {
-			LOG(ERROR) << "WorldModel::setFunctionBlockConfiguration: Loaded block is invalid. Aborting execution.";
+			LOG(ERROR) << "WorldModel::setFunctionBlockConfiguration: Loaded block is invalid. Aborting configuration.";
 			return false;
 		}
 
