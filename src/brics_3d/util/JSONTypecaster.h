@@ -26,6 +26,7 @@
 #include "brics_3d/core/TriangleMeshImplicit.h"
 #include "brics_3d/worldModel/WorldModel.h"
 #include <Variant/Variant.h>
+#include <Variant/SchemaLoader.h>
 
 namespace brics_3d {
 namespace rsg {
@@ -56,6 +57,21 @@ public:
 			modelAsString = libvariant::Serialize(model, libvariant::SERIALIZE_JSON);
 		} catch (std::exception const & e) {
 			LOG(ERROR) << "JSONTypecaster::JSONtoSting: Parser error: " << e.what() << std::endl;
+			return false;
+		}
+		return true;
+	}
+
+	inline static bool validateFunctionBlockModel (libvariant::Variant model, string metaModel, string path, string& errorModel){
+		libvariant::Variant schema = libvariant::Variant(metaModel);
+		libvariant::AdvSchemaLoader loader;
+		loader.AddPath(path);
+		libvariant::SchemaResult result = libvariant::SchemaValidate(schema, model, &loader);
+		if (result.Error()) {
+			LOG(DEBUG) << "JSON Validator: Model validation failed: " << result;
+			std::stringstream tmpErrorModel("");
+			tmpErrorModel << "{\"error\": {\"message\": \" " << result.PrettyPrintMessage() <<"\"}}";
+			errorModel =  tmpErrorModel.str();
 			return false;
 		}
 		return true;
