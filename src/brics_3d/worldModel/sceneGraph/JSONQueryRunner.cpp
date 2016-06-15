@@ -462,6 +462,18 @@ bool JSONQueryRunner::handleLoadFunctionBlock(libvariant::Variant& query, libvar
 }
 
 bool JSONQueryRunner::handleUnloadFunctionBlock(libvariant::Variant& query, libvariant::Variant& result) {
+	result.Set("operation", libvariant::Variant("UNLOAD"));
+
+	if(query.Contains("name"))  {
+		bool operationSuccess = false;
+		string name = query.Get("name").AsString();
+		operationSuccess = wm->unloadFunctionBlock(name);
+		result.Set("operationSuccess", libvariant::Variant(operationSuccess));
+		return operationSuccess;
+	} else {
+		handleError("Syntax error: Mandatory name field not set in RSGFunctionBlock", result);
+	}
+
 	return false;
 }
 

@@ -398,6 +398,32 @@ bool WorldModel::loadFunctionBlock(std::string name, std::string path) {
 	return true;
 }
 
+bool WorldModel::unloadFunctionBlock(std::string name) {
+#ifdef BRICS_MICROBLX_ENABLE
+	LOG(ERROR) << "Microblx support enabled. Cannot unload function not implemented.";
+	return false;
+#else
+
+	std::map<std::string, brics_3d::rsg::FunctionBlockModuleInfo>::iterator blockIterator = loadedFunctionBlocks.find(name); // const iterator won't work here
+	if (blockIterator == loadedFunctionBlocks.end()) { // does not exists yet
+		LOG(WARNING) << "WorldModel::unloadFunctionBlock: block " << name << " not loaded yet. Skipping attempt to unload it.";
+
+	} else { // block exist already
+		LOG(DEBUG) << "WorldModel::unloadFunctionBlock: unloading block " << name;
+		FunctionBlockLoader loader;
+		FunctionBlockModuleInfo block = blockIterator->second;
+		if(loader.unloadFunctionBlock(block)) {
+			loadedFunctionBlocks.erase(blockIterator);
+		} else {
+			LOG(ERROR) << "WorldModel::loadFunctionBlock: can not unload a function block " << name << " via FunctionBlockLoader";
+			return false;
+		}
+	}
+
+	return true;
+#endif
+}
+
 bool WorldModel::executeFunctionBlock(std::string name, std::vector<rsg::Id>& input, std::vector<rsg::Id>& output) {
 #ifdef BRICS_MICROBLX_ENABLE
 

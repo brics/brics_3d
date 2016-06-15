@@ -41,6 +41,25 @@ namespace rsg {
 class JSONTypecaster {
 public:
 
+	inline static bool stringToJSON(string modelAsString, libvariant::Variant& model) {
+		try {
+			model = libvariant:: Deserialize(modelAsString, libvariant::SERIALIZE_GUESS); // GUESS seems to be more permissive with parsing than JSON
+		} catch (std::exception const & e) {
+			LOG(ERROR) << "JSONTypecaster::stringToJSON: Parser error: " << e.what() << std::endl;
+			return false;
+		}
+		return true;
+	}
+
+	inline static bool JSONtoString(libvariant::Variant model, string& modelAsString) {
+		try {
+			modelAsString = libvariant::Serialize(model, libvariant::SERIALIZE_JSON);
+		} catch (std::exception const & e) {
+			LOG(ERROR) << "JSONTypecaster::JSONtoSting: Parser error: " << e.what() << std::endl;
+			return false;
+		}
+		return true;
+	}
 
 	inline static rsg::Id getIdFromJSON(libvariant::Variant& node, string idTag) {
 		rsg::Id id = 0; //NiL
