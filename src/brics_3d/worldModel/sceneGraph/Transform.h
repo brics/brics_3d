@@ -149,8 +149,8 @@ class Transform : public Group {
     /**
      * @brief Delete all data from the history/cache that is older than the latestTimeStamp minus the duration of maxHistoryDuration.
      * @param latestTimeStamp The time stamp the defines the "current" time. To this stamp the maximim duration will relate.
-     *        Plase note that in case that you do not pass the timeStamp from the history cache via getLatestTimeStamp() the complete history might
-     *        get earased! Use the function outside the scope of this class with care.
+     *        Please note that in case that you do not pass the timeStamp from the history cache via getLatestTimeStamp() the complete history might
+     *        get erased! Use the function outside the scope of this class with care.
      */
     void deleteOutdatedTransforms(TimeStamp latestTimeStamp);
 
@@ -159,6 +159,12 @@ class Transform : public Group {
      * @return Preformated string with complete cache.
      */
     std::string cacheToString();
+
+    /**
+     * Return the complete cache.
+     * @return A temporal cache.
+     */
+    TemporalCache<IHomogeneousMatrix44::IHomogeneousMatrix44Ptr> getHistory();
 
   private:
 

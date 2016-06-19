@@ -148,6 +148,11 @@ void Transform::accept(INodeVisitor* visitor){
 	}
 }
 
+TemporalCache<IHomogeneousMatrix44::IHomogeneousMatrix44Ptr> Transform::getHistory() {
+	return history;
+}
+
+
 std::string Transform::cacheToString() {
 	return history.cacheToString();
 }
