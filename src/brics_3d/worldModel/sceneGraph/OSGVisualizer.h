@@ -86,10 +86,10 @@ private:
     ///Internal initialization
 	void init();
 
-	/// Viewer will get its own thread such that visialization does not block the main program.
+	/// Viewer will get its own thread such that visualization does not block the main program.
 	void threadFunction(OSGVisualizer* obj);
 
-	/// get intranl root ID
+	/// get internal root ID
     Id getRootId();
 
     /// map IDs to real references
@@ -104,7 +104,7 @@ private:
     /// Helper function to visualize attributes as text
     osg::ref_ptr<osg::Node> createAttributeVisualization(vector<Attribute> attributes, Id id = 0);
 
-    /// Helper functio to relocate camera
+    /// Helper function to relocate camera
     bool moveCameraToPosition(double x, double y, double z);
 
 	/// OSG viewer object
@@ -125,12 +125,14 @@ private:
     std::map<Id, osg::ref_ptr<osg::Node> > idLookUpTable;
     std::map<Id, osg::ref_ptr<osg::Node> >::const_iterator nodeIterator;
 
-    /// Determines dimensions of visualizazion of the frames axis. Default is 1.0
+    /// Determines dimensions of visualization of the frames axis. Default is 1.0
     double frameAxisVisualisationScale;
 
 	/// The generic visualization configuration
 	brics_3d::rsg::VisualizationConfiguration config;
 
+	/// Memorize WGS84 positions
+	std::vector<Id> wgs84Trasnform;
 };
 
 }  // namespace rsg

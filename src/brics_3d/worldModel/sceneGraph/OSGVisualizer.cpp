@@ -227,6 +227,7 @@ bool OSGVisualizer::addTransformNode(Id parentId, Id& assignedId, vector<Attribu
 	bool isWGS84Representation = false;
 	Attribute wgs84Tag("tf:type","wgs84");
 	isWGS84Representation = attributeListContainsAttribute(attributes, wgs84Tag);
+	wgs84Trasnform.push_back(assignedId);
 
 
 	osg::ref_ptr<osg::Node> node = findNodeRecerence(parentId);
@@ -501,6 +502,13 @@ bool OSGVisualizer::setTransform(Id id, IHomogeneousMatrix44::IHomogeneousMatrix
 	osg::ref_ptr<osg::Node> node = findNodeRecerence(id);
 	osg::ref_ptr<osg::Transform> transformNode;
 	osg::ref_ptr<osg::MatrixTransform> matrixTransformNode;
+	bool isWGS84Representation = false;
+
+	if(std::find(wgs84Trasnform.begin(), wgs84Trasnform.end(), id) != wgs84Trasnform.end()) {
+	    /* wgs84Trasnform contains id */
+		isWGS84Representation = true;
+	}
+
 	if (node != 0) {
 		transformNode = node->asTransform();
 		matrixTransformNode = transformNode->asMatrixTransform();
@@ -508,6 +516,19 @@ bool OSGVisualizer::setTransform(Id id, IHomogeneousMatrix44::IHomogeneousMatrix
 	if (matrixTransformNode != 0) {
 		osg::Matrixd transformMatrix;
 		transformMatrix.set(transform->getRawData());
+		if(isWGS84Representation) {
+			double x = transform->getRawData()[brics_3d::matrixEntry::x];
+			double y = transform->getRawData()[brics_3d::matrixEntry::y];
+			double z = transform->getRawData()[brics_3d::matrixEntry::z];
+			string zone;
+			double utmX = 0;
+			double utmY = 0;
+			CoordinateConversions::convertLatLontoUTM(x,y, utmX,utmY,zone);
+			LOG(DEBUG) << "OSGVisualizer: converting WGS84 (" << x << ", " << y <<") to UTM (" << utmX << ", " << utmY << ", " << z << ")  with zone = " << zone;
+			x = utmX; // Note, this might be later used later for the camera positioning.
+			y = utmY;
+			transformMatrix.setTrans(osg::Vec3d(x,y,z));
+		}
 		viewer.addUpdateOperation(new OSGOperationUpdateTransform(this, matrixTransformNode, transformMatrix));
 		return true;
 	}
