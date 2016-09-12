@@ -256,6 +256,20 @@ IF (USE_OSG)
         	${OSGTEXT_LIBRARY_DEBUG} 
             ${LIBVARIANT_LIBRARIES}
          )
+         
+         ADD_EXECUTABLE(wm_udp_json_test wm_udp_json_test)
+         TARGET_LINK_LIBRARIES(wm_udp_json_test
+            brics3d_world_model
+            brics3d_algorithm
+            brics3d_util
+            brics3d_core 
+        	${OSG_LIBRARY_DEBUG}
+        	${OSGGA_LIBRARY_DEBUG}
+        	${OSGVIEWER_LIBRARY_DEBUG}
+        	${OSGUTIL_LIBRARY_DEBUG}
+        	${OSGTEXT_LIBRARY_DEBUG}
+            ${LIBVARIANT_LIBRARIES}
+        )  
     ENDIF(USE_JSON)
     
 #    ADD_EXECUTABLE(rsg_generated /home/sblume/eclipse_workspaces/runtime-EclipseXtext/WM/src-gen/rsg_main_generated.cpp)
