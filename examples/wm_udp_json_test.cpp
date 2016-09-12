@@ -279,8 +279,8 @@ int main(int argc, char **argv) {
 	/* Attach some (optional) visualization facilities (observers) */
 	brics_3d::rsg::VisualizationConfiguration visualizationConfig; // optional configuration
 	visualizationConfig.visualizeIds = true;
-	visualizationConfig.visualizeAttributes = false;
-	visualizationConfig.abbreviateIds = true;
+	visualizationConfig.visualizeAttributes = true;
+	visualizationConfig.abbreviateIds = false;
 
 	brics_3d::rsg::DotVisualizer* wmStructureVisualizer = new brics_3d::rsg::DotVisualizer(&wm->scene);
 	wmStructureVisualizer->setConfig(visualizationConfig); // we use the same config here
@@ -309,7 +309,9 @@ int main(int argc, char **argv) {
 	JSONUDPInputBridge* udpInBridge = new JSONUDPInputBridge(wmUpdatesToJSONdeserializer, "224.0.0.1", 11411);
 
 	/* Setup auto mount policy for incoming data */
-	brics_3d::rsg::RemoteRootNodeAutoMounter autoMounter(&wm->scene, wm->getRootNodeId()); //mount everything relative to root node
+	brics_3d::rsg::Id applicationRootId;
+	applicationRootId.fromString("b6c6b422-6fa5-4a64-947e-77bbb0980383");
+	brics_3d::rsg::RemoteRootNodeAutoMounter autoMounter(&wm->scene, applicationRootId, true); //mount everything relative to the application root node
 	wm->scene.attachUpdateObserver(&autoMounter);
 
 	/* Introduce this WM to potential others  */
