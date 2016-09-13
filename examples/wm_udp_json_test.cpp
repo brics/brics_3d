@@ -284,7 +284,7 @@ int main(int argc, char **argv) {
 
 	brics_3d::rsg::DotVisualizer* wmStructureVisualizer = new brics_3d::rsg::DotVisualizer(&wm->scene);
 	wmStructureVisualizer->setConfig(visualizationConfig); // we use the same config here
-	wmStructureVisualizer->setKeepHistory(true);
+	wmStructureVisualizer->setKeepHistory(false);
 	wm->scene.attachUpdateObserver(wmStructureVisualizer);
 
 #ifdef BRICS_OSG_ENABLE
@@ -333,22 +333,40 @@ int main(int argc, char **argv) {
 
 	/* Box for "virtual fence" */
 	attributes.clear();
+	attributes.push_back(rsg::Attribute("name", "tf_static"));
+	rsg::Id tfId;
+	tfId.fromString("16eee6ae-277f-486b-b282-fe45466cd64e");
+	brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform(new brics_3d::HomogeneousMatrix44(1,0,0,  	// Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             0,0,0)); 						// Translation coefficients
+	HomogeneousMatrix44::HomogeneousMatrix44::xyzRollPitchYawToMatrix(0,0,0, 0.5*M_PI, 0.0*M_PI, 0.0*M_PI, transform);
+	wm->scene.addTransformNode(sceneObjectsId, tfId, attributes, transform, wm->now(), true);
+
+
+
+	attributes.clear();
 	attributes.push_back(rsg::Attribute("name", "box_tf"));
-	attributes.push_back(rsg::Attribute("taskType", "sceneObject"));
+	attributes.push_back(rsg::Attribute("tf:max_duration", "3600s"));
 	rsg::Id boxTfId;
+	boxTfId.fromString("90b55d9e-5e02-4d85-997a-afc2e6f85eb3");
 	brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform120(new brics_3d::HomogeneousMatrix44(1,0,0,  	// Rotation coefficients
 	                                                             0,1,0,
 	                                                             0,0,1,
 	                                                             1,2,0)); 						// Translation coefficients
-	wm->scene.addTransformNode(sceneObjectsId, boxTfId, attributes, transform120, wm->now());
+	wm->scene.addTransformNode(tfId, boxTfId, attributes, transform120, wm->now(), true);
 
 	attributes.clear();
-	attributes.push_back(rsg::Attribute("shape", "Box"));
-	attributes.push_back(rsg::Attribute("name", "virtual_fence")); // this name serves as a conventions here
-	rsg::Box::BoxPtr box( new rsg::Box(1,2,0));
+	attributes.push_back(rsg::Attribute("name", "imu_box")); // this name serves as a conventions here
+	rsg::Box::BoxPtr box( new rsg::Box(1,2,0.3));
 	rsg::Id boxId;
 	wm->scene.addGeometricNode(boxTfId, boxId, attributes, box, wm->now());
 
+	attributes.clear();
+	attributes.push_back(rsg::Attribute("name", "ground_plane")); // this name serves as a conventions here
+	rsg::Box::BoxPtr plane( new rsg::Box(10,10,0));
+	rsg::Id planeId;
+	wm->scene.addGeometricNode(sceneObjectsId, planeId, attributes, plane, wm->now());
 
 
 
