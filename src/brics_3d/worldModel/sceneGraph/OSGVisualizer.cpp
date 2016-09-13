@@ -116,6 +116,7 @@ OSGVisualizer::~OSGVisualizer() {
 
 void OSGVisualizer::init() {
 	rootGeode = new osg::Group();
+	wgs84Trasnform.clear();
 
 	osg::ref_ptr<osg::BlendFunc> blendFunc = new osg::BlendFunc();
 	blendFunc->setFunction( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
@@ -227,8 +228,9 @@ bool OSGVisualizer::addTransformNode(Id parentId, Id& assignedId, vector<Attribu
 	bool isWGS84Representation = false;
 	Attribute wgs84Tag("tf:type","wgs84");
 	isWGS84Representation = attributeListContainsAttribute(attributes, wgs84Tag);
-	wgs84Trasnform.push_back(assignedId);
-
+	if(isWGS84Representation) {
+		wgs84Trasnform.push_back(assignedId);
+	}
 
 	osg::ref_ptr<osg::Node> node = findNodeRecerence(parentId);
 	osg::ref_ptr<osg::Group> parentGroup = 0;
