@@ -22,13 +22,34 @@ namespace brics_3d {
 namespace rsg {
 
 GraphConstraint::GraphConstraint() {
-	// TODO Auto-generated constructor stub
+
+	action = UNDEFINED_ACTION;
+	qualifier = UNDEFINED_QUALIFIER;
+	type = UNDEFINED_TYPE;
+	comparision = UNDEFINED_OPERATOR;
+	value = 0;
+	freqUnit = Units::Hertz;
+	distUnit = Units::Meter;
+	node = 0;
+	context = "";
 
 }
 
 GraphConstraint::~GraphConstraint() {
-	// TODO Auto-generated destructor stub
+
 }
+
+bool GraphConstraint::parse(std::string constraintModel) {
+
+
+	return validate();
+}
+
+bool GraphConstraint::validate() {
+	return (qualifier != UNDEFINED_QUALIFIER)
+			&& (type != UNDEFINED_TYPE);
+}
+
 
 } /* namespace rsg */
 } /* namespace brics_3d */

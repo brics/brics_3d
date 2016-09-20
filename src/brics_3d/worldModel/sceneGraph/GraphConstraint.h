@@ -39,18 +39,21 @@ class GraphConstraint {
 
 	/// optional
 	enum Action {
+		UNDEFINED_ACTION = 0,
 		SEND = 1,
 		RECEIVE = 2
 	};
 
 	/// required
 	enum Qualifier {
+		UNDEFINED_QUALIFIER = 0,
 		NO = 1,
 		ONLY = 2
 	};
 
 	/// required
 	enum Type {
+		UNDEFINED_TYPE = 0,
 		Atom = 1,
 		Node = 2,
 		GeometricNode = 3,
@@ -66,6 +69,7 @@ class GraphConstraint {
 
 	/// optional
 	enum NodeConstraint {
+		UNDEFINED_NODE_CONSTRAINT = 0,
 		NONE = 1,
 		FREQUENCY = 2,
 		DISTANCE = 3,
@@ -76,13 +80,10 @@ class GraphConstraint {
 
 	/// required for FREQUENCY, DISTANCE or LOD constraints
 	enum ComparisionOperator {
+		UNDEFINED_OPERATOR = 0,
 		LT = 1,  /// <=
 		EQ = 2,  /// ==
 		BT = 3   /// >=
-	};
-
-	enum Option {
-		NOT_SET = 0
 	};
 
 public:
@@ -98,7 +99,7 @@ public:
 	Units::FrequencyUnit freqUnit;		/// required for FREQUENCY nodeConstraint
 	Units::DistanceUnit  distUnit;		/// required for DISTANCE nodeConstraint
 	Id node;							/// required for DISTANCE and CONTAINMENT nodeConstraint
-	std::string context;						/// required for CONTEXT nodeConstraint
+	std::string context;				/// required for CONTEXT nodeConstraint
 
 	/**
 	 * @brief Parse a model.
