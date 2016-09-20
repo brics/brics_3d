@@ -83,7 +83,7 @@ class GraphConstraint {
 		UNDEFINED_OPERATOR = 0,
 		LT = 1,  /// <=
 		EQ = 2,  /// ==
-		BT = 3   /// >=
+		GT = 3   /// >=
 	};
 
 public:
@@ -99,6 +99,7 @@ public:
 	Units::FrequencyUnit freqUnit;		/// required for FREQUENCY nodeConstraint
 	Units::DistanceUnit  distUnit;		/// required for DISTANCE nodeConstraint
 	Id node;							/// required for DISTANCE and CONTAINMENT nodeConstraint
+	bool isMe;							/// In case node is set the "me" alias. This is synonym with with getRootNode()
 	std::string context;				/// required for CONTEXT nodeConstraint
 
 	/**

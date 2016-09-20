@@ -35,6 +35,7 @@ GraphConstraint::GraphConstraint() {
 	freqUnit = Units::Hertz;
 	distUnit = Units::Meter;
 	node = 0;
+	isMe = false;
 	context = "";
 
 }
@@ -58,7 +59,7 @@ bool GraphConstraint::parse(std::string constraintModel) {
 	std::vector<std::string>::const_iterator it = tokens.begin();
 
 	/* Action */
-	if(it == tokens.end()){ LOG(ERROR) << "GraphConstraint is empty." ; return false;}
+	if(it == tokens.end()){ LOG(ERROR) << "GraphConstraint is empty."; return false;}
 	if(it->compare("send") == 0) {
 		action = SEND;
 	} else if(it->compare("receive") == 0) {
@@ -68,7 +69,8 @@ bool GraphConstraint::parse(std::string constraintModel) {
 	}
 
 	/* Qualifier */
-	if(it == tokens.end()){ LOG(ERROR) << "GraphConstraint has no qualifier." ; return false;}
+	++it;
+	if(it == tokens.end()){ LOG(ERROR) << "GraphConstraint has no qualifier."; return false;}
 	if(it->compare("no") == 0) {
 		qualifier = NO;
 	} else if(it->compare("only") == 0) {
@@ -78,6 +80,7 @@ bool GraphConstraint::parse(std::string constraintModel) {
 	}
 
 	/* Type */
+	++it;
 	if(it == tokens.end()){ LOG(ERROR) << "GraphConstraint has no type." ; return false;}
 	if(it->compare("Atoms") == 0) {
 		type = Atom;
@@ -99,13 +102,174 @@ bool GraphConstraint::parse(std::string constraintModel) {
 		type = Transform;
 	} else if(it->compare("Groups") == 0) {
 		type = Group;
-	} else if(it->compare("Connection") == 0) {
+	} else if(it->compare("Connections") == 0) {
 		type = Connection;
 	} else {
 		type = UNDEFINED_TYPE;
 	}
 
+	/*
+	 * (( with freq (<|=|>) [0-9]+ (Hz|kHz))|\
+	 *  ( with lod (<|=|>) [0-9]+)|\
+	 *  ( with dist (<|=|>) [0-9]+ (mm|cm|m|km) from (me|([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}))|\
+	 *  ( from context [a-zA-Z0-9]+)|\
+	 *  ( contained in ([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}))
+	 */
+
 	/* NodeConstraint; here he have to fork the parsing */
+	++it;
+	if(it == tokens.end()){ LOG(DEBUG) << "GraphConstraint has no nodeConstraint."; return validate();}
+	if(it->compare("with") == 0) { // FREQUENCY, DISTANCE or LOD
+
+		++it;
+		if(it == tokens.end()){ LOG(ERROR) << "GraphConstraint has an incomplete freq/lod/dist nodeConstraint."; return false;}
+		if(it->compare("freq") == 0) { // FREQUENCY
+			nodeConstraint = FREQUENCY;
+
+			// operator: (<|=|>)
+			++it;
+			if(it == tokens.end()){ LOG(ERROR) << "GraphConstraint has no freq operator."; return false;}
+			if(it->compare("<") == 0) {
+				comparision = LT;
+			} else if(it->compare("=") == 0) {
+				comparision = EQ;
+			} else if(it->compare(">") == 0) {
+				comparision = GT;
+			} else {
+				LOG(ERROR) << "GraphConstraint has an invalid freq operator: " << *it;;
+				return false;
+			}
+
+			// value: [0-9]+
+			++it;
+			if(it == tokens.end()){ LOG(ERROR) << "GraphConstraint has no value."; return false;}
+			value = atof(it->c_str());
+
+			// unit: (Hz|kHz)
+			++it;
+			if(it == tokens.end()){ LOG(ERROR) << "GraphConstraint has no freq unit."; return false;}
+			if(it->compare("Hz") == 0) {
+				freqUnit = Units::Hertz;
+			} else if(it->compare("kHz") == 0) {
+				freqUnit = Units::KiloHertz;
+			} else {
+				LOG(ERROR) << "GraphConstraint has an invalid freq unit: " << *it;
+				return false;
+			}
+
+
+		} else if(it->compare("lod") == 0) { // LOD
+			nodeConstraint = LOD;
+
+			// operator: (<|=|>)
+			++it;
+			if(it == tokens.end()){ LOG(ERROR) << "GraphConstraint has no lod operator."; return false;}
+			if(it->compare("<") == 0) {
+				comparision = LT;
+			} else if(it->compare("=") == 0) {
+				comparision = EQ;
+			} else if(it->compare(">") == 0) {
+				comparision = GT;
+			} else {
+				LOG(ERROR) << "GraphConstraint has an invalid lod operator: " << *it;;
+				return false;
+			}
+
+			// value: [0-9]+
+			++it;
+			if(it == tokens.end()){ LOG(ERROR) << "GraphConstraint has no lod value."; return false;}
+			value = atof(it->c_str());
+
+		} else if(it->compare("dist") == 0) { // DISTANCE
+			nodeConstraint = DISTANCE;
+
+			// operator: (<|=|>)
+			++it;
+			if(it == tokens.end()){ LOG(ERROR) << "GraphConstraint has no dist operator."; return false;}
+			if(it->compare("<") == 0) {
+				comparision = LT;
+			} else if(it->compare("=") == 0) {
+				comparision = EQ;
+			} else if(it->compare(">") == 0) {
+				comparision = GT;
+			} else {
+				LOG(ERROR) << "GraphConstraint has an invalid dist operator: " << *it;;
+				return false;
+			}
+
+			// value: [0-9]+
+			++it;
+			if(it == tokens.end()){ LOG(ERROR) << "GraphConstraint has no dust value."; return false;}
+			value = atof(it->c_str());
+
+			// unit: (mm|cm|m|km)
+			++it;
+			if(it == tokens.end()){ LOG(ERROR) << "GraphConstraint has no dist unit."; return false;}
+			if(it->compare("mm") == 0) {
+				distUnit = Units::MilliMeter;
+			} else if(it->compare("cm") == 0) {
+				distUnit = Units::CentiMeter;
+			} else if(it->compare("m") == 0) {
+				distUnit = Units::Meter;
+			} else if(it->compare("km") == 0) {
+				distUnit = Units::KiloMeter;
+			} else {
+				LOG(ERROR) << "GraphConstraint has an invalid dist unit: " << *it;
+				return false;
+			}
+
+			// from
+			++it;
+			if(it == tokens.end()){ LOG(ERROR) << "GraphConstraint has no from token."; return false;}
+
+			// (me|([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}))
+			++it;
+			if(it == tokens.end()){ LOG(ERROR) << "GraphConstraint has no nodeId token."; return false;}
+			if(it->compare("me") == 0) {
+				isMe = true;
+			} else {
+				node.fromString(*it);
+			}
+
+
+		} else {
+			LOG(ERROR) << "GraphConstraint has an invalid freq/lod/dist nodeConstraint.";
+			return false;
+		}
+
+	} else if(it->compare("from") == 0) {
+		nodeConstraint = CONTEXT;
+
+		// context
+		++it;
+		if(it == tokens.end()){ LOG(ERROR) << "GraphConstraint has no context token."; return false;}
+
+		// [a-zA-Z0-9]+
+		++it;
+		if(it == tokens.end()){ LOG(ERROR) << "GraphConstraint has no context definition."; return false;}
+		context = *it;
+
+	} else if(it->compare("contained") == 0) {
+		nodeConstraint = CONTAINMENT;
+
+		// in
+		++it;
+		if(it == tokens.end()){ LOG(ERROR) << "GraphConstraint has no in token."; return false;}
+
+		// ([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12})
+		++it;
+		if(it == tokens.end()){ LOG(ERROR) << "GraphConstraint has no nodeId"; return false;}
+		if(it->compare("me") == 0) { // this is actually not specified, but will most likely come soon...
+			isMe = true;
+		} else {
+			node.fromString(*it);
+		}
+
+	} else {
+		nodeConstraint = UNDEFINED_NODE_CONSTRAINT;
+		LOG(ERROR) << "GraphConstraint has an invalid nodeConstraint.";
+		return false;
+	}
 
 	return validate();
 }

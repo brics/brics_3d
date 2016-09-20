@@ -44,6 +44,7 @@ void GraphConstraintTest::testParser() {
 
 	GraphConstraint c0;
 	CPPUNIT_ASSERT(!c0.validate());
+	CPPUNIT_ASSERT(!c0.parse("")); // empty constraint
 
 	string policy1 = "receive no Meshes";
 	string policy1_invalid = "no Meshes";
