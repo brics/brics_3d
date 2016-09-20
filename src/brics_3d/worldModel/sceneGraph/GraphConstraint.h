@@ -37,6 +37,8 @@ namespace rsg {
  */
 class GraphConstraint {
 
+public:
+
 	/// optional
 	enum Action {
 		UNDEFINED_ACTION = 0,
@@ -86,7 +88,6 @@ class GraphConstraint {
 		GT = 3   /// >=
 	};
 
-public:
 	GraphConstraint();
 	virtual ~GraphConstraint();
 
