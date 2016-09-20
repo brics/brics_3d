@@ -209,7 +209,8 @@ SET (WORLD_MODEL_LIBRARY_SOURCES
     ./worldModel/sceneGraph/UpdatesToSceneGraphListener
     ./worldModel/sceneGraph/RemoteRootNodeAutoMounter
     ./worldModel/sceneGraph/SemanticContextUpdateFilter
-    ./worldModel/sceneGraph/FunctionBlockLoader     
+    ./worldModel/sceneGraph/FunctionBlockLoader
+    ./worldModel/sceneGraph/GraphConstraint     
 )
 
 #optional sources

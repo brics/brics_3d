@@ -310,7 +310,7 @@ int main(int argc, char **argv) {
 
 	/* Setup auto mount policy for incoming data */
 	brics_3d::rsg::Id applicationRootId;
-	applicationRootId.fromString("b6c6b422-6fa5-4a64-947e-77bbb0980383");
+	applicationRootId.fromString("e379121f-06c6-4e21-ae9d-ae78ec1986a1");
 	brics_3d::rsg::RemoteRootNodeAutoMounter autoMounter(&wm->scene, applicationRootId, true); //mount everything relative to the application root node
 	wm->scene.attachUpdateObserver(&autoMounter);
 
