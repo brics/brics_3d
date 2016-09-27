@@ -66,7 +66,8 @@ public:
 		Mesh = 8,
 		Transform = 9,
 		Group = 10,
-		Connection = 11
+		Connection = 11,
+		TYPE_NR_ITEMS = 12
 	};
 
 	/// optional

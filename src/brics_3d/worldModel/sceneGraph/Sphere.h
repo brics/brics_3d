@@ -43,6 +43,10 @@ public:
 	Sphere(Coordinate radius, Units::DistanceUnit unit = Units::Meter);
 	virtual ~Sphere();
 
+	Shape::ShapeType getShapeType() {
+		return Shape::Sphere;
+	}
+
     Coordinate getRadius() const
     {
         return radius;

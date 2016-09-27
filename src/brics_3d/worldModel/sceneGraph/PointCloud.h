@@ -45,6 +45,10 @@ class PointCloud : public Shape {
 
     virtual ~PointCloud(){};
 
+	Shape::ShapeType getShapeType() {
+		return Shape::PointCloud;
+	}
+
     /**
      * @brief Stub for returning a point cloud iterator.
      *

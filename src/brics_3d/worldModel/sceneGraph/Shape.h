@@ -38,12 +38,29 @@ namespace rsg {
 class Shape {
 
 public:
+
+	enum ShapeType {
+		UNDEFINED_TYPE = 0,
+		Sphere = 1,
+		Cylinder = 2,
+		Box = 3,
+		PointCloud = 4,
+		Mesh = 5,
+	};
+
 	typedef boost::shared_ptr<Shape> ShapePtr;
 	typedef boost::shared_ptr<Shape const> ShapeConstPtr;
 
 	Shape();
 
 	virtual ~Shape();
+
+	/**
+	 * @brief Returns an enum to identify the type.
+	 * Can be used to quickly infer what kind of shape is stored.
+	 * @return The type.
+	 */
+	virtual ShapeType getShapeType() = 0;
 
 	/**
 	 * @brief Introspection for point cloud shapes.

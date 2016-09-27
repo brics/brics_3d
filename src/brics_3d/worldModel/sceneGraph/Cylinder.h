@@ -44,6 +44,10 @@ public:
 
 	virtual ~Cylinder();
 
+	Shape::ShapeType getShapeType() {
+		return Shape::Cylinder;
+	}
+
     Coordinate getHeight() const
     {
         return height;

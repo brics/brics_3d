@@ -44,6 +44,10 @@ public:
 
     virtual ~Box();
 
+	Shape::ShapeType getShapeType() {
+		return Shape::Box;
+	}
+
     Coordinate getSizeX() const
     {
         return sizeX;

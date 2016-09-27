@@ -41,6 +41,10 @@ class Mesh : public Shape {
 
     virtual ~Mesh(){};
 
+	Shape::ShapeType getShapeType() {
+		return Shape::Mesh;
+	}
+
     boost::shared_ptr<MeshT> data;
 
 };
