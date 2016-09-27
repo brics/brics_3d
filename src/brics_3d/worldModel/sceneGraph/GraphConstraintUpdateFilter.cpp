@@ -39,7 +39,11 @@ bool GraphConstraintUpdateFilter::addNode(Id parentId, Id& assignedId,
 	std::vector<GraphConstraint>::iterator it;
 	for (it = constraints.begin(); it != constraints.end(); ++it) {
 
+		Duration duration;
+		Duration allowedDuration;
+		double distanceInMeters = 0.0;
 		GraphConstraint::Type type = GraphConstraint::Node;
+
 		switch (mode) {
 			case SENDER:
 
@@ -79,17 +83,84 @@ bool GraphConstraintUpdateFilter::addNode(Id parentId, Id& assignedId,
 					 */
 					case GraphConstraint::FREQUENCY:
 
-//						if((it->qualifier == GraphConstraint::NO) && (it->type == type)) {
-//							LOG(DEBUG) << "GraphConstraintUpdateFilter:addNode creation is skipped because no types " << type << " are allowed";
-//							return false;
-//						} else if((it->qualifier == GraphConstraint::NO) && (it->type == GraphConstraint::Atom)) {
-//							LOG(DEBUG) << "GraphConstraintUpdateFilter:addNode creation is skipped because no types " << GraphConstraint::Atom << " are allowed";
-//							return false;
-//						} else if((it->qualifier == GraphConstraint::ONLY) && (it->type != GraphConstraint::Node)) {
-//							LOG(DEBUG) << "GraphConstraintUpdateFilter:addNode creation is skipped because only types " << type << " are allowed";
-//							return false;
-//						}
+						duration = wm->now() - lastSendType[it->type];
+						allowedDuration = 1.0 / Units::frequencyToHertz(it->value, it->freqUnit); // convert Hz to seconds.
 
+						if( 	((it->qualifier == GraphConstraint::NO) && (it->type == type)) ||
+								((it->qualifier == GraphConstraint::NO) && (it->type == GraphConstraint::Atom)) ) {
+
+							switch (it->comparision) {
+								case GraphConstraint::EQ:
+									if(duration == allowedDuration) {
+										LOG(DEBUG) << "GraphConstraintUpdateFilter:addNode creation is skipped because no types "
+												<< it->type << " with duration = "<< duration.getSeconds() <<"[s] are allowed";
+										return false;
+									}
+									break;
+								case GraphConstraint::LT:
+									if(duration > allowedDuration) {
+										LOG(DEBUG) << "GraphConstraintUpdateFilter:addNode creation is skipped because no types "
+												<< it->type << " with duration > "<< duration.getSeconds() <<"[s] are allowed";
+										return false;
+									}
+
+									break;
+								case GraphConstraint::GT:
+									if(duration < allowedDuration) {
+										LOG(DEBUG) << "GraphConstraintUpdateFilter:addNode creation is skipped because no types "
+												<< it->type << " with duration < "<< duration.getSeconds() <<"[s] are allowed";
+										return false;
+									}
+									break;
+
+								case GraphConstraint::UNDEFINED_OPERATOR:
+									LOG(ERROR) << "GraphConstraintUpdateFilter:addNode creation due to an undefined operator in a freqeuncy constraint.";
+									return false;
+							}
+
+
+						} else if((it->qualifier == GraphConstraint::ONLY) && (it->type != GraphConstraint::Node)) {
+
+							switch (it->comparision) {
+								case GraphConstraint::EQ:
+									if(duration == allowedDuration) {
+										continue;
+									}
+									break;
+								case GraphConstraint::LT:
+									if(duration < allowedDuration) {
+										LOG(DEBUG) << "GraphConstraintUpdateFilter:addNode creation is skipped because only types "
+												<< it->type << " with duration > "<< duration.getSeconds() <<"[s] are allowed";
+										return false;
+									}
+
+									break;
+								case GraphConstraint::GT:
+									if(duration > allowedDuration) {
+										LOG(DEBUG) << "GraphConstraintUpdateFilter:addNode creation is skipped because only types "
+												<< it->type << " with duration < "<< duration.getSeconds() <<"[s] are allowed";
+										return false;
+									}
+									break;
+
+								case GraphConstraint::UNDEFINED_OPERATOR:
+									LOG(ERROR) << "GraphConstraintUpdateFilter:addNode creation due to an undefined operator in a freqeuncy constraint.";
+									return false;
+
+							}
+						}
+
+						break;
+
+					case GraphConstraint::LOD:
+						// only applies to geometric nodes
+						break;
+
+					case GraphConstraint::DISTANCE:
+
+
+
+						// only applies to geometric nodes
 						break;
 
 					default:
@@ -97,6 +168,7 @@ bool GraphConstraintUpdateFilter::addNode(Id parentId, Id& assignedId,
 						break;
 
 				}
+
 
 				break;
 
