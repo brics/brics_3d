@@ -1,6 +1,6 @@
 /******************************************************************************
 * BRICS_3D - 3D Perception and Modeling Library
-* Copyright (c) 2014, KU Leuven
+* Copyright (c) 2016, KU Leuven
 *
 * Author: Sebastian Blumenthal
 *
@@ -22,6 +22,7 @@
 #include "SceneGraphNodesTest.h" // for the observer counter
 #include "brics_3d/core/Logger.h"
 #include "brics_3d/worldModel/sceneGraph/GraphConstraint.h"
+#include "brics_3d/worldModel/sceneGraph/GraphConstraintUpdateFilter.h"
 
 using namespace brics_3d;
 
@@ -81,6 +82,111 @@ void GraphConstraintTest::testParser() {
 	CPPUNIT_ASSERT(c7.parse(policy7));
 	CPPUNIT_ASSERT(!c7.parse(policy7_invalid));
 
+}
+
+void GraphConstraintTest::testNoConstraints() {
+
+	WorldModel* wm = new WorldModel();
+	MyObserver wmNodeCounter;
+	GraphConstraintUpdateFilter filter(wm);
+	wm->scene.attachUpdateObserver(&filter);
+	filter.attachUpdateObserver(&wmNodeCounter);
+
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addNodeCounter); //precondition
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addRemoteRootNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addConnectionCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.removeParentCounter);
+
+	CPPUNIT_ASSERT(runAddAllSceneGraphPrimitives(wm));
+
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addNodeCounter); //precondition
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addRemoteRootNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addConnectionCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.removeParentCounter);
+
+	delete wm;
+}
+
+bool GraphConstraintTest::runAddAllSceneGraphPrimitives(brics_3d::WorldModel* wm) {
+
+	Id dumyId;
+	vector<Attribute> attributes;
+	vector<Attribute> dummyAttributes;
+	TimeStamp t1 = wm->now();
+
+	CPPUNIT_ASSERT(wm->scene.addNode(wm->getRootNodeId(), dumyId, attributes));
+	attributes.clear();
+	attributes.push_back(rsg::Attribute("osm:landuse", "forest"));
+	CPPUNIT_ASSERT(wm->scene.addNode(wm->getRootNodeId(), dumyId, attributes));
+	attributes.clear();
+	attributes.push_back(rsg::Attribute("gis:origin", "initial"));
+	CPPUNIT_ASSERT(wm->scene.addNode(wm->getRootNodeId(), dumyId, attributes));
+	attributes.clear();
+	CPPUNIT_ASSERT(wm->scene.addGroup(wm->getRootNodeId(), dumyId, attributes));
+
+	attributes.clear();
+	attributes.push_back(rsg::Attribute("tf:name", "tf_1"));
+	rsg::Id tf1Id;
+	brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform123(new brics_3d::HomogeneousMatrix44(1,0,0,  	// Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             1,2,3)); 						// Translation coefficients
+	CPPUNIT_ASSERT(wm->scene.addTransformNode(wm->getRootNodeId(), tf1Id, attributes, transform123, t1));
+
+	Id utfId;
+	ITransformUncertainty::ITransformUncertaintyPtr uncertainty123(new CovarianceMatrix66(3, 0.001, 0.001, 0.0000, 0.000000, 0.00000));
+	CPPUNIT_ASSERT(wm->scene.addUncertainTransformNode(wm->getRootNodeId(), utfId, dummyAttributes, transform123, uncertainty123, wm->now()));
+
+	rsg::Box::BoxPtr box( new rsg::Box(1,2,3));
+	rsg::Id boxId;
+	CPPUNIT_ASSERT(wm->scene.addGeometricNode(wm->getRootNodeId(), boxId, dummyAttributes, box, wm->now()));
+	CPPUNIT_ASSERT(wm->scene.deleteNode(boxId));
+
+	CPPUNIT_ASSERT(wm->scene.addParent(utfId, tf1Id));
+	CPPUNIT_ASSERT(wm->scene.removeParent(utfId, tf1Id));
+
+	Id someRemoteNode = 42;
+	CPPUNIT_ASSERT(wm->scene.addRemoteRootNode(someRemoteNode, dummyAttributes));
+
+	vector<Attribute> rootAttibutes;
+	rootAttibutes.push_back(Attribute("name","someRootNodePolicy"));
+	CPPUNIT_ASSERT(wm->scene.setNodeAttributes(wm->getRootNodeId(), rootAttibutes));
+
+	Id connId;
+	vector<Attribute> connectionAttributes;
+	connectionAttributes.push_back(Attribute("rsg::Type","has_geometry"));
+	vector<Id> sourceIs;
+	sourceIs.push_back(utfId);
+	vector<Id> targetIs;
+	targetIs.push_back(tf1Id);
+	targetIs.push_back(utfId);
+	LOG(DEBUG) << "Adding connection { source = {" << utfId << "}, target = {" << tf1Id << ", "<< utfId << "}}";
+	CPPUNIT_ASSERT(wm->scene.addConnection(wm->getRootNodeId(), connId, connectionAttributes, sourceIs, targetIs, wm->now(), wm->now()));
+
+	brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform456(new brics_3d::HomogeneousMatrix44(1,0,0,  	// Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             4,5,6));
+	TimeStamp t2 = t1 + Duration(0.5, Units::Second);
+	CPPUNIT_ASSERT(wm->scene.setTransform(tf1Id, transform456, t2));
+	TimeStamp t3 = t2 + Duration(1.0, Units::Second);
+	CPPUNIT_ASSERT(wm->scene.setTransform(tf1Id, transform456, t3));
+
+	return true;
 }
 
 }  // namespace unitTests

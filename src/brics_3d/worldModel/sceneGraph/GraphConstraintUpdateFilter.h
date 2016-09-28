@@ -75,6 +75,7 @@ public:
     /// Implements the constraint checking algorithm
     bool checkConstraint(GraphConstraint constraint, GraphConstraint::Type type, double frequencyInHz, double distanceInMeters, double lod, Id assignedId, vector<Attribute> attributes);
 
+    /// Implements the constraint checking part involving a comparison
     bool checkComparision(GraphConstraint constraint, GraphConstraint::Type type, double value, double allowedValue, string tag);
 
 private:

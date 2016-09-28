@@ -313,8 +313,8 @@ bool GraphConstraintUpdateFilter::deleteNode(Id id) {
 
 	vector<Attribute> attributes;
 	if(!wm->scene.getNodeAttributes(id, attributes)) {
-		LOG(ERROR) << "semanticContextUpdateFilter:deleteNode cannot query existing attributes for id " << id << " Skipping update.";
-		return false;
+		LOG(WARNING) << "GraphConstraintUpdateFilter:deleteNode cannot query existing attributes for id " << id << " Skipping update.";
+//		return false;
 	}
 
 	std::vector<GraphConstraint>::iterator it;

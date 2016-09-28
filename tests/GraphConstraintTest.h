@@ -25,6 +25,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "brics_3d/worldModel/WorldModel.h"
+#include "brics_3d/worldModel/sceneGraph/GraphConstraintUpdateFilter.h"
 
 namespace unitTests {
 
@@ -34,6 +35,7 @@ class GraphConstraintTest : public CPPUNIT_NS::TestFixture {
 
 	CPPUNIT_TEST_SUITE( GraphConstraintTest );
 	CPPUNIT_TEST( testParser );
+	CPPUNIT_TEST( testNoConstraints );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -42,10 +44,13 @@ public:
 	void tearDown();
 
 	void testParser();
+	void testNoConstraints();
 
 private:
 	/// Maximum deviation for equality check of double variables
 	static const double maxTolerance = 0.00001;
+
+	bool runAddAllSceneGraphPrimitives(brics_3d::WorldModel* wm);
 
 };
 
