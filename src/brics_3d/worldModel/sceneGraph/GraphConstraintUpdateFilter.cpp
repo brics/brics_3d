@@ -435,7 +435,7 @@ bool GraphConstraintUpdateFilter::checkConstraint(GraphConstraint constraint,
 			switch (constraint.nodeConstraint) {
 
 				/* simple constraints first */
-				case GraphConstraint::UNDEFINED_NODE_CONSTRAINT:
+				case GraphConstraint::NONE:
 
 					if( (constraint.qualifier == GraphConstraint::NO) && (constraint.type == type) ) {
 						LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint creation is false because no types " << type << " are allowed";
@@ -555,7 +555,12 @@ bool GraphConstraintUpdateFilter::checkConstraint(GraphConstraint constraint,
 
 					}
 
+
 					break;
+
+				case GraphConstraint::UNDEFINED_NODE_CONSTRAINT:
+
+					LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is false because the nodeConstraint is undefined. Do you actually mean NONE instead?";
 
 				default:
 

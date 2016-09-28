@@ -36,6 +36,7 @@ class GraphConstraintTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST_SUITE( GraphConstraintTest );
 	CPPUNIT_TEST( testParser );
 	CPPUNIT_TEST( testNoConstraints );
+	CPPUNIT_TEST( testSimpleConstraints );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -45,6 +46,7 @@ public:
 
 	void testParser();
 	void testNoConstraints();
+	void testSimpleConstraints();
 
 private:
 	/// Maximum deviation for equality check of double variables
