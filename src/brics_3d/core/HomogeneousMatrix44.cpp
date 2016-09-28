@@ -334,6 +334,16 @@ void HomogeneousMatrix44::matrixToQuaternion(IHomogeneousMatrix44::IHomogeneousM
 
 }
 
+void HomogeneousMatrix44::matrixToDistance(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr matrix, double distance) {
+
+	/* Translation */
+	double* matrixData = matrix->setRawData();
+	double x = matrixData[matrixEntry::x];
+	double y = matrixData[matrixEntry::y];
+	double z = matrixData[matrixEntry::z];
+
+	distance = sqrt (x*x + y*y + z*z);
+}
 
 }
 /* EOF */

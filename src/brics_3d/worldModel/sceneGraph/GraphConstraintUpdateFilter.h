@@ -72,6 +72,11 @@ public:
 
     /// THE remote graph constraints, as specified by other root nodes
 
+    /// Implements the constraint checking algorithm
+    bool checkConstraint(GraphConstraint constraint, GraphConstraint::Type type, double frequencyInHz, double distanceInMeters, double lod, Id assignedId, vector<Attribute> attributes);
+
+    bool checkComparision(GraphConstraint constraint, GraphConstraint::Type type, double value, double allowedValue, string tag);
+
 private:
 
     /// input or Output

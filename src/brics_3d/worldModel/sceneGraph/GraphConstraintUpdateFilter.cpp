@@ -19,7 +19,9 @@
 
 #include "GraphConstraintUpdateFilter.h"
 #include "brics_3d/core/Logger.h"
+#include "brics_3d/core/HomogeneousMatrix44.h"
 #include "brics_3d/util/Timer.h"
+#include "SubGraphChecker.h"
 
 namespace brics_3d {
 namespace rsg {
@@ -38,148 +40,9 @@ bool GraphConstraintUpdateFilter::addNode(Id parentId, Id& assignedId,
 
 	std::vector<GraphConstraint>::iterator it;
 	for (it = constraints.begin(); it != constraints.end(); ++it) {
-
-		Duration duration;
-		Duration allowedDuration;
-		double distanceInMeters = 0.0;
-		GraphConstraint::Type type = GraphConstraint::Node;
-
-		switch (mode) {
-			case SENDER:
-
-				/* check if it applies to sender */
-				if(it->action != GraphConstraint::SEND) {
-					break; // this constraint does not apply at all
-				}
-
-
-				switch (it->nodeConstraint) {
-
-					/* simple constraints first */
-					case GraphConstraint::UNDEFINED_NODE_CONSTRAINT:
-
-						if((it->qualifier == GraphConstraint::NO) && (it->type == type)) {
-							LOG(DEBUG) << "GraphConstraintUpdateFilter:addNode creation is skipped because no types " << type << " are allowed";
-							return false;
-						} else if((it->qualifier == GraphConstraint::NO) && (it->type == GraphConstraint::Atom)) {
-							LOG(DEBUG) << "GraphConstraintUpdateFilter:addNode creation is skipped because no types " << GraphConstraint::Atom << " are allowed";
-							return false;
-						} else if((it->qualifier == GraphConstraint::ONLY) && (it->type != GraphConstraint::Node)) {
-							LOG(DEBUG) << "GraphConstraintUpdateFilter:addNode creation is skipped because only types " << type << " are allowed";
-							return false;
-						}
-
-						break;
-
-
-
-					/* complex constraints */
-					/*
-					 * (( with freq (<|=|>) [0-9]+ (Hz|kHz))|\
-					 *  ( with lod (<|=|>) [0-9]+)|\
-					 *  ( with dist (<|=|>) [0-9]+ (mm|cm|m|km) from (me|([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}))|\
-					 *  ( from context [a-zA-Z0-9]+)|\
-					 *  ( contained in ([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}))
-					 */
-					case GraphConstraint::FREQUENCY:
-
-						duration = wm->now() - lastSendType[it->type];
-						allowedDuration = 1.0 / Units::frequencyToHertz(it->value, it->freqUnit); // convert Hz to seconds.
-
-						if( 	((it->qualifier == GraphConstraint::NO) && (it->type == type)) ||
-								((it->qualifier == GraphConstraint::NO) && (it->type == GraphConstraint::Atom)) ) {
-
-							switch (it->comparision) {
-								case GraphConstraint::EQ:
-									if(duration == allowedDuration) {
-										LOG(DEBUG) << "GraphConstraintUpdateFilter:addNode creation is skipped because no types "
-												<< it->type << " with duration = "<< duration.getSeconds() <<"[s] are allowed";
-										return false;
-									}
-									break;
-								case GraphConstraint::LT:
-									if(duration > allowedDuration) {
-										LOG(DEBUG) << "GraphConstraintUpdateFilter:addNode creation is skipped because no types "
-												<< it->type << " with duration > "<< duration.getSeconds() <<"[s] are allowed";
-										return false;
-									}
-
-									break;
-								case GraphConstraint::GT:
-									if(duration < allowedDuration) {
-										LOG(DEBUG) << "GraphConstraintUpdateFilter:addNode creation is skipped because no types "
-												<< it->type << " with duration < "<< duration.getSeconds() <<"[s] are allowed";
-										return false;
-									}
-									break;
-
-								case GraphConstraint::UNDEFINED_OPERATOR:
-									LOG(ERROR) << "GraphConstraintUpdateFilter:addNode creation due to an undefined operator in a freqeuncy constraint.";
-									return false;
-							}
-
-
-						} else if((it->qualifier == GraphConstraint::ONLY) && (it->type != GraphConstraint::Node)) {
-
-							switch (it->comparision) {
-								case GraphConstraint::EQ:
-									if(duration == allowedDuration) {
-										continue;
-									}
-									break;
-								case GraphConstraint::LT:
-									if(duration < allowedDuration) {
-										LOG(DEBUG) << "GraphConstraintUpdateFilter:addNode creation is skipped because only types "
-												<< it->type << " with duration > "<< duration.getSeconds() <<"[s] are allowed";
-										return false;
-									}
-
-									break;
-								case GraphConstraint::GT:
-									if(duration > allowedDuration) {
-										LOG(DEBUG) << "GraphConstraintUpdateFilter:addNode creation is skipped because only types "
-												<< it->type << " with duration < "<< duration.getSeconds() <<"[s] are allowed";
-										return false;
-									}
-									break;
-
-								case GraphConstraint::UNDEFINED_OPERATOR:
-									LOG(ERROR) << "GraphConstraintUpdateFilter:addNode creation due to an undefined operator in a freqeuncy constraint.";
-									return false;
-
-							}
-						}
-
-						break;
-
-					case GraphConstraint::LOD:
-						// only applies to geometric nodes
-						break;
-
-					case GraphConstraint::DISTANCE:
-
-
-
-						// only applies to geometric nodes
-						break;
-
-					default:
-
-						break;
-
-				}
-
-
-				break;
-
-			case RECEIVER:
-
-				break;
-
-			default:
-				LOG(ERROR) << "GraphConstraintUpdateFilter:addNode creation is skipped because the mode is undefined";
-				return false;
-				break;
+		if (!checkConstraint(*it, GraphConstraint::Node, 0, 0, 0, assignedId, attributes)) {
+			LOG(DEBUG) << "GraphConstraintUpdateFilter::addNode is skipped because a constraint does not hold.";
+			return false;
 		}
 	}
 
@@ -198,9 +61,12 @@ bool GraphConstraintUpdateFilter::addNode(Id parentId, Id& assignedId,
 bool GraphConstraintUpdateFilter::addGroup(Id parentId, Id& assignedId,
 		vector<Attribute> attributes, bool forcedId) {
 
-	if (attributeListContainsAttribute(attributes, Attribute(query, "*"))) {
-		LOG(DEBUG) << "GraphConstraintUpdateFilter:addGroup creation is skipped because attributes contain (" << query << ", *)";
-		return false;
+	std::vector<GraphConstraint>::iterator it;
+	for (it = constraints.begin(); it != constraints.end(); ++it) {
+		if (!checkConstraint(*it, GraphConstraint::Group, 0, 0, 0, assignedId, attributes)) {
+			LOG(DEBUG) << "GraphConstraintUpdateFilter::addGroup is skipped because a constraint does not hold.";
+			return false;
+		}
 	}
 
 	/* Memorize last invocation */
@@ -221,9 +87,12 @@ bool GraphConstraintUpdateFilter::addTransformNode(Id parentId, Id& assignedId,
 		IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform,
 		TimeStamp timeStamp, bool forcedId) {
 
-	if (attributeListContainsAttribute(attributes, Attribute(query, "*"))) {
-		LOG(DEBUG) << "GraphConstraintUpdateFilter:addTransformNode creation is skipped because attributes contain (" << query << ", *)";
-		return false;
+	std::vector<GraphConstraint>::iterator it;
+	for (it = constraints.begin(); it != constraints.end(); ++it) {
+		if (!checkConstraint(*it, GraphConstraint::Transform, 0, 0, 0, assignedId, attributes)) {
+			LOG(DEBUG) << "GraphConstraintUpdateFilter::addNode is skipped because a constraint does not hold.";
+			return false;
+		}
 	}
 
 	/* Memorize last invocation */
@@ -246,9 +115,12 @@ bool GraphConstraintUpdateFilter::addUncertainTransformNode(Id parentId,
 		ITransformUncertainty::ITransformUncertaintyPtr uncertainty,
 		TimeStamp timeStamp, bool forcedId) {
 
-	if (attributeListContainsAttribute(attributes, Attribute(query, "*"))) {
-		LOG(DEBUG) << "GraphConstraintUpdateFilter:addUncertainTransformNode creation is skipped because attributes contain (" << query << ", *)";
-		return false;
+	std::vector<GraphConstraint>::iterator it;
+	for (it = constraints.begin(); it != constraints.end(); ++it) {
+		if (!checkConstraint(*it, GraphConstraint::Transform, 0, 0, 0, assignedId, attributes)) {
+			LOG(DEBUG) << "GraphConstraintUpdateFilter::addNode is skipped because a constraint does not hold.";
+			return false;
+		}
 	}
 
 	/* Memorize last invocation */
@@ -269,9 +141,14 @@ bool GraphConstraintUpdateFilter::addGeometricNode(Id parentId, Id& assignedId,
 		vector<Attribute> attributes, Shape::ShapePtr shape,
 		TimeStamp timeStamp, bool forcedId) {
 
-	if (attributeListContainsAttribute(attributes, Attribute(query, "*"))) {
-		LOG(DEBUG) << "GraphConstraintUpdateFilter:addGeometricNode creation is skipped because attributes contain (" << query << ", *)";
-		return false;
+	/* TODO calculate LOD */
+
+	std::vector<GraphConstraint>::iterator it;
+	for (it = constraints.begin(); it != constraints.end(); ++it) {
+		if (!checkConstraint(*it, GraphConstraint::Transform, 0, 0, 0, assignedId, attributes)) {
+			LOG(DEBUG) << "GraphConstraintUpdateFilter::addNode is skipped because a constraint does not hold.";
+			return false;
+		}
 	}
 
 	/* Memorize last invocation */
@@ -323,9 +200,12 @@ bool GraphConstraintUpdateFilter::addRemoteRootNode(Id rootId, vector<Attribute>
 
 bool GraphConstraintUpdateFilter::addConnection(Id parentId, Id& assignedId, vector<Attribute> attributes, vector<Id> sourceIds, vector<Id> targetIds, TimeStamp start, TimeStamp end, bool forcedId) {
 
-	if (attributeListContainsAttribute(attributes, Attribute(query, "*"))) {
-		LOG(DEBUG) << "GraphConstraintUpdateFilter:addConnection creation is skipped because attributes contain (" << query << ", *)";
-		return false;
+	std::vector<GraphConstraint>::iterator it;
+	for (it = constraints.begin(); it != constraints.end(); ++it) {
+		if (!checkConstraint(*it, GraphConstraint::Connection, 0, 0, 0, assignedId, attributes)) {
+			LOG(DEBUG) << "GraphConstraintUpdateFilter::addNode is skipped because a constraint does not hold.";
+			return false;
+		}
 	}
 
 	/* Memorize last invocation */
@@ -350,9 +230,13 @@ bool GraphConstraintUpdateFilter::setNodeAttributes(Id id,
 		return false;
 	}
 
-	if (attributeListContainsAttribute(attributes, Attribute(query, "*"))) {
-		LOG(DEBUG) << "GraphConstraintUpdateFilter:setNodeAttributes update is skipped because attributes contain (" << query << ", *)";
-		return false;
+
+	std::vector<GraphConstraint>::iterator it;
+	for (it = constraints.begin(); it != constraints.end(); ++it) {
+		if (!checkConstraint(*it, GraphConstraint::Connection, 0, 0, 0, id, attributes)) { // assignedID?
+			LOG(DEBUG) << "GraphConstraintUpdateFilter::addNode is skipped because a constraint does not hold.";
+			return false;
+		}
 	}
 
 	/* Call _all_ observers  */
@@ -373,9 +257,12 @@ bool GraphConstraintUpdateFilter::setTransform(Id id,
 		return false;
 	}
 
-	if (attributeListContainsAttribute(attributes, Attribute(query, "*"))) {
-		LOG(DEBUG) << "GraphConstraintUpdateFilter:setTransform update is skipped because attributes contain (" << query << ", *)";
-		return false;
+	std::vector<GraphConstraint>::iterator it;
+	for (it = constraints.begin(); it != constraints.end(); ++it) {
+		if (!checkConstraint(*it, GraphConstraint::Connection, 0, 0, 0, id, attributes)) { // assignedID?
+			LOG(DEBUG) << "GraphConstraintUpdateFilter::addNode is skipped because a constraint does not hold.";
+			return false;
+		}
 	}
 
 	/* Memorize last invocation */
@@ -401,9 +288,12 @@ bool GraphConstraintUpdateFilter::setUncertainTransform(Id id,
 		return false;
 	}
 
-	if (attributeListContainsAttribute(attributes, Attribute(query, "*"))) {
-		LOG(DEBUG) << "GraphConstraintUpdateFilter:setUncertainTransform update is skipped because attributes contain (" << query << ", *)";
-		return false;
+	std::vector<GraphConstraint>::iterator it;
+	for (it = constraints.begin(); it != constraints.end(); ++it) {
+		if (!checkConstraint(*it, GraphConstraint::Transform, 0, 0, 0, id, attributes)) { // assignedID?
+			LOG(DEBUG) << "GraphConstraintUpdateFilter::addNode is skipped because a constraint does not hold.";
+			return false;
+		}
 	}
 
 	/* Memorize last invocation */
@@ -427,9 +317,12 @@ bool GraphConstraintUpdateFilter::deleteNode(Id id) {
 		return false;
 	}
 
-	if (attributeListContainsAttribute(attributes, Attribute(query, "*"))) {
-		LOG(DEBUG) << "GraphConstraintUpdateFilter:deleteNode deletion is skipped because attributes contain (" << query << ", *)";
-		return false;
+	std::vector<GraphConstraint>::iterator it;
+	for (it = constraints.begin(); it != constraints.end(); ++it) {
+		if (!checkConstraint(*it, GraphConstraint::Atom, 0, 0, 0, id, attributes)) { // assignedID?
+			LOG(DEBUG) << "GraphConstraintUpdateFilter::addNode is skipped because a constraint does not hold.";
+			return false;
+		}
 	}
 
 	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
@@ -447,9 +340,12 @@ bool GraphConstraintUpdateFilter::addParent(Id id, Id parentId) {
 		return false;
 	}
 
-	if (attributeListContainsAttribute(attributes, Attribute(query, "*"))) {
-		LOG(DEBUG) << "GraphConstraintUpdateFilter:addParent creation is skipped because attributes contain (" << query << ", *)";
-		return false;
+	std::vector<GraphConstraint>::iterator it;
+	for (it = constraints.begin(); it != constraints.end(); ++it) {
+		if (!checkConstraint(*it, GraphConstraint::Atom, 0, 0, 0, id, attributes)) { // assignedID?
+			LOG(DEBUG) << "GraphConstraintUpdateFilter::addNode is skipped because a constraint does not hold.";
+			return false;
+		}
 	}
 
 	/* Call _all_ observers  */
@@ -468,9 +364,12 @@ bool GraphConstraintUpdateFilter::removeParent(Id id, Id parentId) {
 		return false;
 	}
 
-	if (attributeListContainsAttribute(attributes, Attribute(query, "*"))) {
-		LOG(DEBUG) << "GraphConstraintUpdateFilter:removeParent deletion is skipped because attributes contain (" << query << ", *)";
-		return false;
+	std::vector<GraphConstraint>::iterator it;
+	for (it = constraints.begin(); it != constraints.end(); ++it) {
+		if (!checkConstraint(*it, GraphConstraint::Atom, 0, 0, 0, id, attributes)) { // assignedID?
+			LOG(DEBUG) << "GraphConstraintUpdateFilter::addNode is skipped because a constraint does not hold.";
+			return false;
+		}
 	}
 
 	/* Call _all_ observers  */
@@ -509,6 +408,261 @@ void GraphConstraintUpdateFilter::setNameSpaceIdentifier(
 		const string& nameSpaceIdentifier) {
 	this->nameSpaceIdentifier = nameSpaceIdentifier;
 	this->query =  "^"  + nameSpaceIdentifier + ":.*"; // wildcard = ^.*
+}
+
+bool GraphConstraintUpdateFilter::checkConstraint(GraphConstraint constraint,
+		GraphConstraint::Type type, double frequencyInHz, double distanceInMeters,
+		double lod, Id assignedId, vector<Attribute> attributes) {
+
+	//GraphConstraint::Type type = GraphConstraint::Node;
+	double allowedFrequencyInHz = 0.0;
+	double allowedDistanceInMeters = 0.0;
+	double allowedLod = 0.0;
+	Id referenceNode;
+	HomogeneousMatrix44::IHomogeneousMatrix44Ptr tf;
+	SubGraphChecker subGraph(assignedId);
+	bool isContainedIn = false;
+
+	switch (mode) {
+		case SENDER:
+
+			/* check if it applies to sender */
+			if(constraint.action != GraphConstraint::SEND) {
+				break; // this constraint does not apply at all
+			}
+
+
+			switch (constraint.nodeConstraint) {
+
+				/* simple constraints first */
+				case GraphConstraint::UNDEFINED_NODE_CONSTRAINT:
+
+					if( (constraint.qualifier == GraphConstraint::NO) && (constraint.type == type) ) {
+						LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint creation is false because no types " << type << " are allowed";
+						return false;
+					} else if( (constraint.qualifier == GraphConstraint::NO) && (constraint.type == GraphConstraint::Atom) ) {
+						LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint creation is false because no types " << GraphConstraint::Atom << " are allowed";
+						return false;
+					} else if( (constraint.qualifier == GraphConstraint::ONLY) && (constraint.type != type) ) {
+						LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint creation is false because only types " << type << " are allowed";
+						return false;
+					}
+
+					break;
+
+
+
+				/* complex constraints */
+				/*
+				 * (( with freq (<|=|>) [0-9]+ (Hz|kHz))|\
+				 *  ( with lod (<|=|>) [0-9]+)|\
+				 *  ( with dist (<|=|>) [0-9]+ (mm|cm|m|km) from (me|([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}))|\
+				 *  ( from context [a-zA-Z0-9]+)|\
+				 *  ( contained in ([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}))
+				 */
+				case GraphConstraint::FREQUENCY:
+
+
+					frequencyInHz = 1.0/(wm->now() - lastSendType[constraint.type]).getSeconds();
+					allowedFrequencyInHz = Units::frequencyToHertz(constraint.value, constraint.freqUnit); // convert Hz to seconds.
+
+					return checkComparision(constraint, type, frequencyInHz, allowedFrequencyInHz, "frequency");
+
+					break;
+
+				case GraphConstraint::LOD:
+
+					// only applies to geometric nodes
+					allowedLod = constraint.value;
+					return checkComparision(constraint, type, lod, allowedLod, "lod");
+
+					break;
+
+				case GraphConstraint::DISTANCE:
+
+					/* get reference node */
+					if(constraint.isMe) {
+						referenceNode = wm->getRootNodeId();
+					} else {
+						referenceNode = constraint.node;
+					}
+
+					/* compute distance */
+					if(!wm->scene.getTransformForNode(assignedId, referenceNode, wm->now(), tf)) { // TODO find a way for to get the distance for non existing nodes (e.g. parent)
+						LOG(WARNING) << "GraphConstraintUpdateFilter:checkConstraint is false because the distance between two nodes could not been derived.";
+								return false;
+					}
+					HomogeneousMatrix44::matrixToDistance(tf, distanceInMeters); // in meters ?!?
+
+					/* check it */
+					allowedDistanceInMeters = Units::distanceToMeters(constraint.value, constraint.distUnit);
+					return checkComparision(constraint, type, distanceInMeters, allowedDistanceInMeters, "distance");
+
+					break;
+
+				case GraphConstraint::CONTEXT:
+
+
+					if(constraint.qualifier == GraphConstraint::ONLY) {
+
+						if (attributeListContainsAttribute(attributes, Attribute(constraint.context, "*"))) {
+							LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is true because attributes contain (only) (" << constraint.context << ", *)";
+							return true;
+						} else {
+							LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is false because attributes do not contain (only) (" << constraint.context << ", *)";
+							return false;
+						}
+
+					} else if (constraint.qualifier == GraphConstraint::NO) {
+
+						if (attributeListContainsAttribute(attributes, Attribute(constraint.context, "*"))) {
+							LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is true because attributes contain (no) (" << constraint.context << ", *)";
+							return false;
+						} else {
+							LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is false because attributes do not contain (no) (" << constraint.context << ", *)";
+							return true;
+						}
+
+					}
+
+					break;
+
+				case GraphConstraint::CONTAINMENT:
+
+					subGraph.reset(assignedId);
+					wm->scene.executeGraphTraverser(&subGraph, constraint.node);
+					isContainedIn = subGraph.nodeIsInSubGraph();
+
+					if(constraint.qualifier == GraphConstraint::ONLY) {
+
+						if (isContainedIn) {
+							LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is true because node is contained in " << constraint.node;
+							return true;
+						} else {
+							LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is false because node is not contained in " << constraint.node;
+							return false;
+						}
+
+					} else if (constraint.qualifier == GraphConstraint::NO) {
+
+						if (isContainedIn) {
+							LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is false because node is contained in " << constraint.node << " although it should not.";
+							return false;
+						} else {
+							LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is false because node is not contained in " << constraint.node << " as it should.";
+							return true;
+						}
+
+					}
+
+					break;
+
+				default:
+
+					break;
+
+			}
+
+
+			break;
+
+		case RECEIVER:
+
+			break;
+
+		default:
+			LOG(ERROR) << "GraphConstraintUpdateFilter:checkConstraint is false because the I/O mode is undefined.";
+			return false;
+			break;
+	}
+
+	return true;
+}
+
+bool GraphConstraintUpdateFilter::checkComparision(GraphConstraint constraint, GraphConstraint::Type type, double value, double allowedValue, string tag) {
+
+	// NO
+	if( 	((constraint.qualifier == GraphConstraint::NO) && (constraint.type == type)) ||
+			((constraint.qualifier == GraphConstraint::NO) && (constraint.type == GraphConstraint::Atom)) ) {
+
+		switch (constraint.comparision) {
+		case GraphConstraint::EQ:
+			if(value == allowedValue) {
+				LOG(DEBUG) << "GraphConstraintUpdateFilter:checkComparision is false because no types "
+						<< constraint.type << " with " << tag <<" " << value << " == " << allowedValue <<" are allowed";
+				return false;
+			}
+			break;
+		case GraphConstraint::LT:
+			if(value > allowedValue) {
+				LOG(DEBUG) << "GraphConstraintUpdateFilter:checkComparision is false because no types "
+						<< constraint.type << " with " << tag <<" " << value << " > " << allowedValue <<" are allowed";
+				return false;
+			}
+
+			break;
+		case GraphConstraint::GT:
+			if(value < allowedValue) {
+				LOG(DEBUG) << "GraphConstraintUpdateFilter:checkComparision is false because no types "
+						<< constraint.type << " with " << tag <<" " << value << " < " << allowedValue <<" are allowed";
+				return false;
+			}
+			break;
+
+		case GraphConstraint::UNDEFINED_OPERATOR:
+			LOG(ERROR) << "GraphConstraintUpdateFilter:checkComparision is false due to an undefined operator in a " << tag << " constraint.";
+			return false;
+
+		default:
+
+			LOG(DEBUG) << "GraphConstraintUpdateFilter:checkComparision is true because types "
+			<< constraint.type << " with " << tag <<" " << value << " of " << allowedValue <<" are allowed";
+			return true;
+		}
+
+	// ONLY
+	} else if((constraint.qualifier == GraphConstraint::ONLY) && (constraint.type == type)) { // also Atoms?
+
+		switch (constraint.comparision) {
+		case GraphConstraint::EQ:
+			if(value == allowedValue) {
+				LOG(DEBUG) << "GraphConstraintUpdateFilter:checkComparision is true because only types "
+						<< constraint.type << " with " << tag <<" " << value << " == " << allowedValue <<" are allowed.";
+				return true;
+			}
+			break;
+		case GraphConstraint::LT:
+			if(value < allowedValue) {
+				LOG(DEBUG) << "GraphConstraintUpdateFilter:checkComparision is true because only types "
+						<< constraint.type << " with " << tag <<" " << value << " < " << allowedValue <<" are allowed.";
+				return true;
+			}
+
+			break;
+		case GraphConstraint::GT:
+			if(value > allowedValue) {
+				LOG(DEBUG) << "GraphConstraintUpdateFilter:checkComparision is true because only types "
+						<< constraint.type << " with " << tag <<" " << value << " > " << allowedValue <<" are allowed.";
+				return true;
+			}
+			break;
+
+		case GraphConstraint::UNDEFINED_OPERATOR:
+			LOG(ERROR) << "GraphConstraintUpdateFilter:checkComparision is false due to an undefined operator in a " << tag << " constraint.";
+			return false;
+
+		default:
+
+			LOG(DEBUG) << "GraphConstraintUpdateFilter:checkComparision is false because types "
+			<< constraint.type << " with " << tag <<" " << value << " of " << allowedValue <<" not allowed";
+			return true;
+
+		}
+	}
+
+	LOG(ERROR) << "GraphConstraintUpdateFilter:checkComparision is false because no other rule applied to type "
+			<< constraint.type << " with " << tag <<" " << value << " of " << allowedValue;
+	return false;
 }
 
 } /* namespace rsg */
