@@ -145,7 +145,7 @@ bool GraphConstraintUpdateFilter::addGeometricNode(Id parentId, Id& assignedId,
 
 	std::vector<GraphConstraint>::iterator it;
 	for (it = constraints.begin(); it != constraints.end(); ++it) {
-		if (!checkConstraint(*it, GraphConstraint::Transform, 0, 0, 0, assignedId, attributes)) {
+		if (!checkConstraint(*it, GraphConstraint::GeometricNode, 0, 0, 0, assignedId, attributes)) {
 			LOG(DEBUG) << "GraphConstraintUpdateFilter::addNode is skipped because a constraint does not hold.";
 			return false;
 		}
@@ -233,7 +233,7 @@ bool GraphConstraintUpdateFilter::setNodeAttributes(Id id,
 
 	std::vector<GraphConstraint>::iterator it;
 	for (it = constraints.begin(); it != constraints.end(); ++it) {
-		if (!checkConstraint(*it, GraphConstraint::Connection, 0, 0, 0, id, attributes)) { // assignedID?
+		if (!checkConstraint(*it, GraphConstraint::Atom, 0, 0, 0, id, attributes)) { // assignedID?
 			LOG(DEBUG) << "GraphConstraintUpdateFilter::addNode is skipped because a constraint does not hold.";
 			return false;
 		}
@@ -259,7 +259,7 @@ bool GraphConstraintUpdateFilter::setTransform(Id id,
 
 	std::vector<GraphConstraint>::iterator it;
 	for (it = constraints.begin(); it != constraints.end(); ++it) {
-		if (!checkConstraint(*it, GraphConstraint::Connection, 0, 0, 0, id, attributes)) { // assignedID?
+		if (!checkConstraint(*it, GraphConstraint::Transform, 0, 0, 0, id, attributes)) { // assignedID?
 			LOG(DEBUG) << "GraphConstraintUpdateFilter::addNode is skipped because a constraint does not hold.";
 			return false;
 		}

@@ -54,6 +54,8 @@ private:
 
 	bool runAddAllSceneGraphPrimitives(brics_3d::WorldModel* wm);
 
+	unsigned int i;
+
 };
 
 }  // namespace unitTests
