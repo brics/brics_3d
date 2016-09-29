@@ -141,40 +141,47 @@ bool GraphConstraintUpdateFilter::addGeometricNode(Id parentId, Id& assignedId,
 		vector<Attribute> attributes, Shape::ShapePtr shape,
 		TimeStamp timeStamp, bool forcedId) {
 
+	GraphConstraint::Type shapeType;
+	switch (shape->getShapeType()) {
+		case Shape::Sphere:
+			shapeType = GraphConstraint::Sphere;
+			break;
+		case Shape::Cylinder:
+			shapeType = GraphConstraint::Cylinder;
+			break;
+		case Shape::Box:
+			shapeType = GraphConstraint::Box;
+			break;
+		case Shape::Mesh:
+			shapeType = GraphConstraint::Mesh;
+			break;
+		case Shape::PointCloud:
+			shapeType = GraphConstraint::PointCloud;
+			break;
+		default:
+			break;
+	}
+
 	/* TODO calculate LOD */
 
 	std::vector<GraphConstraint>::iterator it;
 	for (it = constraints.begin(); it != constraints.end(); ++it) {
 		if (!checkConstraint(*it, GraphConstraint::GeometricNode, 0, 0, 0, assignedId, attributes)) {
-			LOG(DEBUG) << "GraphConstraintUpdateFilter::addNode is skipped because a constraint does not hold.";
+			LOG(DEBUG) << "GraphConstraintUpdateFilter::addNode is skipped because a constraint does not hold for GeometricNode.";
+			return false;
+		}
+		if (!checkConstraint(*it, shapeType, 0, 0, 0, assignedId, attributes)) {
+			LOG(DEBUG) << "GraphConstraintUpdateFilter::addNode is skipped because a constraint does not hold for Shape type " << shapeType << ".";
 			return false;
 		}
 	}
 
 	/* Memorize last invocation */
+	lastSendType[shapeType] = wm->now();
 	lastSendType[GraphConstraint::GeometricNode] = wm->now();
 	lastSendType[GraphConstraint::Atom] = wm->now();
 
-	switch (shape->getShapeType()) {
-		case Shape::Sphere:
-			lastSendType[GraphConstraint::Sphere] = wm->now();
-			break;
-		case Shape::Cylinder:
-			lastSendType[GraphConstraint::Cylinder] = wm->now();
-			break;
-		case Shape::Box:
-			lastSendType[GraphConstraint::Box] = wm->now();
-			break;
-		case Shape::Mesh:
-			lastSendType[GraphConstraint::Mesh] = wm->now();
-			break;
-		case Shape::PointCloud:
-			lastSendType[GraphConstraint::PointCloud] = wm->now();
-			break;
 
-		default:
-			break;
-	}
 
 	/* Inform related observer(s) */
 	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
