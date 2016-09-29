@@ -450,6 +450,9 @@ bool GraphConstraintUpdateFilter::checkConstraint(GraphConstraint constraint,
 					} else if( (constraint.qualifier == GraphConstraint::NO) && (constraint.type == GraphConstraint::Atom) ) {
 						LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint creation is false because no types " << GraphConstraint::Atom << " are allowed";
 						return false;
+					} else if( (constraint.qualifier == GraphConstraint::ONLY) && (constraint.type == GraphConstraint::Atom) ) {
+						LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint creation is true because all types, even " << type << " are allowed";
+						return true;
 					} else if( (constraint.qualifier == GraphConstraint::ONLY) && (constraint.type != type) ) {
 						LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint creation is false because only types " << type << " are allowed";
 						return false;
