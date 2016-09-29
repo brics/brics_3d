@@ -72,7 +72,7 @@ void HDF5Test::setUp() {
 
 	doRun = false;
 //	wm = new brics_3d::WorldModel();
-	brics_3d::Logger::setMinLoglevel(brics_3d::Logger::LOGDEBUG);
+	brics_3d::Logger::setMinLoglevel(brics_3d::Logger::WARNING);
 }
 
 void HDF5Test::tearDown() {

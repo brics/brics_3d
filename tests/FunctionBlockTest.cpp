@@ -17,6 +17,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( FunctionBlockTest );
 
 void FunctionBlockTest::setUp() {
 
+	brics_3d::Logger::setMinLoglevel(brics_3d::Logger::LOGDEBUG);
 	wm = new brics_3d::WorldModel();
 
 //#ifdef BRICS_MICROBLX_ENABLE
@@ -30,14 +31,16 @@ void FunctionBlockTest::setUp() {
 		string functionBlocksModulesPath(getenv("FBX_MODULES"));
 		blockRepositoryPath = functionBlocksModulesPath + "/lib/";
 	} else {
-		blockRepositoryPath = "/opt/src/sandbox/brics_3d_function_blocks/lib/";
+		blockRepositoryPath = "UNDEFINED"; //"/opt/src/sandbox/brics_3d_function_blocks/lib/";
 	}
+
+	LOG(INFO) << "FunctionBlockTest::setUp:: using blockRepositoryPath " << blockRepositoryPath;
 //#else
 //	blockRepositoryPath = "./lib";
 //#endif /* BRICS_MICROBLX_ENABLE */
 
 
-	brics_3d::Logger::setMinLoglevel(brics_3d::Logger::LOGDEBUG);
+
 }
 
 void FunctionBlockTest::tearDown() {
@@ -47,7 +50,7 @@ void FunctionBlockTest::tearDown() {
 
 void FunctionBlockTest::testFunctionBlockLoader() {
 #ifndef BRICS_MICROBLX_ENABLE
-	string blockRepositoryPath = "./lib";
+	string blockRepositoryPath = "../lib";
 #endif
 	CPPUNIT_ASSERT(!wm->loadFunctionBlock("wrongFileName"));
 	CPPUNIT_ASSERT(wm->loadFunctionBlock(functionBlockFile, blockRepositoryPath));
@@ -55,10 +58,9 @@ void FunctionBlockTest::testFunctionBlockLoader() {
 
 void FunctionBlockTest::testFunctionBlockExecution() {
 #ifndef BRICS_MICROBLX_ENABLE
-	string blockRepositoryPath = "./lib";
+	string blockRepositoryPath = "../lib";
 #endif
 	CPPUNIT_ASSERT(wm->loadFunctionBlock(functionBlockFile, blockRepositoryPath));
-
 	vector<brics_3d::rsg::Id> input;
 	input.push_back(wm->getRootNodeId()); // input hook
 	input.push_back(wm->getRootNodeId()); // output hook
@@ -70,6 +72,10 @@ void FunctionBlockTest::testFunctionBlockExecution() {
 }
 
 void FunctionBlockTest::testExternalFunctionBlockExecution() {
+	if (blockRepositoryPath.compare("UNDEFINED") == 0) { // no external repository, so skip test
+		return;
+	}
+
 	brics_3d::Logger::setMinLoglevel(brics_3d::Logger::LOGDEBUG);
 	string blockName = "roifilter";//"testblock";
 	string blockPath = blockRepositoryPath;

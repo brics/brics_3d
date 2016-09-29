@@ -74,7 +74,7 @@ private:
 void JSONTest::setUp() {
 
 	doRun = false;
-	brics_3d::Logger::setMinLoglevel(brics_3d::Logger::LOGDEBUG);
+	brics_3d::Logger::setMinLoglevel(brics_3d::Logger::INFO);
 
 	if(getenv("FBX_MODULES") != 0) {
 		string functionBlocksModulesPath(getenv("FBX_MODULES"));
