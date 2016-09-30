@@ -527,10 +527,10 @@ bool GraphConstraintUpdateFilter::checkConstraint(GraphConstraint constraint,
 					} else if (constraint.qualifier == GraphConstraint::NO) {
 
 						if (attributeListContainsAttribute(attributes, Attribute(query, "*"))) {
-							LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is true because attributes contain (no) (" << constraint.context << ", *)";
+							LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is false because attributes contain (no) (" << constraint.context << ", *)";
 							return false;
 						} else {
-							LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is false because attributes do not contain (no) (" << constraint.context << ", *)";
+							LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is true because attributes do not contain (no) (" << constraint.context << ", *)";
 							return true;
 						}
 
@@ -572,6 +572,7 @@ bool GraphConstraintUpdateFilter::checkConstraint(GraphConstraint constraint,
 				case GraphConstraint::UNDEFINED_NODE_CONSTRAINT:
 
 					LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is false because the nodeConstraint is undefined. Do you actually mean NONE instead?";
+					break;
 
 				default:
 

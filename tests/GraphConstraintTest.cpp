@@ -432,6 +432,23 @@ void GraphConstraintTest::testSemanticContextConstraints() {
 	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addParentCounter);
 	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.removeParentCounter);
 
+	CPPUNIT_ASSERT(c1.parse("send no Transforms from context tf"));
+	filter.constraints.clear();
+	filter.constraints.push_back(c1);
+	CPPUNIT_ASSERT(runAddAllSceneGraphPrimitives(wm));
+
+	CPPUNIT_ASSERT_EQUAL(9, wmNodeCounter.addNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addRemoteRootNodeCounter); // never blocked
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addConnectionCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.removeParentCounter);
+
 }
 
 bool GraphConstraintTest::runAddAllSceneGraphPrimitives(brics_3d::WorldModel* wm) {
@@ -458,6 +475,7 @@ bool GraphConstraintTest::runAddAllSceneGraphPrimitives(brics_3d::WorldModel* wm
 	                                                             0,1,0,
 	                                                             0,0,1,
 	                                                             1,2,3)); 						// Translation coefficients
+
 	CPPUNIT_ASSERT(wm->scene.addTransformNode(wm->getRootNodeId(), tf1Id, attributes, transform123, t1));
 
 	Id utfId;
