@@ -398,6 +398,40 @@ void GraphConstraintTest::testSemanticContextConstraints() {
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addParentCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.removeParentCounter);
 
+	CPPUNIT_ASSERT(c1.parse("send no Atoms from context osm"));
+	filter.constraints.clear();
+	filter.constraints.push_back(c1);
+	CPPUNIT_ASSERT(runAddAllSceneGraphPrimitives(wm));
+
+	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.addNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addRemoteRootNodeCounter); // never blocked
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addConnectionCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.removeParentCounter);
+
+	CPPUNIT_ASSERT(c1.parse("send only Atoms from context osm"));
+	filter.constraints.clear();
+	filter.constraints.push_back(c1);
+	CPPUNIT_ASSERT(runAddAllSceneGraphPrimitives(wm));
+
+	CPPUNIT_ASSERT_EQUAL(6, wmNodeCounter.addNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addRemoteRootNodeCounter); // never blocked
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addConnectionCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.removeParentCounter);
+
 }
 
 bool GraphConstraintTest::runAddAllSceneGraphPrimitives(brics_3d::WorldModel* wm) {

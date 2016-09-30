@@ -429,6 +429,7 @@ bool GraphConstraintUpdateFilter::checkConstraint(GraphConstraint constraint,
 	HomogeneousMatrix44::IHomogeneousMatrix44Ptr tf;
 	SubGraphChecker subGraph(assignedId);
 	bool isContainedIn = false;
+	string query = "*";
 
 	switch (mode) {
 		case SENDER:
@@ -512,10 +513,10 @@ bool GraphConstraintUpdateFilter::checkConstraint(GraphConstraint constraint,
 
 				case GraphConstraint::CONTEXT:
 
-
+					query =  "^"  + constraint.context + ":.*"; // wildcard = ^.*
 					if(constraint.qualifier == GraphConstraint::ONLY) {
 
-						if (attributeListContainsAttribute(attributes, Attribute(constraint.context, "*"))) {
+						if (attributeListContainsAttribute(attributes, Attribute(query, "*"))) {
 							LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is true because attributes contain (only) (" << constraint.context << ", *)";
 							return true;
 						} else {
@@ -525,7 +526,7 @@ bool GraphConstraintUpdateFilter::checkConstraint(GraphConstraint constraint,
 
 					} else if (constraint.qualifier == GraphConstraint::NO) {
 
-						if (attributeListContainsAttribute(attributes, Attribute(constraint.context, "*"))) {
+						if (attributeListContainsAttribute(attributes, Attribute(query, "*"))) {
 							LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is true because attributes contain (no) (" << constraint.context << ", *)";
 							return false;
 						} else {
