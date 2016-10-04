@@ -316,22 +316,12 @@ bool GraphConstraintUpdateFilter::setUncertainTransform(Id id,
 }
 
 bool GraphConstraintUpdateFilter::deleteNode(Id id) {
+
+	/*
+	 *  This cannot be constrained, because we cannot make queries on it: it does not exist any more...
+	 */
+
 	/* Call _all_ observers  */
-
-	vector<Attribute> attributes;
-	if(!wm->scene.getNodeAttributes(id, attributes)) {
-		LOG(WARNING) << "GraphConstraintUpdateFilter:deleteNode cannot query existing attributes for id " << id << " Skipping update.";
-//		return false;
-	}
-
-	std::vector<GraphConstraint>::iterator it;
-	for (it = constraints.begin(); it != constraints.end(); ++it) {
-		if (!checkConstraint(*it, GraphConstraint::Atom, 0, 0, 0, id, attributes)) { // assignedID?
-			LOG(DEBUG) << "GraphConstraintUpdateFilter::addNode is skipped because a constraint does not hold.";
-			return false;
-		}
-	}
-
 	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
 	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
 		(*observerIterator)->deleteNode(id);
@@ -638,7 +628,8 @@ bool GraphConstraintUpdateFilter::checkComparision(GraphConstraint constraint, G
 		}
 
 	// ONLY
-	} else if((constraint.qualifier == GraphConstraint::ONLY) && (constraint.type == type)) { // also Atoms?
+	} else if( ((constraint.qualifier == GraphConstraint::ONLY) && (constraint.type == type)) ||
+			    ((constraint.qualifier == GraphConstraint::ONLY) && (constraint.type == GraphConstraint::Atom)) ) {
 
 		switch (constraint.comparision) {
 		case GraphConstraint::EQ:
