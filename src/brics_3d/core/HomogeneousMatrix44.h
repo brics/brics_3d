@@ -128,7 +128,7 @@ public:
 //	static void matrixToXyzRollPitchYawPaul(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr matrix, double& x, double& y, double& z, double& roll, double& pitch, double& yaw);
 
 	// Calculates distance from origin to point
-	static void matrixToDistance(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr matrix, double distance);
+	static void matrixToDistance(IHomogeneousMatrix44::IHomogeneousMatrix44Ptr matrix, double& distance);
 
 private:
 

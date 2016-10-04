@@ -532,6 +532,37 @@ void HomogeneousMatrixTest::testMatrixEntries() {
 	CPPUNIT_ASSERT(14 == z);
 }
 
+void HomogeneousMatrixTest::testDistance() {
+	double distance = -1.0;
+
+	brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform000(new brics_3d::HomogeneousMatrix44(1,0,0,  	// Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             0,0,0)); 						// Translation coefficients
+	HomogeneousMatrix44::matrixToDistance(transform000, distance);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, distance, maxTolerance);
+
+
+	brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform111(new brics_3d::HomogeneousMatrix44(1,0,0,  	// Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             1,1,1)); 						// Translation coefficients
+
+	HomogeneousMatrix44::matrixToDistance(transform111, distance);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(1.732050808, distance, maxTolerance);
+
+	brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform222(new brics_3d::HomogeneousMatrix44(1,0,0,  	// Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             2,2,2)); 						// Translation coefficients
+
+	HomogeneousMatrix44::matrixToDistance(transform222, distance);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(3.4641, distance, maxTolerance);
+}
+
 } // namespace unitTests
 
 /* EOF */

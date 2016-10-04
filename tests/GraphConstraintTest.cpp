@@ -561,6 +561,31 @@ void GraphConstraintTest::testDistanceConstraints() {
 	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.deleteNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addParentCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.removeParentCounter);
+
+	/*
+	 * NOTE:
+	 *  * transform123 => dist = ~3.7
+	 *  * transform234 => dist = ~5.7
+	 *  * transform456 => dist = ~8.7
+	 */
+
+	CPPUNIT_ASSERT(c1.parse("send only Atoms with dist < 5 m from me"));
+	filter.constraints.clear();
+	filter.constraints.push_back(c1);
+	CPPUNIT_ASSERT(runAddAllSceneGraphPrimitives(wm));
+
+	CPPUNIT_ASSERT_EQUAL(6, wmNodeCounter.addNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addRemoteRootNodeCounter); // never blocked
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addConnectionCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.removeParentCounter);
+
 }
 
 bool GraphConstraintTest::runAddAllSceneGraphPrimitives(brics_3d::WorldModel* wm) {
@@ -588,11 +613,16 @@ bool GraphConstraintTest::runAddAllSceneGraphPrimitives(brics_3d::WorldModel* wm
 	                                                             0,0,1,
 	                                                             1,2,3)); 						// Translation coefficients
 
+	brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform234(new brics_3d::HomogeneousMatrix44(1,0,0,  	// Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             2,3,4)); 						// Translation coefficients
+
 	CPPUNIT_ASSERT(wm->scene.addTransformNode(wm->getRootNodeId(), tf1Id, attributes, transform123, t1));
 
 	Id utfId;
 	ITransformUncertainty::ITransformUncertaintyPtr uncertainty123(new CovarianceMatrix66(3, 0.001, 0.001, 0.0000, 0.000000, 0.00000));
-	CPPUNIT_ASSERT(wm->scene.addUncertainTransformNode(wm->getRootNodeId(), utfId, dummyAttributes, transform123, uncertainty123, wm->now()));
+	CPPUNIT_ASSERT(wm->scene.addUncertainTransformNode(wm->getRootNodeId(), utfId, dummyAttributes, transform234, uncertainty123, wm->now()));
 
 	rsg::Box::BoxPtr box( new rsg::Box(1,2,3));
 	rsg::Id boxId;
@@ -611,7 +641,7 @@ bool GraphConstraintTest::runAddAllSceneGraphPrimitives(brics_3d::WorldModel* wm
 
 	Id connId;
 	vector<Attribute> connectionAttributes;
-	connectionAttributes.push_back(Attribute("rsg::Type","has_geometry"));
+	connectionAttributes.push_back(Attribute("rsg:type","has_geometry"));
 	vector<Id> sourceIs;
 	sourceIs.push_back(utfId);
 	vector<Id> targetIs;
