@@ -451,6 +451,60 @@ void GraphConstraintTest::testSemanticContextConstraints() {
 	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addParentCounter);
 	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.removeParentCounter);
 
+	CPPUNIT_ASSERT(c1.parse("send no Nodes from context gis"));
+	filter.constraints.clear();
+	filter.constraints.push_back(c1);
+	CPPUNIT_ASSERT(runAddAllSceneGraphPrimitives(wm));
+
+	CPPUNIT_ASSERT_EQUAL(11, wmNodeCounter.addNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addTransformCounter); // != uncertain transform
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addUncertainTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.addRemoteRootNodeCounter); // never blocked
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addConnectionCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(6, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.removeParentCounter);
+
+	CPPUNIT_ASSERT(c1.parse("send only Nodes from context gis"));
+	filter.constraints.clear();
+	filter.constraints.push_back(c1);
+	CPPUNIT_ASSERT(runAddAllSceneGraphPrimitives(wm));
+
+	CPPUNIT_ASSERT_EQUAL(12, wmNodeCounter.addNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addTransformCounter); // != uncertain transform
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addUncertainTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(6, wmNodeCounter.addRemoteRootNodeCounter); // never blocked
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addConnectionCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(6, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.removeParentCounter);
+
+	CPPUNIT_ASSERT(c1.parse("send no Nodes from context "));
+	filter.constraints.clear();
+	filter.constraints.push_back(c1);
+	CPPUNIT_ASSERT(runAddAllSceneGraphPrimitives(wm));
+
+	CPPUNIT_ASSERT_EQUAL(15, wmNodeCounter.addNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addTransformCounter); // != uncertain transform
+	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.addUncertainTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(7, wmNodeCounter.addRemoteRootNodeCounter); // never blocked
+	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.addConnectionCounter);
+	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(8, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.removeParentCounter);
+
 }
 
 bool GraphConstraintTest::runAddAllSceneGraphPrimitives(brics_3d::WorldModel* wm) {
