@@ -423,6 +423,7 @@ void GraphConstraintTest::testSemanticContextConstraints() {
 	CPPUNIT_ASSERT_EQUAL(6, wmNodeCounter.addNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addGroupCounter);
 	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addUncertainTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addGeometricNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addRemoteRootNodeCounter); // never blocked
 	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addConnectionCounter);
@@ -439,7 +440,8 @@ void GraphConstraintTest::testSemanticContextConstraints() {
 
 	CPPUNIT_ASSERT_EQUAL(9, wmNodeCounter.addNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addGroupCounter);
-	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addTransformCounter); // != uncertain transform
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addUncertainTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addGeometricNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addRemoteRootNodeCounter); // never blocked
 	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addConnectionCounter);
