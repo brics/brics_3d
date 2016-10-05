@@ -247,6 +247,7 @@ bool GraphConstraint::parse(std::string constraintModel) {
 		// in
 		++it;
 		if(it == tokens.end()){ LOG(ERROR) << "GraphConstraint has no in token."; return false;}
+		if(it->compare("in") != 0) { LOG(ERROR) << "GraphConstraint has " << *it << " instead of in token."; return false;}
 
 		// ([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12})
 		++it;
