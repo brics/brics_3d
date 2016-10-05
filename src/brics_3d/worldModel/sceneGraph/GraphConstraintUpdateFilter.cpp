@@ -210,7 +210,7 @@ bool GraphConstraintUpdateFilter::addConnection(Id parentId, Id& assignedId, vec
 	std::vector<GraphConstraint>::iterator it;
 	for (it = constraints.begin(); it != constraints.end(); ++it) {
 		if (!checkConstraint(*it, GraphConstraint::Connection, 0, 0, 0, assignedId, attributes)) {
-			LOG(DEBUG) << "GraphConstraintUpdateFilter::addNode is skipped because a constraint does not hold.";
+			LOG(DEBUG) << "GraphConstraintUpdateFilter::addConnection is skipped because a constraint does not hold.";
 			return false;
 		}
 	}
@@ -530,27 +530,34 @@ bool GraphConstraintUpdateFilter::checkConstraint(GraphConstraint constraint,
 
 				case GraphConstraint::CONTAINMENT:
 
-					subGraph.reset(assignedId);
-					wm->scene.executeGraphTraverser(&subGraph, constraint.node);
+					/* get reference node */
+					if(constraint.isMe) {
+						referenceNode = wm->getRootNodeId();
+					} else {
+						referenceNode = constraint.node;
+					}
+
+					subGraph.reset(referenceNode); // NOTE: upwards traversal
+					wm->scene.executeGraphTraverser(&subGraph, assignedId);
 					isContainedIn = subGraph.nodeIsInSubGraph();
 
 					if(constraint.qualifier == GraphConstraint::ONLY) {
 
 						if (isContainedIn) {
-							LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is true because node is contained in " << constraint.node;
+							LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is true because node is contained in " << referenceNode;
 							return true;
 						} else {
-							LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is false because node is not contained in " << constraint.node;
+							LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is false because node is not contained in " << referenceNode;
 							return false;
 						}
 
 					} else if (constraint.qualifier == GraphConstraint::NO) {
 
 						if (isContainedIn) {
-							LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is false because node is contained in " << constraint.node << " although it should not.";
+							LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is false because node is contained in " << referenceNode << " although it should not.";
 							return false;
 						} else {
-							LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is false because node is not contained in " << constraint.node << " as it should.";
+							LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is true because node is not contained in " << referenceNode << " as it should.";
 							return true;
 						}
 
