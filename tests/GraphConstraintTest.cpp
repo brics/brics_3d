@@ -581,10 +581,65 @@ void GraphConstraintTest::testDistanceConstraints() {
 	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addRemoteRootNodeCounter); // never blocked
 	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addConnectionCounter);
 	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.setNodeAttributesCounter);
+	LOG(INFO) << "testDistanceConstraints wmNodeCounter.setTransformCounter = " << wmNodeCounter.setTransformCounter;
 	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.setTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.deleteNodeCounter);
-	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.removeParentCounter);
+
+	CPPUNIT_ASSERT(c1.parse("send only Atoms with dist < 6 m from me"));
+	filter.constraints.clear();
+	filter.constraints.push_back(c1);
+	CPPUNIT_ASSERT(runAddAllSceneGraphPrimitives(wm));
+
+	CPPUNIT_ASSERT_EQUAL(9, wmNodeCounter.addNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addUncertainTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addRemoteRootNodeCounter); // never blocked
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addConnectionCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addParentCounter); // NOTE: this is debatable; here the parent child relation is not send because it would have change the pose too far..
 	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.removeParentCounter);
+
+	CPPUNIT_ASSERT(c1.parse("send no Transforms with dist > 7 m from me"));
+	filter.constraints.clear();
+	filter.constraints.push_back(c1);
+	CPPUNIT_ASSERT(runAddAllSceneGraphPrimitives(wm));
+
+	CPPUNIT_ASSERT_EQUAL(12, wmNodeCounter.addNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addUncertainTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.addRemoteRootNodeCounter); // never blocked
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addConnectionCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addParentCounter); // NOTE: this is debatable; here the parent child relation is not send because it would have change the pose too far..
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.removeParentCounter);
+
+	CPPUNIT_ASSERT(c1.parse("send no Transforms with dist > 5 m from me"));
+	filter.constraints.clear();
+	filter.constraints.push_back(c1);
+	CPPUNIT_ASSERT(runAddAllSceneGraphPrimitives(wm));
+
+	CPPUNIT_ASSERT_EQUAL(15, wmNodeCounter.addNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addUncertainTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(6, wmNodeCounter.addRemoteRootNodeCounter); // never blocked
+	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.addConnectionCounter);
+	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(6, wmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addParentCounter); // NOTE: this is debatable; here the parent child relation is not send because it would have change the pose too far..
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.removeParentCounter);
 
 }
 
@@ -654,9 +709,9 @@ bool GraphConstraintTest::runAddAllSceneGraphPrimitives(brics_3d::WorldModel* wm
 	                                                             0,1,0,
 	                                                             0,0,1,
 	                                                             4,5,6));
-	TimeStamp t2 = t1 + Duration(0.5, Units::Second);
+	TimeStamp t2 = wm->now();//t1 + Duration(0.5, Units::Second);
 	CPPUNIT_ASSERT(wm->scene.setTransform(tf1Id, transform456, t2));
-	TimeStamp t3 = t2 + Duration(1.0, Units::Second);
+	TimeStamp t3 = wm->now();//t2 + Duration(1.0, Units::Second);
 	CPPUNIT_ASSERT(wm->scene.setTransform(tf1Id, transform456, t3));
 
 	i++;

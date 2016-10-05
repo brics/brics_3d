@@ -90,7 +90,7 @@ bool GraphConstraintUpdateFilter::addTransformNode(Id parentId, Id& assignedId,
 	std::vector<GraphConstraint>::iterator it;
 	for (it = constraints.begin(); it != constraints.end(); ++it) {
 		if (!checkConstraint(*it, GraphConstraint::Transform, 0, 0, 0, assignedId, attributes)) {
-			LOG(DEBUG) << "GraphConstraintUpdateFilter::addNode is skipped because a constraint does not hold.";
+			LOG(DEBUG) << "GraphConstraintUpdateFilter::addTransformNode is skipped because a constraint does not hold.";
 			return false;
 		}
 	}
@@ -118,7 +118,7 @@ bool GraphConstraintUpdateFilter::addUncertainTransformNode(Id parentId,
 	std::vector<GraphConstraint>::iterator it;
 	for (it = constraints.begin(); it != constraints.end(); ++it) {
 		if (!checkConstraint(*it, GraphConstraint::Transform, 0, 0, 0, assignedId, attributes)) {
-			LOG(DEBUG) << "GraphConstraintUpdateFilter::addNode is skipped because a constraint does not hold.";
+			LOG(DEBUG) << "GraphConstraintUpdateFilter::addUncertainTransformNode is skipped because a constraint does not hold.";
 			return false;
 		}
 	}
@@ -267,7 +267,7 @@ bool GraphConstraintUpdateFilter::setTransform(Id id,
 	std::vector<GraphConstraint>::iterator it;
 	for (it = constraints.begin(); it != constraints.end(); ++it) {
 		if (!checkConstraint(*it, GraphConstraint::Transform, 0, 0, 0, id, attributes)) { // assignedID?
-			LOG(DEBUG) << "GraphConstraintUpdateFilter::addNode is skipped because a constraint does not hold.";
+			LOG(DEBUG) << "GraphConstraintUpdateFilter::setTransform is skipped because a constraint does not hold.";
 			return false;
 		}
 	}
@@ -298,7 +298,7 @@ bool GraphConstraintUpdateFilter::setUncertainTransform(Id id,
 	std::vector<GraphConstraint>::iterator it;
 	for (it = constraints.begin(); it != constraints.end(); ++it) {
 		if (!checkConstraint(*it, GraphConstraint::Transform, 0, 0, 0, id, attributes)) { // assignedID?
-			LOG(DEBUG) << "GraphConstraintUpdateFilter::addNode is skipped because a constraint does not hold.";
+			LOG(DEBUG) << "GraphConstraintUpdateFilter::setUncertainTransform is skipped because a constraint does not hold.";
 			return false;
 		}
 	}
@@ -340,7 +340,7 @@ bool GraphConstraintUpdateFilter::addParent(Id id, Id parentId) {
 	std::vector<GraphConstraint>::iterator it;
 	for (it = constraints.begin(); it != constraints.end(); ++it) {
 		if (!checkConstraint(*it, GraphConstraint::Atom, 0, 0, 0, id, attributes)) { // assignedID?
-			LOG(DEBUG) << "GraphConstraintUpdateFilter::addNode is skipped because a constraint does not hold.";
+			LOG(DEBUG) << "GraphConstraintUpdateFilter::addParent is skipped because a constraint does not hold.";
 			return false;
 		}
 	}
@@ -364,7 +364,7 @@ bool GraphConstraintUpdateFilter::removeParent(Id id, Id parentId) {
 	std::vector<GraphConstraint>::iterator it;
 	for (it = constraints.begin(); it != constraints.end(); ++it) {
 		if (!checkConstraint(*it, GraphConstraint::Atom, 0, 0, 0, id, attributes)) { // assignedID?
-			LOG(DEBUG) << "GraphConstraintUpdateFilter::addNode is skipped because a constraint does not hold.";
+			LOG(DEBUG) << "GraphConstraintUpdateFilter::removeParent is skipped because a constraint does not hold.";
 			return false;
 		}
 	}
@@ -598,22 +598,38 @@ bool GraphConstraintUpdateFilter::checkComparision(GraphConstraint constraint, G
 				LOG(DEBUG) << "GraphConstraintUpdateFilter:checkComparision is false because no types "
 						<< constraint.type << " with " << tag <<" " << value << " == " << allowedValue <<" are allowed";
 				return false;
-			}
-			break;
-		case GraphConstraint::LT:
-			if(value > allowedValue) {
-				LOG(DEBUG) << "GraphConstraintUpdateFilter:checkComparision is false because no types "
-						<< constraint.type << " with " << tag <<" " << value << " > " << allowedValue <<" are allowed";
-				return false;
+			} else {
+				LOG(DEBUG) << "GraphConstraintUpdateFilter:checkComparision is true because types "
+						<< constraint.type << " with " << tag <<" " << value << " == " << allowedValue <<" are allowed";
+				return true;
 			}
 
 			break;
-		case GraphConstraint::GT:
+
+		case GraphConstraint::LT:
 			if(value < allowedValue) {
 				LOG(DEBUG) << "GraphConstraintUpdateFilter:checkComparision is false because no types "
 						<< constraint.type << " with " << tag <<" " << value << " < " << allowedValue <<" are allowed";
 				return false;
+			} else {
+				LOG(DEBUG) << "GraphConstraintUpdateFilter:checkComparision is true because types "
+						<< constraint.type << " with " << tag <<" " << value << " > " << allowedValue <<" are allowed";
+				return true;
 			}
+
+			break;
+
+		case GraphConstraint::GT:
+			if(value > allowedValue) {
+				LOG(DEBUG) << "GraphConstraintUpdateFilter:checkComparision is false because no types "
+						<< constraint.type << " with " << tag <<" " << value << " > " << allowedValue <<" are allowed";
+				return false;
+			} else {
+				LOG(DEBUG) << "GraphConstraintUpdateFilter:checkComparision is true because types "
+						<< constraint.type << " with " << tag <<" " << value << " < " << allowedValue <<" are allowed";
+				return true;
+			}
+
 			break;
 
 		case GraphConstraint::UNDEFINED_OPERATOR:
@@ -663,13 +679,21 @@ bool GraphConstraintUpdateFilter::checkComparision(GraphConstraint constraint, G
 
 			LOG(DEBUG) << "GraphConstraintUpdateFilter:checkComparision is false because types "
 			<< constraint.type << " with " << tag <<" " << value << " of " << allowedValue <<" not allowed";
-			return true;
+			return false;
 
 		}
+
+
+
+	} else if( constraint.qualifier == GraphConstraint::NO) { // NO and not the above cased
+		LOG(DEBUG) << "GraphConstraintUpdateFilter:checkComparision is true because this type "
+				<< type   << " is not considered in a this (NO) constraint "
+				<< constraint.type << " with " << tag <<" " << value << " <|=|> " << allowedValue;
+		return true;
 	}
 
 	LOG(ERROR) << "GraphConstraintUpdateFilter:checkComparision is false because no other rule applied to type "
-			<< constraint.type << " with " << tag <<" " << value << " of " << allowedValue;
+			<< constraint.type << " with " << tag <<" " << value << " <|=|> " << allowedValue;
 	return false;
 }
 
