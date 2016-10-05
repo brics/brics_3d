@@ -64,10 +64,15 @@ void GraphConstraintTest::testParser() {
 
 	GraphConstraint c2;
 	CPPUNIT_ASSERT(c2.parse(policy2));
+	CPPUNIT_ASSERT(c2.isMe);
 	CPPUNIT_ASSERT(!c2.parse(policy2_invalid));
+	CPPUNIT_ASSERT(!c2.isMe);
+	CPPUNIT_ASSERT(c2.parse(policy3));
+	CPPUNIT_ASSERT(!c2.isMe);
 
 	GraphConstraint c3;
 	CPPUNIT_ASSERT(c3.parse(policy3));
+	CPPUNIT_ASSERT(!c3.isMe);
 
 	GraphConstraint c4;
 	CPPUNIT_ASSERT(c4.parse(policy4));
@@ -675,6 +680,34 @@ void GraphConstraintTest::testDistanceConstraints() {
 	CPPUNIT_ASSERT_EQUAL(6, wmNodeCounter.setTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(8, wmNodeCounter.deleteNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.addParentCounter); // NOTE: this is debatable; here the parent child relation is not send because it would have change the pose too far..
+	CPPUNIT_ASSERT_EQUAL(6, wmNodeCounter.removeParentCounter);
+
+	/* use another UUID */
+	vector<Attribute> attributes;
+	attributes.clear();
+	attributes.push_back(rsg::Attribute("tf:name", "tf_1"));
+	vector<Id> results;
+	CPPUNIT_ASSERT(wm->scene.getNodes(attributes, results));
+	CPPUNIT_ASSERT(results.size() > 0);
+	Id nodeId = results[0];
+	stringstream c2("");
+	c2 << "send no Atoms with dist > 1 m from " << nodeId;
+	CPPUNIT_ASSERT(c1.parse(c2.str()));
+	filter.constraints.clear();
+	filter.constraints.push_back(c1);
+	CPPUNIT_ASSERT(runAddAllSceneGraphPrimitives(wm));
+
+	CPPUNIT_ASSERT_EQUAL(21, wmNodeCounter.addNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(7, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(7, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.addUncertainTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(6, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(9, wmNodeCounter.addRemoteRootNodeCounter); // never blocked
+	CPPUNIT_ASSERT_EQUAL(7, wmNodeCounter.addConnectionCounter);
+	CPPUNIT_ASSERT_EQUAL(7, wmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(8, wmNodeCounter.setTransformCounter); // THIS is the node used for defining the UUID
+	CPPUNIT_ASSERT_EQUAL(9, wmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.addParentCounter);
 	CPPUNIT_ASSERT_EQUAL(6, wmNodeCounter.removeParentCounter);
 
 }

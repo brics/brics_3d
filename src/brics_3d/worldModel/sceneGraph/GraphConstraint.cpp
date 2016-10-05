@@ -27,16 +27,7 @@ namespace rsg {
 
 GraphConstraint::GraphConstraint() {
 
-	action = UNDEFINED_ACTION;
-	qualifier = UNDEFINED_QUALIFIER;
-	type = UNDEFINED_TYPE;
-	comparision = UNDEFINED_OPERATOR;
-	value = 0;
-	freqUnit = Units::Hertz;
-	distUnit = Units::Meter;
-	node = 0;
-	isMe = false;
-	context = "";
+	setDefaultValues();
 
 }
 
@@ -45,6 +36,7 @@ GraphConstraint::~GraphConstraint() {
 }
 
 bool GraphConstraint::parse(std::string constraintModel) {
+	setDefaultValues();
 
 	/*
 	 * Check if model is valid
@@ -279,8 +271,23 @@ bool GraphConstraint::validate() {
 			&& (type != UNDEFINED_TYPE);
 }
 
+void GraphConstraint::setDefaultValues() {
+
+	action = UNDEFINED_ACTION;
+	qualifier = UNDEFINED_QUALIFIER;
+	type = UNDEFINED_TYPE;
+	comparision = UNDEFINED_OPERATOR;
+	value = 0;
+	freqUnit = Units::Hertz;
+	distUnit = Units::Meter;
+	node = 0;
+	isMe = false;
+	context = "";
+
+}
 
 } /* namespace rsg */
 } /* namespace brics_3d */
+
 
 /* EOF */

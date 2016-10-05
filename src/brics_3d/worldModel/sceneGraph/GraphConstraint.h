@@ -131,6 +131,9 @@ public:
 	 * @return True if it is valid.
 	 */
 	bool validate();
+
+private:
+	void setDefaultValues();
 };
 
 } /* namespace rsg */
