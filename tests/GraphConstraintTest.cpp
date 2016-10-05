@@ -641,6 +641,42 @@ void GraphConstraintTest::testDistanceConstraints() {
 	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addParentCounter); // NOTE: this is debatable; here the parent child relation is not send because it would have change the pose too far..
 	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.removeParentCounter);
 
+	CPPUNIT_ASSERT(c1.parse("send no Boxes with dist < 5 m from me"));
+	filter.constraints.clear();
+	filter.constraints.push_back(c1);
+	CPPUNIT_ASSERT(runAddAllSceneGraphPrimitives(wm));
+
+	CPPUNIT_ASSERT_EQUAL(18, wmNodeCounter.addNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(6, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(6, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addUncertainTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(7, wmNodeCounter.addRemoteRootNodeCounter); // never blocked
+	CPPUNIT_ASSERT_EQUAL(6, wmNodeCounter.addConnectionCounter);
+	CPPUNIT_ASSERT_EQUAL(6, wmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(7, wmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addParentCounter); // NOTE: this is debatable; here the parent child relation is not send because it would have change the pose too far..
+	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.removeParentCounter);
+
+	CPPUNIT_ASSERT(c1.parse("send no Meshes with dist > 5.5 m from me"));
+	filter.constraints.clear();
+	filter.constraints.push_back(c1);
+	CPPUNIT_ASSERT(runAddAllSceneGraphPrimitives(wm));
+
+	CPPUNIT_ASSERT_EQUAL(21, wmNodeCounter.addNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(7, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(7, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.addUncertainTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(6, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(8, wmNodeCounter.addRemoteRootNodeCounter); // never blocked
+	CPPUNIT_ASSERT_EQUAL(7, wmNodeCounter.addConnectionCounter);
+	CPPUNIT_ASSERT_EQUAL(7, wmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(6, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(8, wmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.addParentCounter); // NOTE: this is debatable; here the parent child relation is not send because it would have change the pose too far..
+	CPPUNIT_ASSERT_EQUAL(6, wmNodeCounter.removeParentCounter);
+
 }
 
 bool GraphConstraintTest::runAddAllSceneGraphPrimitives(brics_3d::WorldModel* wm) {
