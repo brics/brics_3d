@@ -24,6 +24,8 @@
 #include "brics_3d/worldModel/WorldModel.h"
 #include "brics_3d/worldModel/sceneGraph/Attribute.h"
 #include "brics_3d/worldModel/sceneGraph/GraphConstraint.h"
+#include "brics_3d/worldModel/sceneGraph/LODCalculator.h"
+
 
 namespace brics_3d {
 namespace rsg {
@@ -97,6 +99,9 @@ private:
 
     /// Per type time stamps. Relevant for FREQUENCY constraints.
     TimeStamp lastSendType[GraphConstraint::TYPE_NR_ITEMS];
+
+    /// Get LOD from Shapes in case of LOD constraints
+    LODCalculator lodCalculator;
 };
 
 

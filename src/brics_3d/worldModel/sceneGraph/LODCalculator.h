@@ -1,6 +1,6 @@
 /******************************************************************************
  * BRICS_3D - 3D Perception and Modeling Library
- * Copyright (c) 2015, KU Leuven
+ * Copyright (c) 2016, KU Leuven
  *
  * Author: Sebastian Blumenthal
  *
@@ -27,7 +27,7 @@ namespace brics_3d {
 namespace rsg {
 
 /**
- * @brief Calcultates the LOD of a Shape
+ * @brief Calculates the LOD of a Shape.
  */
 class LODCalculator {
 public:

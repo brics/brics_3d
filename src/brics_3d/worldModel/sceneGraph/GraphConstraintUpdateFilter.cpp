@@ -163,14 +163,16 @@ bool GraphConstraintUpdateFilter::addGeometricNode(Id parentId, Id& assignedId,
 	}
 
 	/* TODO calculate LOD */
+	double lod = -1.0;
+	lodCalculator.calculateLOD(shape, lod);
 
 	std::vector<GraphConstraint>::iterator it;
 	for (it = constraints.begin(); it != constraints.end(); ++it) {
-		if (!checkConstraint(*it, GraphConstraint::GeometricNode, 0, 0, 0, assignedId, attributes)) {
+		if (!checkConstraint(*it, GraphConstraint::GeometricNode, 0, 0, lod, assignedId, attributes)) {
 			LOG(DEBUG) << "GraphConstraintUpdateFilter::addGeometricNode is skipped because a constraint does not hold for GeometricNode.";
 			return false;
 		}
-		if (!checkConstraint(*it, shapeType, 0, 0, 0, assignedId, attributes)) {
+		if (!checkConstraint(*it, shapeType, 0, 0, lod, assignedId, attributes)) {
 			LOG(DEBUG) << "GraphConstraintUpdateFilter::addGeometricNode is skipped because a constraint does not hold for Shape type " << shapeType << ".";
 			return false;
 		}
