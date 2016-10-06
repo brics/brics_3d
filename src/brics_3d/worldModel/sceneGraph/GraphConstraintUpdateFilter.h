@@ -80,6 +80,9 @@ public:
     /// Implements the constraint checking part involving a comparison
     bool checkComparision(GraphConstraint constraint, GraphConstraint::Type type, double value, double allowedValue, string tag);
 
+    /// Implements extraction of constraints from an attribute set.
+    bool getConstraintsFromAttributes(vector<Attribute> attributes, std::vector<GraphConstraint>& constraints);
+
 private:
 
     /// input or Output
@@ -102,6 +105,8 @@ private:
 
     /// Get LOD from Shapes in case of LOD constraints
     LODCalculator lodCalculator;
+
+    const static std::string contraintKey;
 };
 
 

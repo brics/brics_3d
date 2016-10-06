@@ -110,7 +110,11 @@ bool GraphConstraint::parse(std::string constraintModel) {
 
 	/* NodeConstraint; here he have to fork the parsing */
 	++it;
-	if(it == tokens.end()){ LOG(DEBUG) << "GraphConstraint has no nodeConstraint."; return validate();}
+	if(it == tokens.end()) {
+		nodeConstraint = NONE;
+		LOG(DEBUG) << "GraphConstraint has no nodeConstraint.";
+		return validate();
+	}
 	if(it->compare("with") == 0) { // FREQUENCY, DISTANCE or LOD
 
 		++it;

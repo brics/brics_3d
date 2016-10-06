@@ -26,9 +26,18 @@
 namespace brics_3d {
 namespace rsg {
 
+
+const std::string GraphConstraintUpdateFilter::contraintKey = "rsg:agent_policy";
+
 GraphConstraintUpdateFilter::GraphConstraintUpdateFilter(WorldModel* wm, UpdateMode mode) : mode(mode), wm(wm) {
 	this->nameSpaceIdentifier = "unknown_namespace";
 	assert(this->wm != 0);
+
+	/* get initial constraints from root node */
+	vector<Attribute> rootAttributes;
+	wm->scene.getNodeAttributes(wm->getRootNodeId(), rootAttributes);
+	getConstraintsFromAttributes(rootAttributes, this->constraints);
+
 }
 
 GraphConstraintUpdateFilter::~GraphConstraintUpdateFilter() {
@@ -162,7 +171,6 @@ bool GraphConstraintUpdateFilter::addGeometricNode(Id parentId, Id& assignedId,
 			break;
 	}
 
-	/* TODO calculate LOD */
 	double lod = -1.0;
 	lodCalculator.calculateLOD(shape, lod);
 
@@ -232,10 +240,16 @@ bool GraphConstraintUpdateFilter::addConnection(Id parentId, Id& assignedId, vec
 bool GraphConstraintUpdateFilter::setNodeAttributes(Id id,
 		vector<Attribute> newAttributes, TimeStamp timeStamp) {
 
+	/* Check if new constraints are set via Attributes for the root node */
+	if( id == wm->getRootNodeId()) {
+		LOG(DEBUG) << "GraphConstraintUpdateFilter::setNodeAttributes: A change of root node attributes is detected. Updating graph constriants.";
+		getConstraintsFromAttributes(newAttributes, this->constraints);
+	}
+
 	/* NOTE: here we check the _existing_ attributes to be consistent with other update functions. Not the new ones. */
 	vector<Attribute> attributes;
 	if(!wm->scene.getNodeAttributes(id, attributes)) {
-		LOG(ERROR) << "semanticContextUpdateFilter:setNodeAttributes cannot query existing attributes for id " << id << " Skipping update.";
+		LOG(ERROR) << "GraphConstraintUpdateFilter:setNodeAttributes cannot query existing attributes for id " << id << " Skipping update.";
 		return false;
 	}
 
@@ -243,7 +257,7 @@ bool GraphConstraintUpdateFilter::setNodeAttributes(Id id,
 	std::vector<GraphConstraint>::iterator it;
 	for (it = constraints.begin(); it != constraints.end(); ++it) {
 		if (!checkConstraint(*it, GraphConstraint::Atom, 0, 0, 0, id, attributes)) { // assignedID?
-			LOG(DEBUG) << "GraphConstraintUpdateFilter::addNode is skipped because a constraint does not hold.";
+			LOG(DEBUG) << "GraphConstraintUpdateFilter::setNodeAttributes is skipped because a constraint does not hold.";
 			return false;
 		}
 	}
@@ -708,6 +722,32 @@ bool GraphConstraintUpdateFilter::checkComparision(GraphConstraint constraint, G
 	LOG(ERROR) << "GraphConstraintUpdateFilter:checkComparision is false because no other rule applied to type "
 			<< constraint.type << " with " << tag <<" " << value << " <|=|> " << allowedValue;
 	return false;
+}
+
+bool GraphConstraintUpdateFilter::getConstraintsFromAttributes(vector<Attribute> attributes, std::vector<GraphConstraint>& constraints) {
+
+	vector<std::string> constraintModels;
+	if(getValuesFromAttributeList(attributes, contraintKey, constraintModels)) {
+
+		/* At least one found constraint. We do not know,
+		 * if they are valid yet, but we assume the system
+		 * is is supposed to try change its constraint set. */
+		LOG(INFO) << "GraphConstraintUpdateFilter: Resetting graph constraints.";
+		constraints.clear();
+
+		std::vector<string>::iterator it;
+		for (it = constraintModels.begin(); it != constraintModels.end(); ++it) {
+			GraphConstraint c;
+			if(c.parse(*it)) { // only put valid constraints
+				constraints.push_back(c);
+				LOG(INFO) << "GraphConstraintUpdateFilter:\t New graph constraints added: " << *it;
+			} else {
+				LOG(WARNING) << "GraphConstraintUpdateFilter:\t Invalid graph constraint: " << *it << " skipping it.";
+			}
+		}
+	}
+
+	return true;
 }
 
 } /* namespace rsg */

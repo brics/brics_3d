@@ -59,6 +59,7 @@ void GraphConstraintTest::testParser() {
 	string policy7 = "send only PointClouds with lod < 100";
 	string policy7_invalid = "send no Transforms with freq > 1Hz";
 	string policy8_invalid  = "send no Atoms contained with lod > 100";
+	string policy9 = "send no Groups";
 
 	GraphConstraint c1;
 	CPPUNIT_ASSERT(c1.parse(policy1));
@@ -92,6 +93,10 @@ void GraphConstraintTest::testParser() {
 
 	GraphConstraint c8;
 	CPPUNIT_ASSERT(!c8.parse(policy8_invalid));
+
+	GraphConstraint c9;
+	CPPUNIT_ASSERT(c9.parse(policy9));
+	CPPUNIT_ASSERT(c9.nodeConstraint == GraphConstraint::NONE);
 
 }
 
@@ -983,6 +988,118 @@ void GraphConstraintTest::testMultiConstraints() {
 	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.deleteNodeCounter); // never blocked
 	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addParentCounter);
 	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.removeParentCounter);
+
+}
+
+void GraphConstraintTest::testConstraintsAsAttributes() {
+	vector<Attribute> attributes;
+	WorldModel* wm = new WorldModel();
+	MyObserver wmNodeCounter;
+//	GraphConstraintUpdateFilter filter(wm);
+//	wm->scene.attachUpdateObserver(&filter);
+//	filter.attachUpdateObserver(&wmNodeCounter);
+
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addNodeCounter); //precondition
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addRemoteRootNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addConnectionCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.removeParentCounter);
+
+//	GraphConstraint c1;
+//	GraphConstraint c2;
+//	CPPUNIT_ASSERT(c1.parse("send no Groups"));
+//	CPPUNIT_ASSERT(c2.parse("send no Boxes"));
+//	filter.constraints.clear();
+//	filter.constraints.push_back(c1);
+//	filter.constraints.push_back(c2);
+
+	/*
+	 * Scenario 1:
+	 * policies are set, then the filter is attached.
+	 */
+	attributes.clear();
+	attributes.push_back(rsg::Attribute("rsg:agent_policy", "send no Groups"));
+	attributes.push_back(rsg::Attribute("rsg:agent_policy", "send no Connections"));
+	wm->scene.setNodeAttributes(wm->getRootNodeId(), attributes);
+	GraphConstraintUpdateFilter filter(wm);
+	wm->scene.attachUpdateObserver(&filter);
+	filter.attachUpdateObserver(&wmNodeCounter);
+	CPPUNIT_ASSERT(runAddAllSceneGraphPrimitives(wm));
+
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addRemoteRootNodeCounter); // never blocked
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addConnectionCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.deleteNodeCounter); // never blocked
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.removeParentCounter);
+
+//	CPPUNIT_ASSERT(c1.parse("send no Groups with dist < 3 m from me"));
+//	CPPUNIT_ASSERT(c2.parse("send no Boxes with lod > 0.1"));
+//	filter.constraints.clear();
+//	filter.constraints.push_back(c1);
+//	filter.constraints.push_back(c2);
+
+	/*
+	 * Scenario 2A:
+	 * policies are reset after hen the filter has been attached.
+	 */
+	attributes.clear();
+	attributes.push_back(rsg::Attribute("rsg:agent_policy", "send no Groups with dist < 3 m from me"));
+	attributes.push_back(rsg::Attribute("rsg:agent_policy", "send no Boxes with lod > 0.1"));
+	attributes.push_back(rsg::Attribute("rsg:agent_name", "swm_donkey"));
+	wm->scene.setNodeAttributes(wm->getRootNodeId(), attributes);
+	CPPUNIT_ASSERT(runAddAllSceneGraphPrimitives(wm));
+
+	CPPUNIT_ASSERT_EQUAL(6, wmNodeCounter.addNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addRemoteRootNodeCounter); // never blocked
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addConnectionCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.setNodeAttributesCounter); // NOTE, +1 for setting the root node attributes...
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.deleteNodeCounter); // never blocked
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.removeParentCounter);
+
+	/*
+	 * Scenario 2B:
+	 * policies are reset after hen the filter has been attached, but no constriant are within the attributes
+	 * so the old constraints should be still in place
+	 */
+	attributes.clear();
+	attributes.push_back(rsg::Attribute("rsg:agent_name", "swm_donkey"));
+	wm->scene.setNodeAttributes(wm->getRootNodeId(), attributes);
+	CPPUNIT_ASSERT(runAddAllSceneGraphPrimitives(wm));
+
+	CPPUNIT_ASSERT_EQUAL(9, wmNodeCounter.addNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addRemoteRootNodeCounter); // never blocked
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addConnectionCounter);
+	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.setNodeAttributesCounter); // NOTE, +1 for setting the root node attributes...
+	CPPUNIT_ASSERT_EQUAL(6, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.deleteNodeCounter); // never blocked
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.removeParentCounter);
+
+	/*
+	 * Scenario 3:
+	 * policies are reset after after invocation of remteRootNode
+	 */
+
 
 }
 
