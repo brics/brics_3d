@@ -53,6 +53,7 @@ void GraphConstraintTest::testParser() {
 	string policy2_invalid = "invalid value";
 	string policy3 = "receive only PointClouds with dist > 2 m from dc0829e9-71af-459e-bc4c-26b20dbd06fa";
 	string policy4 = "send no Connections from context osm";
+	string policy4_invalid = "send no Atoms from semantic context osm";
 	string policy5 = "receive no Groups contained in dc0829e9-71af-459e-bc4c-26b20dbd06fa";
 	string policy6 = "send no Transforms with freq > 1 Hz";
 	string policy7 = "send only PointClouds with lod < 100";
@@ -77,6 +78,7 @@ void GraphConstraintTest::testParser() {
 
 	GraphConstraint c4;
 	CPPUNIT_ASSERT(c4.parse(policy4));
+	CPPUNIT_ASSERT(!c4.parse(policy4_invalid));
 
 	GraphConstraint c5;
 	CPPUNIT_ASSERT(c5.parse(policy5));
@@ -902,6 +904,86 @@ void GraphConstraintTest::testLODConstraints() {
 	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.removeParentCounter);
 
 	delete wm;
+}
+
+void GraphConstraintTest::testMultiConstraints() {
+	WorldModel* wm = new WorldModel();
+	MyObserver wmNodeCounter;
+	GraphConstraintUpdateFilter filter(wm);
+	wm->scene.attachUpdateObserver(&filter);
+	filter.attachUpdateObserver(&wmNodeCounter);
+
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addNodeCounter); //precondition
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addRemoteRootNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addConnectionCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.removeParentCounter);
+
+	GraphConstraint c1;
+	GraphConstraint c2;
+	CPPUNIT_ASSERT(c1.parse("send no Groups"));
+	CPPUNIT_ASSERT(c2.parse("send no Boxes"));
+	filter.constraints.clear();
+	filter.constraints.push_back(c1);
+	filter.constraints.push_back(c2);
+	CPPUNIT_ASSERT(runAddAllSceneGraphPrimitives(wm));
+
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addRemoteRootNodeCounter); // never blocked
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addConnectionCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.deleteNodeCounter); // never blocked
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.removeParentCounter);
+
+	CPPUNIT_ASSERT(c1.parse("send no Groups with dist < 3 m from me"));
+	CPPUNIT_ASSERT(c2.parse("send no Boxes with lod > 0.1"));
+	filter.constraints.clear();
+	filter.constraints.push_back(c1);
+	filter.constraints.push_back(c2);
+	CPPUNIT_ASSERT(runAddAllSceneGraphPrimitives(wm));
+
+	CPPUNIT_ASSERT_EQUAL(6, wmNodeCounter.addNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addRemoteRootNodeCounter); // never blocked
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addConnectionCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.deleteNodeCounter); // never blocked
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.removeParentCounter);
+
+	CPPUNIT_ASSERT(c1.parse("send only Atoms with dist < 8 m from me"));
+	CPPUNIT_ASSERT(c2.parse("send no Atoms from context osm"));
+	filter.constraints.clear();
+	filter.constraints.push_back(c1);
+	filter.constraints.push_back(c2);
+	CPPUNIT_ASSERT(runAddAllSceneGraphPrimitives(wm));
+
+	CPPUNIT_ASSERT_EQUAL(8, wmNodeCounter.addNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addRemoteRootNodeCounter); // never blocked
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addConnectionCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.deleteNodeCounter); // never blocked
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.removeParentCounter);
+
 }
 
 bool GraphConstraintTest::runAddAllSceneGraphPrimitives(brics_3d::WorldModel* wm) {

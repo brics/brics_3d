@@ -213,6 +213,7 @@ bool GraphConstraint::parse(std::string constraintModel) {
 			// from
 			++it;
 			if(it == tokens.end()){ LOG(ERROR) << "GraphConstraint has no from token."; return false;}
+			if(it->compare("from") != 0) { LOG(ERROR) << "GraphConstraint has " << *it << " instead of from token."; return false;}
 
 			// (me|([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}))
 			++it;
@@ -235,6 +236,7 @@ bool GraphConstraint::parse(std::string constraintModel) {
 		// context
 		++it;
 		if(it == tokens.end()){ LOG(ERROR) << "GraphConstraint has no context token."; return false;}
+		if(it->compare("context") != 0) { LOG(ERROR) << "GraphConstraint has " << *it << " instead of context token."; return false;}
 
 		// [a-zA-Z0-9]+
 		++it;
