@@ -42,6 +42,7 @@ class GraphConstraintTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testDistanceConstraints );
 	CPPUNIT_TEST( testContainmentConstraints );
 	CPPUNIT_TEST( testLODConstraints );
+	CPPUNIT_TEST( testFrequencyConstraints );
 	CPPUNIT_TEST( testMultiConstraints );
 	CPPUNIT_TEST( testConstraintsAsAttributes );
 	CPPUNIT_TEST_SUITE_END();
@@ -59,6 +60,7 @@ public:
 	void testDistanceConstraints();
 	void testContainmentConstraints();
 	void testLODConstraints();
+	void testFrequencyConstraints();
 	void testMultiConstraints();
 	void testConstraintsAsAttributes();
 
