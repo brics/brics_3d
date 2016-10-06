@@ -167,11 +167,11 @@ bool GraphConstraintUpdateFilter::addGeometricNode(Id parentId, Id& assignedId,
 	std::vector<GraphConstraint>::iterator it;
 	for (it = constraints.begin(); it != constraints.end(); ++it) {
 		if (!checkConstraint(*it, GraphConstraint::GeometricNode, 0, 0, 0, assignedId, attributes)) {
-			LOG(DEBUG) << "GraphConstraintUpdateFilter::addNode is skipped because a constraint does not hold for GeometricNode.";
+			LOG(DEBUG) << "GraphConstraintUpdateFilter::addGeometricNode is skipped because a constraint does not hold for GeometricNode.";
 			return false;
 		}
 		if (!checkConstraint(*it, shapeType, 0, 0, 0, assignedId, attributes)) {
-			LOG(DEBUG) << "GraphConstraintUpdateFilter::addNode is skipped because a constraint does not hold for Shape type " << shapeType << ".";
+			LOG(DEBUG) << "GraphConstraintUpdateFilter::addGeometricNode is skipped because a constraint does not hold for Shape type " << shapeType << ".";
 			return false;
 		}
 	}
@@ -690,7 +690,11 @@ bool GraphConstraintUpdateFilter::checkComparision(GraphConstraint constraint, G
 
 		}
 
-
+	} else if( (constraint.qualifier == GraphConstraint::ONLY) && (constraint.type != type)) { // ONLY and not the above cased
+		LOG(DEBUG) << "GraphConstraintUpdateFilter:checkComparision is true because this type "
+				<< type   << " is not considered in a this (ONLY) constraint "
+				<< constraint.type << " with " << tag <<" " << value << " <|=|> " << allowedValue;
+		return true;
 
 	} else if( constraint.qualifier == GraphConstraint::NO) { // NO and not the above cased
 		LOG(DEBUG) << "GraphConstraintUpdateFilter:checkComparision is true because this type "

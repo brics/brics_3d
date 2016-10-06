@@ -212,6 +212,7 @@ SET (WORLD_MODEL_LIBRARY_SOURCES
     ./worldModel/sceneGraph/FunctionBlockLoader
     ./worldModel/sceneGraph/GraphConstraint
     ./worldModel/sceneGraph/GraphConstraintUpdateFilter
+    ./worldModel/sceneGraph/LODCalculator
 )
 
 #optional sources

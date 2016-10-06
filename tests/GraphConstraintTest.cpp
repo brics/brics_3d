@@ -833,6 +833,23 @@ void GraphConstraintTest::testLODConstraints() {
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addParentCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.removeParentCounter);
 
+	CPPUNIT_ASSERT(c1.parse("send only Boxes with lod > 0.1")); // Box = 0.5
+	filter.constraints.clear();
+	filter.constraints.push_back(c1);
+	CPPUNIT_ASSERT(runAddAllSceneGraphPrimitives(wm));
+
+	CPPUNIT_ASSERT_EQUAL(6, wmNodeCounter.addNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addRemoteRootNodeCounter); // never blocked
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addConnectionCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.setNodeAttributesCounter); // in the example attributes are set for another root node (!= me)
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.deleteNodeCounter); // never blocked
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.removeParentCounter);
+
 	delete wm;
 }
 
@@ -872,7 +889,7 @@ bool GraphConstraintTest::runAddAllSceneGraphPrimitives(brics_3d::WorldModel* wm
 	ITransformUncertainty::ITransformUncertaintyPtr uncertainty123(new CovarianceMatrix66(3, 0.001, 0.001, 0.0000, 0.000000, 0.00000));
 	CPPUNIT_ASSERT(wm->scene.addUncertainTransformNode(wm->getRootNodeId(), utfId, dummyAttributes, transform234, uncertainty123, wm->now()));
 
-	rsg::Box::BoxPtr box( new rsg::Box(1,2,3));
+	rsg::Box::BoxPtr box( new rsg::Box(1,2,3)); //LOD 3 / 1*2*3 => 3 / 6m^3 => 1 sample /2 m^3 => LOD = 0.5
 	rsg::Id boxId;
 	CPPUNIT_ASSERT(wm->scene.addGeometricNode(wm->getRootNodeId(), boxId, dummyAttributes, box, wm->now()));
 	CPPUNIT_ASSERT(wm->scene.deleteNode(boxId));
