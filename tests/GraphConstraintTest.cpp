@@ -850,6 +850,57 @@ void GraphConstraintTest::testLODConstraints() {
 	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addParentCounter);
 	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.removeParentCounter);
 
+	CPPUNIT_ASSERT(c1.parse("send only Boxes with lod < 0.1")); // Box = 0.5
+	filter.constraints.clear();
+	filter.constraints.push_back(c1);
+	CPPUNIT_ASSERT(runAddAllSceneGraphPrimitives(wm));
+
+	CPPUNIT_ASSERT_EQUAL(9, wmNodeCounter.addNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addRemoteRootNodeCounter); // never blocked
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addConnectionCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.setNodeAttributesCounter); // in the example attributes are set for another root node (!= me)
+	CPPUNIT_ASSERT_EQUAL(6, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.deleteNodeCounter); // never blocked
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.removeParentCounter);
+
+	CPPUNIT_ASSERT(c1.parse("send only Spheres with lod < 0.1")); // Box = 0.5
+	filter.constraints.clear();
+	filter.constraints.push_back(c1);
+	CPPUNIT_ASSERT(runAddAllSceneGraphPrimitives(wm));
+
+	CPPUNIT_ASSERT_EQUAL(12, wmNodeCounter.addNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.addRemoteRootNodeCounter); // never blocked
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addConnectionCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.setNodeAttributesCounter); // in the example attributes are set for another root node (!= me)
+	CPPUNIT_ASSERT_EQUAL(8, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.deleteNodeCounter); // never blocked
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.removeParentCounter);
+
+	CPPUNIT_ASSERT(c1.parse("send no GeometricNodes with lod > 0.1")); // Box = 0.5
+	filter.constraints.clear();
+	filter.constraints.push_back(c1);
+	CPPUNIT_ASSERT(runAddAllSceneGraphPrimitives(wm));
+
+	CPPUNIT_ASSERT_EQUAL(15, wmNodeCounter.addNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(6, wmNodeCounter.addRemoteRootNodeCounter); // never blocked
+	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.addConnectionCounter);
+	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.setNodeAttributesCounter); // in the example attributes are set for another root node (!= me)
+	CPPUNIT_ASSERT_EQUAL(10, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(6, wmNodeCounter.deleteNodeCounter); // never blocked
+	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.removeParentCounter);
+
 	delete wm;
 }
 
