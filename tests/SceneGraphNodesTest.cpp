@@ -2638,6 +2638,19 @@ void SceneGraphNodesTest::testSceneGraphFacade(){
 	CPPUNIT_ASSERT(tmpAttributes[0] == Attribute("name","root"));
 	CPPUNIT_ASSERT(!scene.setNodeAttributes(invalidId, tmpAttributes));
 
+	tmpAttributes.clear();
+	tmpAttributes.push_back(Attribute("name","root"));
+	tmpAttributes.push_back(Attribute("name2","root2"));
+	CPPUNIT_ASSERT(scene.setNodeAttributes(rootId, tmpAttributes));
+
+	tmpAttributes.clear();
+	tmpAttributes.push_back(Attribute("name3","root3"));
+	CPPUNIT_ASSERT(scene.setNodeAttributes(rootId, tmpAttributes));
+
+	tmpAttributes.clear();
+	tmpAttributes.push_back(Attribute("name","root"));
+	CPPUNIT_ASSERT(scene.setNodeAttributes(rootId, tmpAttributes));
+
 	resultChildIds.clear();
 	CPPUNIT_ASSERT(scene.getGroupChildren(rootId, resultChildIds));
 	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(resultChildIds.size()));

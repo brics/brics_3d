@@ -20,6 +20,7 @@
 #include "Attribute.h"
 #include <boost/regex.hpp>
 #include <iostream>
+#include "brics_3d/core/Logger.h";
 
 namespace brics_3d {
 
@@ -102,9 +103,12 @@ extern bool getValuesFromAttributeList(vector<Attribute> attributeList, std::str
 }
 
 extern bool attributeListsAreEqual(vector<Attribute> attributeList1, vector<Attribute> attributeList2) {
+//	LOG(DEBUG) << "attributeListsAreEqual: attributeList1: " << attributeList1.size() << " attributeList2: " << attributeList2.size();
 	if((attributeList1.size() == 0) && (attributeList2.size() == 0)) {
 		return true;
 	} else if ((attributeList1.size() == 0) || (attributeList2.size() == 0)) {
+		return false;
+	} else if (attributeList1.size() != attributeList2.size()) { // short cut
 		return false;
 	} else if (attributeList1.begin() == attributeList1.end()) {
 		std::cout << "attributeListsAreEqual: attributeList1 is empty" << std::endl;
