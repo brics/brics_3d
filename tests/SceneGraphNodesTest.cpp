@@ -2626,6 +2626,9 @@ void SceneGraphNodesTest::testSceneGraphFacade(){
 	CPPUNIT_ASSERT(!scene.getNodeAttributes(invalidId, tmpAttributes));
 
 	tmpAttributes.clear();
+	CPPUNIT_ASSERT(!scene.setNodeAttributes(rootId, tmpAttributes));
+
+	tmpAttributes.clear();
 	tmpAttributes.push_back(Attribute("name","root"));
 	CPPUNIT_ASSERT(scene.setNodeAttributes(rootId, tmpAttributes));
 
