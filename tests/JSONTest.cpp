@@ -2137,6 +2137,41 @@ void JSONTest::testQuerys() {
 	delete wm;
 }
 
+void JSONTest::testRootNodeQuerys() {
+		brics_3d::Logger::setMinLoglevel(brics_3d::Logger::LOGDEBUG);
+		Id rootId;
+		rootId.fromString("00000000-0000-0000-0000-000000000042");
+		rsg::IIdGenerator* idGenerator = new brics_3d::rsg::UuidGenerator(rootId);
+		brics_3d::WorldModel* wm = new brics_3d::WorldModel(idGenerator);
+		brics_3d::rsg::JSONQueryRunner queryRunner(wm);
+
+		std::string queryAsJson = "";
+		std::string resultAsJson = "";
+		std::stringstream queryAsJson2;
+
+		CPPUNIT_ASSERT(!queryRunner.query(queryAsJson, resultAsJson));
+		LOG(DEBUG) << "resultAsJson " << resultAsJson;
+		CPPUNIT_ASSERT(resultAsJson.compare("{\"error\": {\"message\": \"Syntax error: Top level model type @worldmodeltype does not exist.\"}}") == 0);
+
+//		{
+//		  "@worldmodeltype": "RSGQuery",
+//		  "query": "GET_ROOT_NODE"
+//		}
+		queryAsJson2.str("");
+		queryAsJson2
+		<<"{"
+			<< "\"@worldmodeltype\": \"RSGQuery\","
+			<< "\"query\": \"GET_ROOT_NODE\""
+		<<"}";
+		queryAsJson = queryAsJson2.str();
+		LOG(DEBUG) << "queryAsJson " << queryAsJson;
+		CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+		LOG(DEBUG) << "resultAsJson " << resultAsJson;
+		CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"query\": \"GET_ROOT_NODE\",\"querySuccess\": true,\"rootId\": \"00000000-0000-0000-0000-000000000042\"}") == 0);
+
+
+}
+
 void JSONTest::testFunctionBlockQuerys() {
 	Id rootId;
 	rootId.fromString("00000000-0000-0000-0000-000000000042");
