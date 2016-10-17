@@ -2145,6 +2145,10 @@ void JSONTest::testRootNodeQuerys() {
 		brics_3d::WorldModel* wm = new brics_3d::WorldModel(idGenerator);
 		brics_3d::rsg::JSONQueryRunner queryRunner(wm);
 
+		vector<Attribute> newAttributes;
+		newAttributes.push_back(Attribute("rsg:agent_policy","send no Meshes"));
+		CPPUNIT_ASSERT(wm->scene.setNodeAttributes(rootId, newAttributes));
+
 		std::string queryAsJson = "";
 		std::string resultAsJson = "";
 		std::stringstream queryAsJson2;
@@ -2169,7 +2173,48 @@ void JSONTest::testRootNodeQuerys() {
 		LOG(DEBUG) << "resultAsJson " << resultAsJson;
 		CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"query\": \"GET_ROOT_NODE\",\"querySuccess\": true,\"rootId\": \"00000000-0000-0000-0000-000000000042\"}") == 0);
 
+		queryAsJson2.str("");
+		queryAsJson2
+		<<"{"
+			<< "\"@worldmodeltype\": \"RSGUpdate\","
+			<< "\"operation\": \"UPDATE_ATTRIBUTES\","
+		    << "\"node\": {"
+			<< "  \"@graphtype\": \"Node\","
+			<< "  \"id\": \"00000000-0000-0000-0000-000000000042\","
+			<< "  \"attributes\": ["
+			<< "       {\"key\": \"rsg:agent_policy\", \"value\": \"send no Atoms from context osm\"},"
+			<< "       {\"key\": \"rsg:agent_policy\", \"value\": \"send no PointClouds\"}"
+			<< "  ],"
+			<< " },"
+		<<"}";
+		queryAsJson = queryAsJson2.str();
+		LOG(DEBUG) << "queryAsJson " << queryAsJson;
+		CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+		LOG(DEBUG) << "resultAsJson " << resultAsJson;
+		CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGUpdateResult\",\"updateSuccess\": true}") == 0);
 
+		queryAsJson2.str("");
+		queryAsJson2
+		<<"{"
+			<< "\"@worldmodeltype\": \"RSGUpdate\","
+			<< "\"operation\": \"UPDATE_ATTRIBUTES\","
+		    << "\"node\": {"
+			<< "  \"@graphtype\": \"Node\","
+			<< "  \"id\": \"00000000-0000-0000-0000-000000000042\","
+			<< "  \"attributes\": ["
+			<< "       {\"key\": \"rsg:agent_policy\", \"value\": \"send no Atoms from context osm\"},"
+			<< "       {\"key\": \"rsg:agent_policy\", \"value\": \"send only PointClouds\"},"
+			<< "       {\"key\": \"rsg:agent_polocy\", \"value\": \"send no rsg:agent_polocy\"}"
+			<< "  ],"
+			<< " },"
+		<<"}";
+		queryAsJson = queryAsJson2.str();
+		LOG(DEBUG) << "queryAsJson " << queryAsJson;
+		CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+		LOG(DEBUG) << "resultAsJson " << resultAsJson;
+		CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGUpdateResult\",\"updateSuccess\": true}") == 0);
+
+		delete wm;
 }
 
 void JSONTest::testFunctionBlockQuerys() {
