@@ -17,8 +17,8 @@
  *
  ******************************************************************************/
 
-#ifndef RSG_SEMANTICCONTEXTUPDATEFILTER_H_
-#define RSG_SEMANTICCONTEXTUPDATEFILTER_H_
+#ifndef RSG_GRAPHCONSTRAINTUPDATEFILTER_H_
+#define RSG_GRAPHCONSTRAINTUPDATEFILTER_H_
 
 #include "brics_3d/worldModel/sceneGraph/ISceneGraphUpdateObserver.h"
 #include "brics_3d/worldModel/WorldModel.h"
@@ -113,6 +113,6 @@ private:
 } /* namespace rsg */
 } /* namespace brics_3d */
 
-#endif /* RSG_SEMANTICCONTEXTUPDATEFILTER_H_ */
+#endif /* RSG_GRAPHCONSTRAINTUPDATEFILTER_H_ */
 
 /* EOF */
