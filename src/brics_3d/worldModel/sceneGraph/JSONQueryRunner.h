@@ -34,10 +34,17 @@ class JSONQueryRunner {
 public:
 
 	/**
-	 * @brief Constuctor
+	 * @brief Constructor
 	 * @param wm Handle to perform the queries on.
 	 */
 	JSONQueryRunner(WorldModel* wm);
+
+	/**
+	 * @brief Constructor to be used with intermediate filters for UPDATE queries.
+	 * @param wm The WorldModel for querying.
+	 * @param sceneUpdater The scene to be updated (only foe UPDATE queries). Typically an update filter.
+	 */
+	JSONQueryRunner(WorldModel* wm, ISceneGraphUpdate* sceneUpdater);
 
 	/**
 	 * @brief Default destructor
@@ -58,6 +65,8 @@ private:
 	bool query(libvariant::Variant& query, libvariant::Variant& result);
 
 	WorldModel* wm;
+
+	ISceneGraphUpdate* sceneUpdater;
 
 	/// Responsible for update queries. In particular useful to get feedback if a node has been created.
 	JSONDeserializer* updateOperationRunner;

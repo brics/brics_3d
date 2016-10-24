@@ -25,6 +25,11 @@ namespace rsg {
 JSONQueryRunner::JSONQueryRunner(WorldModel* wm) :
 		wm(wm) {
 	updateOperationRunner = new JSONDeserializer(wm);
+	sceneUpdater = 0;
+}
+
+JSONQueryRunner::JSONQueryRunner(WorldModel* wm, ISceneGraphUpdate* sceneUpdater) : wm(wm), sceneUpdater(sceneUpdater) {
+	updateOperationRunner = new JSONDeserializer(wm, sceneUpdater); // pass by sceneUpdater to the deserializer. That is enough to enable filtering.
 }
 
 JSONQueryRunner::~JSONQueryRunner() {
