@@ -437,173 +437,182 @@ bool GraphConstraintUpdateFilter::checkConstraint(GraphConstraint constraint,
 	bool isContainedIn = false;
 	string query = "*";
 
+	/*
+	 * Does the constraint apply at all based on the SENDER or RECEIVER mode?
+	 */
 	switch (mode) {
 		case SENDER:
 
 			/* check if it applies to sender */
 			if(constraint.action != GraphConstraint::SEND) {
-				break; // this constraint does not apply at all
+				return true; // this constraint does not apply at all
+				break;
 			}
-
-
-			switch (constraint.nodeConstraint) {
-
-				/* simple constraints first */
-				case GraphConstraint::NONE:
-
-					if( (constraint.qualifier == GraphConstraint::NO) && (constraint.type == type) ) {
-						LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint creation is false because no types " << type << " are allowed";
-						return false;
-					} else if( (constraint.qualifier == GraphConstraint::NO) && (constraint.type == GraphConstraint::Atom) ) {
-						LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint creation is false because no types " << GraphConstraint::Atom << " are allowed";
-						return false;
-					} else if( (constraint.qualifier == GraphConstraint::ONLY) && (constraint.type == GraphConstraint::Atom) ) {
-						LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint creation is true because all types, even " << type << " are allowed";
-						return true;
-					} else if( (constraint.qualifier == GraphConstraint::ONLY) && (constraint.type != type) ) {
-						LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint creation is false because only types " << type << " are allowed";
-						return false;
-					}
-
-					break;
-
-
-
-				/* complex constraints */
-				/*
-				 * (( with freq (<|=|>) [0-9]+ (Hz|kHz))|\
-				 *  ( with lod (<|=|>) [0-9]+)|\
-				 *  ( with dist (<|=|>) [0-9]+ (mm|cm|m|km) from (me|([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}))|\
-				 *  ( from context [a-zA-Z0-9]+)|\
-				 *  ( contained in ([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}))
-				 */
-				case GraphConstraint::FREQUENCY:
-
-
-					frequencyInHz = 1.0/(wm->now() - lastSendType[constraint.type]).getSeconds();
-					allowedFrequencyInHz = Units::frequencyToHertz(constraint.value, constraint.freqUnit); // convert Hz to seconds.
-
-					return checkComparision(constraint, type, frequencyInHz, allowedFrequencyInHz, "frequency");
-
-					break;
-
-				case GraphConstraint::LOD:
-
-					// only applies to geometric nodes
-					allowedLod = constraint.value;
-					return checkComparision(constraint, type, lod, allowedLod, "lod");
-
-					break;
-
-				case GraphConstraint::DISTANCE:
-
-					/* get reference node */
-					if(constraint.isMe) {
-						referenceNode = wm->getRootNodeId();
-					} else {
-						referenceNode = constraint.node;
-					}
-
-					/* compute distance */
-					if(!wm->scene.getTransformForNode(assignedId, referenceNode, wm->now(), tf)) { // TODO find a way for to get the distance for non existing nodes (e.g. parent)
-						LOG(WARNING) << "GraphConstraintUpdateFilter:checkConstraint is false because the distance between two nodes could not been derived.";
-								return false;
-					}
-					HomogeneousMatrix44::matrixToDistance(tf, distanceInMeters); // in meters ?!?
-
-					/* check it */
-					allowedDistanceInMeters = Units::distanceToMeters(constraint.value, constraint.distUnit);
-					return checkComparision(constraint, type, distanceInMeters, allowedDistanceInMeters, "distance");
-
-					break;
-
-				case GraphConstraint::CONTEXT:
-
-					query =  "^"  + constraint.context + ":.*"; // wildcard = ^.*
-					if(constraint.qualifier == GraphConstraint::ONLY) {
-
-						if (attributeListContainsAttribute(attributes, Attribute(query, "*"))) {
-							LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is true because attributes contain (only) (" << constraint.context << ", *)";
-							return true;
-						} else {
-							LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is false because attributes do not contain (only) (" << constraint.context << ", *)";
-							return false;
-						}
-
-					} else if (constraint.qualifier == GraphConstraint::NO) {
-
-						if (attributeListContainsAttribute(attributes, Attribute(query, "*"))) {
-							LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is false because attributes contain (no) (" << constraint.context << ", *)";
-							return false;
-						} else {
-							LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is true because attributes do not contain (no) (" << constraint.context << ", *)";
-							return true;
-						}
-
-					}
-
-					break;
-
-				case GraphConstraint::CONTAINMENT:
-
-					/* get reference node */
-					if(constraint.isMe) {
-						referenceNode = wm->getRootNodeId();
-					} else {
-						referenceNode = constraint.node;
-					}
-
-					subGraph.reset(referenceNode); // NOTE: upwards traversal
-					wm->scene.executeGraphTraverser(&subGraph, assignedId);
-					isContainedIn = subGraph.nodeIsInSubGraph();
-
-					if(constraint.qualifier == GraphConstraint::ONLY) {
-
-						if (isContainedIn) {
-							LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is true because node is contained in " << referenceNode;
-							return true;
-						} else {
-							LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is false because node is not contained in " << referenceNode;
-							return false;
-						}
-
-					} else if (constraint.qualifier == GraphConstraint::NO) {
-
-						if (isContainedIn) {
-							LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is false because node is contained in " << referenceNode << " although it should not.";
-							return false;
-						} else {
-							LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is true because node is not contained in " << referenceNode << " as it should.";
-							return true;
-						}
-
-					}
-
-
-					break;
-
-				case GraphConstraint::UNDEFINED_NODE_CONSTRAINT:
-
-					LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is false because the nodeConstraint is undefined. Do you actually mean NONE instead?";
-					break;
-
-				default:
-
-					break;
-
-			}
-
-
 			break;
 
 		case RECEIVER:
 
+			/* check if it applies to sender */
+			if(constraint.action != GraphConstraint::RECEIVE) {
+				return true; // this constraint does not apply at all
+				break;
+			}
 			break;
 
 		default:
 			LOG(ERROR) << "GraphConstraintUpdateFilter:checkConstraint is false because the I/O mode is undefined.";
 			return false;
 			break;
+	}
+
+	/*
+	 * Continue with the actual constraint evaluation
+	 */
+	switch (constraint.nodeConstraint) {
+
+		/* simple constraints first */
+		case GraphConstraint::NONE:
+
+			if( (constraint.qualifier == GraphConstraint::NO) && (constraint.type == type) ) {
+				LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint creation is false because no types " << type << " are allowed";
+				return false;
+			} else if( (constraint.qualifier == GraphConstraint::NO) && (constraint.type == GraphConstraint::Atom) ) {
+				LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint creation is false because no types " << GraphConstraint::Atom << " are allowed";
+				return false;
+			} else if( (constraint.qualifier == GraphConstraint::ONLY) && (constraint.type == GraphConstraint::Atom) ) {
+				LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint creation is true because all types, even " << type << " are allowed";
+				return true;
+			} else if( (constraint.qualifier == GraphConstraint::ONLY) && (constraint.type != type) ) {
+				LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint creation is false because only types " << type << " are allowed";
+				return false;
+			}
+
+			break;
+
+
+
+		/* complex constraints */
+		/*
+		 * (( with freq (<|=|>) [0-9]+ (Hz|kHz))|\
+		 *  ( with lod (<|=|>) [0-9]+)|\
+		 *  ( with dist (<|=|>) [0-9]+ (mm|cm|m|km) from (me|([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}))|\
+		 *  ( from context [a-zA-Z0-9]+)|\
+		 *  ( contained in ([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}))
+		 */
+		case GraphConstraint::FREQUENCY:
+
+
+			frequencyInHz = 1.0/(wm->now() - lastSendType[constraint.type]).getSeconds();
+			allowedFrequencyInHz = Units::frequencyToHertz(constraint.value, constraint.freqUnit); // convert Hz to seconds.
+
+			return checkComparision(constraint, type, frequencyInHz, allowedFrequencyInHz, "frequency");
+
+			break;
+
+		case GraphConstraint::LOD:
+
+			// only applies to geometric nodes
+			allowedLod = constraint.value;
+			return checkComparision(constraint, type, lod, allowedLod, "lod");
+
+			break;
+
+		case GraphConstraint::DISTANCE:
+
+			/* get reference node */
+			if(constraint.isMe) {
+				referenceNode = wm->getRootNodeId();
+			} else {
+				referenceNode = constraint.node;
+			}
+
+			/* compute distance */
+			if(!wm->scene.getTransformForNode(assignedId, referenceNode, wm->now(), tf)) { // TODO find a way for to get the distance for non existing nodes (e.g. parent)
+				LOG(WARNING) << "GraphConstraintUpdateFilter:checkConstraint is false because the distance between two nodes could not been derived.";
+						return false;
+			}
+			HomogeneousMatrix44::matrixToDistance(tf, distanceInMeters); // in meters ?!?
+
+			/* check it */
+			allowedDistanceInMeters = Units::distanceToMeters(constraint.value, constraint.distUnit);
+			return checkComparision(constraint, type, distanceInMeters, allowedDistanceInMeters, "distance");
+
+			break;
+
+		case GraphConstraint::CONTEXT:
+
+			query =  "^"  + constraint.context + ":.*"; // wildcard = ^.*
+			if(constraint.qualifier == GraphConstraint::ONLY) {
+
+				if (attributeListContainsAttribute(attributes, Attribute(query, "*"))) {
+					LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is true because attributes contain (only) (" << constraint.context << ", *)";
+					return true;
+				} else {
+					LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is false because attributes do not contain (only) (" << constraint.context << ", *)";
+					return false;
+				}
+
+			} else if (constraint.qualifier == GraphConstraint::NO) {
+
+				if (attributeListContainsAttribute(attributes, Attribute(query, "*"))) {
+					LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is false because attributes contain (no) (" << constraint.context << ", *)";
+					return false;
+				} else {
+					LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is true because attributes do not contain (no) (" << constraint.context << ", *)";
+					return true;
+				}
+
+			}
+
+			break;
+
+		case GraphConstraint::CONTAINMENT:
+
+			/* get reference node */
+			if(constraint.isMe) {
+				referenceNode = wm->getRootNodeId();
+			} else {
+				referenceNode = constraint.node;
+			}
+
+			subGraph.reset(referenceNode); // NOTE: upwards traversal
+			wm->scene.executeGraphTraverser(&subGraph, assignedId);
+			isContainedIn = subGraph.nodeIsInSubGraph();
+
+			if(constraint.qualifier == GraphConstraint::ONLY) {
+
+				if (isContainedIn) {
+					LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is true because node is contained in " << referenceNode;
+					return true;
+				} else {
+					LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is false because node is not contained in " << referenceNode;
+					return false;
+				}
+
+			} else if (constraint.qualifier == GraphConstraint::NO) {
+
+				if (isContainedIn) {
+					LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is false because node is contained in " << referenceNode << " although it should not.";
+					return false;
+				} else {
+					LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is true because node is not contained in " << referenceNode << " as it should.";
+					return true;
+				}
+
+			}
+
+
+			break;
+
+		case GraphConstraint::UNDEFINED_NODE_CONSTRAINT:
+
+			LOG(DEBUG) << "GraphConstraintUpdateFilter:checkConstraint is false because the nodeConstraint is undefined. Do you actually mean NONE instead?";
+			break;
+
+		default:
+
+			break;
+
 	}
 
 	return true;
