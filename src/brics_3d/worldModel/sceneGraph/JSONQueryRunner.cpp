@@ -130,6 +130,12 @@ bool JSONQueryRunner::query(libvariant::Variant& query,
 				result.Clear();
 				result.Set("updateSuccess", libvariant::Variant(false));
 				result.Set("@worldmodeltype", libvariant::Variant("RSGUpdateResult"));
+
+				/* Optional queryId */
+				if(query.Contains("queryId"))  {
+					result.Set("queryId", query.Get("queryId"));
+				}
+
 				int error = updateOperationRunner->write(query);
 				LOG(DEBUG) <<"JSONQueryRunner: error code for update = " << error;
 				if(error > 0) {
@@ -143,9 +149,16 @@ bool JSONQueryRunner::query(libvariant::Variant& query,
 				result.Set("@worldmodeltype", libvariant::Variant("RSGFunctionBlockResult"));
 				result.Set("metamodel", libvariant::Variant("rsg-functionBlock-schema.json"));
 
-				/* Optional operationId (similar to a queryId in case of a query) */
+				/* Optional/deprecated operationId (similar to a queryId in case of a query) */
 				if(query.Contains("operationId"))  {
 					result.Set("operationId", query.Get("operationId"));
+				}
+
+				/* Optional queryId TODO not yet in the model,
+				 * but since also function blocks can be are used as queries
+				 * it makes more sense to be consistent with the field  "queryId"  */
+				if(query.Contains("queryId"))  {
+					result.Set("queryId", query.Get("queryId"));
 				}
 
 				/* The actual operation
