@@ -66,7 +66,7 @@ void elch6D::graph_weight_out(graph_t &g, int first, int last, double *weights, 
   ofstream dot_file(out_file.c_str());
   dot_file << "graph D {" << endl;
   graph_traits <graph_t>::vertex_iterator vi, vend;
-  for(tie(vi, vend) = vertices(g); vi != vend; vi++) {
+  for(boost::tie(vi, vend) = vertices(g); vi != vend; vi++) {
     dot_file << *vi << "[label=\"" << *vi << " (" <<
       weights[*vi] << ")\"];" << endl;
   }
@@ -188,7 +188,7 @@ void elch6D::slim_graph_out(graph_t g, string &out_file)
   graph_traits < graph_t >::adjacency_iterator ai;
   do {
     todo = false;
-    for(tie(vi, vend) = vertices(g); vi != vend; vi++) {
+    for(boost::tie(vi, vend) = vertices(g); vi != vend; vi++) {
       int me = *vi;
       if(degree(me, g) == 2) {
         ai = adjacent_vertices(me, g).first;
