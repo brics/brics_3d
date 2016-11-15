@@ -138,10 +138,14 @@ bool JSONQueryRunner::query(libvariant::Variant& query,
 
 				int error = updateOperationRunner->write(query);
 				LOG(DEBUG) <<"JSONQueryRunner: error code for update = " << error;
-				if(error > 0) {
+				if(error > 0) { //NOTE: we dont't have this elaborated error messaging (yet) for RSGUpdate here as compared to the queries.
 					result.Set("updateSuccess", libvariant::Variant(true));
+					return true;
+				} else {
+					result.Set("updateSuccess", libvariant::Variant(false));
+					return false;
 				}
-				//NOTE: we dont't have this elaborated error messaging (yet) for RSGUpdate here as compared to the queries.
+
 			} else if (type.compare("RSGFunctionBlock") == 0) {
 				LOG(DEBUG) << "JSONQueryRunner: Found a model for a FunctionBlock operation.";
 				result.Clear();

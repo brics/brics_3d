@@ -2178,9 +2178,28 @@ void JSONTest::testUpdates() {
 	    << "},"
 	<<"}";
 	queryAsJson = queryAsJson2.str();
-	CPPUNIT_ASSERT(!queryRunner.query(queryAsJson, resultAsJson)); // should be ok
+	CPPUNIT_ASSERT(!queryRunner.query(queryAsJson, resultAsJson)); // should be an error
 	LOG(INFO) << "testUpdates::resultAsJson: " << resultAsJson;
 	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGUpdateResult\",\"updateSuccess\": false}") == 0); // "{}" means parser error;
+
+	/* add one with query Id */
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGUpdate\","
+		<< "\"operation\": \"CREATE\","
+	    << "\"parentId\": \"00000000-0000-0000-0000-000000000042\","
+	    << "\"queryId\": \"00000000-0000-0000-0000-000000000001\","
+	    << "\"node\": {"
+	    << "  \"@graphtype\": \"Node\","
+	    << "  \"id\": \"a0483c43-4a36-4197-be49-de829cdd66c9\","
+	    << "},"
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson)); // should be ok
+	LOG(INFO) << "testUpdates::resultAsJson: " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGUpdateResult\",\"queryId\": \"00000000-0000-0000-0000-000000000001\",\"updateSuccess\": true}") == 0); // "{}" means parser error;
+
 
 	/* add a group with out an id, this is allowed */
 	queryAsJson2.str("");
@@ -2197,6 +2216,8 @@ void JSONTest::testUpdates() {
 	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson)); // should be ok
 	LOG(INFO) << "testUpdates::resultAsJson: " << resultAsJson;
 	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGUpdateResult\",\"updateSuccess\": true}") == 0); // "{}" means parser error;
+
+
 
 	/*
 	 * Repeat for Group
@@ -2230,7 +2251,7 @@ void JSONTest::testUpdates() {
 	    << "},"
 	<<"}";
 	queryAsJson = queryAsJson2.str();
-	CPPUNIT_ASSERT(!queryRunner.query(queryAsJson, resultAsJson)); // should be ok
+	CPPUNIT_ASSERT(!queryRunner.query(queryAsJson, resultAsJson)); // should be an error
 	LOG(INFO) << "testUpdates::resultAsJson: " << resultAsJson;
 	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGUpdateResult\",\"updateSuccess\": false}") == 0); // "{}" means parser error;
 
@@ -2588,7 +2609,7 @@ void JSONTest::testComplexAttributeValues() {
 	LOG(DEBUG) << "resultAsJson " << resultAsJson;
 	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"sherpa:command\",\"value\": \"follow me\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
 
-	/* Set the "simple" attribute again to see that nothing get appended. */
+	/* Set the "simple" attribute again to see that nothing get appended. Though we have to make a small modification since the same operation twice is rejected */
 	queryAsJson2.str("");
 	queryAsJson2
 	<<"{"
@@ -2598,7 +2619,7 @@ void JSONTest::testComplexAttributeValues() {
 		<< "  \"@graphtype\": \"Node\","
 		<< "  \"id\": \"00000000-0000-0000-0000-000000000042\","
 		<< "  \"attributes\": ["
-		<< "       {\"key\": \"sherpa:command\", \"value\": \"follow me\"},"
+		<< "       {\"key\": \"sherpa:command\", \"value\": \"follow me2\"},"
 		<< "  ],"
 		<< " },"
 	<<"}";
@@ -2615,7 +2636,7 @@ void JSONTest::testComplexAttributeValues() {
 	queryAsJson = queryAsJson2.str();
 	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
 	LOG(DEBUG) << "resultAsJson " << resultAsJson;
-	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"sherpa:command\",\"value\": \"follow me\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"sherpa:command\",\"value\": \"follow me2\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
 
 	/* Set the "complex" attribute. */
 	queryAsJson2.str("");
