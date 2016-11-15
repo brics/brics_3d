@@ -74,7 +74,7 @@ private:
 void JSONTest::setUp() {
 
 	doRun = false;
-	brics_3d::Logger::setMinLoglevel(brics_3d::Logger::INFO);
+	brics_3d::Logger::setMinLoglevel(brics_3d::Logger::LOGDEBUG);
 
 	if(getenv("FBX_MODULES") != 0) {
 		string functionBlocksModulesPath(getenv("FBX_MODULES"));
@@ -2133,6 +2133,122 @@ void JSONTest::testQuerys() {
 	LOG(DEBUG) << "resultAsJson " << resultAsJson;
 	CPPUNIT_ASSERT(resultAsJson.compare("{}") == 0);
 
+
+	delete wm;
+}
+
+void JSONTest::testUpdates() {
+	Id rootId;
+	rootId.fromString("00000000-0000-0000-0000-000000000042");
+	rsg::IIdGenerator* idGenerator = new brics_3d::rsg::UuidGenerator(rootId);
+	brics_3d::WorldModel* wm = new brics_3d::WorldModel(idGenerator);
+	brics_3d::rsg::JSONQueryRunner queryRunner(wm);
+
+	std::string queryAsJson = "";
+	std::string resultAsJson = "";
+	std::stringstream queryAsJson2;
+
+	/* add a normal Node */
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGUpdate\","
+		<< "\"operation\": \"CREATE\","
+	    << "\"parentId\": \"00000000-0000-0000-0000-000000000042\","
+	    << "\"node\": {"
+	    << "  \"@graphtype\": \"Node\","
+	    << "  \"id\": \"d0483c43-4a36-4197-be49-de829cdd66c9\","
+	    << "},"
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson)); // should be ok
+//	LOG(INFO) << "testUpdates::resultAsJson: " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGUpdateResult\",\"updateSuccess\": true}") == 0); // "{}" means parser error;
+
+	/* add the _same_ group twice, this is an error */
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGUpdate\","
+		<< "\"operation\": \"CREATE\","
+	    << "\"parentId\": \"00000000-0000-0000-0000-000000000042\","
+	    << "\"node\": {"
+	    << "  \"@graphtype\": \"Node\","
+	    << "  \"id\": \"d0483c43-4a36-4197-be49-de829cdd66c9\","
+	    << "},"
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(!queryRunner.query(queryAsJson, resultAsJson)); // should be ok
+	LOG(INFO) << "testUpdates::resultAsJson: " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGUpdateResult\",\"updateSuccess\": false}") == 0); // "{}" means parser error;
+
+	/* add a group with out an id, this is allowed */
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGUpdate\","
+		<< "\"operation\": \"CREATE\","
+	    << "\"parentId\": \"00000000-0000-0000-0000-000000000042\","
+	    << "\"node\": {"
+	    << "  \"@graphtype\": \"Node\","
+	    << "},"
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson)); // should be ok
+	LOG(INFO) << "testUpdates::resultAsJson: " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGUpdateResult\",\"updateSuccess\": true}") == 0); // "{}" means parser error;
+
+	/*
+	 * Repeat for Group
+	 */
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGUpdate\","
+		<< "\"operation\": \"CREATE\","
+	    << "\"parentId\": \"00000000-0000-0000-0000-000000000042\","
+	    << "\"node\": {"
+	    << "  \"@graphtype\": \"Group\","
+	    << "  \"id\": \"e0483c43-4a36-4197-be49-de829cdd66c9\","
+	    << "},"
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson)); // should be ok
+//	LOG(INFO) << "testUpdates::resultAsJson: " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGUpdateResult\",\"updateSuccess\": true}") == 0); // "{}" means parser error;
+
+	/* add the _same_ group twice, this is an error */
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGUpdate\","
+		<< "\"operation\": \"CREATE\","
+	    << "\"parentId\": \"00000000-0000-0000-0000-000000000042\","
+	    << "\"node\": {"
+	    << "  \"@graphtype\": \"Group\","
+	    << "  \"id\": \"e0483c43-4a36-4197-be49-de829cdd66c9\","
+	    << "},"
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(!queryRunner.query(queryAsJson, resultAsJson)); // should be ok
+	LOG(INFO) << "testUpdates::resultAsJson: " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGUpdateResult\",\"updateSuccess\": false}") == 0); // "{}" means parser error;
+
+	/* add a group with out an id, this is allowed */
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGUpdate\","
+		<< "\"operation\": \"CREATE\","
+	    << "\"parentId\": \"00000000-0000-0000-0000-000000000042\","
+	    << "\"node\": {"
+	    << "  \"@graphtype\": \"Group\","
+	    << "},"
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson)); // should be ok
+	LOG(INFO) << "testUpdates::resultAsJson: " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGUpdateResult\",\"updateSuccess\": true}") == 0); // "{}" means parser error;
 
 	delete wm;
 }

@@ -38,6 +38,7 @@ class JSONTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testUpdateObersver );
 	CPPUNIT_TEST( testInputFilter );
 	CPPUNIT_TEST( testQuerys );
+	CPPUNIT_TEST( testUpdates );
 	CPPUNIT_TEST( testRootNodeQuerys );
 #ifdef BRICS_MICROBLX_ENABLE
 	CPPUNIT_TEST( testFunctionBlockQuerys );
@@ -55,6 +56,7 @@ public:
 	void testUpdateObersver();
 	void testInputFilter();
 	void testQuerys();
+	void testUpdates();
 	void testFunctionBlockQuerys();
 	void testRootNodeQuerys();
 	void testComplexAttributeValues();
