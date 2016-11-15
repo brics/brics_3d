@@ -2147,6 +2147,8 @@ void JSONTest::testUpdates() {
 	std::string queryAsJson = "";
 	std::string resultAsJson = "";
 	std::stringstream queryAsJson2;
+	vector<Attribute> attributes;
+	vector<Id> resultIds;
 
 	/* add a normal Node */
 	queryAsJson2.str("");
@@ -2210,14 +2212,21 @@ void JSONTest::testUpdates() {
 	    << "\"parentId\": \"00000000-0000-0000-0000-000000000042\","
 	    << "\"node\": {"
 	    << "  \"@graphtype\": \"Node\","
+	    << "  \"attributes\": ["
+	    << "     {\"key\": \"name\", \"value\": \"myNode1\"},"
+	    << "  ]"
 	    << "},"
 	<<"}";
 	queryAsJson = queryAsJson2.str();
 	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson)); // should be ok
 	LOG(INFO) << "testUpdates::resultAsJson: " << resultAsJson;
 	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGUpdateResult\",\"updateSuccess\": true}") == 0); // "{}" means parser error;
-
-
+	//check if we can find that node again by its attribute
+	resultIds.clear();
+	attributes.clear();
+	attributes.push_back(rsg::Attribute("name", "myNode1"));
+	CPPUNIT_ASSERT(wm->scene.getNodes(attributes, resultIds));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultIds.size()));
 
 	/*
 	 * Repeat for Group
@@ -2264,12 +2273,47 @@ void JSONTest::testUpdates() {
 	    << "\"parentId\": \"00000000-0000-0000-0000-000000000042\","
 	    << "\"node\": {"
 	    << "  \"@graphtype\": \"Group\","
+	    << "  \"attributes\": ["
+	    << "     {\"key\": \"name\", \"value\": \"myGroup1\"},"
+	    << "  ]"
 	    << "},"
 	<<"}";
 	queryAsJson = queryAsJson2.str();
 	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson)); // should be ok
 	LOG(INFO) << "testUpdates::resultAsJson: " << resultAsJson;
 	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGUpdateResult\",\"updateSuccess\": true}") == 0); // "{}" means parser error;
+	//check if we can find that Group again by its attribute
+	resultIds.clear();
+	attributes.clear();
+	attributes.push_back(rsg::Attribute("name", "myGroup1"));
+	CPPUNIT_ASSERT(wm->scene.getNodes(attributes, resultIds));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultIds.size()));
+
+	/* add a group with out an id, but with queryId this is allowed */
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGUpdate\","
+		<< "\"operation\": \"CREATE\","
+	    << "\"parentId\": \"00000000-0000-0000-0000-000000000042\","
+	    << "\"queryId\": \"00000000-0000-0000-0000-000000000002\","
+	    << "\"node\": {"
+	    << "  \"@graphtype\": \"Group\","
+	    << "  \"attributes\": ["
+	    << "     {\"key\": \"name\", \"value\": \"myGroup2\"},"
+	    << "  ]"
+	    << "},"
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson)); // should be ok
+	LOG(INFO) << "testUpdates::resultAsJson: " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGUpdateResult\",\"queryId\": \"00000000-0000-0000-0000-000000000002\",\"updateSuccess\": true}") == 0); // "{}" means parser error;
+	//check if we can find that Group again by its attribute
+	resultIds.clear();
+	attributes.clear();
+	attributes.push_back(rsg::Attribute("name", "myGroup2"));
+	CPPUNIT_ASSERT(wm->scene.getNodes(attributes, resultIds));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultIds.size()));
 
 	delete wm;
 }
