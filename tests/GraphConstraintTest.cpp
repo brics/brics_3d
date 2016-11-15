@@ -23,6 +23,7 @@
 #include "brics_3d/core/Logger.h"
 #include "brics_3d/worldModel/sceneGraph/GraphConstraint.h"
 #include "brics_3d/worldModel/sceneGraph/GraphConstraintUpdateFilter.h"
+#include "brics_3d/worldModel/sceneGraph/UpdatesToSceneGraphListener.h"
 
 using namespace brics_3d;
 
@@ -135,6 +136,149 @@ void GraphConstraintTest::testNoConstraints() {
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.removeParentCounter);
 
 	delete wm;
+}
+
+void GraphConstraintTest::testNoInputConstraints() {
+	WorldModel* myWm = new WorldModel();
+	MyObserver wmNodeCounter;
+	GraphConstraintUpdateFilter filter(myWm, brics_3d::rsg::GraphConstraintUpdateFilter::RECEIVER);
+	UpdatesToSceneGraphListener wmUpdatesToWm;  // for constraint_filter
+	wmUpdatesToWm.setForcedIdPolicy(false); // mandatory here, other wise the assignedId is not an [out] parameter
+
+	filter.attachUpdateObserver(&wmUpdatesToWm);
+	wmUpdatesToWm.attachSceneGraph(&myWm->scene);
+	myWm->scene.attachUpdateObserver(&wmNodeCounter);
+	myWm->scene.setCallObserversEvenIfErrorsOccurred(false);
+
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addNodeCounter); //precondition
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addRemoteRootNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addConnectionCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.removeParentCounter);
+
+	/* Perform updates on the filter  */
+	Id dumyId = 0;
+	CPPUNIT_ASSERT(dumyId.isNil());
+	vector<Attribute> attributes;
+	vector<Attribute> dummyAttributes;
+	TimeStamp t1 = myWm->now();
+
+	CPPUNIT_ASSERT(filter.addNode(myWm->getRootNodeId(), dumyId, attributes));
+	CPPUNIT_ASSERT(!dumyId.isNil());
+	attributes.clear();
+	attributes.push_back(rsg::Attribute("osm:landuse", "forest"));
+	CPPUNIT_ASSERT(filter.addNode(myWm->getRootNodeId(), dumyId, attributes));
+	CPPUNIT_ASSERT(!dumyId.isNil());
+	attributes.clear();
+	attributes.push_back(rsg::Attribute("gis:origin", "initial"));
+	CPPUNIT_ASSERT(filter.addNode(myWm->getRootNodeId(), dumyId, attributes));
+	CPPUNIT_ASSERT(!dumyId.isNil());
+	attributes.clear();
+	CPPUNIT_ASSERT(filter.addGroup(myWm->getRootNodeId(), dumyId, attributes));
+	CPPUNIT_ASSERT(!dumyId.isNil());
+
+	attributes.clear();
+	attributes.push_back(rsg::Attribute("tf:name", "tf_1"));
+	rsg::Id tf1Id = 0;
+	brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform123(new brics_3d::HomogeneousMatrix44(1,0,0,  	// Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             1,2,3)); 						// Translation coefficients
+
+	brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform234(new brics_3d::HomogeneousMatrix44(1,0,0,  	// Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             2,3,4)); 						// Translation coefficients
+
+	CPPUNIT_ASSERT(filter.addTransformNode(myWm->getRootNodeId(), tf1Id, attributes, transform123, t1));
+	CPPUNIT_ASSERT(!tf1Id.isNil());
+
+	Id utfId = 0;
+	ITransformUncertainty::ITransformUncertaintyPtr uncertainty123(new CovarianceMatrix66(3, 0.001, 0.001, 0.0000, 0.000000, 0.00000));
+	CPPUNIT_ASSERT(filter.addUncertainTransformNode(myWm->getRootNodeId(), utfId, dummyAttributes, transform234, uncertainty123, myWm->now()));
+	CPPUNIT_ASSERT(!utfId.isNil());
+
+	rsg::Box::BoxPtr box( new rsg::Box(1,2,3)); //LOD 3 / 1*2*3 => 3 / 6m^3 => 1 sample /2 m^3 => LOD = 0.5
+	rsg::Id boxId;
+	CPPUNIT_ASSERT(filter.addGeometricNode(myWm->getRootNodeId(), boxId, dummyAttributes, box, myWm->now()));
+	CPPUNIT_ASSERT(filter.deleteNode(boxId));
+
+	CPPUNIT_ASSERT(filter.addParent(utfId, tf1Id));
+	CPPUNIT_ASSERT(filter.removeParent(utfId, tf1Id));
+
+	Id someRemoteNode = 42+i;
+	CPPUNIT_ASSERT(filter.addRemoteRootNode(someRemoteNode, dummyAttributes));
+
+	vector<Attribute> rootAttibutes;
+	rootAttibutes.push_back(Attribute("name","someRootNodePolicy"));
+	CPPUNIT_ASSERT(filter.setNodeAttributes(someRemoteNode, rootAttibutes, myWm->now())); // Note, identical attribute will not be set
+
+	Id connId;
+	vector<Attribute> connectionAttributes;
+	connectionAttributes.push_back(Attribute("rsg:type","has_geometry"));
+	vector<Id> sourceIs;
+	sourceIs.push_back(utfId);
+	vector<Id> targetIs;
+	targetIs.push_back(tf1Id);
+	targetIs.push_back(utfId);
+	LOG(DEBUG) << "Adding connection { source = {" << utfId << "}, target = {" << tf1Id << ", "<< utfId << "}}";
+	CPPUNIT_ASSERT(filter.addConnection(myWm->getRootNodeId(), connId, connectionAttributes, sourceIs, targetIs, myWm->now(), myWm->now()));
+
+	brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform456(new brics_3d::HomogeneousMatrix44(1,0,0,  	// Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             4,5,6));
+	TimeStamp t2 = myWm->now();//t1 + Duration(0.5, Units::Second);
+	CPPUNIT_ASSERT(filter.setTransform(tf1Id, transform456, t2));
+	TimeStamp t3 = myWm->now();//t2 + Duration(1.0, Units::Second);
+	CPPUNIT_ASSERT(filter.setTransform(tf1Id, transform456, t3));
+
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addNodeCounter); //precondition
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addRemoteRootNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addConnectionCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.removeParentCounter);
+
+	/* Now CHECK wrong operations */
+	Id invalidId = 7;
+	CPPUNIT_ASSERT(!filter.addNode(invalidId, dumyId, attributes));
+	CPPUNIT_ASSERT(!filter.addGroup(invalidId, dumyId, attributes));
+	CPPUNIT_ASSERT(!filter.addTransformNode(invalidId, tf1Id, attributes, transform123, t1));
+	CPPUNIT_ASSERT(!filter.addUncertainTransformNode(invalidId, utfId, dummyAttributes, transform234, uncertainty123, myWm->now()));
+	CPPUNIT_ASSERT(!filter.addGeometricNode(invalidId, boxId, dummyAttributes, box, myWm->now()));
+	CPPUNIT_ASSERT(!filter.deleteNode(invalidId));
+	CPPUNIT_ASSERT(!filter.addParent(invalidId, invalidId));
+	CPPUNIT_ASSERT(!filter.removeParent(invalidId, invalidId));
+	CPPUNIT_ASSERT(!filter.addRemoteRootNode(someRemoteNode, dummyAttributes)); // twice => should fail
+	CPPUNIT_ASSERT(!filter.addConnection(invalidId, connId, connectionAttributes, sourceIs, targetIs, myWm->now(), myWm->now()));
+	CPPUNIT_ASSERT(!filter.setTransform(invalidId, transform456, t3));
+
+	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addNodeCounter); //precondition
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addGroupCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addGeometricNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addRemoteRootNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addConnectionCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.setNodeAttributesCounter);
+	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.deleteNodeCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addParentCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.removeParentCounter);
+
+	delete myWm;
+
 }
 
 void GraphConstraintTest::testSimpleConstraints() {

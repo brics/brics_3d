@@ -36,6 +36,7 @@ class GraphConstraintTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST_SUITE( GraphConstraintTest );
 	CPPUNIT_TEST( testParser );
 	CPPUNIT_TEST( testNoConstraints );
+	CPPUNIT_TEST( testNoInputConstraints );
 	CPPUNIT_TEST( testSimpleConstraints );
 	CPPUNIT_TEST( testInvalidConstraints );
 	CPPUNIT_TEST( testSemanticContextConstraints );
@@ -56,6 +57,7 @@ public:
 
 	void testParser();
 	void testNoConstraints();
+	void testNoInputConstraints();
 	void testSimpleConstraints();
 	void testInvalidConstraints();
 	void testSemanticContextConstraints();

@@ -47,7 +47,7 @@ public:
 	GraphConstraintUpdateFilter(WorldModel* wm, UpdateMode mode = SENDER);
 	virtual ~GraphConstraintUpdateFilter();
 
-	/* implemetntations of observer interface */
+	/* Implementation of observer interface */
 	bool addNode(Id parentId, Id& assignedId, vector<Attribute> attributes, bool forcedId = false);
 	bool addGroup(Id parentId, Id& assignedId, vector<Attribute> attributes, bool forcedId = false);
 	bool addTransformNode(Id parentId, Id& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp, bool forcedId = false);

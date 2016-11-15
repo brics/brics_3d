@@ -137,7 +137,7 @@ bool JSONQueryRunner::query(libvariant::Variant& query,
 				}
 
 				int error = updateOperationRunner->write(query);
-				LOG(DEBUG) <<"JSONQueryRunner: error code for update = " << error;
+				LOG(DEBUG) <<"JSONQueryRunner: error code for RSGUpdate = " << error;
 				if(error > 0) { //NOTE: we dont't have this elaborated error messaging (yet) for RSGUpdate here as compared to the queries.
 					result.Set("updateSuccess", libvariant::Variant(true));
 					return true;

@@ -74,8 +74,12 @@ int JSONDeserializer::write(libvariant::Variant& model) {
 
 			std::string type = model.Get("@worldmodeltype").AsString();
 			if(type.compare("RSGUpdate") == 0) {
+				int errorCode = -1;
 				LOG(DEBUG) << "JSONDeserializer: Found a model for an update.";
-				return handleWorldModelUpdate(model);
+				if(handleWorldModelUpdate(model)) {
+					errorCode = 1;
+				}
+				return errorCode;
 			} else if (type.compare("WorldModelAgent") == 0) {
 				LOG(DEBUG) << "JSONDeserializer: Found model for a WorldModelAgent.";
 				handleWorldModelAgent(model);
@@ -448,7 +452,9 @@ bool JSONDeserializer::doAddNode(libvariant::Variant& group, rsg::Id parentId) {
 	std::vector<rsg::Attribute> attributes = rsg::JSONTypecaster::getAttributesFromJSON(group);
 
 	/* create it */
-	return sceneUpdater->addNode(parentId, id, attributes, !id.isNil()); // Last parameter makes the "id" field optional
+	bool success1 = sceneUpdater->addNode(parentId, id, attributes, !id.isNil()); // Last parameter makes the "id" field optional
+	LOG(DEBUG) << "JSONDeserializer::doAddNode success = " << success1;
+	return success1;
 }
 
 bool JSONDeserializer::doAddGroup(libvariant::Variant& group, rsg::Id parentId) {

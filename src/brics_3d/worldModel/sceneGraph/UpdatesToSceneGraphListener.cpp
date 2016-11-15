@@ -36,40 +36,42 @@ UpdatesToSceneGraphListener::~UpdatesToSceneGraphListener() {
 
 bool UpdatesToSceneGraphListener::addNode(Id parentId, Id& assignedId,
 		vector<Attribute> attributes, bool forcedId) {
+	bool success = true;
 
 	/* Call _all_ observers  */
 	std::vector<ISceneGraphUpdate*>::iterator observerIterator;
 	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
-		(*observerIterator)->addNode(parentId, assignedId, attributes, forcedIdPolicy);
+		success &= (*observerIterator)->addNode(parentId, assignedId, attributes, forcedId||forcedIdPolicy);
 	}
-	return true;
+	return success;
 }
 
 bool UpdatesToSceneGraphListener::addGroup(Id parentId, Id& assignedId,
 		vector<Attribute> attributes, bool forcedId) {
+	bool success = true;
 
 	/* Call _all_ observers  */
 	LOG(DEBUG) << "UpdatesToSceneGraphListener::addGroup: " << assignedId << " to parent " << parentId << ", " << forcedId;
 	std::vector<ISceneGraphUpdate*>::iterator observerIterator;
 	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
-		(*observerIterator)->addGroup(parentId, assignedId, attributes, forcedIdPolicy);
+		success &= (*observerIterator)->addGroup(parentId, assignedId, attributes, forcedId||forcedIdPolicy);
 	}
-	return true;
+	return success;
 }
 
 bool UpdatesToSceneGraphListener::addTransformNode(Id parentId, Id& assignedId,
 		vector<Attribute> attributes,
 		IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform,
 		TimeStamp timeStamp, bool forcedId) {
+	bool success = true;
 
 	/* Call _all_ observers  */
 	std::vector<ISceneGraphUpdate*>::iterator observerIterator;
 	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
-		(*observerIterator)->addTransformNode(parentId, assignedId, attributes, transform, timeStamp, forcedIdPolicy);
+		success &= (*observerIterator)->addTransformNode(parentId, assignedId, attributes, transform, timeStamp, forcedId||forcedIdPolicy);
 	}
 
-	return true;
-
+	return success;
 }
 
 bool UpdatesToSceneGraphListener::addUncertainTransformNode(Id parentId,
@@ -77,112 +79,125 @@ bool UpdatesToSceneGraphListener::addUncertainTransformNode(Id parentId,
 		IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform,
 		ITransformUncertainty::ITransformUncertaintyPtr uncertainty,
 		TimeStamp timeStamp, bool forcedId) {
+	bool success = true;
 
 	/* Call _all_ observers  */
 	std::vector<ISceneGraphUpdate*>::iterator observerIterator;
 	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
-		(*observerIterator)->addUncertainTransformNode(parentId, assignedId, attributes, transform, uncertainty, timeStamp, forcedIdPolicy);
+		success &= (*observerIterator)->addUncertainTransformNode(parentId, assignedId, attributes, transform, uncertainty, timeStamp, forcedId||forcedIdPolicy);
 	}
 
-	return true;
+	return success;
 }
 
 
 bool UpdatesToSceneGraphListener::addGeometricNode(Id parentId, Id& assignedId,
 		vector<Attribute> attributes, Shape::ShapePtr shape,
 		TimeStamp timeStamp, bool forcedId) {
+	bool success = true;
 
 	/* Call _all_ observers  */
 	std::vector<ISceneGraphUpdate*>::iterator observerIterator;
 	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
-		(*observerIterator)->addGeometricNode(parentId, assignedId, attributes, shape, timeStamp, forcedIdPolicy);
+		success &= (*observerIterator)->addGeometricNode(parentId, assignedId, attributes, shape, timeStamp, forcedId||forcedIdPolicy);
 	}
-	return true;
+	return success;
 }
 
 bool UpdatesToSceneGraphListener::addRemoteRootNode(Id rootId, vector<Attribute> attributes) {
+	bool success = true;
 
 	/* Call _all_ observers  */
 	LOG(DEBUG) << "UpdatesToSceneGraphListener::addRemoteRootNode with ID: " << rootId;
 	std::vector<ISceneGraphUpdate*>::iterator observerIterator;
 	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
-		(*observerIterator)->addRemoteRootNode(rootId,  attributes);
+		success &= (*observerIterator)->addRemoteRootNode(rootId,  attributes);
 	}
-	return true;
+	return success;
 }
 
 bool UpdatesToSceneGraphListener::addConnection(Id parentId, Id& assignedId, vector<Attribute> attributes, vector<Id> sourceIds, vector<Id> targetIds, TimeStamp start, TimeStamp end, bool forcedId) {
+	bool success = true;
 
 	/* Call _all_ observers  */
 	LOG(DEBUG) << "UpdatesToSceneGraphListener::addConnection with ID: " << assignedId;
 	std::vector<ISceneGraphUpdate*>::iterator observerIterator;
 	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
-		(*observerIterator)->addConnection(parentId, assignedId, attributes, sourceIds, targetIds, start, end, forcedId);
+		success &= (*observerIterator)->addConnection(parentId, assignedId, attributes, sourceIds, targetIds, start, end, forcedId||forcedIdPolicy);
 	}
-	return true;
+	return success;
 }
 
 bool UpdatesToSceneGraphListener::setNodeAttributes(Id id,
 		vector<Attribute> newAttributes, TimeStamp timeStamp) {
+	bool success = true;
 
 	/* Call _all_ observers  */
 	std::vector<ISceneGraphUpdate*>::iterator observerIterator;
 	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
-		(*observerIterator)->setNodeAttributes(id, newAttributes, timeStamp);
+		success &= (*observerIterator)->setNodeAttributes(id, newAttributes, timeStamp);
 	}
-	return true;
+	return success;
 }
 
 bool UpdatesToSceneGraphListener::setTransform(Id id,
 		IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform,
 		TimeStamp timeStamp) {
+	bool success = true;
 
 	/* Inform related observer(s) */
 	std::vector<ISceneGraphUpdate*>::iterator observerIterator;
 	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
-		(*observerIterator)->setTransform(id, transform, timeStamp);
+		success &= (*observerIterator)->setTransform(id, transform, timeStamp);
 	}
-	return true;
+	return success;
 }
 
 bool UpdatesToSceneGraphListener::setUncertainTransform(Id id,
 		IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform,
 		ITransformUncertainty::ITransformUncertaintyPtr uncertainty,
 		TimeStamp timeStamp) {
+	bool success = true;
 
 	/* Call _all_ observers  */
 	std::vector<ISceneGraphUpdate*>::iterator observerIterator;
 	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
-		(*observerIterator)->setUncertainTransform(id, transform, uncertainty, timeStamp);
+		success &= (*observerIterator)->setUncertainTransform(id, transform, uncertainty, timeStamp);
 	}
-	return true;
+	return success;
 }
 
 bool UpdatesToSceneGraphListener::deleteNode(Id id) {
+	bool success = true;
+
 	/* Call _all_ observers  */
 	std::vector<ISceneGraphUpdate*>::iterator observerIterator;
 	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
-		(*observerIterator)->deleteNode(id);
+		success &= (*observerIterator)->deleteNode(id);
 	}
-	return true;
+	return success;
 }
 
 bool UpdatesToSceneGraphListener::addParent(Id id, Id parentId) {
+	bool success = true;
+
 	/* Call _all_ observers  */
 	std::vector<ISceneGraphUpdate*>::iterator observerIterator;
 	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
-		(*observerIterator)->addParent(id, parentId);
+		success &= (*observerIterator)->addParent(id, parentId);
 	}
-	return true;
+	return success;
 }
 
 bool UpdatesToSceneGraphListener::removeParent(Id id, Id parentId) {
+	bool success = true;
+
 	/* Call _all_ observers  */
 	std::vector<ISceneGraphUpdate*>::iterator observerIterator;
 	for (observerIterator = updateObservers.begin(); observerIterator != updateObservers.end(); ++observerIterator) {
-		(*observerIterator)->removeParent(id, parentId);
+		success &= (*observerIterator)->removeParent(id, parentId);
 	}
-	return true;
+	return success;
 }
 
 bool UpdatesToSceneGraphListener::attachSceneGraph(

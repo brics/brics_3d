@@ -2142,6 +2142,7 @@ void JSONTest::testUpdates() {
 	rootId.fromString("00000000-0000-0000-0000-000000000042");
 	rsg::IIdGenerator* idGenerator = new brics_3d::rsg::UuidGenerator(rootId);
 	brics_3d::WorldModel* wm = new brics_3d::WorldModel(idGenerator);
+	wm->scene.setCallObserversEvenIfErrorsOccurred(false);
 	brics_3d::rsg::JSONQueryRunner queryRunner(wm);
 
 	std::string queryAsJson = "";
@@ -2312,6 +2313,80 @@ void JSONTest::testUpdates() {
 	resultIds.clear();
 	attributes.clear();
 	attributes.push_back(rsg::Attribute("name", "myGroup2"));
+	CPPUNIT_ASSERT(wm->scene.getNodes(attributes, resultIds));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultIds.size()));
+
+	/* Apply existing example for first time */
+	attributes.clear();
+	Id remoteRoot;
+	remoteRoot.fromString("e379121f-06c6-4e21-ae9d-ae78ec1986a1"); // later used as parentId
+	CPPUNIT_ASSERT(wm->scene.addRemoteRootNode(remoteRoot, attributes));
+	CPPUNIT_ASSERT(wm->scene.addParent(rootId, remoteRoot));
+	//	{
+//	  "@worldmodeltype": "RSGUpdate",
+//	  "operation": "CREATE",
+//	  "node": {
+//	    "@graphtype": "Node",
+//	    "id": "92cf7a8d-4529-4abd-b174-5fabbdd3068f",
+//	    "attributes": [
+//	          {"key": "name", "value": "myNode"},
+//	          {"key": "comment", "value": "Some human readable comment on the node."}
+//	    ]
+//	  },
+//	  "parentId": "e379121f-06c6-4e21-ae9d-ae78ec1986a1"
+//	}
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGUpdate\","
+		<< "\"queryId\": \"4f574c0c-842c-7c39-5132-46acf5794996\","
+		<< "\"operation\": \"CREATE\","
+	    << "\"node\": {"
+	    << "  \"@graphtype\": \"Node\","
+	    << "  \"id\": \"92cf7a8d-4529-4abd-b174-5fabbdd3068f\","
+	    << "  \"attributes\": ["
+	    << "     {\"key\": \"name\", \"value\": \"myNode\"},"
+	    << "     {\"key\": \"comment\", \"value\": \"Some human readable comment on the node.\"}"
+	    << "  ]"
+	    << "},"
+	    << "\"parentId\": \"e379121f-06c6-4e21-ae9d-ae78ec1986a1\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson)); // should be ok
+	LOG(INFO) << "testUpdates::resultAsJson: " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGUpdateResult\",\"queryId\": \"4f574c0c-842c-7c39-5132-46acf5794996\",\"updateSuccess\": true}") == 0); // "{}" means parser error;
+	//check if we can find that Group again by its attribute
+	resultIds.clear();
+	attributes.clear();
+	attributes.push_back(rsg::Attribute("name", "myNode"));
+	CPPUNIT_ASSERT(wm->scene.getNodes(attributes, resultIds));
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultIds.size()));
+
+	/* Apply it for second time. This should fail. */
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGUpdate\","
+		<< "\"queryId\": \"4f574c0c-842c-7c39-5132-46acf5794996\","
+		<< "\"operation\": \"CREATE\","
+	    << "\"node\": {"
+	    << "  \"@graphtype\": \"Node\","
+	    << "  \"id\": \"92cf7a8d-4529-4abd-b174-5fabbdd3068f\","
+	    << "  \"attributes\": ["
+	    << "     {\"key\": \"name\", \"value\": \"myNode\"},"
+	    << "     {\"key\": \"comment\", \"value\": \"Some human readable comment on the node.\"}"
+	    << "  ]"
+	    << "},"
+	    << "\"parentId\": \"e379121f-06c6-4e21-ae9d-ae78ec1986a1\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(!queryRunner.query(queryAsJson, resultAsJson)); // should be an error
+	LOG(INFO) << "testUpdates::resultAsJson: " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGUpdateResult\",\"queryId\": \"4f574c0c-842c-7c39-5132-46acf5794996\",\"updateSuccess\": false}") == 0); // "{}" means parser error;
+	//check if we can find that Group again by its attribute
+	resultIds.clear();
+	attributes.clear();
+	attributes.push_back(rsg::Attribute("name", "myNode"));
 	CPPUNIT_ASSERT(wm->scene.getNodes(attributes, resultIds));
 	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultIds.size()));
 
