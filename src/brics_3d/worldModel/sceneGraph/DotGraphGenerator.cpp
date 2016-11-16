@@ -48,13 +48,8 @@ void DotGraphGenerator::visit(Node* node){
 	visitedNodes = find (alreadyVisitedNodes.begin(), alreadyVisitedNodes.end(), node);
 
 	if (visitedNodes == alreadyVisitedNodes.end()) { // if not in list: insert and handle node
-//		Connection* connection = dynamic_cast<Connection*>(node);
-//		if (connection != 0) { // TODO refactor dowards visitor
-//			LOG(DEBUG) << " DotGraphGenerator::visit(Node* node): Connection found";
-//			doHandleConnection(connection);
-//		} else {
-			doHandleNode(node);
-//		}
+		//LOG(DEBUG) << " DotGraphGenerator::visit(Node* node): visiting: " << node->getId();
+		doHandleNode(node);
 		alreadyVisitedNodes.push_back(node);
 	}
 }
@@ -266,6 +261,13 @@ void DotGraphGenerator::doHandleGeometricNode(GeometricNode* node) {
 
 void DotGraphGenerator::doHandleEdges(Group* node){
 	assert (node !=0);
+
+	/* Check that a node is not processed twice e.g. by multiple traversals */
+	vector<Node*>::iterator visitedNodes;
+	visitedNodes = find (alreadyVisitedNodes.begin(), alreadyVisitedNodes.end(), node);
+	if (visitedNodes != alreadyVisitedNodes.end()) { // if in list, skip processing of edge
+		return;
+	}
 
 	// An egde has the following format: 3 -> 4;
 
