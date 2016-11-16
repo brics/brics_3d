@@ -20,6 +20,8 @@
 #include "DotGraphGenerator.h"
 #include "brics_3d/core/Logger.h"
 
+#include <boost/algorithm/string/replace.hpp>
+
 namespace brics_3d {
 
 namespace rsg {
@@ -129,7 +131,7 @@ void DotGraphGenerator::doHandleNode(Node* node) {
         nodes << " [label = \"";
     	nodes << "ID [" << node->getId() << "]\\n";
 	}
-    nodes << aggregatedAttributes.str();
+    nodes << stringify(aggregatedAttributes.str());
     nodes << "\"]";
 	nodes << ";" << std::endl;
 }
@@ -161,7 +163,7 @@ void DotGraphGenerator::doHandleConnection(Connection* connection) {
     	nodes << "ID [" << connection->getId() << "]\\n";
 	}
 	nodes << "Connection\\n";
-    nodes << aggregatedAttributes.str();
+    nodes << stringify(aggregatedAttributes.str());
     nodes << "\"";
     nodes << "style=\"rounded,filled\" shape=diamond ";
 //    nodes << "style=\"filled\" ";
@@ -220,7 +222,7 @@ void DotGraphGenerator::doHandleTransform(Transform* node) {
 	}
     nodes << "T = (" << x << ", " << y <<", " << z << ")\\n";
     nodes << "Updates: " << node->getUpdateCount() << "\\n";
-    nodes << aggregatedAttributes.str();
+    nodes << stringify(aggregatedAttributes.str());
     nodes << "\"";
 //    nodes << "style=\"rounded,filled\", shape=diamond";
 //    nodes << "shape=circle";
@@ -253,7 +255,7 @@ void DotGraphGenerator::doHandleGeometricNode(GeometricNode* node) {
         nodes << " [label = \"";
     	nodes << "ID [" << node->getId() << "]\\n";
 	}
-    nodes << aggregatedAttributes.str();
+    nodes << stringify(aggregatedAttributes.str());
     nodes << "\"";
     nodes << "style=\"filled\" ";
 //    nodes << "fillcolor=green ";
@@ -314,6 +316,14 @@ std::string DotGraphGenerator::getDotGraph() {
 	dotGraph << "}" << std::endl;
 	result = dotGraph.str();
 	return result;
+}
+
+std::string DotGraphGenerator::stringify(std::string input) {
+	std::string stringifiedInput = input;
+//	LOG(DEBUG) << "DotGraphGenerator::stringify input = " << input;
+	boost::replace_all(stringifiedInput, "\"", "\\\""); // replace all " with \"
+//	LOG(DEBUG) << "DotGraphGenerator::stringify stringifiedInput = " << stringifiedInput;
+	return stringifiedInput;
 }
 
 }

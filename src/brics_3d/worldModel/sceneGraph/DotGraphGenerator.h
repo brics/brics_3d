@@ -70,6 +70,9 @@ protected:
 	virtual void doHandleGeometricNode(GeometricNode* node);
 	virtual void doHandleEdges(Group* node);
 
+	/// Stringify. This is necessary if input contain JOSN objects
+	std::string stringify(std::string input);
+
 	std::stringstream dotGraph;
 	std::stringstream nodes;
 	std::stringstream edges;
