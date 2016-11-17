@@ -17,7 +17,7 @@
 *
 ******************************************************************************/
 
-//#define BRICS_JSON_ENABLE  //FIXME
+#define BRICS_JSON_ENABLE  //FIXME
 #ifdef BRICS_JSON_ENABLE
 #include "JSONTest.h"
 #include "SceneGraphNodesTest.h" // for the observer counter
@@ -2471,6 +2471,154 @@ void JSONTest::testRootNodeQuerys() {
 		CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGUpdateResult\",\"updateSuccess\": true}") == 0);
 
 		delete wm;
+}
+
+void JSONTest::testSubGraphQuerys() {
+	brics_3d::Logger::setMinLoglevel(brics_3d::Logger::LOGDEBUG);
+	Id rootId;
+	rootId.fromString("00000000-0000-0000-0000-000000000042");
+	rsg::IIdGenerator* idGenerator = new brics_3d::rsg::UuidGenerator(rootId);
+	brics_3d::WorldModel* wm = new brics_3d::WorldModel(idGenerator);
+	brics_3d::rsg::JSONQueryRunner queryRunner(wm);
+	vector<Attribute> attributes;
+	vector<Id> resultIds;
+
+	/* graph
+	 *                 root
+	 *                   |
+	 *        -----------+----------
+	 *        |          |         |
+	 *       group1    group2     node4
+	 *        |
+	 *       group3
+	 */
+	Id group1;
+	CPPUNIT_ASSERT(group1.fromString("00000000-0000-0000-0000-000000000001"));
+	Id group2;
+	CPPUNIT_ASSERT(group2.fromString("00000000-0000-0000-0000-000000000002"));
+	Id group3;
+	CPPUNIT_ASSERT(group3.fromString("00000000-0000-0000-0000-000000000003"));
+	Id node4;
+	CPPUNIT_ASSERT(node4.fromString("00000000-0000-0000-0000-000000000004"));
+	Id subGraphId;
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","someTag"));
+
+	rootId = wm->scene.getRootId();
+	CPPUNIT_ASSERT(wm->scene.addGroup(rootId, group1, attributes, true));
+	CPPUNIT_ASSERT(wm->scene.addGroup(rootId, group2, attributes, true));
+	CPPUNIT_ASSERT(wm->scene.addNode(rootId, node4, attributes, true));
+	CPPUNIT_ASSERT(wm->scene.addGroup(group1, group3, attributes, true));
+
+	std::string queryAsJson = "";
+	std::string resultAsJson = "";
+	std::stringstream queryAsJson2;
+
+//	queryAsJson2
+//	<<"{"
+//		<< "\"@worldmodeltype\": \"RSGQuery\","
+//		<< "\"query\": \"GET_NODE_PARENTS\","
+//		<< "\"queryId\": \"some-query-id-12345\","
+//	    << "\"id\": \"d0483c43-4a36-4197-be49-de829cdd66c9\""
+//	<<"}";
+
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_NODES\","
+		<< "\"attributes\": ["
+		<< "     {\"key\": \"name\", \"value\": \"someTag\"}"
+		<< "]"
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	LOG(DEBUG) << "testSubGraphQuerys::queryAsJson " << queryAsJson;
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "testSubGraphQuerys::resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"ids\": [\"00000000-0000-0000-0000-000000000001\",\"00000000-0000-0000-0000-000000000003\",\"00000000-0000-0000-0000-000000000002\",\"00000000-0000-0000-0000-000000000004\"],\"query\": \"GET_NODES\",\"querySuccess\": true}") == 0);
+
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_NODES\","
+		<< "\"subgraphId\": \"00000000-0000-0000-0000-000000000042\","
+		<< "\"attributes\": ["
+		<< "     {\"key\": \"name\", \"value\": \"someTag\"}"
+		<< "]"
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	LOG(DEBUG) << "testSubGraphQuerys::queryAsJson " << queryAsJson;
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "testSubGraphQuerys::resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"ids\": [\"00000000-0000-0000-0000-000000000001\",\"00000000-0000-0000-0000-000000000003\",\"00000000-0000-0000-0000-000000000002\",\"00000000-0000-0000-0000-000000000004\"],\"query\": \"GET_NODES\",\"querySuccess\": true}") == 0);
+
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_NODES\","
+		<< "\"subgraphId\": \"00000000-0000-0000-0000-000000000001\","
+		<< "\"attributes\": ["
+		<< "     {\"key\": \"name\", \"value\": \"someTag\"}"
+		<< "]"
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	LOG(DEBUG) << "testSubGraphQuerys::queryAsJson " << queryAsJson;
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "testSubGraphQuerys::resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"ids\": [\"00000000-0000-0000-0000-000000000001\",\"00000000-0000-0000-0000-000000000003\"],\"query\": \"GET_NODES\",\"querySuccess\": true}") == 0);
+
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_NODES\","
+		<< "\"subgraphId\": \"00000000-0000-0000-0000-000000000002\","
+		<< "\"attributes\": ["
+		<< "     {\"key\": \"name\", \"value\": \"someTag\"}"
+		<< "]"
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	LOG(DEBUG) << "testSubGraphQuerys::queryAsJson " << queryAsJson;
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "testSubGraphQuerys::resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"ids\": [\"00000000-0000-0000-0000-000000000002\"],\"query\": \"GET_NODES\",\"querySuccess\": true}") == 0);
+
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_NODES\","
+		<< "\"subgraphId\": \"00000000-0000-0000-0000-000000000003\","
+		<< "\"attributes\": ["
+		<< "     {\"key\": \"name\", \"value\": \"someTag\"}"
+		<< "]"
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	LOG(DEBUG) << "testSubGraphQuerys::queryAsJson " << queryAsJson;
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "testSubGraphQuerys::resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"ids\": [\"00000000-0000-0000-0000-000000000003\"],\"query\": \"GET_NODES\",\"querySuccess\": true}") == 0);
+
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_NODES\","
+		<< "\"subgraphId\": \"00000000-0000-0000-0000-000000000004\","
+		<< "\"attributes\": ["
+		<< "     {\"key\": \"name\", \"value\": \"someTag\"}"
+		<< "]"
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	LOG(DEBUG) << "testSubGraphQuerys::queryAsJson " << queryAsJson;
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "testSubGraphQuerys::resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"ids\": [\"00000000-0000-0000-0000-000000000004\"],\"query\": \"GET_NODES\",\"querySuccess\": true}") == 0);
+
+	delete wm;
 }
 
 void JSONTest::testFunctionBlockQuerys() {

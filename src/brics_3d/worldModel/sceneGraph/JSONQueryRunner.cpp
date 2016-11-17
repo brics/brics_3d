@@ -234,9 +234,20 @@ bool JSONQueryRunner::handleGetNodes(libvariant::Variant& query,
 	/* prepare query */
 	std::vector<rsg::Attribute> attributes = JSONTypecaster::getAttributesFromJSON(query);
 	std::vector<rsg::Id> ids;
+	rsg::Id subgraphId = 0; //NIL
+
+	/* check if subgraphId is set */
+	if(query.Contains("subgraphId"))  {
+		subgraphId = JSONTypecaster::getIdFromJSON(query, "subgraphId");
+	}
 
 	/* perform query */
-	bool success = wm->scene.getNodes(attributes, ids);
+	bool success = false;
+	if(subgraphId.isNil()) { // without subgraphId
+		success = wm->scene.getNodes(attributes, ids);
+	} else { 				 // with subgraphId
+		success = wm->scene.getNodes(attributes, ids, subgraphId);
+	}
 
 	/* set up result message */
 	result.Set("query", libvariant::Variant("GET_NODES"));
