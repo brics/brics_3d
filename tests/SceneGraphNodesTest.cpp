@@ -5030,6 +5030,63 @@ void SceneGraphNodesTest::testGlobalRootNodeQueries() {
 
 }
 
+void SceneGraphNodesTest::testGetNodesInSubgraph() {
+	brics_3d::rsg::SceneGraphFacade scene;
+	vector<Attribute> attributes;
+	vector<Id> resultIds;
+
+	/* graph
+	 *                 root
+	 *                   |
+	 *        -----------+----------
+	 *        |          |         |
+	 *       group1    group2     node1
+	 *        |
+	 *       group3
+	 */
+	Id rootId;
+	Id group1;
+	Id group2;
+	Id group3;
+	Id node1;
+	Id subGraphId;
+
+	attributes.clear();
+	attributes.push_back(Attribute("name","someTag"));
+
+	rootId = scene.getRootId();
+	CPPUNIT_ASSERT(scene.addGroup(rootId, group1, attributes));
+	CPPUNIT_ASSERT(scene.addGroup(rootId, group2, attributes));
+	CPPUNIT_ASSERT(scene.addNode(rootId, node1, attributes));
+	CPPUNIT_ASSERT(scene.addGroup(group1, group3, attributes));
+
+	resultIds.clear();
+	scene.getNodes(attributes, resultIds);
+	CPPUNIT_ASSERT_EQUAL(4u, static_cast<unsigned int>(resultIds.size()));
+
+	resultIds.clear();
+	scene.getNodes(attributes, resultIds, rootId);
+	CPPUNIT_ASSERT_EQUAL(4u, static_cast<unsigned int>(resultIds.size()));
+
+	resultIds.clear();
+	scene.getNodes(attributes, resultIds, group1);
+	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(resultIds.size()));
+
+	resultIds.clear();
+	scene.getNodes(attributes, resultIds, group2);
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultIds.size()));
+
+	resultIds.clear();
+	scene.getNodes(attributes, resultIds, node1);
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultIds.size()));
+
+	resultIds.clear();
+	scene.getNodes(attributes, resultIds, group3);
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(resultIds.size()));
+
+
+}
+
 }  // namespace unitTests
 
 /* EOF */

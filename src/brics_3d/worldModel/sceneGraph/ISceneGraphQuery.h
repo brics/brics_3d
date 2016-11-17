@@ -47,6 +47,12 @@ class ISceneGraphQuery {
 	virtual bool getNodes(vector<Attribute> attributes, vector<Id>& ids) = 0;
 
     /**
+     * @brief Find all nodes that have at least the specified attributes,
+     * within a subgraph
+     */
+	virtual bool getNodes(vector<Attribute> attributes, vector<Id>& ids, Id subgraphId) = 0;
+
+    /**
      * @brief Get the attributes of a node.
      */
 	virtual bool getNodeAttributes(Id id, vector<Attribute>& attributes) = 0;

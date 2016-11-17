@@ -244,6 +244,7 @@ class SceneGraphNodesTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testTransformDurationConfig );
 	CPPUNIT_TEST( testSemanticContextUpdateFilter );
 	CPPUNIT_TEST( testGlobalRootNodeQueries );
+	CPPUNIT_TEST( testGetNodesInSubgraph );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -286,6 +287,7 @@ public:
 	void testTransformDurationConfig();
 	void testSemanticContextUpdateFilter();
 	void testGlobalRootNodeQueries();
+	void testGetNodesInSubgraph();
 
 private:
 	  /// Maximum deviation for equality check of double variables

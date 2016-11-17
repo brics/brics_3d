@@ -132,6 +132,25 @@ bool SceneGraphFacade::getNodes(vector<Attribute> attributes, vector<Id>& ids) {
 	return false;
 }
 
+bool SceneGraphFacade::getNodes(vector<Attribute> attributes, vector<Id>& ids, Id subgraphId) {
+	LOG(DEBUG) << " Current idLookUpTable length = " << idLookUpTable.size();
+	ids.clear();
+	Node::NodeWeakPtr tmpNode = findNodeRecerence(subgraphId);
+	Node::NodePtr node = tmpNode.lock();
+	if (node != 0) {
+			AttributeFinder attributeFinder;
+			attributeFinder.setQueryAttributes(attributes);
+			node->accept(&attributeFinder);
+			for (unsigned int i = 0; i < static_cast<unsigned int>(attributeFinder.getMatchingNodes().size()) ; ++i) {
+				ids.push_back((*attributeFinder.getMatchingNodes()[i]).getId());
+			}
+
+		return true;
+	}
+	LOG(ERROR) << "Cannot find subgraphId. Aborting attribute search.";
+	return false;
+}
+
 bool SceneGraphFacade::getNodeAttributes(Id id, vector<Attribute>& attributes) {
 	attributes.clear();
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
