@@ -191,7 +191,22 @@ bool JSONDeserializer::handleWorldModelUpdate(libvariant::Variant& model) {
 				return false;
 			}
 			libvariant::Variant node = model.Get("node");
-			return doSetNodeAttributes(node);
+
+			AttributeUpdateMode updateMode = OVERWRITE; // default
+			if(model.Contains("updateMode")) {
+				string updateModeModel = model.Get("updateMode").AsString();
+				if(updateModeModel.compare("OVERWRITE") == 0) {
+					 updateMode = OVERWRITE;
+				} else if(updateModeModel.compare("UPDATE") == 0) {
+					 updateMode = UPDATE;
+				} else if(updateModeModel.compare("APPEND") == 0) {
+					 updateMode = APPEND;
+				} else {
+					LOG(ERROR) << "JSONDeserializer: world model update for SET_ATTRIBUTES defines an unknown updateMode: " << updateModeModel;
+					return false;
+				}
+			}
+			return doSetNodeAttributes(node, updateMode);
 
 		} else if (operation.compare("UPDATE_TRANSFORM") == 0) {
 
@@ -641,7 +656,7 @@ bool JSONDeserializer::doAddConnection(libvariant::Variant& connection,
 	return sceneUpdater->addConnection(parentId, id, attributes, sourceIds, targetIds, start, end, !id.isNil()); // Last parameter makes the "id" field optional
 }
 
-bool JSONDeserializer::doSetNodeAttributes(libvariant::Variant& group) {
+bool JSONDeserializer::doSetNodeAttributes(libvariant::Variant& group, AttributeUpdateMode updateMode) {
 
 	/* Id */
 	rsg::Id id = rsg::JSONTypecaster::getIdFromJSON(group, "id");
@@ -652,6 +667,75 @@ bool JSONDeserializer::doSetNodeAttributes(libvariant::Variant& group) {
 
 	/* attributes */
 	std::vector<rsg::Attribute> attributes = rsg::JSONTypecaster::getAttributesFromJSON(group);
+
+
+
+	/*
+	 * There are three different updateModes. Id the values is not the, OVERWRITE is assumed.
+	 *
+	 * | updateMode | Description |
+	 * |----------------------|----------------
+	 * | OVERWRITE  | Default. Existing attributes are replaced. |
+	 * | APPEND     | New attributes are appended to existing one. Keys might appear multiple times (e.g. multiple ``rsg:agent_policy`` = ...).  |
+	 * | UPDATE     | For each attribute it is checked if it exists. If so the value gets updated, other wise it is appended. |
+	 *
+	 *
+	 */
+	std::vector<brics_3d::rsg::Attribute> oldAttributes;
+	switch (updateMode) {
+
+
+		case OVERWRITE:
+
+			//nothing special to do here, since this is the default behavior.
+			break;
+
+		case UPDATE:
+
+			/* Get potentially existing attributes, "update" them and set as attributes new attributes   */
+			oldAttributes.clear();
+			if(wm->scene.getNodeAttributes(id, oldAttributes)) {
+
+				/* Find all attributes and update */
+				for(std::vector<Attribute>::iterator attribIt = attributes.begin(); attribIt != attributes.end() ;++attribIt) { // check for each attribute individually
+
+					bool attributeFound = false;
+					for(std::vector<Attribute>::iterator it = oldAttributes.begin(); it != oldAttributes.end() ;++it) {
+						if(it->key.compare(attribIt->key) == 0) {
+							it->value = attribIt->value;
+							attributeFound = true;
+						}
+					}
+					if(!attributeFound) { // not found, so append instead
+						oldAttributes.push_back(Attribute(attribIt->key, attribIt->value));// inserts old attributes at begun
+					}
+
+				}
+
+				/* Overwrite with "updated" attributes */
+				attributes.clear();
+				attributes.insert(attributes.begin(), oldAttributes.begin(), oldAttributes.end());
+
+				break;
+			} else {
+
+				// Attribute does not exist, so continue with APPEND (so no break;)
+			}
+
+		case APPEND:
+
+			/* Get potentially existing attributes (can be zero) */
+			oldAttributes.clear();
+			wm->scene.getNodeAttributes(id, oldAttributes);
+
+			/* Append attributes to old attributes */
+			attributes.insert(attributes.begin(), oldAttributes.begin(), oldAttributes.end()); // inserts old attributes at begun
+
+			break;
+		default:
+			break;
+	}
+
 
 	/* time stamp with fall back to current time */
 	rsg::TimeStamp attributesTimeStamp;

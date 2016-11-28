@@ -2998,7 +2998,7 @@ void JSONTest::testAttributeUpdateMode() {
 	queryAsJson = queryAsJson2.str();
 	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
 	LOG(DEBUG) << "testAttributeUpdateMode resultAsJson " << resultAsJson;
-	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"rsg:agent_policy\",\"value\": \"send no Atoms from context osm\"}]],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"rsg:agent_policy\",\"value\": \"send no Atoms from context osm\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
 
 	/*
 	 * APPEND
@@ -3031,7 +3031,7 @@ void JSONTest::testAttributeUpdateMode() {
 	/* check what is being stored */
 	attributes.clear();
 	wm->scene.getNodeAttributes(wm->getRootNodeId(), attributes);
-	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(attributes.size()));
+	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(attributes.size()));
 	queryAsJson2.str("");
 	queryAsJson2
 	<<"{"
@@ -3042,7 +3042,7 @@ void JSONTest::testAttributeUpdateMode() {
 	queryAsJson = queryAsJson2.str();
 	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
 	LOG(DEBUG) << "testAttributeUpdateMode resultAsJson " << resultAsJson;
-	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"rsg:agent_policy\",\"value\": \"send no Atoms from context osm\"},{\"key\": \"rsg:agent_policy\", \"value\": \"send no PointClouds\"}]],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"rsg:agent_policy\",\"value\": \"send no Atoms from context osm\"},{\"key\": \"rsg:agent_policy\",\"value\": \"send no PointClouds\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
 
 
 	queryAsJson2.str("");
@@ -3080,7 +3080,7 @@ void JSONTest::testAttributeUpdateMode() {
 	queryAsJson = queryAsJson2.str();
 	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
 	LOG(DEBUG) << "testAttributeUpdateMode resultAsJson " << resultAsJson;
-	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"rsg:agent_policy\",\"value\": \"send no Atoms from context osm\"},{\"key\": \"rsg:agent_policy\", \"value\": \"send no PointClouds\"},{\"key\": \"name\", \"value\": \"robot1\"}]],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"rsg:agent_policy\",\"value\": \"send no Atoms from context osm\"},{\"key\": \"rsg:agent_policy\",\"value\": \"send no PointClouds\"},{\"key\": \"name\",\"value\": \"robot1\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
 
 	/*
 	 * UPDATE
@@ -3121,10 +3121,10 @@ void JSONTest::testAttributeUpdateMode() {
 	queryAsJson = queryAsJson2.str();
 	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
 	LOG(DEBUG) << "testAttributeUpdateMode resultAsJson " << resultAsJson;
-	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"rsg:agent_policy\",\"value\": \"send no Atoms from context osm\"},{\"key\": \"rsg:agent_policy\", \"value\": \"send no PointClouds\"},{\"key\": \"name\", \"value\": \"robot2\"}]],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"rsg:agent_policy\",\"value\": \"send no Atoms from context osm\"},{\"key\": \"rsg:agent_policy\",\"value\": \"send no PointClouds\"},{\"key\": \"name\",\"value\": \"robot2\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
 
 	/*
-	 * An upate will affect ALL attributes with the same key
+	 * An update will affect ALL attributes with the same key
 	 */
 	queryAsJson2.str("");
 	queryAsJson2
@@ -3161,7 +3161,7 @@ void JSONTest::testAttributeUpdateMode() {
 	queryAsJson = queryAsJson2.str();
 	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
 	LOG(DEBUG) << "testAttributeUpdateMode resultAsJson " << resultAsJson;
-	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"rsg:agent_policy\",\"value\": \"send no Atoms\"},{\"key\": \"rsg:agent_policy\", \"value\": \"send no Atoms\"},{\"key\": \"name\", \"value\": \"robot2\"}]],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"rsg:agent_policy\",\"value\": \"send no Atoms\"},{\"key\": \"rsg:agent_policy\",\"value\": \"send no Atoms\"},{\"key\": \"name\",\"value\": \"robot2\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
 
 	/*
 	 * OVERWRITE
@@ -3201,7 +3201,7 @@ void JSONTest::testAttributeUpdateMode() {
 	queryAsJson = queryAsJson2.str();
 	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
 	LOG(DEBUG) << "testAttributeUpdateMode resultAsJson " << resultAsJson;
-	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"info\",\"value\": \"Everything deleted.\"}]],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"info\",\"value\": \"Everything deleted.\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
 
 	/*
 	 * OVERWRITE as default
@@ -3240,8 +3240,88 @@ void JSONTest::testAttributeUpdateMode() {
 	queryAsJson = queryAsJson2.str();
 	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
 	LOG(DEBUG) << "testAttributeUpdateMode resultAsJson " << resultAsJson;
-	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"dbg\",\"value\": \"Everything deleted again.\"}]],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"dbg\",\"value\": \"Everything deleted again.\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
 
+	/*
+	 * UPDATE a non existing attribute -> fall back to APPEND
+	 */
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGUpdate\","
+		<< "\"operation\": \"UPDATE_ATTRIBUTES\","
+		<< "\"updateMode\": \"UPDATE\","
+	    << "\"node\": {"
+		<< "  \"@graphtype\": \"Node\","
+		<< "  \"id\": \"00000000-0000-0000-0000-000000000042\","
+		<< "  \"attributes\": ["
+		<< "       {\"key\": \"name\", \"value\": \"new\"}"
+		<< "  ],"
+		<< " },"
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	LOG(DEBUG) << "queryAsJson " << queryAsJson;
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGUpdateResult\",\"updateSuccess\": true}") == 0);
+
+
+	/* check what is being stored */
+	attributes.clear();
+	wm->scene.getNodeAttributes(wm->getRootNodeId(), attributes);
+	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(attributes.size()));
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_NODE_ATTRIBUTES\","
+	    << "\"id\": \"00000000-0000-0000-0000-000000000042\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "testAttributeUpdateMode resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"dbg\",\"value\": \"Everything deleted again.\"},{\"key\": \"name\",\"value\": \"new\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+
+	/*
+	 * UPDATE one existing and one non existing (so the latter gets appended)
+	 */
+	queryAsJson2.str("");
+		queryAsJson2
+		<<"{"
+			<< "\"@worldmodeltype\": \"RSGUpdate\","
+			<< "\"operation\": \"UPDATE_ATTRIBUTES\","
+			<< "\"updateMode\": \"UPDATE\","
+		    << "\"node\": {"
+			<< "  \"@graphtype\": \"Node\","
+			<< "  \"id\": \"00000000-0000-0000-0000-000000000042\","
+			<< "  \"attributes\": ["
+			<< "       {\"key\": \"name\", \"value\": \"new_again\"},"
+			<< "       {\"key\": \"hello\", \"value\": \"world\"}"
+			<< "  ],"
+			<< " },"
+		<<"}";
+		queryAsJson = queryAsJson2.str();
+		LOG(DEBUG) << "queryAsJson " << queryAsJson;
+		CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+		LOG(DEBUG) << "resultAsJson " << resultAsJson;
+		CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGUpdateResult\",\"updateSuccess\": true}") == 0);
+
+
+		/* check what is being stored */
+		attributes.clear();
+		wm->scene.getNodeAttributes(wm->getRootNodeId(), attributes);
+		CPPUNIT_ASSERT_EQUAL(3u, static_cast<unsigned int>(attributes.size()));
+		queryAsJson2.str("");
+		queryAsJson2
+		<<"{"
+			<< "\"@worldmodeltype\": \"RSGQuery\","
+			<< "\"query\": \"GET_NODE_ATTRIBUTES\","
+		    << "\"id\": \"00000000-0000-0000-0000-000000000042\""
+		<<"}";
+		queryAsJson = queryAsJson2.str();
+		CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+		LOG(DEBUG) << "testAttributeUpdateMode resultAsJson " << resultAsJson;
+		CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"dbg\",\"value\": \"Everything deleted again.\"},{\"key\": \"name\",\"value\": \"new_again\"},{\"key\": \"hello\",\"value\": \"world\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
 
 
 	delete wm;

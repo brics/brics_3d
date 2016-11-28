@@ -27,7 +27,11 @@
 namespace brics_3d {
 namespace rsg {
 
-
+enum AttributeUpdateMode {
+	OVERWRITE = 0,
+	UPDATE = 1,
+	APPEND = 2,
+};
 
 class JSONDeserializer : public IInputPort  {
 public:
@@ -74,7 +78,7 @@ private:
 	virtual bool doAddGeometricNode(libvariant::Variant& group, rsg::Id parentId);
 	virtual bool doAddRemoteRootNode(libvariant::Variant& group);
 	virtual bool doAddConnection(libvariant::Variant& connection, rsg::Id parentId);
-	virtual bool doSetNodeAttributes(libvariant::Variant& group);
+	virtual bool doSetNodeAttributes(libvariant::Variant& group, AttributeUpdateMode updateMode = OVERWRITE);
 	virtual bool doSetTransform(libvariant::Variant& group);
 	virtual bool doDeleteNode(libvariant::Variant& group);
 	virtual bool doAddParent(libvariant::Variant& group, rsg::Id parentId);
