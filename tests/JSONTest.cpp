@@ -17,7 +17,7 @@
 *
 ******************************************************************************/
 
-#define BRICS_JSON_ENABLE  //FIXME
+//#define BRICS_JSON_ENABLE  //FIXME
 #ifdef BRICS_JSON_ENABLE
 #include "JSONTest.h"
 #include "SceneGraphNodesTest.h" // for the observer counter
@@ -2935,6 +2935,316 @@ void JSONTest::testComplexAttributeValues() {
 	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"sherpa:command\",\"value\": {\"direction\": [0.29999999999999999,0.69999999999999996,0.0000000000000000]}}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
 
 
+}
+
+void JSONTest::testAttributeUpdateMode() {
+	Id rootId;
+	rootId.fromString("00000000-0000-0000-0000-000000000042");
+	rsg::IIdGenerator* idGenerator = new brics_3d::rsg::UuidGenerator(rootId);
+	brics_3d::WorldModel* wm = new brics_3d::WorldModel(idGenerator);
+	brics_3d::rsg::JSONQueryRunner queryRunner(wm);
+
+	std::string queryAsJson = "";
+	std::string resultAsJson = "";
+	std::stringstream queryAsJson2;
+	vector<Attribute> attributes;
+
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_NODE_ATTRIBUTES\","
+	    << "\"id\": \"00000000-0000-0000-0000-000000000042\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson)); // This should work
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+
+	attributes.clear();
+	wm->scene.getNodeAttributes(wm->getRootNodeId(), attributes);
+	CPPUNIT_ASSERT_EQUAL(0u, static_cast<unsigned int>(attributes.size()));
+
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGUpdate\","
+		<< "\"operation\": \"UPDATE_ATTRIBUTES\","
+	    << "\"node\": {"
+		<< "  \"@graphtype\": \"Node\","
+		<< "  \"id\": \"00000000-0000-0000-0000-000000000042\","
+		<< "  \"attributes\": ["
+		<< "       {\"key\": \"rsg:agent_policy\", \"value\": \"send no Atoms from context osm\"}"
+		<< "  ],"
+		<< " },"
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	LOG(DEBUG) << "testAttributeUpdateMode queryAsJson " << queryAsJson;
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "testAttributeUpdateMode resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGUpdateResult\",\"updateSuccess\": true}") == 0);
+
+	/* check what is being stored */
+	attributes.clear();
+	wm->scene.getNodeAttributes(wm->getRootNodeId(), attributes);
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(attributes.size()));
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_NODE_ATTRIBUTES\","
+	    << "\"id\": \"00000000-0000-0000-0000-000000000042\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "testAttributeUpdateMode resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"rsg:agent_policy\",\"value\": \"send no Atoms from context osm\"}]],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+
+	/*
+	 * APPEND
+	 */
+
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGUpdate\","
+		<< "\"operation\": \"UPDATE_ATTRIBUTES\","
+		<< "\"updateMode\": \"APPEND\","
+	    << "\"node\": {"
+		<< "  \"@graphtype\": \"Node\","
+		<< "  \"id\": \"00000000-0000-0000-0000-000000000042\","
+		<< "  \"attributes\": ["
+		<< "       {\"key\": \"rsg:agent_policy\", \"value\": \"send no PointClouds\"}"
+		<< "  ],"
+		<< " },"
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	LOG(DEBUG) << "queryAsJson " << queryAsJson;
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGUpdateResult\",\"updateSuccess\": true}") == 0);
+
+	attributes.clear();
+	wm->scene.getNodeAttributes(wm->getRootNodeId(), attributes);
+	CPPUNIT_ASSERT_EQUAL(2u, static_cast<unsigned int>(attributes.size()));
+
+	/* check what is being stored */
+	attributes.clear();
+	wm->scene.getNodeAttributes(wm->getRootNodeId(), attributes);
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(attributes.size()));
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_NODE_ATTRIBUTES\","
+	    << "\"id\": \"00000000-0000-0000-0000-000000000042\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "testAttributeUpdateMode resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"rsg:agent_policy\",\"value\": \"send no Atoms from context osm\"},{\"key\": \"rsg:agent_policy\", \"value\": \"send no PointClouds\"}]],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+
+
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGUpdate\","
+		<< "\"operation\": \"UPDATE_ATTRIBUTES\","
+		<< "\"updateMode\": \"APPEND\","
+	    << "\"node\": {"
+		<< "  \"@graphtype\": \"Node\","
+		<< "  \"id\": \"00000000-0000-0000-0000-000000000042\","
+		<< "  \"attributes\": ["
+		<< "       {\"key\": \"name\", \"value\": \"robot1\"}"
+		<< "  ],"
+		<< " },"
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	LOG(DEBUG) << "queryAsJson " << queryAsJson;
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGUpdateResult\",\"updateSuccess\": true}") == 0);
+
+
+	/* check what is being stored */
+	attributes.clear();
+	wm->scene.getNodeAttributes(wm->getRootNodeId(), attributes);
+	CPPUNIT_ASSERT_EQUAL(3u, static_cast<unsigned int>(attributes.size()));
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_NODE_ATTRIBUTES\","
+	    << "\"id\": \"00000000-0000-0000-0000-000000000042\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "testAttributeUpdateMode resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"rsg:agent_policy\",\"value\": \"send no Atoms from context osm\"},{\"key\": \"rsg:agent_policy\", \"value\": \"send no PointClouds\"},{\"key\": \"name\", \"value\": \"robot1\"}]],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+
+	/*
+	 * UPDATE
+	 */
+
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGUpdate\","
+		<< "\"operation\": \"UPDATE_ATTRIBUTES\","
+		<< "\"updateMode\": \"UPDATE\","
+	    << "\"node\": {"
+		<< "  \"@graphtype\": \"Node\","
+		<< "  \"id\": \"00000000-0000-0000-0000-000000000042\","
+		<< "  \"attributes\": ["
+		<< "       {\"key\": \"name\", \"value\": \"robot2\"}"
+		<< "  ],"
+		<< " },"
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	LOG(DEBUG) << "queryAsJson " << queryAsJson;
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGUpdateResult\",\"updateSuccess\": true}") == 0);
+
+
+	/* check what is being stored */
+	attributes.clear();
+	wm->scene.getNodeAttributes(wm->getRootNodeId(), attributes);
+	CPPUNIT_ASSERT_EQUAL(3u, static_cast<unsigned int>(attributes.size()));
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_NODE_ATTRIBUTES\","
+	    << "\"id\": \"00000000-0000-0000-0000-000000000042\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "testAttributeUpdateMode resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"rsg:agent_policy\",\"value\": \"send no Atoms from context osm\"},{\"key\": \"rsg:agent_policy\", \"value\": \"send no PointClouds\"},{\"key\": \"name\", \"value\": \"robot2\"}]],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+
+	/*
+	 * An upate will affect ALL attributes with the same key
+	 */
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGUpdate\","
+		<< "\"operation\": \"UPDATE_ATTRIBUTES\","
+		<< "\"updateMode\": \"UPDATE\","
+	    << "\"node\": {"
+		<< "  \"@graphtype\": \"Node\","
+		<< "  \"id\": \"00000000-0000-0000-0000-000000000042\","
+		<< "  \"attributes\": ["
+		<< "       {\"key\": \"rsg:agent_policy\", \"value\": \"send no Atoms\"}"
+		<< "  ],"
+		<< " },"
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	LOG(DEBUG) << "queryAsJson " << queryAsJson;
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGUpdateResult\",\"updateSuccess\": true}") == 0);
+
+
+	/* check what is being stored */
+	attributes.clear();
+	wm->scene.getNodeAttributes(wm->getRootNodeId(), attributes);
+	CPPUNIT_ASSERT_EQUAL(3u, static_cast<unsigned int>(attributes.size()));
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_NODE_ATTRIBUTES\","
+	    << "\"id\": \"00000000-0000-0000-0000-000000000042\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "testAttributeUpdateMode resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"rsg:agent_policy\",\"value\": \"send no Atoms\"},{\"key\": \"rsg:agent_policy\", \"value\": \"send no Atoms\"},{\"key\": \"name\", \"value\": \"robot2\"}]],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+
+	/*
+	 * OVERWRITE
+	 */
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGUpdate\","
+		<< "\"operation\": \"UPDATE_ATTRIBUTES\","
+		<< "\"updateMode\": \"OVERWRITE\","
+	    << "\"node\": {"
+		<< "  \"@graphtype\": \"Node\","
+		<< "  \"id\": \"00000000-0000-0000-0000-000000000042\","
+		<< "  \"attributes\": ["
+		<< "       {\"key\": \"info\", \"value\": \"Everything deleted.\"}"
+		<< "  ],"
+		<< " },"
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	LOG(DEBUG) << "queryAsJson " << queryAsJson;
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGUpdateResult\",\"updateSuccess\": true}") == 0);
+
+
+	/* check what is being stored */
+	attributes.clear();
+	wm->scene.getNodeAttributes(wm->getRootNodeId(), attributes);
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(attributes.size()));
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_NODE_ATTRIBUTES\","
+	    << "\"id\": \"00000000-0000-0000-0000-000000000042\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "testAttributeUpdateMode resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"info\",\"value\": \"Everything deleted.\"}]],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+
+	/*
+	 * OVERWRITE as default
+	 */
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGUpdate\","
+		<< "\"operation\": \"UPDATE_ATTRIBUTES\","
+	    << "\"node\": {"
+		<< "  \"@graphtype\": \"Node\","
+		<< "  \"id\": \"00000000-0000-0000-0000-000000000042\","
+		<< "  \"attributes\": ["
+		<< "       {\"key\": \"dbg\", \"value\": \"Everything deleted again.\"}"
+		<< "  ],"
+		<< " },"
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	LOG(DEBUG) << "queryAsJson " << queryAsJson;
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGUpdateResult\",\"updateSuccess\": true}") == 0);
+
+
+	/* check what is being stored */
+	attributes.clear();
+	wm->scene.getNodeAttributes(wm->getRootNodeId(), attributes);
+	CPPUNIT_ASSERT_EQUAL(1u, static_cast<unsigned int>(attributes.size()));
+	queryAsJson2.str("");
+	queryAsJson2
+	<<"{"
+		<< "\"@worldmodeltype\": \"RSGQuery\","
+		<< "\"query\": \"GET_NODE_ATTRIBUTES\","
+	    << "\"id\": \"00000000-0000-0000-0000-000000000042\""
+	<<"}";
+	queryAsJson = queryAsJson2.str();
+	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
+	LOG(DEBUG) << "testAttributeUpdateMode resultAsJson " << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"dbg\",\"value\": \"Everything deleted again.\"}]],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+
+
+
+	delete wm;
 }
 
 }  // namespace unitTests
