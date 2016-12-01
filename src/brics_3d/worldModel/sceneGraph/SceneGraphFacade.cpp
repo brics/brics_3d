@@ -56,6 +56,7 @@ void SceneGraphFacade::initialize() {
 	assert(rootNode->getId() == idGenerator->getRootId());
 	idLookUpTable.insert(std::make_pair(rootNode->getId(), rootNode));
 	updateObservers.clear();
+	monitorPort = 0;
 }
 
 Id SceneGraphFacade::getRootId() {
@@ -1018,6 +1019,21 @@ Id SceneGraphFacade::getGlobalRootId() {
 	}
 	LOG(WARNING) << "Cannot find root node. Aborting getGlobalRootId search. Returning local root instead.";
 	return this->getRootId();
+}
+
+bool SceneGraphFacade::setMonitorPort(IOutputPort* port) {
+	if((this->monitorPort != 0) && (port != 0)) { // port = 0 should delete it
+		LOG(ERROR) << "Monitor port exist already. Cannot override existing"; //
+		return false;
+	}
+
+	this->monitorPort = port;
+	LOG(DEBUG) << "Added a monitor port.";
+	return true;
+}
+
+IOutputPort* SceneGraphFacade::getMonitorPort() {
+	return this->monitorPort;
 }
 
 } // namespace brics_3d::RSG

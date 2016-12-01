@@ -24,6 +24,7 @@
 #include "ISceneGraphUpdate.h"
 #include "ISceneGraphUpdateObserver.h"
 #include "IIdGenerator.h"
+#include "IPort.h"
 #include "Group.h"
 #include "Connection.h"
 #include "Node.h"
@@ -141,6 +142,16 @@ class SceneGraphFacade : public ISceneGraphQuery, public ISceneGraphUpdate {
      */
     bool advertiseRootNode();
 
+    /**
+     * Set a port for monitor function blocks
+     * @param port Handle to the port. Null resets it
+     * @return True on success. False if there is a monitor already set.
+     */
+    bool setMonitorPort(IOutputPort* port);
+
+    /// Get a port for monitor function blocks. Can be NULL.
+    IOutputPort* getMonitorPort();
+
   private:
 
 	/// Internal initialization.
@@ -187,6 +198,13 @@ class SceneGraphFacade : public ISceneGraphQuery, public ISceneGraphUpdate {
      * @return The global root node Id.
      */
     Id getGlobalRootId();
+
+    /**
+     * Optinal single system wide output port for function block monitors.
+     * They are still disntinquishable by the content (monitirId).
+     * Can be null.
+     */
+    IOutputPort* monitorPort;
 
 };
 
