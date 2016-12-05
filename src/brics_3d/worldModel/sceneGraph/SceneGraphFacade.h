@@ -23,6 +23,7 @@
 #include "ISceneGraphQuery.h"
 #include "ISceneGraphUpdate.h"
 #include "ISceneGraphUpdateObserver.h"
+#include "ISceneGraphErrorObserver.h"
 #include "IIdGenerator.h"
 #include "IPort.h"
 #include "Group.h"
@@ -115,6 +116,8 @@ class SceneGraphFacade : public ISceneGraphQuery, public ISceneGraphUpdate {
     /* Configuration */
     bool attachUpdateObserver(ISceneGraphUpdateObserver* observer);
     bool detachUpdateObserver(ISceneGraphUpdateObserver* observer);
+    bool attachErrorObserver(ISceneGraphErrorObserver* observer);
+    bool detachErrorObserver(ISceneGraphErrorObserver* observer);
 
 	bool isCallObserversEvenIfErrorsOccurred() const;
 	void setCallObserversEvenIfErrorsOccurred(bool callObserversEvenIfErrorsOccurred);
@@ -189,6 +192,9 @@ class SceneGraphFacade : public ISceneGraphQuery, public ISceneGraphUpdate {
     /// Set of observers that will be notified when the update function will be called.
     std::vector<ISceneGraphUpdateObserver*> updateObservers;
 
+    /// Set of observers that will be notified when the there is an error. Typically when updates on mission data are performed
+    std::vector<ISceneGraphErrorObserver*> errorObservers;
+
     /// Policy on error propagation (e.g. duplicated IDs) to the observers. Default is true.
     bool callObserversEvenIfErrorsOccurred;
 
@@ -200,11 +206,17 @@ class SceneGraphFacade : public ISceneGraphQuery, public ISceneGraphUpdate {
     Id getGlobalRootId();
 
     /**
-     * Optinal single system wide output port for function block monitors.
+     * Optional single system wide output port for function block monitors.
      * They are still disntinquishable by the content (monitirId).
      * Can be null.
      */
     IOutputPort* monitorPort;
+
+    /**
+     * Send an error code to any observer, if any.
+     * @param code Enum to indicate the type of error. Note, some are more like a warning.
+     */
+    void sendErrorCode(ISceneGraphErrorObserver::SceneGraphErrorCode code);
 
 };
 

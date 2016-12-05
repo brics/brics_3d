@@ -204,6 +204,21 @@ public:
 	int removeParentCounter;
 };
 
+class MyErrorObserver : public ISceneGraphErrorObserver {
+public:
+	MyErrorObserver() {
+		errorCounter = 0;
+		lastError = ISceneGraphErrorObserver::RSG_ERR_NO_ERROR;
+	}
+
+	virtual void onError(SceneGraphErrorCode code){
+		lastError = code;
+		errorCounter++;
+	}
+
+	SceneGraphErrorCode lastError;
+	int errorCounter;
+};
 
 class SceneGraphNodesTest : public CPPUNIT_NS::TestFixture {
 
@@ -245,6 +260,7 @@ class SceneGraphNodesTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testSemanticContextUpdateFilter );
 	CPPUNIT_TEST( testGlobalRootNodeQueries );
 	CPPUNIT_TEST( testGetNodesInSubgraph );
+	CPPUNIT_TEST( testErrorObserver );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -288,6 +304,7 @@ public:
 	void testSemanticContextUpdateFilter();
 	void testGlobalRootNodeQueries();
 	void testGetNodesInSubgraph();
+	void testErrorObserver();
 
 private:
 	  /// Maximum deviation for equality check of double variables

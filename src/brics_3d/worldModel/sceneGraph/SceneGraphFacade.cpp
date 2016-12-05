@@ -78,6 +78,7 @@ bool SceneGraphFacade::addRemoteRootNode(Id rootId, vector<Attribute> attributes
 	} else {
 		LOG(WARNING) << "Remote root ID " << rootId << " cannot be assigned. Probably another object with that ID exists already!";
 		idIsOk = false;
+		sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_ID_EXISTS_ALREADY);
 	}
 
 
@@ -130,6 +131,7 @@ bool SceneGraphFacade::getNodes(vector<Attribute> attributes, vector<Id>& ids) {
 		return true;
 	}
 	LOG(ERROR) << "Cannot find root node. Aborting attribute search.";
+	sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_ID_DOES_NOT_EXIST);
 	return false;
 }
 
@@ -149,6 +151,7 @@ bool SceneGraphFacade::getNodes(vector<Attribute> attributes, vector<Id>& ids, I
 		return true;
 	}
 	LOG(ERROR) << "Cannot find subgraphId. Aborting attribute search.";
+	sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_ID_DOES_NOT_EXIST);
 	return false;
 }
 
@@ -191,6 +194,7 @@ bool SceneGraphFacade::getGroupChildren(Id id, vector<Id>& childIds) {
 		return true;
 	}
 	LOG(ERROR) << "Node with ID " << id << " is not a group. Cannot return child IDs";
+	sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_NODE_IS_OF_DIFFERENT_TYPE);
 	return false;
 }
 
@@ -203,6 +207,7 @@ bool SceneGraphFacade::getTransform(Id id, TimeStamp timeStamp, IHomogeneousMatr
 		return true;
 	}
 	LOG(ERROR) << "Node with ID " << id << " is not a transform. Cannot return transform data.";
+	sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_NODE_IS_OF_DIFFERENT_TYPE);
 	return false;
 }
 
@@ -216,6 +221,7 @@ bool SceneGraphFacade::getUncertainTransform(Id id, TimeStamp timeStamp, IHomoge
 		return true;
 	}
 	LOG(ERROR) << "Node with ID " << id << " is not an uncertain transform. Cannot return transform data.";
+	sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_NODE_IS_OF_DIFFERENT_TYPE);
 	return false;
 }
 
@@ -229,6 +235,7 @@ bool SceneGraphFacade::getGeometry(Id id, Shape::ShapePtr& shape, TimeStamp& tim
 		return true;
 	}
 	LOG(ERROR) << "Node with ID " << id << " is not a geometric node. Cannot return shape data.";
+	sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_NODE_IS_OF_DIFFERENT_TYPE);
 	return false;
 }
 
@@ -261,6 +268,7 @@ bool SceneGraphFacade::addNode(Id parentId, Id& assignedId, vector<Attribute> at
 		} else {
 			LOG(WARNING) << "Forced ID " << assignedId << " cannot be assigend. Probably another object with that ID exists already!";
 			idIsOk = false;
+			sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_ID_EXISTS_ALREADY);
 		}
 	} else {
 		id = idGenerator->getNextValidId();
@@ -291,6 +299,7 @@ bool SceneGraphFacade::addNode(Id parentId, Id& assignedId, vector<Attribute> at
 	} else {
 		if (idIsOk) { //If ID was OK but operation did not succeeded, then it is because of the parent...
 			LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new node as a child of it.";
+			sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_PARENT_ID_DOES_NOT_EXIST);
 		}
 		return false;
 	}
@@ -311,6 +320,7 @@ bool SceneGraphFacade::addGroup(Id parentId, Id& assignedId, vector<Attribute> a
 		} else {
 			LOG(WARNING) << "Forced ID " << assignedId << " cannot be assigend. Probably another object with that ID exists already!";
 			idIsOk = false;
+			sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_ID_EXISTS_ALREADY);
 		}
 	} else {
 		id = idGenerator->getNextValidId();
@@ -342,6 +352,7 @@ bool SceneGraphFacade::addGroup(Id parentId, Id& assignedId, vector<Attribute> a
 	} else {
 		if (idIsOk) { //If ID was OK but operation did not succeeded, then it is because of the parent...
 			LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new group as a child of it.";
+			sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_PARENT_ID_DOES_NOT_EXIST);
 		}
 		return false;
 	}
@@ -363,6 +374,7 @@ bool SceneGraphFacade::addTransformNode(Id parentId, Id& assignedId, vector<Attr
 		} else {
 			LOG(WARNING) << "Forced ID " << assignedId << " cannot be assigend. Probably another object with that ID exists already!";
 			idIsOk = false;
+			sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_ID_EXISTS_ALREADY);
 		}
 	} else {
 		id = idGenerator->getNextValidId();
@@ -407,6 +419,7 @@ bool SceneGraphFacade::addTransformNode(Id parentId, Id& assignedId, vector<Attr
 	} else {
 		if (idIsOk) { //If ID was OK but operation did not succeeded, then it is because of the parent...
 			LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new transform as a child of it.";
+			sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_PARENT_ID_DOES_NOT_EXIST);
 		}
 		return false;
 	}
@@ -428,6 +441,7 @@ bool SceneGraphFacade::addUncertainTransformNode(Id parentId, Id& assignedId, ve
 		} else {
 			LOG(WARNING) << "Forced ID " << assignedId << " cannot be assigend. Probably another object with that ID exists already!";
 			idIsOk = false;
+			sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_ID_EXISTS_ALREADY);
 		}
 	} else {
 		id = idGenerator->getNextValidId();
@@ -459,6 +473,7 @@ bool SceneGraphFacade::addUncertainTransformNode(Id parentId, Id& assignedId, ve
 	} else {
 		if (idIsOk) { //If ID was OK but operation did not succeeded, then it is because of the parent...
 			LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new uncertain transform as a child of it.";
+			sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_PARENT_ID_DOES_NOT_EXIST);
 		}
 		return false;
 	}
@@ -480,6 +495,7 @@ bool SceneGraphFacade::addGeometricNode(Id parentId, Id& assignedId, vector<Attr
 		} else {
 			LOG(WARNING) << "Forced ID " << assignedId << " cannot be assigend. Probably another object with that ID exists already!";
 			idIsOk = false;
+			sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_ID_EXISTS_ALREADY);
 		}
 	} else {
 		id = idGenerator->getNextValidId();
@@ -512,6 +528,7 @@ bool SceneGraphFacade::addGeometricNode(Id parentId, Id& assignedId, vector<Attr
 	} else {
 		if (idIsOk) { //If ID was OK but operation did not succeeded, then it is because of the parent...
 			LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new geometric node as a child of it.";
+			sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_PARENT_ID_DOES_NOT_EXIST);
 		}
 		return false;
 	}
@@ -531,11 +548,13 @@ bool SceneGraphFacade::setNodeAttributes(Id id, vector<Attribute> newAttributes,
 				operationSucceeded = true;
 			} else {
 				LOG(DEBUG) << "Skipping attributes update for node " << id << " as the attribute lists are identical.";
+				sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_UPDATE_IS_IDENTICAL);
 			}
 
 		} else {
 			LOG(DEBUG) << "Skipping attributes update for node " << id << " as the new timeStamp with "
 					<< timeStamp.getSeconds() << "[s] is older than the stored one with " << node->getAttributesTimeStamp().getSeconds() << "[s].";
+			sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_UPDATE_IS_NOT_NEWER);
 		}
 	}
 
@@ -551,6 +570,7 @@ bool SceneGraphFacade::setNodeAttributes(Id id, vector<Attribute> newAttributes,
 	if (operationSucceeded) {
 		return true;
 	} else {
+		sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_ID_DOES_NOT_EXIST);
 		return false;
 	}
 }
@@ -576,6 +596,7 @@ bool SceneGraphFacade::setTransform(Id id, IHomogeneousMatrix44::IHomogeneousMat
 		return true;
 	} else {
 		LOG(ERROR) << "Node with ID " << id << " is not a transform. Cannot set new transform data.";
+		sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_ID_DOES_NOT_EXIST);
 		return false;
 	}
 }
@@ -601,6 +622,7 @@ bool SceneGraphFacade::setUncertainTransform(Id id, IHomogeneousMatrix44::IHomog
 		return true;
 	} else {
 		LOG(ERROR) << "Node with ID " << id << " is not an uncertain transform. Cannot set new transform and uncertainy data.";
+		sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_ID_DOES_NOT_EXIST);
 		return false;
 	}
 	return false;
@@ -688,6 +710,7 @@ bool SceneGraphFacade::deleteNode(Id id) {
 	if (operationSucceeded) {
 		return true;
 	} else {
+		sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_ID_DOES_NOT_EXIST);
 		return false;
 	}
 }
@@ -744,8 +767,10 @@ bool SceneGraphFacade::addParent(Id id, Id parentId) {
 		return true;
 	} else {
 		if (id == parentId) {
+			sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_GRAPH_CYCLE_DETECTED);
 			LOG(ERROR) << "Parent with ID " << parentId << " and child ID " << id << " are identical. Cannot add a new parent-child relation.";
 		} else {
+			sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_ID_DOES_NOT_EXIST);
 			LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new parent-child relation.";
 		}
 
@@ -799,6 +824,7 @@ bool SceneGraphFacade::removeParent(Id id, Id parentId) {
 	if (operationSucceeded) {
 		return true;
 	} else {
+		sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_ID_DOES_NOT_EXIST);
 		return false;
 	};
 }
@@ -817,6 +843,7 @@ bool SceneGraphFacade::addConnection(Id parentId, Id& assignedId, vector<Attribu
 			idIsOk = true;
 		} else {
 			LOG(WARNING) << "Forced ID " << assignedId << " cannot be assigend. Probably another object with that ID exists already!";
+			sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_ID_EXISTS_ALREADY);
 			idIsOk = false;
 		}
 	} else {
@@ -871,6 +898,7 @@ bool SceneGraphFacade::addConnection(Id parentId, Id& assignedId, vector<Attribu
 	} else {
 		if (idIsOk) { //If ID was OK but operation did not succeeded, then it is because of the parent...
 			LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new connection as a child of it.";
+			sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_PARENT_ID_DOES_NOT_EXIST);
 		}
 		return false;
 	}
@@ -902,6 +930,7 @@ bool SceneGraphFacade::getConnectionSourceIds(Id id, vector<Id>& sourceIds) {
 		return true;
 	}
 	LOG(ERROR) << "Node with ID " << id << " is not a connection. Cannot return source Id list.";
+	sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_NODE_IS_OF_DIFFERENT_TYPE);
 	return false;
 }
 
@@ -918,6 +947,7 @@ bool SceneGraphFacade::getConnectionTargetIds(Id id, vector<Id>& targetIds) {
 		return true;
 	}
 	LOG(ERROR) << "Node with ID " << id << " is not a connection. Cannot return target Id list.";
+	sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_NODE_IS_OF_DIFFERENT_TYPE);
 	return false;
 }
 
@@ -939,6 +969,23 @@ bool SceneGraphFacade::detachUpdateObserver(ISceneGraphUpdateObserver* observer)
     	return true;
     }
     LOG(ERROR) << "Cannot detach update observer. Provided reference does not match with any in the observers list.";
+	return false;
+}
+
+bool SceneGraphFacade::attachErrorObserver(ISceneGraphErrorObserver* observer) {
+	assert(observer != 0);
+	errorObservers.push_back(observer);
+	return true;
+}
+
+bool SceneGraphFacade::detachErrorObserver(ISceneGraphErrorObserver* observer) {
+	assert(observer != 0);
+	std::vector<ISceneGraphErrorObserver*>::iterator errorIterator = std::find(errorObservers.begin(), errorObservers.end(), observer);
+    if (errorIterator!=errorObservers.end()) {
+    	errorObservers.erase(errorIterator);
+    	return true;
+    }
+    LOG(ERROR) << "Cannot detach error observer. Provided reference does not match with any in the observers list.";
 	return false;
 }
 
@@ -976,6 +1023,7 @@ bool SceneGraphFacade::advertiseRootNode() {
 		}
 	} else {
 		LOG(ERROR) << "Cannot obtain attributes for local root node with id " << getRootId().toString();
+		sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_ID_DOES_NOT_EXIST);
 	}
 
 	return operationSucceeded;
@@ -1034,6 +1082,13 @@ bool SceneGraphFacade::setMonitorPort(IOutputPort* port) {
 
 IOutputPort* SceneGraphFacade::getMonitorPort() {
 	return this->monitorPort;
+}
+
+void SceneGraphFacade::sendErrorCode(ISceneGraphErrorObserver::SceneGraphErrorCode code) {
+	std::vector<ISceneGraphErrorObserver*>::iterator errorIterator;
+	for (errorIterator = errorObservers.begin(); errorIterator != errorObservers.end(); ++errorIterator) {
+		(*errorIterator)->onError(code);
+	}
 }
 
 } // namespace brics_3d::RSG

@@ -5087,6 +5087,137 @@ void SceneGraphNodesTest::testGetNodesInSubgraph() {
 
 }
 
+void SceneGraphNodesTest::testErrorObserver() {
+	MyErrorObserver errorObserver;
+	SceneGraphFacade scene;
+	Id dymmyId = 0;
+	Id tfId = 0;
+	Id utfId = 0;
+	Id geodeId = 0;
+	TimeStamp dummyTime(20);
+	vector<Attribute> tmpAttributes;
+	vector<Id> resultParentIds;
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform123(new HomogeneousMatrix44(1,0,0,  	//Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             1,2,3)); 						//Translation coefficients
+
+	Cylinder::CylinderPtr cylinder1(new Cylinder(0.2,0.1));
+	ITransformUncertainty::ITransformUncertaintyPtr uncertainty123(new CovarianceMatrix66(0.91,0.92,0.93, 0.1,0.2,0.3));
+
+	MyObserver testObserver;
+	scene.setCallObserversEvenIfErrorsOccurred(false); // Turn off observer increments cause by wrong inserts (yes we try to insert wrong stuffer here...)
+
+
+	CPPUNIT_ASSERT(scene.attachErrorObserver(&errorObserver) == true);
+
+
+	/*
+	 * 1.) trigger updates without errs
+	 */
+
+	CPPUNIT_ASSERT_EQUAL(0, errorObserver.errorCounter); //precondition
+	CPPUNIT_ASSERT(errorObserver.lastError == ISceneGraphErrorObserver::RSG_ERR_NO_ERROR);
+
+
+	CPPUNIT_ASSERT(scene.addNode(scene.getRootId(), dymmyId, tmpAttributes) == true);
+	CPPUNIT_ASSERT_EQUAL(0, errorObserver.errorCounter); //precondition
+	CPPUNIT_ASSERT(errorObserver.lastError == ISceneGraphErrorObserver::RSG_ERR_NO_ERROR);
+
+	CPPUNIT_ASSERT(scene.addGroup(scene.getRootId(), dymmyId, tmpAttributes) == true);
+	CPPUNIT_ASSERT_EQUAL(0, errorObserver.errorCounter); //precondition
+	CPPUNIT_ASSERT(errorObserver.lastError == ISceneGraphErrorObserver::RSG_ERR_NO_ERROR);
+
+
+	CPPUNIT_ASSERT(scene.addTransformNode(scene.getRootId(), tfId, tmpAttributes, transform123, dummyTime) == true);
+	CPPUNIT_ASSERT_EQUAL(0, errorObserver.errorCounter); //precondition
+	CPPUNIT_ASSERT(errorObserver.lastError == ISceneGraphErrorObserver::RSG_ERR_NO_ERROR);
+
+	tmpAttributes.push_back(Attribute("rsg:agent_policy", "no GeometricNodes"));
+	CPPUNIT_ASSERT(scene.addGeometricNode(scene.getRootId(), geodeId, tmpAttributes, cylinder1, dummyTime) == true);
+	CPPUNIT_ASSERT_EQUAL(0, errorObserver.errorCounter); //precondition
+	CPPUNIT_ASSERT(errorObserver.lastError == ISceneGraphErrorObserver::RSG_ERR_NO_ERROR);
+
+
+	CPPUNIT_ASSERT(scene.setNodeAttributes(scene.getRootId(), tmpAttributes) == true);
+	CPPUNIT_ASSERT_EQUAL(0, errorObserver.errorCounter); //precondition
+	CPPUNIT_ASSERT(errorObserver.lastError == ISceneGraphErrorObserver::RSG_ERR_NO_ERROR);
+
+	CPPUNIT_ASSERT(scene.setTransform(tfId, transform123, dummyTime + TimeStamp(1, Units::MilliSecond)) == true); // NOTE: we cannot use the same time stamp
+	CPPUNIT_ASSERT_EQUAL(0, errorObserver.errorCounter); //precondition
+	CPPUNIT_ASSERT(errorObserver.lastError == ISceneGraphErrorObserver::RSG_ERR_NO_ERROR);
+
+	CPPUNIT_ASSERT(scene.addUncertainTransformNode(scene.getRootId(), utfId, tmpAttributes, transform123, uncertainty123, dummyTime) == true);
+	CPPUNIT_ASSERT_EQUAL(0, errorObserver.errorCounter); //precondition
+	CPPUNIT_ASSERT(errorObserver.lastError == ISceneGraphErrorObserver::RSG_ERR_NO_ERROR);
+
+	CPPUNIT_ASSERT(scene.setUncertainTransform(utfId, transform123, uncertainty123, dummyTime + TimeStamp(1, Units::MilliSecond)) == true);
+	CPPUNIT_ASSERT_EQUAL(0, errorObserver.errorCounter); //precondition
+	CPPUNIT_ASSERT(errorObserver.lastError == ISceneGraphErrorObserver::RSG_ERR_NO_ERROR);
+
+	CPPUNIT_ASSERT(scene.deleteNode(tfId) == true);
+	CPPUNIT_ASSERT_EQUAL(0, errorObserver.errorCounter); //precondition
+	CPPUNIT_ASSERT(errorObserver.lastError == ISceneGraphErrorObserver::RSG_ERR_NO_ERROR);
+
+
+	/*
+	 *
+	 */
+	int expectedErrors = 0;
+	Id invalidId = 0;
+
+	CPPUNIT_ASSERT(scene.addNode(invalidId, dymmyId, tmpAttributes) == false);
+	CPPUNIT_ASSERT_EQUAL(++expectedErrors, errorObserver.errorCounter); //precondition
+	CPPUNIT_ASSERT(errorObserver.lastError == ISceneGraphErrorObserver::RSG_ERR_PARENT_ID_DOES_NOT_EXIST);
+
+	CPPUNIT_ASSERT(scene.addGroup(invalidId, dymmyId, tmpAttributes) == false);
+	CPPUNIT_ASSERT_EQUAL(++expectedErrors, errorObserver.errorCounter); //precondition
+	CPPUNIT_ASSERT(errorObserver.lastError == ISceneGraphErrorObserver::RSG_ERR_PARENT_ID_DOES_NOT_EXIST);
+
+
+	CPPUNIT_ASSERT(scene.addTransformNode(invalidId, tfId, tmpAttributes, transform123, dummyTime) == false);
+	CPPUNIT_ASSERT_EQUAL(++expectedErrors, errorObserver.errorCounter); //precondition
+	CPPUNIT_ASSERT(errorObserver.lastError == ISceneGraphErrorObserver::RSG_ERR_PARENT_ID_DOES_NOT_EXIST);
+
+	tmpAttributes.push_back(Attribute("rsg:agent_policy", "no GeometricNodes"));
+	CPPUNIT_ASSERT(scene.addGeometricNode(invalidId, geodeId, tmpAttributes, cylinder1, dummyTime) == false);
+	CPPUNIT_ASSERT_EQUAL(++expectedErrors, errorObserver.errorCounter); //precondition
+	CPPUNIT_ASSERT(errorObserver.lastError == ISceneGraphErrorObserver::RSG_ERR_PARENT_ID_DOES_NOT_EXIST);
+
+
+	CPPUNIT_ASSERT(scene.setNodeAttributes(invalidId, tmpAttributes) == false);
+	CPPUNIT_ASSERT_EQUAL(++expectedErrors, errorObserver.errorCounter); //precondition
+	CPPUNIT_ASSERT(errorObserver.lastError == ISceneGraphErrorObserver::RSG_ERR_ID_DOES_NOT_EXIST);
+
+	CPPUNIT_ASSERT(scene.setTransform(invalidId, transform123, dummyTime) == false);
+	++expectedErrors;
+	CPPUNIT_ASSERT(scene.setTransform(invalidId, transform123, dummyTime + TimeStamp(1, Units::MilliSecond)) == false); // NOTE: we cannot use the same time stamp
+	CPPUNIT_ASSERT_EQUAL(++expectedErrors, errorObserver.errorCounter); //precondition
+	CPPUNIT_ASSERT(errorObserver.lastError == ISceneGraphErrorObserver::RSG_ERR_ID_DOES_NOT_EXIST);
+
+	CPPUNIT_ASSERT(scene.addUncertainTransformNode(invalidId, utfId, tmpAttributes, transform123, uncertainty123, dummyTime) == false);
+	CPPUNIT_ASSERT_EQUAL(++expectedErrors, errorObserver.errorCounter); //precondition
+	CPPUNIT_ASSERT(errorObserver.lastError == ISceneGraphErrorObserver::RSG_ERR_PARENT_ID_DOES_NOT_EXIST);
+
+	CPPUNIT_ASSERT(scene.setUncertainTransform(utfId, transform123, uncertainty123, dummyTime) == false);
+	++expectedErrors;
+	CPPUNIT_ASSERT(scene.setUncertainTransform(utfId, transform123, uncertainty123, dummyTime + TimeStamp(1, Units::MilliSecond)) == false);
+	CPPUNIT_ASSERT_EQUAL(++expectedErrors, errorObserver.errorCounter); //precondition
+	CPPUNIT_ASSERT(errorObserver.lastError == ISceneGraphErrorObserver::RSG_ERR_ID_DOES_NOT_EXIST);
+
+	CPPUNIT_ASSERT(scene.deleteNode(invalidId) == false);
+	CPPUNIT_ASSERT_EQUAL(++expectedErrors, errorObserver.errorCounter); //precondition
+	CPPUNIT_ASSERT(errorObserver.lastError == ISceneGraphErrorObserver::RSG_ERR_ID_DOES_NOT_EXIST);
+
+
+
+	/* detach -> no further updates are expected */
+	CPPUNIT_ASSERT(scene.detachErrorObserver(&errorObserver) == true);
+	CPPUNIT_ASSERT(scene.detachErrorObserver(&errorObserver) == false); // twice
+
+
+}
+
 }  // namespace unitTests
 
 /* EOF */
