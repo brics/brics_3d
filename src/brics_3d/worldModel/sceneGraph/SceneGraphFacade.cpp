@@ -770,7 +770,11 @@ bool SceneGraphFacade::addParent(Id id, Id parentId) {
 			sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_GRAPH_CYCLE_DETECTED);
 			LOG(ERROR) << "Parent with ID " << parentId << " and child ID " << id << " are identical. Cannot add a new parent-child relation.";
 		} else {
-			sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_ID_DOES_NOT_EXIST);
+			if(isNotDuplicated) {
+				sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_ID_DOES_NOT_EXIST);
+			} else {
+				sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_GRAPH_CYCLE_DETECTED);
+			}
 			LOG(ERROR) << "Parent with ID " << parentId << " is not a group. Cannot add a new parent-child relation.";
 		}
 
