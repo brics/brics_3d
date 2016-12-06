@@ -315,6 +315,30 @@ void TemporalCacheTest::testCacheDoubleInsertions() {
 
 }
 
+void TemporalCacheTest::testBeyondCacheInsertions() {
+
+	TemporalCache<int> cache(TimeStamp(10, Units::Second)); // cache size = 20[s]
+	int cacheEntry = 0; // We will put values in ascending order in the cache: 0,1,2,...
+
+	/* initial condition */
+	CPPUNIT_ASSERT_EQUAL(0u, cache.size());
+	CPPUNIT_ASSERT(TimeStamp(0.0, Units::Second) == cache.getLatestTimeStamp()-cache.getOldestTimeStamp());
+
+	/* insert some data */
+	CPPUNIT_ASSERT(cache.insertData(++cacheEntry, TimeStamp(10, Units::Second)));
+	CPPUNIT_ASSERT_EQUAL(1u, cache.size());
+	CPPUNIT_ASSERT(cache.insertData(++cacheEntry, TimeStamp(15, Units::Second)));
+	CPPUNIT_ASSERT_EQUAL(2u, cache.size());
+	CPPUNIT_ASSERT(!cache.insertData(++cacheEntry, TimeStamp(0, Units::Second))); //beyond max duration, since it is now only from 5s to 15s
+	CPPUNIT_ASSERT_EQUAL(2u, cache.size());
+	CPPUNIT_ASSERT(cache.insertData(++cacheEntry, TimeStamp(12, Units::Second))); //beyond max duration, since it is now only from 5s to 15s
+	CPPUNIT_ASSERT_EQUAL(3u, cache.size());
+
+	CPPUNIT_ASSERT(!cache.insertData(++cacheEntry, TimeStamp(1, Units::MicroSecond)));
+	CPPUNIT_ASSERT_EQUAL(3u, cache.size());
+
+}
+
 void TemporalCacheTest::testCacheConfiguration() {
 	TemporalCache<int> cache1; // cache size = 10[s]
 	TemporalCache<int> cache2(TimeStamp(20, Units::Second)); // cache size = 20[s]

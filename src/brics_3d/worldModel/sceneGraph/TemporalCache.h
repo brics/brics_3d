@@ -161,6 +161,12 @@ public:
     	 */
 
     	historyIterator = history.begin();
+    	if (historyIterator != history.end()) {
+    		if(timeStamp < (historyIterator->second - maxHistoryDuration)) {
+    			LOG(WARNING) << "Can not insert data. An entry at time stamp "  << timeStamp.getSeconds() << "[s] is older than the cache limit. Skipping it.";
+    			return false;
+    		}
+    	}
 
     	/* insert new data at its correct place in time */
     	while(historyIterator != history.end()) { // loop over history
