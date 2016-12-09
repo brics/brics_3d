@@ -31,6 +31,10 @@
 namespace brics_3d {
 namespace rsg {
 
+#define JSON_SYNTAX_ERROR -1
+#define JSON_VALIDATION_ERROR -2
+#define JSON_OPERATION_ERROR -3
+
 /**
  * @brief Helper class to convert from and to JSON file format.
  *
@@ -69,9 +73,12 @@ public:
 		libvariant::SchemaResult result = libvariant::SchemaValidate(schema, model, &loader);
 		if (result.Error()) {
 			LOG(DEBUG) << "JSON Validator: Model validation failed: " << result;
-			std::stringstream tmpErrorModel("");
-			tmpErrorModel << "{\"error\": {\"message\": \" " << result.PrettyPrintMessage() <<"\"}}";
-			errorModel =  tmpErrorModel.str();
+			libvariant::Variant errorAsJSON;
+			libvariant::Variant messageAsJSON;
+			messageAsJSON.Set("message", libvariant::Variant(result.PrettyPrintMessage()));
+			messageAsJSON.Set("code", libvariant::Variant(JSON_VALIDATION_ERROR));
+			errorAsJSON.Set("error", messageAsJSON);
+			JSONtoString(errorAsJSON, errorModel);
 			return false;
 		}
 		return true;
