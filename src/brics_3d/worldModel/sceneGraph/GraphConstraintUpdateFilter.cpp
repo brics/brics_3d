@@ -288,14 +288,14 @@ bool GraphConstraintUpdateFilter::setTransform(Id id,
 
 	std::vector<GraphConstraint>::iterator it;
 	for (it = constraints.begin(); it != constraints.end(); ++it) {
-		if (!checkConstraint(*it, GraphConstraint::Transform, 0, 0, 0, id, attributes)) { // assignedID?
+		if (!checkConstraint(*it, GraphConstraint::TransformUpdate, 0, 0, 0, id, attributes)) { // assignedID?
 			LOG(DEBUG) << "GraphConstraintUpdateFilter::setTransform is skipped because a constraint does not hold.";
 			return false;
 		}
 	}
 
 	/* Memorize last invocation */
-	lastSendType[GraphConstraint::Transform] = wm->now();
+	lastSendType[GraphConstraint::TransformUpdate] = wm->now();
 
 	/* Inform related observer(s) */
 	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;
@@ -319,14 +319,14 @@ bool GraphConstraintUpdateFilter::setUncertainTransform(Id id,
 
 	std::vector<GraphConstraint>::iterator it;
 	for (it = constraints.begin(); it != constraints.end(); ++it) {
-		if (!checkConstraint(*it, GraphConstraint::Transform, 0, 0, 0, id, attributes)) { // assignedID?
+		if (!checkConstraint(*it, GraphConstraint::TransformUpdate, 0, 0, 0, id, attributes)) { // assignedID?
 			LOG(DEBUG) << "GraphConstraintUpdateFilter::setUncertainTransform is skipped because a constraint does not hold.";
 			return false;
 		}
 	}
 
 	/* Memorize last invocation */
-	lastSendType[GraphConstraint::Transform] = wm->now();
+	lastSendType[GraphConstraint::TransformUpdate] = wm->now();
 
 	/* Inform related observer(s) */
 	std::vector<ISceneGraphUpdateObserver*>::iterator observerIterator;

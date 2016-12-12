@@ -64,10 +64,11 @@ public:
 		Box = 6,
 		PointCloud = 7,
 		Mesh = 8,
-		Transform = 9, //TransformUpdates TODO
+		Transform = 9,
 		Group = 10,
 		Connection = 11,
-		TYPE_NR_ITEMS = 12
+		TransformUpdate = 12,
+		TYPE_NR_ITEMS = 13
 	};
 
 	/// optional

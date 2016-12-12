@@ -303,6 +303,7 @@ void GraphConstraintTest::testSimpleConstraints() {
 
 
 	GraphConstraint c1;
+	GraphConstraint c2;
 	CPPUNIT_ASSERT(c1.parse("send no Atoms"));
 	filter.constraints.clear();
 	filter.constraints.push_back(c1);
@@ -389,8 +390,10 @@ void GraphConstraintTest::testSimpleConstraints() {
 	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.removeParentCounter);
 
 	CPPUNIT_ASSERT(c1.parse("send no Transforms"));
+	CPPUNIT_ASSERT(c2.parse("send no TransformUpdates"));
 	filter.constraints.clear();
 	filter.constraints.push_back(c1);
+	filter.constraints.push_back(c2);
 	CPPUNIT_ASSERT(runAddAllSceneGraphPrimitives(wm));
 
 	CPPUNIT_ASSERT_EQUAL(9, wmNodeCounter.addNodeCounter);
@@ -690,6 +693,7 @@ void GraphConstraintTest::testDistanceConstraints() {
 
 
 	GraphConstraint c1;
+	GraphConstraint c2;
 	CPPUNIT_ASSERT(c1.parse("send only Atoms with dist < 10 m from me"));
 	filter.constraints.clear();
 	filter.constraints.push_back(c1);
@@ -768,8 +772,10 @@ void GraphConstraintTest::testDistanceConstraints() {
 	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.removeParentCounter);
 
 	CPPUNIT_ASSERT(c1.parse("send no Transforms with dist > 7 m from me"));
+	CPPUNIT_ASSERT(c2.parse("send no TransformUpdates with dist > 7 m from me"));
 	filter.constraints.clear();
 	filter.constraints.push_back(c1);
+	filter.constraints.push_back(c2);
 	CPPUNIT_ASSERT(runAddAllSceneGraphPrimitives(wm));
 
 	CPPUNIT_ASSERT_EQUAL(12, wmNodeCounter.addNodeCounter);
@@ -786,8 +792,10 @@ void GraphConstraintTest::testDistanceConstraints() {
 	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.removeParentCounter);
 
 	CPPUNIT_ASSERT(c1.parse("send no Transforms with dist > 5 m from me"));
+	CPPUNIT_ASSERT(c2.parse("send no TransformUpdates with dist > 5 m from me"));
 	filter.constraints.clear();
 	filter.constraints.push_back(c1);
+	filter.constraints.push_back(c2);
 	CPPUNIT_ASSERT(runAddAllSceneGraphPrimitives(wm));
 
 	CPPUNIT_ASSERT_EQUAL(15, wmNodeCounter.addNodeCounter);
@@ -847,9 +855,9 @@ void GraphConstraintTest::testDistanceConstraints() {
 	CPPUNIT_ASSERT(wm->scene.getNodes(attributes, results));
 	CPPUNIT_ASSERT(results.size() > 0);
 	Id nodeId = results[0];
-	stringstream c2("");
-	c2 << "send no Atoms with dist > 1 m from " << nodeId;
-	CPPUNIT_ASSERT(c1.parse(c2.str()));
+	stringstream c3("");
+	c3 << "send no Atoms with dist > 1 m from " << nodeId;
+	CPPUNIT_ASSERT(c1.parse(c3.str()));
 	filter.constraints.clear();
 	filter.constraints.push_back(c1);
 	CPPUNIT_ASSERT(runAddAllSceneGraphPrimitives(wm));
@@ -1075,9 +1083,12 @@ void GraphConstraintTest::testFrequencyConstraints() {
 	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.removeParentCounter);
 
 	GraphConstraint c1;
+	GraphConstraint c2;
 	CPPUNIT_ASSERT(c1.parse("send no Transforms with freq > 0 Hz"));
+	CPPUNIT_ASSERT(c2.parse("send no TransformUpdates with freq > 0 Hz"));
 	filter.constraints.clear();
 	filter.constraints.push_back(c1);
+	filter.constraints.push_back(c2);
 	CPPUNIT_ASSERT(runAddAllSceneGraphPrimitives(wm));
 
 	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addNodeCounter);
@@ -1092,7 +1103,7 @@ void GraphConstraintTest::testFrequencyConstraints() {
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.addParentCounter);
 	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.removeParentCounter);
 
-	CPPUNIT_ASSERT(c1.parse("send no Transforms with freq > 100 Hz"));
+	CPPUNIT_ASSERT(c1.parse("send no TransformUpdates with freq > 100 Hz"));
 	filter.constraints.clear();
 	filter.constraints.push_back(c1);
 	CPPUNIT_ASSERT(runAddAllSceneGraphPrimitives(wm));
@@ -1104,7 +1115,7 @@ void GraphConstraintTest::testFrequencyConstraints() {
 	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addRemoteRootNodeCounter); // never blocked
 	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addConnectionCounter);
 	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.setNodeAttributesCounter);
-	CPPUNIT_ASSERT_EQUAL(0, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(1, wmNodeCounter.setTransformCounter); // we Hz for updated does not count against addition
 	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.deleteNodeCounter); // never blocked
 	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.addParentCounter);
 	CPPUNIT_ASSERT_EQUAL(2, wmNodeCounter.removeParentCounter);
@@ -1424,7 +1435,7 @@ void GraphConstraintTest::testReceiverSimpleConstraints() {
 	CPPUNIT_ASSERT_EQUAL(6, wmNodeCounter.addRemoteRootNodeCounter); // never blocked
 	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addConnectionCounter);
 	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.setNodeAttributesCounter);
-	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(6, wmNodeCounter.setTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(6, wmNodeCounter.deleteNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.addParentCounter);
 	CPPUNIT_ASSERT_EQUAL(3, wmNodeCounter.removeParentCounter);
@@ -1441,7 +1452,7 @@ void GraphConstraintTest::testReceiverSimpleConstraints() {
 	CPPUNIT_ASSERT_EQUAL(7, wmNodeCounter.addRemoteRootNodeCounter); // never blocked
 	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addConnectionCounter);
 	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.setNodeAttributesCounter);
-	CPPUNIT_ASSERT_EQUAL(6, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(8, wmNodeCounter.setTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(7, wmNodeCounter.deleteNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addParentCounter);
 	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.removeParentCounter);
@@ -1458,7 +1469,7 @@ void GraphConstraintTest::testReceiverSimpleConstraints() {
 	CPPUNIT_ASSERT_EQUAL(8, wmNodeCounter.addRemoteRootNodeCounter); // never blocked
 	CPPUNIT_ASSERT_EQUAL(4, wmNodeCounter.addConnectionCounter);
 	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.setNodeAttributesCounter);
-	CPPUNIT_ASSERT_EQUAL(8, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(10, wmNodeCounter.setTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(8, wmNodeCounter.deleteNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.addParentCounter);
 	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.removeParentCounter);
@@ -1475,7 +1486,7 @@ void GraphConstraintTest::testReceiverSimpleConstraints() {
 	CPPUNIT_ASSERT_EQUAL(9, wmNodeCounter.addRemoteRootNodeCounter); // never blocked
 	CPPUNIT_ASSERT_EQUAL(5, wmNodeCounter.addConnectionCounter);
 	CPPUNIT_ASSERT_EQUAL(6, wmNodeCounter.setNodeAttributesCounter);
-	CPPUNIT_ASSERT_EQUAL(10, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(12, wmNodeCounter.setTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(9, wmNodeCounter.deleteNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(6, wmNodeCounter.addParentCounter);
 	CPPUNIT_ASSERT_EQUAL(6, wmNodeCounter.removeParentCounter);
@@ -1492,7 +1503,7 @@ void GraphConstraintTest::testReceiverSimpleConstraints() {
 	CPPUNIT_ASSERT_EQUAL(10, wmNodeCounter.addRemoteRootNodeCounter); // never blocked
 	CPPUNIT_ASSERT_EQUAL(6, wmNodeCounter.addConnectionCounter);
 	CPPUNIT_ASSERT_EQUAL(7, wmNodeCounter.setNodeAttributesCounter);
-	CPPUNIT_ASSERT_EQUAL(12, wmNodeCounter.setTransformCounter);
+	CPPUNIT_ASSERT_EQUAL(14, wmNodeCounter.setTransformCounter);
 	CPPUNIT_ASSERT_EQUAL(10, wmNodeCounter.deleteNodeCounter);
 	CPPUNIT_ASSERT_EQUAL(7, wmNodeCounter.addParentCounter);
 	CPPUNIT_ASSERT_EQUAL(7, wmNodeCounter.removeParentCounter);

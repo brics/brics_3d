@@ -96,6 +96,8 @@ bool GraphConstraint::parse(std::string constraintModel) {
 		type = Group;
 	} else if(it->compare("Connections") == 0) {
 		type = Connection;
+	} else if(it->compare("TransformUpdates") == 0) {
+		type = TransformUpdate;
 	} else {
 		type = UNDEFINED_TYPE;
 	}
