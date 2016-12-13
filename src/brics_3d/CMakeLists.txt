@@ -213,6 +213,7 @@ SET (WORLD_MODEL_LIBRARY_SOURCES
     ./worldModel/sceneGraph/GraphConstraint
     ./worldModel/sceneGraph/GraphConstraintUpdateFilter
     ./worldModel/sceneGraph/LODCalculator
+    ./worldModel/sceneGraph/TimeStamper
 )
 
 #optional sources
