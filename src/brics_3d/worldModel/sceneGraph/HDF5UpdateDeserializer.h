@@ -27,19 +27,14 @@
 namespace brics_3d {
 namespace rsg {
 
-//class IInputPort {
-//public:
-//	IInputPort(){};
-//	virtual ~IInputPort(){};
-//	virtual int write(const char *dataBuffer, int dataLength, int &transferredBytes) = 0; // triggers update of WM
-//};
-
 class HDF5UpdateDeserializer : public IInputPort {
 public:
 	HDF5UpdateDeserializer(WorldModel* wm);
 	virtual ~HDF5UpdateDeserializer();
 
 	int write(const char *dataBuffer, int dataLength, int &transferredBytes);
+	bool loadFromAppendOnlyLogFile(string logFile);
+	static Id getRootIdFromAppendOnlyLogFile(string logFile);
 
 protected:
 
@@ -49,6 +44,7 @@ protected:
 	virtual bool doAddNode(H5::Group& group);
 	virtual bool doAddGroup(H5::Group& group);
 	virtual bool doAddTransformNode(H5::Group& group);
+	virtual bool doAddUncertainTransformNode(H5::Group& group);
 	virtual bool doAddGeometricNode(H5::Group& group);
 	virtual bool doAddRemoteRootNode(H5::Group& group);
 	virtual bool doAddConnection(H5::Group& group);

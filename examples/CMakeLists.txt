@@ -225,6 +225,19 @@ IF (USE_OSG)
         	${OSGTEXT_LIBRARY_DEBUG}
         	${HDF5_LIBRARIES}
         )   
+        ADD_EXECUTABLE(wm_hdf5 wm_hdf5)
+        TARGET_LINK_LIBRARIES(wm_hdf5
+            brics3d_world_model
+            brics3d_algorithm
+            brics3d_util
+            brics3d_core 
+        	${OSG_LIBRARY_DEBUG}
+        	${OSGGA_LIBRARY_DEBUG}
+        	${OSGVIEWER_LIBRARY_DEBUG}
+        	${OSGUTIL_LIBRARY_DEBUG}
+        	${OSGTEXT_LIBRARY_DEBUG}
+        	${HDF5_LIBRARIES}
+        )     
     ADD_EXECUTABLE(wm_udp_hdf5_test wm_udp_hdf5_test)
      TARGET_LINK_LIBRARIES(wm_udp_hdf5_test
             brics3d_world_model

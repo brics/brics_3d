@@ -26,6 +26,7 @@
 
 #include <brics_3d/worldModel/sceneGraph/HDF5UpdateSerializer.h>
 #include <brics_3d/worldModel/sceneGraph/HDF5UpdateDeserializer.h>
+#include <brics_3d/worldModel/sceneGraph/HDF5AppendOnlyLogger.h>
 #include <brics_3d/worldModel/sceneGraph/DotVisualizer.h>
 #include <brics_3d/util/HDF5Typecaster.h>
 #include <hdf5.h>
@@ -779,6 +780,80 @@ void HDF5Test::threadFunction(brics_3d::WorldModel* wm) {
 		}
 	}
 	LOG(INFO) << "HDF5Test::threadFunction: stop.";
+}
+
+void HDF5Test::testLogger() {
+	brics_3d::Logger::setMinLoglevel(brics_3d::Logger::LOGDEBUG);
+	brics_3d::WorldModel* wm = new brics_3d::WorldModel();
+
+	vector<Attribute> dummyAttributes;
+	vector<Attribute> resultAttributes;
+	Id assignedId;
+
+	brics_3d::rsg::HDF5AppendOnlyLogger* logger = new brics_3d::rsg::HDF5AppendOnlyLogger(wm);
+	wm->scene.attachUpdateObserver(logger);
+
+
+	CPPUNIT_ASSERT(wm->scene.addNode(wm->getRootNodeId(), assignedId, dummyAttributes));
+
+	Id groupId;
+	CPPUNIT_ASSERT(wm->scene.addGroup(wm->getRootNodeId(), groupId, dummyAttributes));
+
+	Id tfId;
+	brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform123(new brics_3d::HomogeneousMatrix44(1,0,0,  	// Rotation coefficients
+			0,1,0,
+			0,0,1,
+			1,2,3));
+	CPPUNIT_ASSERT(wm->scene.addTransformNode(wm->getRootNodeId(), tfId, dummyAttributes, transform123, wm->now()));
+
+	Id utfId;
+	ITransformUncertainty::ITransformUncertaintyPtr uncertainty123(new CovarianceMatrix66(3, 0.001, 0.001, 0.0000, 0.000000, 0.00000));
+	CPPUNIT_ASSERT(wm->scene.addUncertainTransformNode(wm->getRootNodeId(), utfId, dummyAttributes, transform123, uncertainty123, wm->now()));
+
+	rsg::Box::BoxPtr box( new rsg::Box(1,2,3));
+	rsg::Id boxId;
+	CPPUNIT_ASSERT(wm->scene.addGeometricNode(wm->getRootNodeId(), boxId, dummyAttributes, box, wm->now()));
+
+	rsg::Sphere::SpherePtr sphere( new rsg::Sphere(4));
+	rsg::Id sphereId;
+	CPPUNIT_ASSERT(wm->scene.addGeometricNode(wm->getRootNodeId(), sphereId, dummyAttributes, sphere, wm->now()));
+
+	rsg::Cylinder::CylinderPtr cylinder( new rsg::Cylinder(5,6));
+	rsg::Id cylinderId;
+	CPPUNIT_ASSERT(wm->scene.addGeometricNode(wm->getRootNodeId(), cylinderId, dummyAttributes, cylinder, wm->now()));
+
+	CPPUNIT_ASSERT(wm->scene.addParent(utfId, tfId));
+
+	CPPUNIT_ASSERT(wm->scene.removeParent(utfId, tfId));
+
+	Id someRemoteNode = 42;
+	CPPUNIT_ASSERT(wm->scene.addRemoteRootNode(someRemoteNode, dummyAttributes));
+
+	vector<Attribute> rootAttibutes;
+	rootAttibutes.push_back(Attribute("name","someRootNodePolicy"));
+	CPPUNIT_ASSERT(wm->scene.setNodeAttributes(wm->getRootNodeId(), rootAttibutes));
+
+
+	brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform456(new brics_3d::HomogeneousMatrix44(1,0,0,  	// Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             4,5,6));
+	CPPUNIT_ASSERT(wm->scene.setTransform(tfId, transform456, wm->now()));
+
+	Id connId;
+	vector<Attribute> connectionAttributes;
+	connectionAttributes.push_back(Attribute("rsg::Type","has_geometry"));
+	vector<Id> sourceIs;
+	sourceIs.push_back(cylinderId);
+	vector<Id> targetIs;
+	targetIs.push_back(tfId);
+	targetIs.push_back(cylinderId); // TODO utfId ?
+	LOG(DEBUG) << "Adding connection { source = {" << cylinderId << "}, target = {" << tfId << ", "<< cylinderId << "}}";
+	CPPUNIT_ASSERT(wm->scene.addConnection(wm->getRootNodeId(), connId, connectionAttributes, sourceIs, targetIs, wm->now(), wm->now()));
+
+	delete logger;
+	delete wm;
+
 }
 
 }  // namespace unitTests

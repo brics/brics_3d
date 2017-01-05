@@ -36,6 +36,7 @@ class HDF5Test : public CPPUNIT_NS::TestFixture {
 #ifdef BRICS_HDF5_ENABLE
 	CPPUNIT_TEST( testLoopBack );
 	CPPUNIT_TEST( testUpdateObersver );
+	CPPUNIT_TEST( testLogger );
 #endif /* BRICS_HDF5_ENABLE */
 	CPPUNIT_TEST_SUITE_END();
 
@@ -47,6 +48,7 @@ public:
 	void testLoopBack();
 	void testUpdateObersver();
 	void threadFunction(brics_3d::WorldModel* wm);
+	void testLogger();
 
 private:
 	  /// Maximum deviation for equality check of double variables

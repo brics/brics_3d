@@ -254,6 +254,7 @@ IF (USE_HDF5)
 	list(APPEND BRICS_3D_LIBRARIES_INCLUDE_DIRS ${HDF5_CXX_INCLUDE_DIR})
     list(APPEND WORLD_MODEL_LIBRARY_SOURCES ./worldModel/sceneGraph/HDF5UpdateSerializer)
     list(APPEND WORLD_MODEL_LIBRARY_SOURCES ./worldModel/sceneGraph/HDF5UpdateDeserializer)
+    list(APPEND WORLD_MODEL_LIBRARY_SOURCES ./worldModel/sceneGraph/HDF5AppendOnlyLogger)
 ENDIF(USE_HDF5)
 
 IF (USE_JSON)

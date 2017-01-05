@@ -19,6 +19,7 @@
 
 #include "HDF5UpdateDeserializer.h"
 #include "brics_3d/core/HomogeneousMatrix44.h"
+#include "brics_3d/core/CovarianceMatrix66.h"
 #include <fstream>
 #include "H5LTpublic.h" // not in default installation -> need to enable HDF5_BUILD_HLIB
 
@@ -160,6 +161,10 @@ bool HDF5UpdateDeserializer::handleSceneGraphUpdate(const char* dataBuffer,
 			   case HDF5Typecaster::TRANSFORM:
 				   doAddTransformNode(group);
 				   break;
+
+				case HDF5Typecaster::UNCERTAIN_TRANSFORM:
+					doAddUncertainTransformNode(group);
+					break;
 
 			   default:
 				   LOG(WARNING) << "HDF5UpdateDeserializer: Unhandled node type: " << type;
@@ -318,8 +323,34 @@ bool HDF5UpdateDeserializer::doAddTransformNode(H5::Group& group) {
 	return wm->scene.addTransformNode(parentId, id, attributes, transform, timeStamp, true);
 }
 
+bool HDF5UpdateDeserializer::doAddUncertainTransformNode(H5::Group& group) {
+	LOG(DEBUG) << "HDF5UpdateDeserializer: doAddUncertainTransformNode.";
+
+	Id id = 0;
+	vector<Attribute> attributes;
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform(new HomogeneousMatrix44());
+	TimeStamp timeStamp;
+
+	if (!HDF5Typecaster::getNodeIdFromHDF5Group(id, group)) {
+		LOG(ERROR) << "H5::Group has no ID";
+		return false;
+	}
+	LOG(DEBUG) << "H5::Group has ID " << id;
+	HDF5Typecaster::getAttributesFromHDF5Group(attributes, group);
+
+	if(!HDF5Typecaster::getTransformFromHDF5Group(transform, timeStamp, group)) {
+		LOG(ERROR) << "H5::Group has no transform dataset.";
+		return false;
+	}
+	LOG(DEBUG) << "UncertainTransform @t " << timeStamp.getSeconds() <<"  is" << std::endl << *transform;
+
+	brics_3d::ITransformUncertainty::ITransformUncertaintyPtr dummyUncertainty(new brics_3d::CovarianceMatrix66(0.001, 0.001, 0.001, 0.001, 0.001, 0.001));
+
+	return wm->scene.addUncertainTransformNode(parentId, id, attributes, transform, dummyUncertainty, timeStamp, true);
+}
+
 bool HDF5UpdateDeserializer::doAddGeometricNode(H5::Group& group) {
-	LOG(INFO) << "HDF5UpdateDeserializer: doAddGeometricNode.";
+	LOG(DEBUG) << "HDF5UpdateDeserializer: doAddGeometricNode.";
 
 	Id id = 0;
 	vector<Attribute> attributes;
@@ -362,7 +393,7 @@ bool HDF5UpdateDeserializer::doAddRemoteRootNode(H5::Group& group) {
 }
 
 bool HDF5UpdateDeserializer::doAddConnection(H5::Group& group) {
-	LOG(WARNING) << "HDF5UpdateDeserializer: doAddConnection.";
+	LOG(DEBUG) << "HDF5UpdateDeserializer: doAddConnection.";
 
 	Id id = 0;
 	vector<Attribute> attributes;
@@ -459,7 +490,247 @@ bool HDF5UpdateDeserializer::doRemoveParent(H5::Group& group) {
 	return wm->scene.removeParent(id, parentId);
 }
 
+bool HDF5UpdateDeserializer::loadFromAppendOnlyLogFile(string logFile) {
+
+	/* open with HDF5 */
+	try {
+
+		H5::H5File file;
+		file.openFile(logFile, H5F_ACC_RDONLY);
+		LOG(DEBUG) << "HDF5UpdateDeserializer: HDF5 file set up.";
+
+
+		/* Extract metadata */
+		H5::Group metadata = file.openGroup("log-metadata");
+		LOG(DEBUG) << "HDF5UpdateDeserializer: Opened \"log-metadata \" group.";
+		vector<Attribute> attributes;
+		HDF5Typecaster::getAttributesFromHDF5Group(attributes, metadata);
+
+		vector<std::string> resultValues;
+		if(getValuesFromAttributeList(attributes, "lib_version",resultValues)) {
+			LOG(INFO) << "HDF5UpdateDeserializer:  lib_version found in log metadata = " << resultValues[0];
+		} else {
+			LOG(WARNING) << "HDF5UpdateDeserializer: no lib_version found in log metadata.";
+		}
+
+
+		/* Discover all attached HDF5 groups */
+		group_name_iter_info groupNamesIterator;
+		groupNamesIterator.index = 0;
+		file.iterateElems(".", NULL, collectGroupNames, &groupNamesIterator);
+		std::vector<std::string> groupNames = groupNamesIterator.collectedGroupNames;
+		LOG(DEBUG) << "HDF5UpdateDeserializer:  Discovered " << groupNames.size() << " H5::Groups underneath in log file";
+
+		/* For each entry in the log, apply an update */
+		HDF5Typecaster::RsgUpdateCommand command;
+		HDF5Typecaster::RsgNodeTypeInfo type;
+
+		for (std::vector<string>::iterator it = groupNames.begin(); it != groupNames.end() ;++it) {
+			LOG(DEBUG) << "Opening H5::Group with name " << *it;
+			if(it->compare("log-metadata") == 0) {
+				continue;
+			}
+
+			H5::Group scene = file.openGroup(*it);
+			HDF5Typecaster::getCommandTypeInfoFromHDF5Group(command, scene);
+			bool hasParentId = false;
+
+			/* go one level deeper */
+			group_name_iter_info innerGroupNamesIterator;
+			innerGroupNamesIterator.index = 0;
+			scene.iterateElems(".", NULL, collectGroupNames, &innerGroupNamesIterator);
+			std::vector<std::string> innerGroupNames = innerGroupNamesIterator.collectedGroupNames;
+			if(innerGroupNames.size() != 1) {
+				LOG(ERROR) << "HDF5UpdateDeserializer:  Discovered " << innerGroupNames.size() << " H5::Groups underneath Scene Group. Should be one.";
+				file.close();
+				return false;
+			}
+			std::string innerGroupName = innerGroupNames[0];
+			LOG(DEBUG) << "Opening H5::Group with name " << innerGroupName;
+			H5::Group group = scene.openGroup(innerGroupName);
+
+			/* parse log data */
+			switch (command) {
+
+			case HDF5Typecaster::ADD:
+
+				LOG(DEBUG) << "HDF5UpdateDeserializer: Processing ADD command";
+				try {
+					HDF5Typecaster::getNodeIdFromHDF5Group(parentId, scene, rsgParentIdName); // we memorize the parent Id as backtrack in HDF5 is not so easy.
+					hasParentId = true;
+				} catch (H5::Exception e) {
+					LOG(WARNING) << "No parentId given.";
+				}
+
+
+				if(!hasParentId) {
+					LOG(ERROR) << "Retrieved an ADD command, but without parentId - this does not work.";
+					break;
+				}
+
+				HDF5Typecaster::getNodeTypeInfoFromHDF5Group(type, group);
+
+				switch (type) {
+				case HDF5Typecaster::NODE:
+					doAddNode(group);
+					break;
+
+				case HDF5Typecaster::GROUP:
+					doAddGroup(group);
+					break;
+
+				case HDF5Typecaster::CONNECTION:
+					doAddConnection(group);
+					break;
+
+				case HDF5Typecaster::GEOMETIRC_NODE:
+					LOG(DEBUG) << "entering doAddGeometricNode(group)";
+					doAddGeometricNode(group);
+					break;
+
+				case HDF5Typecaster::TRANSFORM:
+					doAddTransformNode(group);
+					break;
+
+				case HDF5Typecaster::UNCERTAIN_TRANSFORM:
+					doAddUncertainTransformNode(group);
+					break;
+
+				default:
+					LOG(WARNING) << "HDF5UpdateDeserializer: Unhandled node type: " << type;
+					break;
+				}
+				break;
+
+				case HDF5Typecaster::SET_TRANSFORM:
+
+					LOG(DEBUG) << "HDF5UpdateDeserializer: Processing SET_TRANSFORM command";
+					HDF5Typecaster::getNodeTypeInfoFromHDF5Group(type, group);
+					if(type != HDF5Typecaster::TRANSFORM) {
+						LOG(ERROR) << "Received a SET_TRANSFORM command, but node type is not a Transform.";
+						return false;
+					}
+					doSetTransform(group);
+
+					break;
+
+				case HDF5Typecaster::SET_ATTRIBUTES:
+
+					LOG(DEBUG) << "HDF5UpdateDeserializer: Processing SET_ATTRIBUTES command";
+					doSetNodeAttributes(group);
+
+					break;
+
+				case HDF5Typecaster::DELETE:
+
+					LOG(DEBUG) << "HDF5UpdateDeserializer: Processing DELETE command";
+					doDeleteNode(group);
+
+					break;
+
+					break;
+
+				case HDF5Typecaster::ADD_PARENT:
+
+					LOG(DEBUG) << "HDF5UpdateDeserializer: Processing ADD_PARENT command";
+					try {
+						HDF5Typecaster::getNodeIdFromHDF5Group(parentId, scene, rsgParentIdName); // we memorize the parent Id as backtrack in HDF5 is not so easy.
+						hasParentId = true;
+					} catch (H5::Exception e) {
+						LOG(WARNING) << "No parentId given.";
+					}
+
+					if(!hasParentId) {
+						LOG(ERROR) << "Retrieved an ADD_PARENT command, but without parentId - this does not work.";
+						break;
+					}
+					doAddParent(group);
+
+					break;
+
+				case HDF5Typecaster::REMOVE_PARENT:
+
+					LOG(DEBUG) << "HDF5UpdateDeserializer: Processing REMOVE_PARENT command";
+					try {
+						HDF5Typecaster::getNodeIdFromHDF5Group(parentId, scene, rsgParentIdName); // we memorize the parent Id as backtrack in HDF5 is not so easy.
+						hasParentId = true;
+					} catch (H5::Exception e) {
+						LOG(WARNING) << "No parentId given.";
+					}
+
+					if(!hasParentId) {
+						LOG(ERROR) << "Retrieved an REMOVE_PARENT command, but without parentId - this does not work.";
+						break;
+					}
+					doRemoveParent(group);
+
+					break;
+
+				case HDF5Typecaster::ADD_REMOTE_ROOT_NODE:
+
+					LOG(DEBUG) << "HDF5UpdateDeserializer: Processing ADD_REMOTE_ROOT_NODE command";
+					doAddRemoteRootNode(group);
+
+					break;
+
+				default:
+					LOG(WARNING) << "HDF5UpdateDeserializer: Unhandled command: " << command;
+					break;
+			}
+		}
+
+
+
+
+		/* close file */
+		file.close();
+
+
+	} catch (H5::Exception e) {
+		LOG(ERROR) << "HDF5UpdateDeserializer: cannot open HDF5 file " << logFile;
+		return false;
+	}
+
+	return true;
+}
+
+Id HDF5UpdateDeserializer::getRootIdFromAppendOnlyLogFile(string logFile) {
+	Id rootId = 0; //NiL in case of failure
+
+	/* open with HDF5 */
+	try {
+
+		H5::H5File file;
+		file.openFile(logFile, H5F_ACC_RDONLY);
+		LOG(DEBUG) << "HDF5UpdateDeserializer: HDF5 file set up.";
+
+		/* Extract metadata */
+		H5::Group metadata = file.openGroup("log-metadata");
+		LOG(DEBUG) << "HDF5UpdateDeserializer: Opened \"log-metadata \" group.";
+		vector<Attribute> attributes;
+		HDF5Typecaster::getAttributesFromHDF5Group(attributes, metadata);
+
+		vector<std::string> resultValues;
+		if(getValuesFromAttributeList(attributes, "rootId",resultValues)) {
+			rootId.fromString(resultValues[0]);
+		} else {
+			LOG(ERROR) << "HDF5UpdateDeserializer: no rootId found in log metadata.";
+		}
+
+		/* close file */
+		file.close();
+
+
+	} catch (H5::Exception e) {
+		LOG(ERROR) << "HDF5UpdateDeserializer: cannot process HDF5 file " << logFile;
+		return false;
+	}
+
+
+	return rootId;
+}
 } /* namespace rsg */
 } /* namespace brics_3d */
+
 
 /* EOF */
