@@ -316,7 +316,7 @@ bool HDF5AppendOnlyLogger::setNodeAttributes(Id id,
 		H5::Group scene = logFile->createGroup(groupName.str());
 		HDF5Typecaster::addCommandTypeInfoToHDF5Group(HDF5Typecaster::SET_ATTRIBUTES, scene);
 
-		H5::Group group = scene.createGroup("Attribute-Update-" + id.toString()); // The actual data
+		H5::Group group = scene.createGroup("Attribute-Update-" + id.toString() + "-" + groupName.str()); // The actual data
 		HDF5Typecaster::addNodeIdToHDF5Group(id, group);
 		HDF5Typecaster::addAttributesToHDF5Group(newAttributes, group);
 		HDF5Typecaster::addTimeStampToHDF5Group(timeStamp, group, "attributesTimeStamp");
@@ -343,7 +343,7 @@ bool HDF5AppendOnlyLogger::setTransform(Id id,
 		H5::Group scene = logFile->createGroup(groupName.str());
 		HDF5Typecaster::addCommandTypeInfoToHDF5Group(HDF5Typecaster::SET_TRANSFORM, scene);
 
-		H5::Group group = scene.createGroup("Transform-Update-" + id.toString()); // The actual data
+		H5::Group group = scene.createGroup("Transform-Update-" + id.toString() + "-" + groupName.str()); // The actual data
 		HDF5Typecaster::addNodeTypeInfoToHDF5Group(HDF5Typecaster::TRANSFORM, group);
 		HDF5Typecaster::addNodeIdToHDF5Group(id, group);
 		HDF5Typecaster::addTransformToHDF5Group(transform, timeStamp, group);
@@ -372,7 +372,7 @@ bool HDF5AppendOnlyLogger::setUncertainTransform(Id id,
 		H5::Group scene = logFile->createGroup(groupName.str());
 		HDF5Typecaster::addCommandTypeInfoToHDF5Group(HDF5Typecaster::SET_TRANSFORM, scene);
 
-		H5::Group group = scene.createGroup("Transform-Update-" + id.toString()); // The actual data
+		H5::Group group = scene.createGroup("Transform-Update-" + id.toString() + "-" + groupName.str()); // The actual data
 		HDF5Typecaster::addNodeTypeInfoToHDF5Group(HDF5Typecaster::UNCERTAIN_TRANSFORM, group);
 		HDF5Typecaster::addNodeIdToHDF5Group(id, group);
 		HDF5Typecaster::addTransformToHDF5Group(transform, timeStamp, group);

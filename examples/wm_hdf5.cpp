@@ -30,10 +30,8 @@
 #include <brics_3d/worldModel/sceneGraph/DotVisualizer.h>
 #include <brics_3d/worldModel/sceneGraph/HDF5UpdateSerializer.h>
 #include <brics_3d/worldModel/sceneGraph/HDF5UpdateDeserializer.h>
+#include <brics_3d/worldModel/sceneGraph/OSGVisualizer.h>
 
-
-#include <brics_3d/util/HDF5Typecaster.h>
-#include <hdf5.h>
 using namespace brics_3d;
 using brics_3d::Logger;
 
@@ -51,7 +49,7 @@ int main(int argc, char **argv) {
 
 
 	/* Create a world model handle */
-	Logger::setMinLoglevel(Logger::LOGDEBUG);
+	Logger::setMinLoglevel(Logger::LOGERROR);
 	brics_3d::rsg::Id rootId; // Explicitly set the root Id (optional)
 	/*
 	 * The rootId is the one and only information from the model we
@@ -72,13 +70,28 @@ int main(int argc, char **argv) {
 	graphVizualizer->setFileName("hdf5_append_only_graph");
 	wm->scene.attachUpdateObserver(graphVizualizer); // Enable graph visualization
 
+#ifdef BRICS_OSG_ENABLE
+	brics_3d::rsg::OSGVisualizer* geometryVizualizer = new brics_3d::rsg::OSGVisualizer(); // Create the visualizer.
+	brics_3d::rsg::VisualizationConfiguration osgConfiguration; // _Optional_ configuration file.
+	osgConfiguration.visualizeAttributes = true; // Vizualize attributes of a node iff true.
+	osgConfiguration.visualizeIds = true;        // Vizualize Ids of a node iff true.
+	osgConfiguration.abbreviateIds = true;       // Vizualize only the lower 2 bytes of an Id iff true.
+	geometryVizualizer->setConfig(osgConfiguration);
+	wm->scene.attachUpdateObserver(geometryVizualizer); // Enable 3D visualization
+	wm->scene.advertiseRootNode();
+#endif
+
 	/* Do the actual HDF5 log file parsing. */
 	brics_3d::rsg::HDF5UpdateDeserializer deserializer(wm);
 	deserializer.loadFromAppendOnlyLogFile(fileName);
 
 
-
-
+#ifdef BRICS_OSG_ENABLE
+	/* Wait until user closes the GUI */
+	while(!geometryVizualizer->done()) {
+		//nothing here
+	}
+#endif
 
 
 	return 0;
