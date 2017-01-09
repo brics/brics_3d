@@ -23,7 +23,8 @@
 namespace brics_3d {
 namespace rsg {
 
-JSONSerializer::JSONSerializer(IOutputPort* port) {
+JSONSerializer::JSONSerializer(WorldModel* wm, IOutputPort* port) {
+	this->wm = wm;
 	this->port = port;
 
 	/* some default values */
@@ -50,6 +51,7 @@ bool JSONSerializer::addNode(Id parentId, Id& assignedId,
 		graphUpdate.Set("@worldmodeltype", libvariant::Variant("RSGUpdate"));
 		graphUpdate.Set("operation", libvariant::Variant("CREATE"));
 		JSONTypecaster::addIdToJSON(parentId, graphUpdate, "parentId");
+		JSONTypecaster::addIdToJSON(wm->getRootNodeId(), graphUpdate, "senderId");
 
 		/* the actual graph primitive */
 		libvariant::Variant node;
@@ -83,6 +85,7 @@ bool JSONSerializer::addGroup(Id parentId, Id& assignedId,
 		graphUpdate.Set("@worldmodeltype", libvariant::Variant("RSGUpdate"));
 		graphUpdate.Set("operation", libvariant::Variant("CREATE"));
 		JSONTypecaster::addIdToJSON(parentId, graphUpdate, "parentId");
+		JSONTypecaster::addIdToJSON(wm->getRootNodeId(), graphUpdate, "senderId");
 
 		/* the actual graph primitive */
 		libvariant::Variant node;
@@ -118,6 +121,7 @@ bool JSONSerializer::addTransformNode(Id parentId,
 		graphUpdate.Set("@worldmodeltype", libvariant::Variant("RSGUpdate"));
 		graphUpdate.Set("operation", libvariant::Variant("CREATE"));
 		JSONTypecaster::addIdToJSON(parentId, graphUpdate, "parentId");
+		JSONTypecaster::addIdToJSON(wm->getRootNodeId(), graphUpdate, "senderId");
 
 		/* the actual graph primitive */
 		libvariant::Variant node;
@@ -166,6 +170,7 @@ bool JSONSerializer::addGeometricNode(Id parentId,
 		graphUpdate.Set("@worldmodeltype", libvariant::Variant("RSGUpdate"));
 		graphUpdate.Set("operation", libvariant::Variant("CREATE"));
 		JSONTypecaster::addIdToJSON(parentId, graphUpdate, "parentId");
+		JSONTypecaster::addIdToJSON(wm->getRootNodeId(), graphUpdate, "senderId");
 
 		/* the actual graph primitive */
 		libvariant::Variant node;
@@ -203,6 +208,7 @@ bool JSONSerializer::addRemoteRootNode(Id rootId,
 		libvariant::Variant graphUpdate;
 		graphUpdate.Set("@worldmodeltype", libvariant::Variant("RSGUpdate"));
 		graphUpdate.Set("operation", libvariant::Variant("CREATE_REMOTE_ROOT_NODE"));
+		JSONTypecaster::addIdToJSON(wm->getRootNodeId(), graphUpdate, "senderId");
 
 		/* the actual graph primitive */
 		libvariant::Variant node;
@@ -239,6 +245,7 @@ bool JSONSerializer::addConnection(Id parentId, Id& assignedId,
 		graphUpdate.Set("@worldmodeltype", libvariant::Variant("RSGUpdate"));
 		graphUpdate.Set("operation", libvariant::Variant("CREATE"));
 		JSONTypecaster::addIdToJSON(parentId, graphUpdate, "parentId");
+		JSONTypecaster::addIdToJSON(wm->getRootNodeId(), graphUpdate, "senderId");
 
 		/* the actual graph primitive */
 		libvariant::Variant node;
@@ -284,6 +291,7 @@ bool JSONSerializer::setNodeAttributes(Id id,
 		libvariant::Variant graphUpdate;
 		graphUpdate.Set("@worldmodeltype", libvariant::Variant("RSGUpdate"));
 		graphUpdate.Set("operation", libvariant::Variant("UPDATE_ATTRIBUTES"));
+		JSONTypecaster::addIdToJSON(wm->getRootNodeId(), graphUpdate, "senderId");
 
 		/* the actual graph primitive */
 		libvariant::Variant node;
@@ -319,6 +327,7 @@ bool JSONSerializer::setTransform(Id id,
 		libvariant::Variant graphUpdate;
 		graphUpdate.Set("@worldmodeltype", libvariant::Variant("RSGUpdate"));
 		graphUpdate.Set("operation", libvariant::Variant("UPDATE_TRANSFORM"));
+		JSONTypecaster::addIdToJSON(wm->getRootNodeId(), graphUpdate, "senderId");
 
 		/* the actual graph primitive */
 		libvariant::Variant node;
@@ -362,6 +371,7 @@ bool JSONSerializer::deleteNode(Id id) {
 		libvariant::Variant graphUpdate;
 		graphUpdate.Set("@worldmodeltype", libvariant::Variant("RSGUpdate"));
 		graphUpdate.Set("operation", libvariant::Variant("DELETE_NODE"));
+		JSONTypecaster::addIdToJSON(wm->getRootNodeId(), graphUpdate, "senderId");
 
 		/* the actual graph primitive */
 		libvariant::Variant node;
@@ -393,6 +403,7 @@ bool JSONSerializer::addParent(Id id, Id parentId) {
 		graphUpdate.Set("@worldmodeltype", libvariant::Variant("RSGUpdate"));
 		graphUpdate.Set("operation", libvariant::Variant("CREATE_PARENT"));
 		JSONTypecaster::addIdToJSON(parentId, graphUpdate, "parentId");
+		JSONTypecaster::addIdToJSON(wm->getRootNodeId(), graphUpdate, "senderId");
 
 		/* the actual graph primitive */
 		libvariant::Variant node;
@@ -425,6 +436,7 @@ bool JSONSerializer::removeParent(Id id, Id parentId) {
 		graphUpdate.Set("@worldmodeltype", libvariant::Variant("RSGUpdate"));
 		graphUpdate.Set("operation", libvariant::Variant("DELETE_PARENT"));
 		JSONTypecaster::addIdToJSON(parentId, graphUpdate, "parentId");
+		JSONTypecaster::addIdToJSON(wm->getRootNodeId(), graphUpdate, "senderId");
 
 		/* the actual graph primitive */
 		libvariant::Variant node;

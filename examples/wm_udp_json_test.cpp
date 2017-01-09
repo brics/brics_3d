@@ -300,7 +300,7 @@ int main(int argc, char **argv) {
 	 * NOTE: 224.0.0.1 is a multicast address so we don't have to bother who is server and who is client.
 	 */
 	JOSNUDPOutputBridge* udpOutBridge = new JOSNUDPOutputBridge(hostIP, 11411);
-	brics_3d::rsg::JSONSerializer* wmUpdatesToJSON5Serializer = new brics_3d::rsg::JSONSerializer(udpOutBridge);
+	brics_3d::rsg::JSONSerializer* wmUpdatesToJSON5Serializer = new brics_3d::rsg::JSONSerializer(wm, udpOutBridge);
 	wm->scene.attachUpdateObserver(wmUpdatesToJSON5Serializer);
 	wmUpdatesToJSON5Serializer->setStoreMessageBackupsOnFileSystem(true); /* set to true to store all updates as .h5 files */
 

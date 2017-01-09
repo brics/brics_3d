@@ -93,7 +93,7 @@ int main(int argc, char **argv) {
 	wm->scene.advertiseRootNode();						// Inform freshly attached opserver about _this_ world model
 
 	/* Add a JSON serializer (optional) */
-	brics_3d::rsg::JSONSerializer serializer(NULL);
+	brics_3d::rsg::JSONSerializer serializer(wm, NULL);
 	wm->scene.attachUpdateObserver(&serializer); // Enable JSON based serialization
 	wm->scene.advertiseRootNode();				 // Inform freshly attached opserver about _this_ world model
 

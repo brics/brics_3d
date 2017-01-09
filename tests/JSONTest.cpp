@@ -120,14 +120,14 @@ void JSONTest::testLoopBack() {
 	brics_3d::rsg::JSONDeserializer* wmUpdatesToJSONdeserializer = new brics_3d::rsg::JSONDeserializer(wmReplica);
 //	brics_3d::rsg::JSONDeserializer* wmUpdatesToJSONdeserializer = new brics_3d::rsg::JSONDeserializer(wm/*wmReplica*/);
 	JSONSimpleBridge* feedForwardBridge = new JSONSimpleBridge(wmUpdatesToJSONdeserializer);
-	brics_3d::rsg::JSONSerializer* wmUpdatesToJSONSerializer = new brics_3d::rsg::JSONSerializer(feedForwardBridge);
+	brics_3d::rsg::JSONSerializer* wmUpdatesToJSONSerializer = new brics_3d::rsg::JSONSerializer(wm, feedForwardBridge);
 	wm->scene.attachUpdateObserver(wmUpdatesToJSONSerializer);
 	wmUpdatesToJSONSerializer->setStoreMessageBackupsOnFileSystem(true); /* set to true to store all updates as .h5 files */
 
 	/* Allow roundtrip updates from wmReplica to wm as well */
 	brics_3d::rsg::JSONDeserializer* wmUpdatesToJSONdeserializer2 = new brics_3d::rsg::JSONDeserializer(wm);
 	JSONSimpleBridge* feedForwardBridge2 = new JSONSimpleBridge(wmUpdatesToJSONdeserializer2, "JSONSimpleBridge-roundtrip");
-	brics_3d::rsg::JSONSerializer* wmUpdatesToJSONSerializer2 = new brics_3d::rsg::JSONSerializer(feedForwardBridge2);
+	brics_3d::rsg::JSONSerializer* wmUpdatesToJSONSerializer2 = new brics_3d::rsg::JSONSerializer(wmReplica, feedForwardBridge2);
 	wmReplica->scene.attachUpdateObserver(wmUpdatesToJSONSerializer2);
 //	wm/*wmReplica*/->scene.attachUpdateObserver(wmUpdatesToJSONSerializer2);
 	wmUpdatesToJSONSerializer2->setStoreMessageBackupsOnFileSystem(false);
@@ -223,7 +223,7 @@ void JSONTest::testUpdateObersver() {
 
 	brics_3d::rsg::JSONDeserializer* wmUpdatesToJSONdeserializer = new brics_3d::rsg::JSONDeserializer(wmReplica);
 	JSONSimpleBridge* feedForwardBridge = new JSONSimpleBridge(wmUpdatesToJSONdeserializer);
-	brics_3d::rsg::JSONSerializer* wmUpdatesToJSONSerializer = new brics_3d::rsg::JSONSerializer(feedForwardBridge);
+	brics_3d::rsg::JSONSerializer* wmUpdatesToJSONSerializer = new brics_3d::rsg::JSONSerializer(wm, feedForwardBridge);
 	wm->scene.attachUpdateObserver(wmUpdatesToJSONSerializer);
 	wmUpdatesToJSONSerializer->setStoreMessageBackupsOnFileSystem(true); /* set to true to store all updates as .h5 files */
 
@@ -809,7 +809,7 @@ void JSONTest::testInputFilter() {
 
 
 	JSONSimpleBridge* feedForwardBridge = new JSONSimpleBridge(wmUpdatesToJSONdeserializer);
-	brics_3d::rsg::JSONSerializer* wmUpdatesToJSONSerializer = new brics_3d::rsg::JSONSerializer(feedForwardBridge);
+	brics_3d::rsg::JSONSerializer* wmUpdatesToJSONSerializer = new brics_3d::rsg::JSONSerializer(wm, feedForwardBridge);
 	wm->scene.attachUpdateObserver(wmUpdatesToJSONSerializer);
 	wmUpdatesToJSONSerializer->setStoreMessageBackupsOnFileSystem(true); /* set to true to store all updates as .h5 files */
 

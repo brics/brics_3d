@@ -23,6 +23,7 @@
 #include "brics_3d/core/Logger.h"
 #include "brics_3d/worldModel/sceneGraph/ISceneGraphUpdateObserver.h"
 #include "brics_3d/worldModel/sceneGraph/IPort.h"
+#include "brics_3d/worldModel/WorldModel.h"
 
 #include <Variant/Variant.h>
 
@@ -31,7 +32,7 @@ namespace rsg {
 
 class JSONSerializer : public ISceneGraphUpdateObserver {
 public:
-	JSONSerializer(IOutputPort* port);
+	JSONSerializer(WorldModel* wm, IOutputPort* port);
 	virtual ~JSONSerializer();
 
 	bool addNode(Id parentId, Id& assignedId, vector<Attribute> attributes, bool forcedId = false);
@@ -59,6 +60,7 @@ public:
 
 private:
 
+	WorldModel* wm;
 	IOutputPort* port;
 	bool storeMessageBackupsOnFileSystem;
 	std::string fileSuffix;
