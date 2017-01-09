@@ -163,7 +163,8 @@ public:
     	historyIterator = history.begin();
     	if (historyIterator != history.end()) {
     		if(timeStamp < (historyIterator->second - maxHistoryDuration)) {
-    			LOG(WARNING) << "Can not insert data. An entry at time stamp "  << timeStamp.getSeconds() << "[s] is older than the cache limit. Skipping it.";
+    			LOG(WARNING) << "Can not insert data. An entry at time stamp " << std::fixed << timeStamp.getSeconds() << "[s] is older than the cache limit of "
+    					<< std::fixed << (historyIterator->second - maxHistoryDuration).getSeconds() << "[s]. Skipping it.";
     			return false;
     		}
     	}
@@ -172,7 +173,7 @@ public:
     	while(historyIterator != history.end()) { // loop over history
     		if (historyIterator->second <= timeStamp) {
     			if(historyIterator->second == timeStamp) {
-    				LOG(WARNING) << "Can not insert data. An entry at time stamp "  << timeStamp.getSeconds() << "[s] exists already. Skipping it.";
+    				LOG(WARNING) << "Can not insert data. An entry at time stamp " << std::fixed << timeStamp.getSeconds() << "[s] exists already. Skipping it.";
     				return false;
     			}
     			break;
