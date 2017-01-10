@@ -267,15 +267,17 @@ bool JSONQueryRunner::handleGetNodeAttributes(libvariant::Variant& query,
 		return false;
 	}
 	std::vector<rsg::Attribute> attributes;
+	TimeStamp attributesTimeStamp;
 
 	/* perform query */
-	bool success = wm->scene.getNodeAttributes(id, attributes);
+	bool success = wm->scene.getNodeAttributes(id, attributes, attributesTimeStamp);
 
 	/* set up result message */
 	result.Set("query", libvariant::Variant("GET_NODE_ATTRIBUTES"));
 	result.Set("querySuccess", libvariant::Variant(success));
 	if(success) {
 		JSONTypecaster::addAttributesToJSON(attributes, result);
+		JSONTypecaster::addTimeStampToJSON(attributesTimeStamp, result, "timeStamp");
 	}
 
 

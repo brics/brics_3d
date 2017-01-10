@@ -170,6 +170,23 @@ bool SceneGraphFacade::getNodeAttributes(Id id, vector<Attribute>& attributes) {
 	return false;
 }
 
+bool SceneGraphFacade::getNodeAttributes(Id id, vector<Attribute>& attributes, TimeStamp& timeStamp) {
+	attributes.clear();
+	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
+	Node::NodePtr node = tmpNode.lock();
+	if (node != 0) {
+		if (node != 0) {
+			for (unsigned int i = 0; i < static_cast<unsigned int>(node->getAttributes().size()) ; ++i) {
+				attributes.push_back(node->getAttributes()[i]);
+			}
+		}
+		timeStamp = node->getAttributesTimeStamp();
+		return true;
+	}
+	return false;
+}
+
+
 bool SceneGraphFacade::getNodeParents(Id id, vector<Id>& parentIds) {
 	parentIds.clear();
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);

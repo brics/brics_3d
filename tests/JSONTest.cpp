@@ -2091,7 +2091,7 @@ void JSONTest::testQuerys() {
 	queryAsJson = queryAsJson2.str();
 	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson)); // This should work
 	LOG(DEBUG) << "resultAsJson " << resultAsJson;
-	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true,\"timeStamp\": {\"@stamptype\": \"TimeStampUTCms\",\"stamp\": 0.0000000000000000}}") == 0); // "{}" means parser error;
 
 	queryAsJson2.str("");
 	queryAsJson2
@@ -2786,7 +2786,7 @@ void JSONTest::testComplexAttributeValues() {
 	queryAsJson = queryAsJson2.str();
 	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson)); // This should work
 	LOG(DEBUG) << "resultAsJson " << resultAsJson;
-	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true,\"timeStamp\": {\"@stamptype\": \"TimeStampUTCms\",\"stamp\": 0.0000000000000000}}") == 0); // "{}" means parser error;
 
 
 //	JSON attributes;
@@ -2797,7 +2797,7 @@ void JSONTest::testComplexAttributeValues() {
 	/* Set a "simple" attribute */
 	attributes.clear();
 	attributes.push_back(Attribute("sherpa:command", "follow me"));
-	wm->scene.setNodeAttributes(rootId, attributes);
+	wm->scene.setNodeAttributes(rootId, attributes, TimeStamp(1, Units::MilliSecond));
 	queryAsJson2.str("");
 	queryAsJson2
 	<<"{"
@@ -2808,12 +2808,12 @@ void JSONTest::testComplexAttributeValues() {
 	queryAsJson = queryAsJson2.str();
 	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson)); // This should work
 	LOG(DEBUG) << "resultAsJson " << resultAsJson;
-	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"sherpa:command\",\"value\": \"follow me\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"sherpa:command\",\"value\": \"follow me\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true,\"timeStamp\": {\"@stamptype\": \"TimeStampUTCms\",\"stamp\": 1.0000000000000000}}") == 0); // "{}" means parser error;
 
 	/* Set the "simple" attribute again to see that nothing get appended. */
 	attributes.clear();
 	attributes.push_back(Attribute("sherpa:command", "follow me"));
-	wm->scene.setNodeAttributes(rootId, attributes);
+	wm->scene.setNodeAttributes(rootId, attributes, TimeStamp(1, Units::MilliSecond));
 	queryAsJson2.str("");
 	queryAsJson2
 	<<"{"
@@ -2824,13 +2824,13 @@ void JSONTest::testComplexAttributeValues() {
 	queryAsJson = queryAsJson2.str();
 	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
 	LOG(DEBUG) << "resultAsJson " << resultAsJson;
-	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"sherpa:command\",\"value\": \"follow me\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"sherpa:command\",\"value\": \"follow me\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true,\"timeStamp\": {\"@stamptype\": \"TimeStampUTCms\",\"stamp\": 1.0000000000000000}}") == 0); // "{}" means parser error;
 
 
 	/* Set the "complex" attribute. */
 	attributes.clear();
 	attributes.push_back(Attribute("sherpa:command", "{\"direction\":[0.3, 0.7, 0.0]}"));
-	wm->scene.setNodeAttributes(rootId, attributes);
+	wm->scene.setNodeAttributes(rootId, attributes, TimeStamp(1, Units::MilliSecond));
 	queryAsJson2.str("");
 	queryAsJson2
 	<<"{"
@@ -2841,7 +2841,7 @@ void JSONTest::testComplexAttributeValues() {
 	queryAsJson = queryAsJson2.str();
 	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
 	LOG(DEBUG) << "resultAsJson " << resultAsJson;
-	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"sherpa:command\",\"value\": {\"direction\": [0.29999999999999999,0.69999999999999996,0.0000000000000000]}}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"sherpa:command\",\"value\": {\"direction\": [0.29999999999999999,0.69999999999999996,0.0000000000000000]}}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true,\"timeStamp\": {\"@stamptype\": \"TimeStampUTCms\",\"stamp\": 1.0000000000000000}}") == 0); // "{}" means parser error;
 
 	/*
 	 * Now with the JSON interface :
@@ -2859,6 +2859,7 @@ void JSONTest::testComplexAttributeValues() {
 		<< "  \"attributes\": ["
 		<< "       {\"key\": \"sherpa:command\", \"value\": \"follow me\"},"
 		<< "  ],"
+	    << "  \"attributesTimeStamp\": {\"@stamptype\": \"TimeStampUTCms\",\"stamp\": 1.0000000000000000}"
 		<< " },"
 	<<"}";
 	queryAsJson = queryAsJson2.str();
@@ -2873,9 +2874,8 @@ void JSONTest::testComplexAttributeValues() {
 	<<"}";
 	queryAsJson = queryAsJson2.str();
 	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
-	LOG(DEBUG) << "resultAsJson " << resultAsJson;
-	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"sherpa:command\",\"value\": \"follow me\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
-
+	LOG(DEBUG) << "resultAsJson command" << resultAsJson;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"sherpa:command\",\"value\": \"follow me\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true,\"timeStamp\": {\"@stamptype\": \"TimeStampUTCms\",\"stamp\": 1.0000000000000000}}") == 0);
 	/* Set the "simple" attribute again to see that nothing get appended. Though we have to make a small modification since the same operation twice is rejected */
 	queryAsJson2.str("");
 	queryAsJson2
@@ -2888,6 +2888,7 @@ void JSONTest::testComplexAttributeValues() {
 		<< "  \"attributes\": ["
 		<< "       {\"key\": \"sherpa:command\", \"value\": \"follow me2\"},"
 		<< "  ],"
+	    << "  \"attributesTimeStamp\": {\"@stamptype\": \"TimeStampUTCms\",\"stamp\": 1.0000000000000000}"
 		<< " },"
 	<<"}";
 	queryAsJson = queryAsJson2.str();
@@ -2903,7 +2904,7 @@ void JSONTest::testComplexAttributeValues() {
 	queryAsJson = queryAsJson2.str();
 	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
 	LOG(DEBUG) << "resultAsJson " << resultAsJson;
-	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"sherpa:command\",\"value\": \"follow me2\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"sherpa:command\",\"value\": \"follow me2\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true,\"timeStamp\": {\"@stamptype\": \"TimeStampUTCms\",\"stamp\": 1.0000000000000000}}") == 0);
 
 	/* Set the "complex" attribute. */
 	queryAsJson2.str("");
@@ -2917,6 +2918,7 @@ void JSONTest::testComplexAttributeValues() {
 		<< "  \"attributes\": ["
 		<< "       {\"key\": \"sherpa:command\", \"value\": {\"direction\":[0.3, 0.7, 0.0]}},"
 		<< "  ],"
+	    << "  \"attributesTimeStamp\": {\"@stamptype\": \"TimeStampUTCms\",\"stamp\": 1.0000000000000000}"
 		<< " },"
 	<<"}";
 	queryAsJson = queryAsJson2.str();
@@ -2932,7 +2934,7 @@ void JSONTest::testComplexAttributeValues() {
 	queryAsJson = queryAsJson2.str();
 	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
 	LOG(DEBUG) << "resultAsJson " << resultAsJson;
-	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"sherpa:command\",\"value\": {\"direction\": [0.29999999999999999,0.69999999999999996,0.0000000000000000]}}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"sherpa:command\",\"value\": {\"direction\": [0.29999999999999999,0.69999999999999996,0.0000000000000000]}}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true,\"timeStamp\": {\"@stamptype\": \"TimeStampUTCms\",\"stamp\": 1.0000000000000000}}") == 0);
 
 
 }
@@ -2959,7 +2961,7 @@ void JSONTest::testAttributeUpdateMode() {
 	queryAsJson = queryAsJson2.str();
 	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson)); // This should work
 	LOG(DEBUG) << "resultAsJson " << resultAsJson;
-	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true,\"timeStamp\": {\"@stamptype\": \"TimeStampUTCms\",\"stamp\": 0.0000000000000000}}") == 0); // "{}" means parser error;
 
 	attributes.clear();
 	wm->scene.getNodeAttributes(wm->getRootNodeId(), attributes);
@@ -2976,6 +2978,7 @@ void JSONTest::testAttributeUpdateMode() {
 		<< "  \"attributes\": ["
 		<< "       {\"key\": \"rsg:agent_policy\", \"value\": \"send no Atoms from context osm\"}"
 		<< "  ],"
+	    << "  \"attributesTimeStamp\": {\"@stamptype\": \"TimeStampUTCms\",\"stamp\": 1.0000000000000000}"
 		<< " },"
 	<<"}";
 	queryAsJson = queryAsJson2.str();
@@ -2998,7 +3001,7 @@ void JSONTest::testAttributeUpdateMode() {
 	queryAsJson = queryAsJson2.str();
 	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
 	LOG(DEBUG) << "testAttributeUpdateMode resultAsJson " << resultAsJson;
-	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"rsg:agent_policy\",\"value\": \"send no Atoms from context osm\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"rsg:agent_policy\",\"value\": \"send no Atoms from context osm\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true,\"timeStamp\": {\"@stamptype\": \"TimeStampUTCms\",\"stamp\": 1.0000000000000000}}") == 0); // "{}" means parser error;
 
 	/*
 	 * APPEND
@@ -3016,6 +3019,7 @@ void JSONTest::testAttributeUpdateMode() {
 		<< "  \"attributes\": ["
 		<< "       {\"key\": \"rsg:agent_policy\", \"value\": \"send no PointClouds\"}"
 		<< "  ],"
+	    << "  \"attributesTimeStamp\": {\"@stamptype\": \"TimeStampUTCms\",\"stamp\": 1.0000000000000000}"
 		<< " },"
 	<<"}";
 	queryAsJson = queryAsJson2.str();
@@ -3042,7 +3046,7 @@ void JSONTest::testAttributeUpdateMode() {
 	queryAsJson = queryAsJson2.str();
 	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
 	LOG(DEBUG) << "testAttributeUpdateMode resultAsJson " << resultAsJson;
-	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"rsg:agent_policy\",\"value\": \"send no Atoms from context osm\"},{\"key\": \"rsg:agent_policy\",\"value\": \"send no PointClouds\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"rsg:agent_policy\",\"value\": \"send no Atoms from context osm\"},{\"key\": \"rsg:agent_policy\",\"value\": \"send no PointClouds\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true,\"timeStamp\": {\"@stamptype\": \"TimeStampUTCms\",\"stamp\": 1.0000000000000000}}") == 0); // "{}" means parser error;
 
 
 	queryAsJson2.str("");
@@ -3057,6 +3061,7 @@ void JSONTest::testAttributeUpdateMode() {
 		<< "  \"attributes\": ["
 		<< "       {\"key\": \"name\", \"value\": \"robot1\"}"
 		<< "  ],"
+	    << "  \"attributesTimeStamp\": {\"@stamptype\": \"TimeStampUTCms\",\"stamp\": 1.0000000000000000}"
 		<< " },"
 	<<"}";
 	queryAsJson = queryAsJson2.str();
@@ -3080,7 +3085,7 @@ void JSONTest::testAttributeUpdateMode() {
 	queryAsJson = queryAsJson2.str();
 	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
 	LOG(DEBUG) << "testAttributeUpdateMode resultAsJson " << resultAsJson;
-	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"rsg:agent_policy\",\"value\": \"send no Atoms from context osm\"},{\"key\": \"rsg:agent_policy\",\"value\": \"send no PointClouds\"},{\"key\": \"name\",\"value\": \"robot1\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"rsg:agent_policy\",\"value\": \"send no Atoms from context osm\"},{\"key\": \"rsg:agent_policy\",\"value\": \"send no PointClouds\"},{\"key\": \"name\",\"value\": \"robot1\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true,\"timeStamp\": {\"@stamptype\": \"TimeStampUTCms\",\"stamp\": 1.0000000000000000}}") == 0); // "{}" means parser error;
 
 	/*
 	 * UPDATE
@@ -3098,6 +3103,7 @@ void JSONTest::testAttributeUpdateMode() {
 		<< "  \"attributes\": ["
 		<< "       {\"key\": \"name\", \"value\": \"robot2\"}"
 		<< "  ],"
+	    << "  \"attributesTimeStamp\": {\"@stamptype\": \"TimeStampUTCms\",\"stamp\": 1.0000000000000000}"
 		<< " },"
 	<<"}";
 	queryAsJson = queryAsJson2.str();
@@ -3121,7 +3127,7 @@ void JSONTest::testAttributeUpdateMode() {
 	queryAsJson = queryAsJson2.str();
 	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
 	LOG(DEBUG) << "testAttributeUpdateMode resultAsJson " << resultAsJson;
-	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"rsg:agent_policy\",\"value\": \"send no Atoms from context osm\"},{\"key\": \"rsg:agent_policy\",\"value\": \"send no PointClouds\"},{\"key\": \"name\",\"value\": \"robot2\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"rsg:agent_policy\",\"value\": \"send no Atoms from context osm\"},{\"key\": \"rsg:agent_policy\",\"value\": \"send no PointClouds\"},{\"key\": \"name\",\"value\": \"robot2\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true,\"timeStamp\": {\"@stamptype\": \"TimeStampUTCms\",\"stamp\": 1.0000000000000000}}") == 0); // "{}" means parser error;
 
 	/*
 	 * An update will affect ALL attributes with the same key
@@ -3138,6 +3144,7 @@ void JSONTest::testAttributeUpdateMode() {
 		<< "  \"attributes\": ["
 		<< "       {\"key\": \"rsg:agent_policy\", \"value\": \"send no Atoms\"}"
 		<< "  ],"
+	    << "  \"attributesTimeStamp\": {\"@stamptype\": \"TimeStampUTCms\",\"stamp\": 1.0000000000000000}"
 		<< " },"
 	<<"}";
 	queryAsJson = queryAsJson2.str();
@@ -3161,7 +3168,7 @@ void JSONTest::testAttributeUpdateMode() {
 	queryAsJson = queryAsJson2.str();
 	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
 	LOG(DEBUG) << "testAttributeUpdateMode resultAsJson " << resultAsJson;
-	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"rsg:agent_policy\",\"value\": \"send no Atoms\"},{\"key\": \"rsg:agent_policy\",\"value\": \"send no Atoms\"},{\"key\": \"name\",\"value\": \"robot2\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"rsg:agent_policy\",\"value\": \"send no Atoms\"},{\"key\": \"rsg:agent_policy\",\"value\": \"send no Atoms\"},{\"key\": \"name\",\"value\": \"robot2\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true,\"timeStamp\": {\"@stamptype\": \"TimeStampUTCms\",\"stamp\": 1.0000000000000000}}") == 0); // "{}" means parser error;
 
 	/*
 	 * OVERWRITE
@@ -3178,6 +3185,7 @@ void JSONTest::testAttributeUpdateMode() {
 		<< "  \"attributes\": ["
 		<< "       {\"key\": \"info\", \"value\": \"Everything deleted.\"}"
 		<< "  ],"
+	    << "  \"attributesTimeStamp\": {\"@stamptype\": \"TimeStampUTCms\",\"stamp\": 1.0000000000000000}"
 		<< " },"
 	<<"}";
 	queryAsJson = queryAsJson2.str();
@@ -3201,7 +3209,7 @@ void JSONTest::testAttributeUpdateMode() {
 	queryAsJson = queryAsJson2.str();
 	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
 	LOG(DEBUG) << "testAttributeUpdateMode resultAsJson " << resultAsJson;
-	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"info\",\"value\": \"Everything deleted.\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"info\",\"value\": \"Everything deleted.\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true,\"timeStamp\": {\"@stamptype\": \"TimeStampUTCms\",\"stamp\": 1.0000000000000000}}") == 0); // "{}" means parser error;
 
 	/*
 	 * OVERWRITE as default
@@ -3217,6 +3225,7 @@ void JSONTest::testAttributeUpdateMode() {
 		<< "  \"attributes\": ["
 		<< "       {\"key\": \"dbg\", \"value\": \"Everything deleted again.\"}"
 		<< "  ],"
+	    << "  \"attributesTimeStamp\": {\"@stamptype\": \"TimeStampUTCms\",\"stamp\": 1.0000000000000000}"
 		<< " },"
 	<<"}";
 	queryAsJson = queryAsJson2.str();
@@ -3240,7 +3249,7 @@ void JSONTest::testAttributeUpdateMode() {
 	queryAsJson = queryAsJson2.str();
 	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
 	LOG(DEBUG) << "testAttributeUpdateMode resultAsJson " << resultAsJson;
-	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"dbg\",\"value\": \"Everything deleted again.\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"dbg\",\"value\": \"Everything deleted again.\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true,\"timeStamp\": {\"@stamptype\": \"TimeStampUTCms\",\"stamp\": 1.0000000000000000}}") == 0); // "{}" means parser error;
 
 	/*
 	 * UPDATE a non existing attribute -> fall back to APPEND
@@ -3257,6 +3266,7 @@ void JSONTest::testAttributeUpdateMode() {
 		<< "  \"attributes\": ["
 		<< "       {\"key\": \"name\", \"value\": \"new\"}"
 		<< "  ],"
+	    << "  \"attributesTimeStamp\": {\"@stamptype\": \"TimeStampUTCms\",\"stamp\": 1.0000000000000000}"
 		<< " },"
 	<<"}";
 	queryAsJson = queryAsJson2.str();
@@ -3280,7 +3290,7 @@ void JSONTest::testAttributeUpdateMode() {
 	queryAsJson = queryAsJson2.str();
 	CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
 	LOG(DEBUG) << "testAttributeUpdateMode resultAsJson " << resultAsJson;
-	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"dbg\",\"value\": \"Everything deleted again.\"},{\"key\": \"name\",\"value\": \"new\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+	CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"dbg\",\"value\": \"Everything deleted again.\"},{\"key\": \"name\",\"value\": \"new\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true,\"timeStamp\": {\"@stamptype\": \"TimeStampUTCms\",\"stamp\": 1.0000000000000000}}") == 0); // "{}" means parser error;
 
 	/*
 	 * UPDATE one existing and one non existing (so the latter gets appended)
@@ -3298,6 +3308,7 @@ void JSONTest::testAttributeUpdateMode() {
 			<< "       {\"key\": \"name\", \"value\": \"new_again\"},"
 			<< "       {\"key\": \"hello\", \"value\": \"world\"}"
 			<< "  ],"
+		    << "  \"attributesTimeStamp\": {\"@stamptype\": \"TimeStampUTCms\",\"stamp\": 1.0000000000000000}"
 			<< " },"
 		<<"}";
 		queryAsJson = queryAsJson2.str();
@@ -3321,7 +3332,7 @@ void JSONTest::testAttributeUpdateMode() {
 		queryAsJson = queryAsJson2.str();
 		CPPUNIT_ASSERT(queryRunner.query(queryAsJson, resultAsJson));
 		LOG(DEBUG) << "testAttributeUpdateMode resultAsJson " << resultAsJson;
-		CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"dbg\",\"value\": \"Everything deleted again.\"},{\"key\": \"name\",\"value\": \"new_again\"},{\"key\": \"hello\",\"value\": \"world\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true}") == 0); // "{}" means parser error;
+		CPPUNIT_ASSERT(resultAsJson.compare("{\"@worldmodeltype\": \"RSGQueryResult\",\"attributes\": [{\"key\": \"dbg\",\"value\": \"Everything deleted again.\"},{\"key\": \"name\",\"value\": \"new_again\"},{\"key\": \"hello\",\"value\": \"world\"}],\"query\": \"GET_NODE_ATTRIBUTES\",\"querySuccess\": true,\"timeStamp\": {\"@stamptype\": \"TimeStampUTCms\",\"stamp\": 1.0000000000000000}}") == 0); // "{}" means parser error;
 
 
 	delete wm;
