@@ -549,6 +549,12 @@ bool SceneGraphFacade::setNodeAttributes(Id id, vector<Attribute> newAttributes,
 			} else {
 				LOG(DEBUG) << "Skipping attributes update for node " << id << " as the attribute lists are identical.";
 				sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_UPDATE_IS_IDENTICAL);
+				 /*
+				  * This is a special case: We return true but we do not call any observers.
+				  * This is because storing the _same_ data should not be an error to a client, while it
+				  * is not propagated as a change since there is no change.
+				  */
+				return true;
 			}
 
 		} else {
@@ -582,6 +588,13 @@ bool SceneGraphFacade::setTransform(Id id, IHomogeneousMatrix44::IHomogeneousMat
 	rsg::Transform::TransformPtr transformNode = boost::dynamic_pointer_cast<rsg::Transform>(node);
 	if (transformNode != 0) {
 		operationSucceeded = transformNode->insertTransform(transform, timeStamp);
+		if(!operationSucceeded) {
+			sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_UPDATE_IS_NOT_NEWER);
+		}
+	} else {
+		LOG(ERROR) << "Node with ID " << id << " is not a transform. Cannot set new transform data.";
+		sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_ID_DOES_NOT_EXIST);
+		operationSucceeded = false;
 	}
 
 	/* Call all observers depending on the given policy in case an error occured */
@@ -595,8 +608,6 @@ bool SceneGraphFacade::setTransform(Id id, IHomogeneousMatrix44::IHomogeneousMat
 	if (operationSucceeded) {
 		return true;
 	} else {
-		LOG(ERROR) << "Node with ID " << id << " is not a transform. Cannot set new transform data.";
-		sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_ID_DOES_NOT_EXIST);
 		return false;
 	}
 }
@@ -608,6 +619,13 @@ bool SceneGraphFacade::setUncertainTransform(Id id, IHomogeneousMatrix44::IHomog
 	rsg::UncertainTransform::UncertainTransformPtr transformNode = boost::dynamic_pointer_cast<rsg::UncertainTransform>(node);
 	if (transformNode != 0) {
 		operationSucceeded = transformNode->insertTransform(transform, uncertainty, timeStamp);
+		if(!operationSucceeded) {
+			sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_UPDATE_IS_NOT_NEWER);
+		}
+	} else {
+		LOG(ERROR) << "Node with ID " << id << " is not a transform. Cannot set new transform data.";
+		sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_ID_DOES_NOT_EXIST);
+		operationSucceeded = false;
 	}
 
 	/* Call all observers depending on the given policy in case an error occured */
@@ -621,8 +639,6 @@ bool SceneGraphFacade::setUncertainTransform(Id id, IHomogeneousMatrix44::IHomog
 	if (operationSucceeded) {
 		return true;
 	} else {
-		LOG(ERROR) << "Node with ID " << id << " is not an uncertain transform. Cannot set new transform and uncertainy data.";
-		sendErrorCode(ISceneGraphErrorObserver::RSG_ERR_ID_DOES_NOT_EXIST);
 		return false;
 	}
 	return false;
