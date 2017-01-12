@@ -179,7 +179,7 @@ public:
 			LOG(ERROR) << "JSONTypecaster: Time stamp entity has no stamp tag: " << stampTag;
 		}
 
-		LOG(DEBUG) << "JSONTypecaster: stamp = " << stamp.getSeconds();
+		LOG(DEBUG) << "JSONTypecaster: stamp = " << std::fixed << stamp.getSeconds();
 
 		return stamp;
 	}
