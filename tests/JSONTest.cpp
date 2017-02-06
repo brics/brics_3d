@@ -17,7 +17,7 @@
 *
 ******************************************************************************/
 
-//#define BRICS_JSON_ENABLE  //FIXME
+#define BRICS_JSON_ENABLE  //FIXME
 #ifdef BRICS_JSON_ENABLE
 #include "JSONTest.h"
 #include "SceneGraphNodesTest.h" // for the observer counter
@@ -3337,6 +3337,29 @@ void JSONTest::testAttributeUpdateMode() {
 
 	delete wm;
 }
+
+void JSONTest::testTimeStampConversion() {
+
+	//  Derived from real log message:
+	//	2017-01-12T18:16:57", "@stamptype": "TimeStampDate"}, "@worldmodeltype": "RSGQuery", "id": "bf9244c9-c1bc-0f0d-f50e-8d158c8391cd", "idReferenceNode": "84e7bcd9-a797-464c-a916-61bc2f9279ef"}
+	//	[DEBUG] JSONTypecaster: stamp = 1484237817.000000
+
+
+	libvariant::Variant node;
+	libvariant::Variant stampModel;
+	stampModel.Set("@stamptype", libvariant::Variant("TimeStampDate"));
+	stampModel.Set("stamp", libvariant::Variant("2017-01-12T17:16:57"));
+	node.Set("timeStamp", stampModel);
+
+
+	TimeStamp stamp =  JSONTypecaster::getTimeStampFromJSON(node, "timeStamp");
+	TimeStamp expectedStamp = TimeStamp(1484237817.000000, Units::Second);
+
+	CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedStamp.getSeconds(), stamp.getSeconds(), 0.0001);
+
+
+}
+
 
 }  // namespace unitTests
 

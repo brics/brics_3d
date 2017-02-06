@@ -46,6 +46,7 @@ class JSONTest : public CPPUNIT_NS::TestFixture {
 #endif /* BRICS_MICROBLX_ENABLE */
 	CPPUNIT_TEST( testComplexAttributeValues );
 	CPPUNIT_TEST( testAttributeUpdateMode );
+	CPPUNIT_TEST( testTimeStampConversion );
 #endif /* BRICS_JSON_ENABLE */
 	CPPUNIT_TEST_SUITE_END();
 
@@ -64,6 +65,7 @@ public:
 	void testSubGraphQuerys();
 	void testComplexAttributeValues();
 	void testAttributeUpdateMode();
+	void testTimeStampConversion();
 	void threadFunction(brics_3d::WorldModel* wm);
 
 private:
