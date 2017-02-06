@@ -21,6 +21,8 @@
 #include <fstream>
 #include <sstream>
 #include <cstdlib>
+#include <sys/time.h>
+#include <iomanip>
 #include "Logger.h"
 #ifdef WIN32
 #include "windows.h"
@@ -33,6 +35,7 @@ namespace brics_3d {
 Logger::Loglevel Logger::minLoglevel = Logger::WARNING;
 bool Logger::useFilename = false;
 bool Logger::useLogfile = false;
+bool Logger::useTime = true;
 std::string Logger::logfilename;
 Logger::Listener* Logger::listener = 0;
 std::ofstream Logger::logfile;
@@ -60,6 +63,10 @@ void Logger::setUseFilename(bool useFilenames) {
 	Logger::useFilename = useFilenames;
 }
 
+void Logger::setUseTime(bool useTime) {
+	Logger::useTime = useTime;
+}
+
 void Logger::setLogfile(std::string filename, bool append) {
 	if (useLogfile)
 		logfile.close();
@@ -85,6 +92,15 @@ std::string& Logger::levelToString(Loglevel loglevel) {
 std::ostream& Logger::write(std::string filename, int line) {
 	if (!isAboveLoglevel)
 		return stream; //todo: should return stream which does not do anything
+
+	if (useTime) {
+		struct timeval thisTime;
+		gettimeofday(&thisTime, 0);
+		long double timeInSec = static_cast<long double>( thisTime.tv_sec + thisTime.tv_usec * 1.0e-6);
+
+		stream.precision(3);
+		stream << std::fixed << std::setw(8) << std::right << timeInSec << " ";
+	}
 
 	stream << "[" << levelToString(level);
 	if (useFilename)

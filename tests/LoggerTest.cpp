@@ -29,6 +29,7 @@ void LoggerTest::setUp() {
 	Logger::setListener(listener);
 
 	unitTestlogLevel = Logger::getMinLoglevel();
+	Logger::setUseTime(false);
 }
 
 void LoggerTest::tearDown() {
@@ -39,6 +40,7 @@ void LoggerTest::tearDown() {
 
 	Logger::setMinLoglevel(unitTestlogLevel); //restore the initial logger level
 	Logger::setListener(0); //un set the listener
+	Logger::setUseTime(true);
 }
 
 void LoggerTest::testSimpleLogging() {

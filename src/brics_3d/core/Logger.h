@@ -85,6 +85,9 @@ public:
 	//! Sets wether log messages shall include the filename and line of where LOG() was called
 	static void setUseFilename(bool useFilename);
 
+	//! Sets wether log messages shall include the time
+	static void setUseTime(bool useTime);
+
 	//! Sets a new listener for log messages. To remove the listener (maybe because it has been destructed) pass the NULL reference.
 	static void setListener(Listener* listener);
 
@@ -102,6 +105,7 @@ protected:
 	static Loglevel minLoglevel;
 	static bool useFilename;
 	static bool useLogfile;
+	static bool useTime;
 	static std::string logfilename;
 	static std::ofstream logfile;
 	static Listener* listener;
