@@ -468,6 +468,20 @@ bool JSONDeserializer::doAddNode(libvariant::Variant& group, rsg::Id parentId) {
 
 	/* create it */
 	bool success1 = sceneUpdater->addNode(parentId, id, attributes, !id.isNil()); // Last parameter makes the "id" field optional
+	LOG(DEBUG) << "JSONDeserializer::doAddNode creation success = " << success1;
+	if(!success1) { // since we cannot create it we still try to update its attributes - they can change dynamically
+		rsg::TimeStamp attributesTimeStamp;
+		string stampTag = "attributesTimeStamp";
+		if(group.Contains(stampTag)) {
+			attributesTimeStamp = rsg::JSONTypecaster::getTimeStampFromJSON(group, stampTag);
+			if(attributesTimeStamp >= TimeStamp(0)) { // discard invalid stamps
+				success1 = sceneUpdater->setNodeAttributes(id, attributes, attributesTimeStamp);
+				LOG(DEBUG) << "JSONDeserializer::doAddNode attribute update success = " << success1;
+			}
+		} else {
+			LOG(WARNING) << "JSONDeserializer::doAddNode has no attribute time stamp that can be used to apply an update.";
+		}
+	}
 	LOG(DEBUG) << "JSONDeserializer::doAddNode success = " << success1;
 	return success1;
 }
@@ -486,7 +500,23 @@ bool JSONDeserializer::doAddGroup(libvariant::Variant& group, rsg::Id parentId) 
 	std::vector<rsg::Attribute> attributes = rsg::JSONTypecaster::getAttributesFromJSON(group);
 
 	/* create it */
-	if( !sceneUpdater->addGroup(parentId, id, attributes, !id.isNil()) ) 	{return false;}; // Last parameter makes the "id" field optional
+	bool success = sceneUpdater->addGroup(parentId, id, attributes, !id.isNil()); // Last parameter makes the "id" field optional
+	LOG(DEBUG) << "JSONDeserializer::doAddNode creation success = " << success;
+	if(!success) { // since we cannot create it we still try to update its attributes - they can change dynamically
+		rsg::TimeStamp attributesTimeStamp;
+		string stampTag = "attributesTimeStamp";
+		if(group.Contains(stampTag)) {
+			attributesTimeStamp = rsg::JSONTypecaster::getTimeStampFromJSON(group, stampTag);
+			if(attributesTimeStamp >= TimeStamp(0)) { // discard invalid stamps
+				bool attributeUpdateSuccess = sceneUpdater->setNodeAttributes(id, attributes, attributesTimeStamp);
+				LOG(DEBUG) << "JSONDeserializer::doAddGroup attribute update success = " << attributeUpdateSuccess;
+			}
+		} else {
+			LOG(WARNING) << "JSONDeserializer::doAddGroup has no attribute time stamp that can be used to apply an update.";
+		}
+		return false; // exit to prevent below recursion
+	}
+
 
 	/* childs (recursion) */
 	handleChilden(group, id);
@@ -557,6 +587,18 @@ bool JSONDeserializer::doAddTransformNode(libvariant::Variant& group,
 	bool success = sceneUpdater->addTransformNode(parentId, id, attributes, transform, history.getLatestTimeStamp(), !id.isNil()); // Last parameter makes the "id" field optional
 	if(success) {
 		sceneUpdater->addParent(targetIds[0],id);
+	} else { // since we cannot create it we still try to update its attributes - they can change dynamically
+		rsg::TimeStamp attributesTimeStamp;
+		string stampTag = "attributesTimeStamp";
+		if(group.Contains(stampTag)) {
+			attributesTimeStamp = rsg::JSONTypecaster::getTimeStampFromJSON(group, stampTag);
+			if(attributesTimeStamp >= TimeStamp(0)) { // discard invalid stamps
+				bool attributeUpdateSuccess = sceneUpdater->setNodeAttributes(id, attributes, attributesTimeStamp);
+				LOG(DEBUG) << "JSONDeserializer::doAddTransformNode attribute update success = " << attributeUpdateSuccess;
+			}
+		} else {
+			LOG(WARNING) << "JSONDeserializer::doAddTransformNode has no attribute time stamp that can be used to apply an update.";
+		}
 	}
 	return success;
 	//	sceneUpdater->addConnection(parentId, id, attributes, sourceIds, targetIds, start, end, true);
@@ -593,8 +635,21 @@ bool JSONDeserializer::doAddGeometricNode(libvariant::Variant& group,
 	/* stamp */
 
 	/* create it */
-	return sceneUpdater->addGeometricNode(parentId, id, attributes, shape, timeStamp, !id.isNil()); // Last parameter makes the "id" field optional
-
+	bool success = sceneUpdater->addGeometricNode(parentId, id, attributes, shape, timeStamp, !id.isNil()); // Last parameter makes the "id" field optional
+	if(!success) { // since we cannot create it we still try to update its attributes - they can change dynamically
+		rsg::TimeStamp attributesTimeStamp;
+		string stampTag = "attributesTimeStamp";
+		if(group.Contains(stampTag)) {
+			attributesTimeStamp = rsg::JSONTypecaster::getTimeStampFromJSON(group, stampTag);
+			if(attributesTimeStamp >= TimeStamp(0)) { // discard invalid stamps
+				bool attributeUpdateSuccess = sceneUpdater->setNodeAttributes(id, attributes, attributesTimeStamp);
+				LOG(DEBUG) << "JSONDeserializer::doAddGeometricNode attribute update success = " << attributeUpdateSuccess;
+			}
+		} else {
+			LOG(WARNING) << "JSONDeserializer::doAddGeometricNode has no attribute time stamp that can be used to apply an update.";
+		}
+	}
+	return success;
 }
 
 bool JSONDeserializer::doAddRemoteRootNode(libvariant::Variant& group) {
@@ -609,7 +664,23 @@ bool JSONDeserializer::doAddRemoteRootNode(libvariant::Variant& group) {
 	/* attributes */
 	std::vector<rsg::Attribute> attributes = rsg::JSONTypecaster::getAttributesFromJSON(group);
 
-	return sceneUpdater->addRemoteRootNode(id, attributes);
+	bool success = sceneUpdater->addRemoteRootNode(id, attributes);
+
+	if(!success) { // since we cannot create it we still try to update its attributes - they can change dynamically
+		rsg::TimeStamp attributesTimeStamp;
+		string stampTag = "attributesTimeStamp";
+		if(group.Contains(stampTag)) {
+			attributesTimeStamp = rsg::JSONTypecaster::getTimeStampFromJSON(group, stampTag);
+			if(attributesTimeStamp >= TimeStamp(0)) { // discard invalid stamps
+				bool attributeUpdateSuccess = sceneUpdater->setNodeAttributes(id, attributes, attributesTimeStamp);
+				LOG(DEBUG) << "JSONDeserializer::doAddRemoteRootNode attribute update success = " << attributeUpdateSuccess;
+			}
+		} else {
+			LOG(WARNING) << "JSONDeserializer::doAddRemoteRootNode has no attribute time stamp that can be used to apply an update.";
+		}
+	}
+	return success;
+
 }
 
 bool JSONDeserializer::doAddConnection(libvariant::Variant& connection,
@@ -617,7 +688,7 @@ bool JSONDeserializer::doAddConnection(libvariant::Variant& connection,
 
 	LOG(DEBUG) << "JSONDeserializer: doAddConnection";
 
-	/* check for well known semantic conexts */
+	/* check for well known semantic contexts */
 	string semanticContext = "";
 	if(connection.Contains("@semanticContext")) {
 		semanticContext = connection.Get("@semanticContext").AsString();
@@ -653,7 +724,21 @@ bool JSONDeserializer::doAddConnection(libvariant::Variant& connection,
 	rsg::TimeStamp end = JSONTypecaster::getTimeStampFromJSON(connection, "end");
 
 	/* create it */
-	return sceneUpdater->addConnection(parentId, id, attributes, sourceIds, targetIds, start, end, !id.isNil()); // Last parameter makes the "id" field optional
+	bool success = sceneUpdater->addConnection(parentId, id, attributes, sourceIds, targetIds, start, end, !id.isNil()); // Last parameter makes the "id" field optional
+
+	if(!success) { // since we cannot create it we still try to update its attributes - they can change dynamically
+		rsg::TimeStamp attributesTimeStamp;
+		string stampTag = "attributesTimeStamp";
+		if(connection.Contains(stampTag)) {
+			attributesTimeStamp = rsg::JSONTypecaster::getTimeStampFromJSON(connection, stampTag);
+			if(attributesTimeStamp >= TimeStamp(0)) { // discard invalid stamps
+				bool attributeUpdateSuccess = sceneUpdater->setNodeAttributes(id, attributes, attributesTimeStamp);
+				LOG(DEBUG) << "JSONDeserializer::doAddConnection attribute update success = " << attributeUpdateSuccess;
+			}
+		} else {
+			LOG(WARNING) << "JSONDeserializer::doAddConnection has no attribute time stamp that can be used to apply an update.";
+		}
+	}
 }
 
 bool JSONDeserializer::doSetNodeAttributes(libvariant::Variant& group, AttributeUpdateMode updateMode) {
