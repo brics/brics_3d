@@ -58,8 +58,12 @@ bool JSONSerializer::addNode(Id parentId, Id& assignedId,
 		node.Set("@graphtype", libvariant::Variant("Node"));
 		JSONTypecaster::addIdToJSON(assignedId, node, "id");
 		JSONTypecaster::addAttributesToJSON(attributes, node);
+		vector<Attribute> dummyAttributes; // TODO refactor interface
+		TimeStamp attributesTimeStamp;
+		wm->scene.getNodeAttributes(assignedId, dummyAttributes, attributesTimeStamp);
+		JSONTypecaster::addTimeStampToJSON(attributesTimeStamp, node, "attributesTimeStamp");
 
-		/* assebmle it */
+		/* assemble it */
 		graphUpdate.Set("node", node);
 
 		/* send it */
@@ -92,6 +96,10 @@ bool JSONSerializer::addGroup(Id parentId, Id& assignedId,
 		node.Set("@graphtype", libvariant::Variant("Group"));
 		JSONTypecaster::addIdToJSON(assignedId, node, "id");
 		JSONTypecaster::addAttributesToJSON(attributes, node);
+		vector<Attribute> dummyAttributes; // TODO refactor interface
+		TimeStamp attributesTimeStamp;
+		wm->scene.getNodeAttributes(assignedId, dummyAttributes, attributesTimeStamp);
+		JSONTypecaster::addTimeStampToJSON(attributesTimeStamp, node, "attributesTimeStamp");
 
 		/* assebmle it */
 		graphUpdate.Set("node", node);
@@ -129,6 +137,11 @@ bool JSONSerializer::addTransformNode(Id parentId,
 		node.Set("@semanticContext", libvariant::Variant("Transform"));
 		JSONTypecaster::addIdToJSON(assignedId, node, "id");
 		JSONTypecaster::addAttributesToJSON(attributes, node);
+		vector<Attribute> dummyAttributes; // TODO refactor interface
+		TimeStamp attributesTimeStamp;
+		wm->scene.getNodeAttributes(assignedId, dummyAttributes, attributesTimeStamp);
+		JSONTypecaster::addTimeStampToJSON(attributesTimeStamp, node, "attributesTimeStamp");
+
 		TemporalCache<IHomogeneousMatrix44::IHomogeneousMatrix44Ptr> history;
 		history.insertData(transform, timeStamp);
 		JSONTypecaster::addTransformCacheToJSON(history, node);
@@ -178,6 +191,10 @@ bool JSONSerializer::addGeometricNode(Id parentId,
 		node.Set("@semanticContext", libvariant::Variant("GeometricNode"));
 		JSONTypecaster::addIdToJSON(assignedId, node, "id");
 		JSONTypecaster::addAttributesToJSON(attributes, node);
+		vector<Attribute> dummyAttributes; // TODO refactor interface
+		TimeStamp attributesTimeStamp;
+		wm->scene.getNodeAttributes(assignedId, dummyAttributes, attributesTimeStamp);
+		JSONTypecaster::addTimeStampToJSON(attributesTimeStamp, node, "attributesTimeStamp");
 		JSONTypecaster::addShapeToJSON(shape, node, "geometry");
 		JSONTypecaster::addTimeStampToJSON(timeStamp, graphUpdate, "timeStamp");
 
@@ -252,6 +269,10 @@ bool JSONSerializer::addConnection(Id parentId, Id& assignedId,
 		node.Set("@graphtype", libvariant::Variant("Connection"));
 		JSONTypecaster::addIdToJSON(assignedId, node, "id");
 		JSONTypecaster::addAttributesToJSON(attributes, node);
+		vector<Attribute> dummyAttributes; // TODO refactor interface
+		TimeStamp attributesTimeStamp;
+		wm->scene.getNodeAttributes(assignedId, dummyAttributes, attributesTimeStamp); // TODO check if get nodesAttributes works for a Connection
+		JSONTypecaster::addTimeStampToJSON(attributesTimeStamp, node, "attributesTimeStamp");
 
 		/* Id lists */
 		JSONTypecaster::addIdsToJSON(sourceIds, node, "sourceIds");
