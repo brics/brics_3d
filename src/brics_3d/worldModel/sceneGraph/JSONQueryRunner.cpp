@@ -372,6 +372,10 @@ bool JSONQueryRunner::handleGetTransform(libvariant::Variant& query,
 	}
 	rsg::Id idReferenceNode = JSONTypecaster::getIdFromJSON(query, "idReferenceNode");
 	rsg::TimeStamp timeStamp = JSONTypecaster::getTimeStampFromJSON(query, "timeStamp");
+	if (timeStamp == TimeStamp(-1.0)) {
+		LOG(DEBUG) << "JSONQueryRunner::handleGetTransform: Assuming LATEST time stamp.",
+		timeStamp = TimeStamp(std::numeric_limits<double>::max()); // We use a stamp that is always newer than any other stamp.
+	}
 	HomogeneousMatrix44::IHomogeneousMatrix44Ptr transform(new HomogeneousMatrix44());
 
 	/* perform query */

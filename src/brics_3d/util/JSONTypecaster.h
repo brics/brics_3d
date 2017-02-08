@@ -176,7 +176,7 @@ public:
 				LOG(ERROR) << "JSONTypecaster: Time stamp definition has no type @stamptype identifier";
 			}
 		} else {
-			LOG(ERROR) << "JSONTypecaster: Time stamp entity has no stamp tag: " << stampTag;
+			LOG(WARNING) << "JSONTypecaster: Time stamp entity has no stamp tag: " << stampTag;
 		}
 
 		LOG(DEBUG) << "JSONTypecaster: stamp = " << std::fixed << stamp.getSeconds() << " [s]";
