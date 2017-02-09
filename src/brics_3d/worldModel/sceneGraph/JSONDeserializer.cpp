@@ -474,9 +474,9 @@ bool JSONDeserializer::doAddNode(libvariant::Variant& group, rsg::Id parentId) {
 		string stampTag = "attributesTimeStamp";
 		if(group.Contains(stampTag)) {
 			attributesTimeStamp = rsg::JSONTypecaster::getTimeStampFromJSON(group, stampTag);
-			if(attributesTimeStamp >= TimeStamp(0)) { // discard invalid stamps
-				success1 = sceneUpdater->setNodeAttributes(id, attributes, attributesTimeStamp);
-				LOG(DEBUG) << "JSONDeserializer::doAddNode attribute update success = " << success1;
+			if(attributesTimeStamp > TimeStamp(0)) { // discard invalid stamps
+				bool attributeUpdateSuccess  = sceneUpdater->setNodeAttributes(id, attributes, attributesTimeStamp);
+				LOG(DEBUG) << "JSONDeserializer::doAddNode attribute update success = " << attributeUpdateSuccess;
 			}
 		} else {
 			LOG(WARNING) << "JSONDeserializer::doAddNode has no attribute time stamp that can be used to apply an update.";
@@ -501,13 +501,13 @@ bool JSONDeserializer::doAddGroup(libvariant::Variant& group, rsg::Id parentId) 
 
 	/* create it */
 	bool success = sceneUpdater->addGroup(parentId, id, attributes, !id.isNil()); // Last parameter makes the "id" field optional
-	LOG(DEBUG) << "JSONDeserializer::doAddNode creation success = " << success;
+	LOG(DEBUG) << "JSONDeserializer::doAddGroup creation success = " << success;
 	if(!success) { // since we cannot create it we still try to update its attributes - they can change dynamically
 		rsg::TimeStamp attributesTimeStamp;
 		string stampTag = "attributesTimeStamp";
 		if(group.Contains(stampTag)) {
 			attributesTimeStamp = rsg::JSONTypecaster::getTimeStampFromJSON(group, stampTag);
-			if(attributesTimeStamp >= TimeStamp(0)) { // discard invalid stamps
+			if(attributesTimeStamp > TimeStamp(0)) { // discard invalid stamps
 				bool attributeUpdateSuccess = sceneUpdater->setNodeAttributes(id, attributes, attributesTimeStamp);
 				LOG(DEBUG) << "JSONDeserializer::doAddGroup attribute update success = " << attributeUpdateSuccess;
 			}
@@ -592,7 +592,7 @@ bool JSONDeserializer::doAddTransformNode(libvariant::Variant& group,
 		string stampTag = "attributesTimeStamp";
 		if(group.Contains(stampTag)) {
 			attributesTimeStamp = rsg::JSONTypecaster::getTimeStampFromJSON(group, stampTag);
-			if(attributesTimeStamp >= TimeStamp(0)) { // discard invalid stamps
+			if(attributesTimeStamp > TimeStamp(0)) { // discard invalid stamps
 				bool attributeUpdateSuccess = sceneUpdater->setNodeAttributes(id, attributes, attributesTimeStamp);
 				LOG(DEBUG) << "JSONDeserializer::doAddTransformNode attribute update success = " << attributeUpdateSuccess;
 			}
@@ -641,7 +641,7 @@ bool JSONDeserializer::doAddGeometricNode(libvariant::Variant& group,
 		string stampTag = "attributesTimeStamp";
 		if(group.Contains(stampTag)) {
 			attributesTimeStamp = rsg::JSONTypecaster::getTimeStampFromJSON(group, stampTag);
-			if(attributesTimeStamp >= TimeStamp(0)) { // discard invalid stamps
+			if(attributesTimeStamp > TimeStamp(0)) { // discard invalid stamps
 				bool attributeUpdateSuccess = sceneUpdater->setNodeAttributes(id, attributes, attributesTimeStamp);
 				LOG(DEBUG) << "JSONDeserializer::doAddGeometricNode attribute update success = " << attributeUpdateSuccess;
 			}
@@ -671,7 +671,7 @@ bool JSONDeserializer::doAddRemoteRootNode(libvariant::Variant& group) {
 		string stampTag = "attributesTimeStamp";
 		if(group.Contains(stampTag)) {
 			attributesTimeStamp = rsg::JSONTypecaster::getTimeStampFromJSON(group, stampTag);
-			if(attributesTimeStamp >= TimeStamp(0)) { // discard invalid stamps
+			if(attributesTimeStamp > TimeStamp(0)) { // discard invalid stamps
 				bool attributeUpdateSuccess = sceneUpdater->setNodeAttributes(id, attributes, attributesTimeStamp);
 				LOG(DEBUG) << "JSONDeserializer::doAddRemoteRootNode attribute update success = " << attributeUpdateSuccess;
 			}
@@ -731,7 +731,7 @@ bool JSONDeserializer::doAddConnection(libvariant::Variant& connection,
 		string stampTag = "attributesTimeStamp";
 		if(connection.Contains(stampTag)) {
 			attributesTimeStamp = rsg::JSONTypecaster::getTimeStampFromJSON(connection, stampTag);
-			if(attributesTimeStamp >= TimeStamp(0)) { // discard invalid stamps
+			if(attributesTimeStamp > TimeStamp(0)) { // discard invalid stamps
 				bool attributeUpdateSuccess = sceneUpdater->setNodeAttributes(id, attributes, attributesTimeStamp);
 				LOG(DEBUG) << "JSONDeserializer::doAddConnection attribute update success = " << attributeUpdateSuccess;
 			}

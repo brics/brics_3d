@@ -158,7 +158,7 @@ class ISceneGraphUpdate {
      * @brief Override the attributes of a node.
 	 *
 	 * @param id ID the defines the node to be updated.
-	 * @param newAttributes The new attributes. The old one will be overidden by this as long as the timestamp is equal or newer than a previous update.
+	 * @param newAttributes The new attributes. The old one will be overridden by this as long as the time stamp is equal or newer than a previous update.
 	 * @param timeStamp Time stamp associated with the new attributes.
 	 * @return True on success.
 	 */

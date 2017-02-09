@@ -97,6 +97,11 @@ extern bool getValuesFromAttributeList(vector<Attribute> attributeList, std::str
  */
 extern bool attributeListsAreEqual(vector<Attribute> attributeList1, vector<Attribute> attributeList2);
 
+/**
+ * Helper tool to stringify attributes.
+ */
+extern string attributeListToString(vector<Attribute> attributes);
+
 } // namespace brics_3d::RSG
 
 } // namespace brics_3d
