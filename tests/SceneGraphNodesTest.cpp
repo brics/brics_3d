@@ -5348,6 +5348,24 @@ void SceneGraphNodesTest::testNodeHash() {
 
 	CPPUNIT_ASSERT(hash5.compare(hash6) == 0);
 
+	Node node1;
+	node1.setId(id);
+	node1.setAttributes(attributes);
+	Node node2;
+	node2.setId(id);
+	node2.setAttributes(attributes);
+
+	string hash7 = NodeHash::nodeToHash(&node1);
+	LOG(INFO) << "hash7 = " << hash7;
+	string hash8 = NodeHash::nodeToHash(&node2);
+	LOG(INFO) << "hash8 = " << hash8;
+	CPPUNIT_ASSERT(hash7.compare(hash8) == 0);
+
+	node2.setId(id2);
+	string hash9 = NodeHash::nodeToHash(&node2);
+	LOG(INFO) << "hash9 = " << hash9;
+	CPPUNIT_ASSERT(hash9.compare(hash8) != 0);
+
 
 }
 

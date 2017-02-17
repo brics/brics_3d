@@ -56,6 +56,13 @@ std::string NodeHash::sortStringsAndHash(std::vector<std::string> strings) {
 	return sha256.getHash();
 }
 
+std::string NodeHash::nodeToHash(Node* node) {
+	std::vector<std::string> hashes;
+	hashes.push_back(idToHash(node->getId()));
+	hashes.push_back(attributesToHash(node->getAttributes()));
+	return sortStringsAndHash(hashes);
+}
+
 
 } /* namespace rsg */
 } /* namespace brics_3d */

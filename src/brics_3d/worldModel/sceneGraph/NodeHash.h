@@ -38,6 +38,8 @@ public:
 	static std::string attributesToHash(std::vector<Attribute> attributes);
 	static std::string sortStringsAndHash(std::vector<std::string> strings);
 
+	static std::string nodeToHash(Node* node);
+
 };
 
 } /* namespace rsg */
