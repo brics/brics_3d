@@ -215,6 +215,7 @@ SET (WORLD_MODEL_LIBRARY_SOURCES
     ./worldModel/sceneGraph/LODCalculator
     ./worldModel/sceneGraph/TimeStamper
     ./worldModel/sceneGraph/NodeHash
+    ./worldModel/sceneGraph/NodeHashTraverser
     ../../external/hash/sha256
 )
 
