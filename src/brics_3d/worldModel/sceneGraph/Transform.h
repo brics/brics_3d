@@ -45,7 +45,7 @@ typedef std::vector< std::pair<IHomogeneousMatrix44::IHomogeneousMatrix44Ptr, Ti
  * @return Shared pointer to the accumulated transform.
  * @ingroup sceneGraph
  */
-extern IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransformAlongPath(Node::NodePath nodePath, TimeStamp timeStamp);
+extern IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransformAlongPath(Node::NodePath nodePath, TimeStamp timeStamp, TimeStamp& latestStampAlongPath);
 
 /**
  * @brief Calculate the accumulated global transform for a node.
@@ -56,9 +56,9 @@ extern IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransformAlongPath
  * @return Shared pointer to the accumulated transform.
  * @ingroup sceneGraph
  */
-extern IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransform(Node::NodePtr node, TimeStamp timeStamp);
+extern IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransform(Node::NodePtr node, TimeStamp timeStamp, TimeStamp& actualTimeStamp);
 
-extern IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getTransformBetweenNodes(Node::NodePtr node, Node::NodePtr referenceNode, TimeStamp timeStamp);
+extern IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getTransformBetweenNodes(Node::NodePtr node, Node::NodePtr referenceNode, TimeStamp timeStamp, TimeStamp& actualTimeStamp);
 
 
 /**
@@ -100,10 +100,19 @@ class Transform : public Group {
 
     /**
      * @brief Retrieve a transform in the history cache whose time stamp matches best a given stamp.
-     * @param timeStamp Time stamp to wich the temporal closest transform shall be found.
+     * @param timeStamp Time stamp to which the temporal closest transform shall be found.
      * @return Shared pointer to the transform. It will be null in case that no transform is found.
      */
     IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getTransform(TimeStamp timeStamp);
+
+    /**
+     * @brief Retrieve a transform in the history cache whose time stamp matches best a given stamp.
+     * Similar to above getTransform(), but it also returns the exact time stamp associated with the transform.
+     * @param[in] timeStamp Time stamp to which the temporal closest transform shall be found.
+     * @param[out] actualTimeStamp Exact found time stamp associated with the transform.
+     * @return Shared pointer to the transform. It will be null in case that no transform is found.
+     */
+    IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getTransform(TimeStamp timeStamp, TimeStamp& actualTimeStamp);
 
     /**
      * @brief Retrieve the latest/newest transform.

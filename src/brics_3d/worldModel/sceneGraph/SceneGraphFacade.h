@@ -90,6 +90,7 @@ class SceneGraphFacade : public ISceneGraphQuery, public ISceneGraphUpdate {
     bool getGeometry(Id id, Shape::ShapePtr& shape, TimeStamp& timeStamp);
 
     bool getTransformForNode (Id id, Id idReferenceNode, TimeStamp timeStamp, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform);
+    bool getTransformForNode (Id id, Id idReferenceNode, TimeStamp timeStamp, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform, TimeStamp& actualTimeStamp);
 
     /* Implemented update interfaces */
     bool addNode(Id parentId, Id& assignedId, vector<Attribute> attributes, bool forcedId = false);

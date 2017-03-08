@@ -257,18 +257,22 @@ bool SceneGraphFacade::getGeometry(Id id, Shape::ShapePtr& shape, TimeStamp& tim
 }
 
 bool SceneGraphFacade::getTransformForNode (Id id, Id idReferenceNode, TimeStamp timeStamp, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform) {
+	TimeStamp actualTimeStampDummy;
+	return getTransformForNode(id, idReferenceNode, timeStamp, transform, actualTimeStampDummy);
+}
+
+bool SceneGraphFacade::getTransformForNode (Id id, Id idReferenceNode, TimeStamp timeStamp, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform, TimeStamp& actualTimeStamp) {
 	Node::NodeWeakPtr tmpNode = findNodeRecerence(id);
 	Node::NodePtr node = tmpNode.lock();
 	Node::NodeWeakPtr tmpReferenceNode = findNodeRecerence(idReferenceNode);
 	Node::NodePtr referenceNode= tmpReferenceNode.lock();
 	if ((node != 0) && (referenceNode != 0)) {
 //		transform = getGlobalTransform(node);
-		transform = getTransformBetweenNodes(node, referenceNode, timeStamp);
+		transform = getTransformBetweenNodes(node, referenceNode, timeStamp, actualTimeStamp);
 		return true;
 	}
 	return false;
 }
-
 
 bool SceneGraphFacade::addNode(Id parentId, Id& assignedId, vector<Attribute> attributes, bool forcedId) {
 	bool operationSucceeded = false;

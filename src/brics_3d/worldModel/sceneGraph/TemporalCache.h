@@ -216,19 +216,40 @@ public:
     }
 
     /**
+     * @brief Same as above getData(), but it also returns the exact actualTimeStamp
+     * @param[in] timeStamp Based on this time stamp a value will be returned.
+     * @param[out] actualTimeStamp Exact found time stamp associated with the result in return tye.
+     * @return Returns the best fitting cache entry. The actual type is defined by the template parameter.
+     */
+    T getData(TimeStamp timeStamp, TimeStamp& actualTimeStamp) {
+    	return getData(timeStamp, &getClosestData, actualTimeStamp);
+    }
+
+    /**
      * @brief Retrieve data from the cache given a time stamp and a particular access policy.
-     * @param timeStamp Based on this time stamp a value will be returned.
-     * @param accessPolicy Method on _how_ to retrieve a certain value. Examples are getPrecedingData and getClosestData
+     * @param[in] timeStamp Based on this time stamp a value will be returned.
+     * @param[in] accessPolicy Method on _how_ to retrieve a certain value. Examples are getPrecedingData and getClosestData
+     * @param[out] actualTimeStamp Exact time stamp of result.
      * @return
      */
     template <typename CacheAccessFunctor>
-    T getData(TimeStamp timeStamp, CacheAccessFunctor accessPolicy) {
+    T getData(TimeStamp timeStamp, CacheAccessFunctor accessPolicy, TimeStamp& actualTimeStamp) {
     	typename Cache::iterator closestTransform = accessPolicy(timeStamp, this->history);
     	if(closestTransform == history.end()) {
     		LOG(WARNING) << "TemporalCache is empty. Cannot find data for time stamp at "  << timeStamp.getSeconds() << " [s]";
     		return returnNullData();
     	}
+    	actualTimeStamp = closestTransform->second;
     	return closestTransform->first;
+    }
+
+    /**
+     * @brief Same as above getData but without exact time stamp
+     */
+    template <typename CacheAccessFunctor>
+    T getData(TimeStamp timeStamp, CacheAccessFunctor accessPolicy) {
+    	 TimeStamp actualTimeStampDummy;
+    	 return getData(timeStamp, accessPolicy, actualTimeStampDummy);
     }
 
     /**

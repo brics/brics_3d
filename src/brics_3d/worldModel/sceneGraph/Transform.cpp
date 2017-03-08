@@ -28,27 +28,34 @@ namespace brics_3d {
 
 namespace rsg {
 
-IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransformAlongPath(Node::NodePath nodePath, TimeStamp timeStamp){
+IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransformAlongPath(Node::NodePath nodePath, TimeStamp timeStamp, TimeStamp& latestStampAlongPath){
 	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr result(new HomogeneousMatrix44()); //identity matrix
+	latestStampAlongPath = TimeStamp(0);
+	TimeStamp currentTimeStamp = TimeStamp(0);
+
 	for (unsigned int i = 0; i < static_cast<unsigned int>(nodePath.size()); ++i) {
 		Transform* tmpTransform = dynamic_cast<Transform*>(nodePath[i]);
 		if (tmpTransform) {
-			*result = *( (*result) * (*tmpTransform->getTransform(timeStamp)) );
+			*result = *( (*result) * (*tmpTransform->getTransform(timeStamp, currentTimeStamp)) );
+			if(currentTimeStamp >= latestStampAlongPath) { // store latest stamp
+				latestStampAlongPath = currentTimeStamp;
+			}
 		}
 	}
 	return result;
 }
 
-IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransform(Node::NodePtr node, TimeStamp timeStamp) {
+IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransform(Node::NodePtr node, TimeStamp timeStamp, TimeStamp& actualTimeStamp) {
 	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr result(new HomogeneousMatrix44()); //identity matrix
 	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr accumulatedTransform;
+	actualTimeStamp = TimeStamp(0); // The latest stamp will be memorized
 
 	/* accumulate parent paths and take the _first_ found path  */
 	PathCollector* pathCollector = new PathCollector();
 	node->accept(pathCollector);
 	if (static_cast<unsigned int>(pathCollector->getNodePaths().size()) > 0) { // != root
 		//*result = *((*result) * (*(getGlobalTransformAlongPath(pathCollector->getNodePaths()[0], timeStamp))));
-		*result = *((*result) * (*(getGlobalTransformAlongPath(pathCollector->getNodePaths().back(), timeStamp))));
+		*result = *((*result) * (*(getGlobalTransformAlongPath(pathCollector->getNodePaths().back(), timeStamp, actualTimeStamp))));
 		if (static_cast<unsigned int>(pathCollector->getNodePaths().size()) > 1) {
 			LOG(WARNING) << "Multiple transform paths to this node detected. Taking last path and ignoring the rest.";
 		}
@@ -57,20 +64,33 @@ IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getGlobalTransform(Node::NodePtr n
 	/* check if node is a transform on its own ... */
 	Transform::TransformPtr tmpTransform = boost::dynamic_pointer_cast<Transform>(node);
 	if (tmpTransform) {
-		*result = *( (*result) * (*tmpTransform->getTransform(timeStamp)) );
+		 TimeStamp currentTimeStamp;
+		*result = *( (*result) * (*tmpTransform->getTransform(timeStamp, currentTimeStamp)) );
+		if(currentTimeStamp >= actualTimeStamp) {
+			actualTimeStamp = currentTimeStamp;
+		}
 	}
 
 	delete pathCollector;
 	return result;
 }
 
-IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getTransformBetweenNodes(Node::NodePtr node, Node::NodePtr referenceNode, TimeStamp timeStamp) {
+IHomogeneousMatrix44::IHomogeneousMatrix44Ptr getTransformBetweenNodes(Node::NodePtr node, Node::NodePtr referenceNode, TimeStamp timeStamp, TimeStamp& actualTimeStamp) {
 	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr result(new HomogeneousMatrix44()); //identity matrix
-	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr rootToNodeTransform = getGlobalTransform(node, timeStamp);
-	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr rootToReferenceNodeTransform = getGlobalTransform(referenceNode, timeStamp);
+	TimeStamp latestStampAlongPath1;
+	TimeStamp latestStampAlongPath2;
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr rootToNodeTransform = getGlobalTransform(node, timeStamp, latestStampAlongPath1);
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr rootToReferenceNodeTransform = getGlobalTransform(referenceNode, timeStamp, latestStampAlongPath2);
 
 	rootToReferenceNodeTransform->inverse();
 	*result = *( (*rootToReferenceNodeTransform) * (*rootToNodeTransform) ); //cf. Craig p39
+
+	if(latestStampAlongPath1 >= latestStampAlongPath2) {
+		actualTimeStamp = latestStampAlongPath1;
+	} else {
+		actualTimeStamp = latestStampAlongPath2;
+	}
+
 
 	return result;
 }
@@ -103,6 +123,10 @@ void Transform::deleteOutdatedTransforms(TimeStamp latestTimeStamp) {
 
 IHomogeneousMatrix44::IHomogeneousMatrix44Ptr  Transform::getTransform(TimeStamp timeStamp) {
 	return history.getData(timeStamp);
+}
+
+IHomogeneousMatrix44::IHomogeneousMatrix44Ptr Transform::getTransform(TimeStamp timeStamp, TimeStamp& actualTimeStamp) {
+	return history.getData(timeStamp, actualTimeStamp);
 }
 
 IHomogeneousMatrix44::IHomogeneousMatrix44Ptr Transform::getLatestTransform(){
