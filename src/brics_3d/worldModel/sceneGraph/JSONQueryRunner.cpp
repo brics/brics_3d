@@ -379,13 +379,15 @@ bool JSONQueryRunner::handleGetTransform(libvariant::Variant& query,
 	HomogeneousMatrix44::IHomogeneousMatrix44Ptr transform(new HomogeneousMatrix44());
 
 	/* perform query */
-	bool success = wm->scene.getTransformForNode(id, idReferenceNode, timeStamp, transform);
+	rsg::TimeStamp currentTimeStamp;
+	bool success = wm->scene.getTransformForNode(id, idReferenceNode, timeStamp, transform, currentTimeStamp);
 
 	/* set up result message */
 	result.Set("query", libvariant::Variant("GET_TRANSFORM"));
 	result.Set("querySuccess", libvariant::Variant(success));
 	if (success) {
 		JSONTypecaster::addTransformToJSON(transform, result, "transform");
+		JSONTypecaster::addTimeStampToJSON(currentTimeStamp, result, "timeStamp");
 	}
 
 	return success;
