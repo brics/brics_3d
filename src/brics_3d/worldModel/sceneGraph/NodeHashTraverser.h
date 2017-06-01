@@ -21,10 +21,24 @@
 #define NODEHASHTRAVERSER_H_
 
 #include "INodeVisitor.h"
+#include "Group.h"
+#include "Connection.h"
+#include "Node.h"
+#include "Transform.h"
+#include "UncertainTransform.h"
+#include "GeometricNode.h"
+#include "Shape.h"
+#include <map>
 
 namespace brics_3d {
 namespace rsg {
 
+/**
+ * @brief A traverser to generate a hash for a sub graph.
+ *
+ * The traverser traverses along the containment parent-child graph (DAG) in order to generate a Merkle DAG.
+ *
+ */
 class NodeHashTraverser : public INodeVisitor {
 public:
 	NodeHashTraverser();
@@ -36,8 +50,16 @@ public:
 	virtual void visit(GeometricNode* node);
 	virtual void visit(Connection* connection);
 
+	void reset();
+	bool getHashById(Id id, std::string &hash);
 
-	// map
+protected:
+    /// Table that maps IDs to already generated hashes - so we do not have to recompute them.
+    std::map<Id, std::string > hashLookUpTable;
+
+    /// Iterator for idLookUpTable
+    std::map<Id, std::string >::const_iterator hashIterator;
+
 };
 
 } /* namespace rsg */

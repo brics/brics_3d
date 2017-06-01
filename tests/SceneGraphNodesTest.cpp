@@ -5366,6 +5366,18 @@ void SceneGraphNodesTest::testNodeHash() {
 	LOG(INFO) << "hash9 = " << hash9;
 	CPPUNIT_ASSERT(hash9.compare(hash8) != 0);
 
+	Group root;
+	root.setId(id);
+	string hash10 = NodeHash::nodeToHash(&root);
+	LOG(INFO) << "hash10 = " << hash10;
+
+	NodeHashTraverser hashTraverser;
+	root.accept(&hashTraverser); // it actually behaves just as a single node
+	string hash11;
+	CPPUNIT_ASSERT(hashTraverser.getHashById(root.getId(), hash11));
+	LOG(INFO) << "hash11 = " << hash11;
+
+	CPPUNIT_ASSERT(hash10.compare(hash11) != 0);
 
 }
 

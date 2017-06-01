@@ -18,12 +18,13 @@
  ******************************************************************************/
 
 #include "NodeHashTraverser.h"
+#include "NodeHash.h"
 
 namespace brics_3d {
 namespace rsg {
 
 NodeHashTraverser::NodeHashTraverser() : INodeVisitor(custom) {
-
+	reset();
 }
 
 NodeHashTraverser::~NodeHashTraverser() {
@@ -31,18 +32,62 @@ NodeHashTraverser::~NodeHashTraverser() {
 }
 
 void NodeHashTraverser::visit(Node* node) {
+	string nodeHash = NodeHash::nodeToHash(node);
+	hashLookUpTable.insert(std::make_pair(node->getId(), nodeHash));
+	LOG(DEBUG) << "NodeHashTraverser: hash for Node:  " << node->getId() << " = " << nodeHash;
 }
 
 void NodeHashTraverser::visit(Group* node) {
+	std::vector<std::string> hashes;
+	for(unsigned i = 0; i < node->getNumberOfChildren(); ++i) { // recursively go down the graph structure
+		// calculate hashes recursively
+		node->getChild(i)->accept(this);
+
+		// collect all hashes of children in one set
+		string hash;
+		assert(getHashById(node->getChild(i)->getId(), hash));
+		hashes.push_back(hash);
+	}
+
+	// calculate hash part one: attributes an id this node
+	string nodeHash = NodeHash::nodeToHash(node);
+	hashes.push_back(nodeHash);
+
+	// calculate hash part two: combine node hash with the child hashes to a combined group hash
+	string groupHash = NodeHash::sortStringsAndHash(hashes);
+
+	// store it in global hash map
+	hashLookUpTable.insert(std::make_pair(node->getId(), groupHash));
+	LOG(DEBUG) << "NodeHashTraverser: hash for Group: " << node->getId() << " = " << nodeHash;
 }
 
 void NodeHashTraverser::visit(Transform* node) {
+	this->visit(dynamic_cast<Group*>(node)); //just feed forward to be handled as Group
 }
 
 void NodeHashTraverser::visit(GeometricNode* node) {
+	this->visit(dynamic_cast<Node*>(node)); //just feed forward to be handled as Node
 }
 
 void NodeHashTraverser::visit(Connection* connection) {
+	this->visit(dynamic_cast<Node*>(connection)); //just feed forward to be handled as Node
+	//FIXME take connections into account
+}
+
+void NodeHashTraverser::reset() {
+	hashLookUpTable.clear();
+}
+
+bool NodeHashTraverser::getHashById(Id id, std::string &hash) {
+	hashIterator = hashLookUpTable.find(id);
+	if (hashIterator != hashLookUpTable.end()) { //TODO multiple IDs?
+		hash = hashIterator->second;
+		return true;
+	}
+
+	LOG(ERROR) << "NodeHashTraverser: Hash look up table hash for ID " << id;
+	hash="";
+	return false;
 }
 
 } /* namespace rsg */

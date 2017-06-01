@@ -37,6 +37,7 @@
 #include "brics_3d/worldModel/sceneGraph/Connection.h"
 #include "brics_3d/worldModel/sceneGraph/SemanticContextUpdateFilter.h"
 #include "brics_3d/worldModel/sceneGraph/NodeHash.h"
+#include "brics_3d/worldModel/sceneGraph/NodeHashTraverser.h"
 #include "brics_3d/core/PointCloud3D.h"
 #include "brics_3d/core/PointCloud3DIterator.h"
 
