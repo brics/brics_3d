@@ -23,6 +23,8 @@
 namespace brics_3d {
 namespace rsg {
 
+const std::string NodeHashTraverser::NIL = "NO-HASH-FOR-ID";
+
 NodeHashTraverser::NodeHashTraverser() : INodeVisitor(custom) {
 	reset();
 }
@@ -44,8 +46,7 @@ void NodeHashTraverser::visit(Group* node) {
 		node->getChild(i)->accept(this);
 
 		// collect all hashes of children in one set
-		string hash;
-		assert(getHashById(node->getChild(i)->getId(), hash));
+		string hash = getHashById(node->getChild(i)->getId());
 		hashes.push_back(hash);
 	}
 
@@ -58,7 +59,7 @@ void NodeHashTraverser::visit(Group* node) {
 
 	// store it in global hash map
 	hashLookUpTable.insert(std::make_pair(node->getId(), groupHash));
-	LOG(DEBUG) << "NodeHashTraverser: hash for Group: " << node->getId() << " = " << nodeHash;
+	LOG(DEBUG) << "NodeHashTraverser: hash for Group: " << node->getId() << " = " << groupHash;
 }
 
 void NodeHashTraverser::visit(Transform* node) {
@@ -78,16 +79,15 @@ void NodeHashTraverser::reset() {
 	hashLookUpTable.clear();
 }
 
-bool NodeHashTraverser::getHashById(Id id, std::string &hash) {
+std::string NodeHashTraverser::getHashById(Id id) {
 	hashIterator = hashLookUpTable.find(id);
 	if (hashIterator != hashLookUpTable.end()) { //TODO multiple IDs?
-		hash = hashIterator->second;
-		return true;
+		return hashIterator->second;
 	}
 
-	LOG(ERROR) << "NodeHashTraverser: Hash look up table hash for ID " << id;
-	hash="";
-	return false;
+	LOG(ERROR) << "NodeHashTraverser: Hash look up failed for ID " << id;
+	return NIL;
+
 }
 
 } /* namespace rsg */

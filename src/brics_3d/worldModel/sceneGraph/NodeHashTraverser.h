@@ -51,7 +51,9 @@ public:
 	virtual void visit(Connection* connection);
 
 	void reset();
-	bool getHashById(Id id, std::string &hash);
+	std::string getHashById(Id id);
+
+	static const string NIL;
 
 protected:
     /// Table that maps IDs to already generated hashes - so we do not have to recompute them.
