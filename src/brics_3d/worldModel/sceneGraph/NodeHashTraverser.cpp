@@ -34,7 +34,7 @@ NodeHashTraverser::~NodeHashTraverser() {
 }
 
 void NodeHashTraverser::visit(Node* node) {
-	string nodeHash = NodeHash::nodeToHash(node);
+	string nodeHash = NodeHash::nodeToHash(node, useNodeIds);
 	hashLookUpTable.insert(std::make_pair(node->getId(), nodeHash));
 	LOG(DEBUG) << "NodeHashTraverser: hash for Node:  " << node->getId() << " = " << nodeHash;
 }
@@ -51,7 +51,7 @@ void NodeHashTraverser::visit(Group* node) {
 	}
 
 	// calculate hash part one: attributes an id this node
-	string nodeHash = NodeHash::nodeToHash(node);
+	string nodeHash = NodeHash::nodeToHash(node, useNodeIds);
 	hashes.push_back(nodeHash);
 
 	// calculate hash part two: combine node hash with the child hashes to a combined group hash
@@ -72,16 +72,20 @@ void NodeHashTraverser::visit(GeometricNode* node) {
 
 void NodeHashTraverser::visit(Connection* connection) {
 	this->visit(dynamic_cast<Node*>(connection)); //just feed forward to be handled as Node
-	//FIXME take connections into account
+
+//	string nodeHash = NodeHash::nodeToHash(node, useNodeIds);
+//	hashLookUpTable.insert(std::make_pair(node->getId(), nodeHash));
+//	LOG(DEBUG) << "NodeHashTraverser: hash for Node:  " << node->getId() << " = " << nodeHash;
 }
 
-void NodeHashTraverser::reset() {
+void NodeHashTraverser::reset(bool useNodeIds) {
+	this->useNodeIds = useNodeIds;
 	hashLookUpTable.clear();
 }
 
 std::string NodeHashTraverser::getHashById(Id id) {
 	hashIterator = hashLookUpTable.find(id);
-	if (hashIterator != hashLookUpTable.end()) { //TODO multiple IDs?
+	if (hashIterator != hashLookUpTable.end()) {
 		return hashIterator->second;
 	}
 

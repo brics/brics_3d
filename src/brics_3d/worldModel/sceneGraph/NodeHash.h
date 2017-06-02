@@ -38,7 +38,14 @@ public:
 	static std::string attributesToHash(std::vector<Attribute> attributes);
 	static std::string sortStringsAndHash(std::vector<std::string> strings);
 
-	static std::string nodeToHash(Node* node);
+	/**
+	 * @brief Get a SHA256 hash from a Node.
+	 * @param[in] node Pointer to node.
+	 * @param[in] useNodeId If true, the node id will be considered for the hash. Default is true.
+	 *            Set it to false when you are interested in the general structure, rather than individuals with concrete UUIDs.
+	 * @return A string representing the hash.
+	 */
+	static std::string nodeToHash(Node* node, bool useNodeId = true);
 
 };
 

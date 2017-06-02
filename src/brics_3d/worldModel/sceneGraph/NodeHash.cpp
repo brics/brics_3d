@@ -56,9 +56,13 @@ std::string NodeHash::sortStringsAndHash(std::vector<std::string> strings) {
 	return sha256.getHash();
 }
 
-std::string NodeHash::nodeToHash(Node* node) {
+std::string NodeHash::nodeToHash(Node* node, bool useNodeId) {
 	std::vector<std::string> hashes;
-	hashes.push_back(idToHash(node->getId()));
+	if(useNodeId) {
+		hashes.push_back(idToHash(node->getId()));
+	} else {
+		hashes.push_back("Node"); // Add the same hash for all Nodes, rather than its id.
+	}
 	hashes.push_back(attributesToHash(node->getAttributes()));
 	return sortStringsAndHash(hashes);
 }

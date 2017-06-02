@@ -5373,9 +5373,13 @@ void SceneGraphNodesTest::testNodeHash() {
 	 */
 
 	Group root;
+	id.fromString("c1d63f3a-b7ae-4531-b79a-488389f83d6d");
 	root.setId(id);
 	string hash10 = NodeHash::nodeToHash(&root);
 	LOG(INFO) << "hash10 = " << hash10;
+
+	string hash10b = NodeHash::nodeToHash(&root, false);
+	LOG(INFO) << "hash10b = " << hash10b;
 
 	NodeHashTraverser hashTraverser;
 	root.accept(&hashTraverser); // it actually behaves as a single node, hoverwer it is hashed twice
@@ -5385,13 +5389,29 @@ void SceneGraphNodesTest::testNodeHash() {
 
 	CPPUNIT_ASSERT(hash10.compare(hash11) != 0);
 
+
+	hashTraverser.reset(false);// traverse again, without IDs
+	root.accept(&hashTraverser);
+	string hash11b = hashTraverser.getHashById(root.getId());
+	CPPUNIT_ASSERT(hash11b.compare(NodeHashTraverser::NIL) != 0);
+	LOG(INFO) << "hash11b = " << hash11b;
+	CPPUNIT_ASSERT(hash11.compare(hash11b) != 0);
+
 	root.addChild(node1);
-	hashTraverser.reset();
+	hashTraverser.reset(); // true is deafault
 	root.accept(&hashTraverser);
 	string hash12 = hashTraverser.getHashById(root.getId());
 	CPPUNIT_ASSERT(hash12.compare(NodeHashTraverser::NIL) != 0);
 	LOG(INFO) << "hash12 = " << hash12;
 	CPPUNIT_ASSERT(hash11.compare(hash12) != 0);
+
+
+	hashTraverser.reset(false);// traverse again, without IDs
+	root.accept(&hashTraverser);
+	string hash12b = hashTraverser.getHashById(root.getId());
+	CPPUNIT_ASSERT(hash12b.compare(NodeHashTraverser::NIL) != 0);
+	LOG(INFO) << "hash12b = " << hash12b;
+	CPPUNIT_ASSERT(hash12.compare(hash12b) != 0);
 
 	root.addChild(node2);
 	hashTraverser.reset();
@@ -5400,6 +5420,14 @@ void SceneGraphNodesTest::testNodeHash() {
 	CPPUNIT_ASSERT(hash13.compare(NodeHashTraverser::NIL) != 0);
 	LOG(INFO) << "hash13 = " << hash13;
 	CPPUNIT_ASSERT(hash11.compare(hash13) != 0);
+	CPPUNIT_ASSERT(hash12.compare(hash13) != 0);
+
+	hashTraverser.reset(false);// traverse again, without IDs
+	root.accept(&hashTraverser);
+	string hash13b = hashTraverser.getHashById(root.getId());
+	CPPUNIT_ASSERT(hash13b.compare(NodeHashTraverser::NIL) != 0);
+	LOG(INFO) << "hash13b = " << hash13b;
+	CPPUNIT_ASSERT(hash13.compare(hash13b) != 0);
 
 }
 
