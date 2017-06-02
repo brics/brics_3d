@@ -71,11 +71,28 @@ void NodeHashTraverser::visit(GeometricNode* node) {
 }
 
 void NodeHashTraverser::visit(Connection* connection) {
-	this->visit(dynamic_cast<Node*>(connection)); //just feed forward to be handled as Node
+	std::vector<std::string> hashes;
 
-//	string nodeHash = NodeHash::nodeToHash(node, useNodeIds);
-//	hashLookUpTable.insert(std::make_pair(node->getId(), nodeHash));
-//	LOG(DEBUG) << "NodeHashTraverser: hash for Node:  " << node->getId() << " = " << nodeHash;
+	// collect all hashes of source and target IDs in one set
+	for(unsigned i = 0; i < connection->getNumberOfSourceNodes(); ++i) { // get "neighboring" nodes.
+		string hash = getHashById(connection->getSourceNode(i)->getId());
+		hashes.push_back(hash);
+	}
+
+	for(unsigned i = 0; i < connection->getNumberOfTargetNodes(); ++i) { // get "neighboring" nodes.
+		string hash = getHashById(connection->getTargetNode(i)->getId());
+		hashes.push_back(hash);
+	}
+
+	// calculate hash part one: attributes an id this node
+	string nodeHash = NodeHash::nodeToHash(connection, useNodeIds);
+	hashes.push_back(nodeHash);
+
+	// calculate hash part two: combine node hash with the source/target hashes to a combined connection hash
+	string connectionHash = NodeHash::sortStringsAndHash(hashes);
+
+	hashLookUpTable.insert(std::make_pair(connection->getId(), connectionHash));
+	LOG(DEBUG) << "NodeHashTraverser: hash for Connection: " << connection->getId() << " = " << connectionHash;
 }
 
 void NodeHashTraverser::reset(bool useNodeIds) {
