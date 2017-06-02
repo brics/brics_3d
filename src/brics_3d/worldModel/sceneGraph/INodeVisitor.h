@@ -38,8 +38,9 @@ class INodeVisitor {
 public:
 
 	enum TraverseDirection {
-		downwards,
-		upwards
+		downwards, // up
+		upwards,   // down
+		custom     // specialized traversal e.b. with memorization of intermediate results
 	};
 
 	INodeVisitor(TraverseDirection direction = downwards){this->direction = direction;};

@@ -36,6 +36,8 @@
 #include "brics_3d/worldModel/sceneGraph/UncertainTransform.h"
 #include "brics_3d/worldModel/sceneGraph/Connection.h"
 #include "brics_3d/worldModel/sceneGraph/SemanticContextUpdateFilter.h"
+#include "brics_3d/worldModel/sceneGraph/NodeHash.h"
+#include "brics_3d/worldModel/sceneGraph/NodeHashTraverser.h"
 #include "brics_3d/core/PointCloud3D.h"
 #include "brics_3d/core/PointCloud3DIterator.h"
 
@@ -261,6 +263,7 @@ class SceneGraphNodesTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testGlobalRootNodeQueries );
 	CPPUNIT_TEST( testGetNodesInSubgraph );
 	CPPUNIT_TEST( testErrorObserver );
+	CPPUNIT_TEST( testNodeHash );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -305,6 +308,7 @@ public:
 	void testGlobalRootNodeQueries();
 	void testGetNodesInSubgraph();
 	void testErrorObserver();
+	void testNodeHash();
 
 private:
 	  /// Maximum deviation for equality check of double variables

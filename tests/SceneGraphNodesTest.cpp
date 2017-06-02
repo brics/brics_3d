@@ -5360,6 +5360,153 @@ void SceneGraphNodesTest::testErrorObserver() {
 
 }
 
+void SceneGraphNodesTest::testNodeHash() {
+	Id id;
+	id.fromString("45af0d52-034e-467f-83a3-a8b685743c75");
+	string hash1 = NodeHash::idToHash(id);
+	string expectedHash1 = "3a68a04ecaf4d4715021ffc6aa859f511d7ccd90d06faab9c3e050b8616cf337"; //cf. http://www.xorbin.com/tools/sha256-hash-calculator
+	LOG(INFO) << "hash1 = " << hash1;
+	CPPUNIT_ASSERT(hash1.compare(expectedHash1) == 0);
+
+	vector<Attribute> attributes;
+	attributes.clear();
+	attributes.push_back(Attribute("name","someTag"));
+	string hash2 = NodeHash::attributesToHash(attributes);
+	string expectedHash2 = "82df5ef4049467eaa76ff3d87b122ddaa06af5cdf8120dbc8797b1d293039d69";
+	LOG(INFO) << "hash2 = " << hash2;
+	CPPUNIT_ASSERT(hash2.compare(expectedHash2) == 0);
+	CPPUNIT_ASSERT_EQUAL(0, hash2.compare(expectedHash2));
+
+	attributes.push_back(Attribute("name","someTag"));
+	string hash3 = NodeHash::attributesToHash(attributes);
+	string expectedHash3 = "a223ecf8063f2468b72dfd06b86f359a33e637ac09c3be1413b5828c717160d4";
+	LOG(INFO) << "hash3 = " << hash3;
+	CPPUNIT_ASSERT(hash3.compare(expectedHash3) == 0);
+
+	CPPUNIT_ASSERT(hash1.compare(hash2) != 0);
+	CPPUNIT_ASSERT(hash2.compare(hash3) != 0);
+	CPPUNIT_ASSERT(hash3.compare(hash1) != 0);
+
+
+	Id id2;
+	id.fromString("aa61f3c3-01a4-418a-a1cd-4c20f6b22d2d");
+	string hash4 = NodeHash::idToHash(id2);
+	string expectedHash4 = "9b5988fad3df06eb630759a362ce533d9039a690e66295805d2e3e4273c9e7fa";
+	LOG(INFO) << "hash4 = " << hash4;
+//	CPPUNIT_ASSERT(hash4.compare(expectedHash4) == 0);
+
+//	3a68a04ecaf4d4715021ffc6aa859f511d7ccd90d06faab9c3e050b8616cf3379b5988fad3df06eb630759a362ce533d9039a690e66295805d2e3e4273c9e7fa
+//	=> d547a9e897d872e8b2a46b6e14efaa0d263ec2393a43a2190ac96181273e870f
+//
+//	9b5988fad3df06eb630759a362ce533d9039a690e66295805d2e3e4273c9e7fa3a68a04ecaf4d4715021ffc6aa859f511d7ccd90d06faab9c3e050b8616cf337
+//	=>
+//	ec9b22ab94f5288d44400229995141f2ff01f638531341bf71b9181919601882
+
+//	12b9377cbe7e5c94e8a70d9d23929523d14afa954793130f8a3959c7b849aca83a68a04ecaf4d4715021ffc6aa859f511d7ccd90d06faab9c3e050b8616cf337
+//	=>5d35ec050bbdef3006e82261ab6707ddd800d31af9239fea62821e341d9e6d55
+
+	std::vector<std::string> hashes1;
+	hashes1.push_back(hash1);
+	hashes1.push_back(hash4);
+	string hash5 = NodeHash::sortStringsAndHash(hashes1);
+	string expectedHash5 = "5d35ec050bbdef3006e82261ab6707ddd800d31af9239fea62821e341d9e6d55";
+	LOG(INFO) << "hash5 = " << hash5;
+	CPPUNIT_ASSERT(hash5.compare(expectedHash5) == 0);
+
+	std::vector<std::string> hashes2;
+	hashes2.push_back(hash4);
+	hashes2.push_back(hash1);
+	string hash6 = NodeHash::sortStringsAndHash(hashes2);
+	LOG(INFO) << "hash5 = " << hash5;
+	CPPUNIT_ASSERT(hash6.compare(expectedHash5) == 0);
+
+	CPPUNIT_ASSERT(hash5.compare(hash6) == 0);
+
+//	Node node1;
+	Node::NodePtr node1(new Node());
+	node1->setId(id);
+	node1->setAttributes(attributes);
+//	Node node2;
+	Node::NodePtr node2(new Node());
+	node2->setId(id);
+	node2->setAttributes(attributes);
+
+	string hash7 = NodeHash::nodeToHash(node1.get());
+	LOG(INFO) << "hash7 = " << hash7;
+	string hash8 = NodeHash::nodeToHash(node2.get());
+	LOG(INFO) << "hash8 = " << hash8;
+	CPPUNIT_ASSERT(hash7.compare(hash8) == 0);
+
+	node2->setId(id2);
+	string hash9 = NodeHash::nodeToHash(node2.get());
+	LOG(INFO) << "hash9 = " << hash9;
+	CPPUNIT_ASSERT(hash9.compare(hash8) != 0);
+
+	/*
+	 * Test graphs
+	 */
+
+	Group root;
+	id.fromString("c1d63f3a-b7ae-4531-b79a-488389f83d6d");
+	root.setId(id);
+	string hash10 = NodeHash::nodeToHash(&root);
+	LOG(INFO) << "hash10 = " << hash10;
+
+	string hash10b = NodeHash::nodeToHash(&root, false);
+	LOG(INFO) << "hash10b = " << hash10b;
+
+	NodeHashTraverser hashTraverser;
+	root.accept(&hashTraverser); // it actually behaves as a single node, hoverwer it is hashed twice
+	string hash11 = hashTraverser.getHashById(root.getId());
+	CPPUNIT_ASSERT(hash11.compare(NodeHashTraverser::NIL) != 0);
+	LOG(INFO) << "hash11 = " << hash11;
+
+	CPPUNIT_ASSERT(hash10.compare(hash11) != 0);
+
+
+	hashTraverser.reset(false);// traverse again, without IDs
+	root.accept(&hashTraverser);
+	string hash11b = hashTraverser.getHashById(root.getId());
+	CPPUNIT_ASSERT(hash11b.compare(NodeHashTraverser::NIL) != 0);
+	LOG(INFO) << "hash11b = " << hash11b;
+	CPPUNIT_ASSERT(hash11.compare(hash11b) != 0);
+
+	root.addChild(node1);
+	hashTraverser.reset(); // true is deafault
+	root.accept(&hashTraverser);
+	string hash12 = hashTraverser.getHashById(root.getId());
+	CPPUNIT_ASSERT(hash12.compare(NodeHashTraverser::NIL) != 0);
+	LOG(INFO) << "hash12 = " << hash12;
+	CPPUNIT_ASSERT(hash11.compare(hash12) != 0);
+
+
+	hashTraverser.reset(false);// traverse again, without IDs
+	root.accept(&hashTraverser);
+	string hash12b = hashTraverser.getHashById(root.getId());
+	CPPUNIT_ASSERT(hash12b.compare(NodeHashTraverser::NIL) != 0);
+	LOG(INFO) << "hash12b = " << hash12b;
+	CPPUNIT_ASSERT(hash12.compare(hash12b) != 0);
+
+	root.addChild(node2);
+	hashTraverser.reset();
+	root.accept(&hashTraverser);
+	string hash13 = hashTraverser.getHashById(root.getId());
+	CPPUNIT_ASSERT(hash13.compare(NodeHashTraverser::NIL) != 0);
+	LOG(INFO) << "hash13 = " << hash13;
+	CPPUNIT_ASSERT(hash11.compare(hash13) != 0);
+	CPPUNIT_ASSERT(hash12.compare(hash13) != 0);
+
+	hashTraverser.reset(false);// traverse again, without IDs
+	root.accept(&hashTraverser);
+	string hash13b = hashTraverser.getHashById(root.getId());
+	CPPUNIT_ASSERT(hash13b.compare(NodeHashTraverser::NIL) != 0);
+	LOG(INFO) << "hash13b = " << hash13b;
+	CPPUNIT_ASSERT(hash13.compare(hash13b) != 0);
+
+	LOG(INFO) << "All hashes for graph: " << std::endl <<hashTraverser.getJSON();
+}
+
+
 }  // namespace unitTests
 
 /* EOF */
