@@ -5429,6 +5429,7 @@ void SceneGraphNodesTest::testNodeHash() {
 	LOG(INFO) << "hash13b = " << hash13b;
 	CPPUNIT_ASSERT(hash13.compare(hash13b) != 0);
 
+	LOG(INFO) << "All hashes for graph: " << std::endl <<hashTraverser.getJSON();
 }
 
 

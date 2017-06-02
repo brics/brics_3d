@@ -77,6 +77,25 @@ public:
 	/// Compare to this string in order to see if there was an error.
 	static const string NIL;
 
+	/**
+	 * @brief Return all IDs and hashes in an JSON array.
+	 * @note  The traverser has to be executed first!
+	 *        This function makes a cache look up - so it has to be filled by a traversal first.
+	 * @return A JSON array of the below format:
+	 *
+	 * @code
+	 *
+	 * {
+	 *   "hashes": [
+	 *     ["80f7b54d-0bd5-4371-a623-fea2c8d278fd", "d5a8d7bd45dd19b774693519011964d983414c1a87783c1d9e32ac403827d83d"],
+	 *     ["2a0e89a8-e108-410c-90f4-09a7b4ff1f96", "4ca49a957cd3f5ff0666f37a77a88be61781fbe9a49e92558f49c1423caa6461"]
+	 *   ]
+	 * }
+	 *
+	 * @endcode
+	 */
+	std::string getJSON();
+
 protected:
 
     /// Table that maps IDs to already generated hashes - so we do not have to recompute them.

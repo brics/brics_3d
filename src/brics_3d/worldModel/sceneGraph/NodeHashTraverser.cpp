@@ -111,6 +111,31 @@ std::string NodeHashTraverser::getHashById(Id id) {
 
 }
 
+std::string NodeHashTraverser::getJSON() {
+	std::stringstream out;
+
+	//	{
+	//	  "hashes": [
+	out << "{" << std::endl;
+	out << "  \"hashes\": [" << std::endl;
+
+
+	for(hashIterator = hashLookUpTable.begin(); hashIterator != hashLookUpTable.end();) {
+		out << "    [\"" << hashIterator->first.toString() << "\", \"" << hashIterator->second << "\"]";
+		if (++hashIterator != hashLookUpTable.end()) { // last elements should not get a comma
+			out << ",";
+		}
+		out << std::endl;
+	}
+
+	//	  ]
+	//  }
+	out << "  ]" << std::endl;
+	out << "}" << std::endl;
+
+	return out.str();
+}
+
 } /* namespace rsg */
 } /* namespace brics_3d */
 
