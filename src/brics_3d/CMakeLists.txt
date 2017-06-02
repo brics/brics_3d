@@ -216,6 +216,7 @@ SET (WORLD_MODEL_LIBRARY_SOURCES
     ./worldModel/sceneGraph/TimeStamper
     ./worldModel/sceneGraph/NodeHash
     ./worldModel/sceneGraph/NodeHashTraverser
+    ./worldModel/sceneGraph/JSONGraphGenerator
     ../../external/hash/sha256
 )
 
