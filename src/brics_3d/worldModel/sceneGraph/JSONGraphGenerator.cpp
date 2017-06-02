@@ -93,10 +93,61 @@ void JSONGraphGenerator::visit(Group* node) {
 
 void JSONGraphGenerator::visit(Transform* node) {
 
+	/* recursively go down the graph structure */
+	for(unsigned i = 0; i < node->getNumberOfChildren(); ++i) {
+		// calculate hashes recursively
+		node->getChild(i)->accept(this);
+	}
+
+	/* during unwinding of the recusrion stack: build up the JSON model */
+	LOG(DEBUG) << "JSONGraphGenerator: adding a Transform-" << node->getId().toString();
+	try {
+
+
+		/* the actual graph primitive */
+		libvariant::Variant jsonNode;
+		jsonNode.Set("@graphtype", libvariant::Variant("Connection"));
+		jsonNode.Set("@semanticContext", libvariant::Variant("Transform"));
+		JSONTypecaster::addIdToJSON(node->getId(), jsonNode, "id");
+		JSONTypecaster::addAttributesToJSON(node->getAttributes(), jsonNode);
+		TimeStamp attributesTimeStamp = node->getAttributesTimeStamp();
+		JSONTypecaster::addTimeStampToJSON(attributesTimeStamp, jsonNode, "attributesTimeStamp");
+		TemporalCache<IHomogeneousMatrix44::IHomogeneousMatrix44Ptr> history = node->getHistory();
+		JSONTypecaster::addTransformCacheToJSON(history, jsonNode);
+
+//		/* assamble it */
+//		graphUpdate.Set("node", node);
+
+	} catch (std::exception e) {
+		LOG(ERROR) << "JSONGraphGenerator addNode: Cannot create a JSON serialization. Exception = " << std::endl << e.what();
+	}
+
 }
 
 void JSONGraphGenerator::visit(GeometricNode* node) {
+	LOG(DEBUG) << "JSONGraphGenerator: adding a Node-" << node->getId().toString();
 
+	try {
+
+		/* the actual graph primitive */
+		libvariant::Variant jsonNode;
+		jsonNode.Set("@graphtype", libvariant::Variant("Node"));
+		jsonNode.Set("@semanticContext", libvariant::Variant("GeometricNode"));
+		JSONTypecaster::addIdToJSON(node->getId(), jsonNode, "id");
+		JSONTypecaster::addAttributesToJSON(node->getAttributes(), jsonNode);
+		TimeStamp attributesTimeStamp = node->getAttributesTimeStamp();
+		JSONTypecaster::addTimeStampToJSON(attributesTimeStamp, jsonNode, "attributesTimeStamp");
+		brics_3d::rsg::Shape::ShapePtr shape = node->getShape();
+		JSONTypecaster::addShapeToJSON(shape, jsonNode, "geometry");
+		JSONTypecaster::addTimeStampToJSON(node->getTimeStamp(), jsonNode, "timeStamp");
+		jsonNode.Set("unit", libvariant::Variant("m")); // TODO; better part of geometry?!?
+
+		/* store it for later assembly */
+		jsonLookUpTable.insert(std::make_pair(node->getId(), jsonNode));
+
+	} catch (std::exception e) {
+		LOG(ERROR) << "JSONGraphGenerator addNode: Cannot create a JSON serialization. Exception = " << std::endl << e.what();
+	}
 }
 
 void JSONGraphGenerator::visit(Connection* connection) {
