@@ -68,6 +68,9 @@ protected:
 
 	std::vector< Node* > alreadyVisitedNodes;
 
+	Id subgraphId;
+
+	int visitCounter;
 };
 
 } /* namespace rsg */

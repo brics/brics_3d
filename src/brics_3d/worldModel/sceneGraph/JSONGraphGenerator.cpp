@@ -33,6 +33,11 @@ JSONGraphGenerator::~JSONGraphGenerator() {
 void JSONGraphGenerator::visit(Node* node) {
 	LOG(DEBUG) << "JSONGraphGenerator: adding a Node-" << node->getId().toString();
 
+	if(visitCounter == 0) {
+		subgraphId = node->getId(); //memorize node, where traversal has started
+	}
+	visitCounter++;
+
 	try {
 
 		/* the actual graph primitive */
@@ -53,13 +58,18 @@ void JSONGraphGenerator::visit(Node* node) {
 
 void JSONGraphGenerator::visit(Group* node) {
 
+	if(visitCounter == 0) {
+		subgraphId = node->getId(); //memorize node, where traversal has started
+	}
+	visitCounter++;
+
 	/* recursively go down the graph structure */
 	for(unsigned i = 0; i < node->getNumberOfChildren(); ++i) {
 		// calculate hashes recursively
 		node->getChild(i)->accept(this);
 	}
 
-	/* during unwinding of the recusrion stack: build up the JSON model */
+	/* during unwinding of the recursion stack: build up the JSON model */
 	LOG(DEBUG) << "JSONGraphGenerator: adding a Group-" << node->getId().toString();
 	try {
 
@@ -95,6 +105,8 @@ void JSONGraphGenerator::visit(Group* node) {
 		/* store it for later assembly */
 		jsonLookUpTable.insert(std::make_pair(node->getId(), jsonNode));
 
+
+
 	} catch (std::exception e) {
 		LOG(ERROR) << "JSONGraphGenerator addNode: Cannot create a JSON serialization. Exception = " << std::endl << e.what();
 	}
@@ -102,6 +114,12 @@ void JSONGraphGenerator::visit(Group* node) {
 }
 
 void JSONGraphGenerator::visit(Transform* node) {
+	LOG(DEBUG) << "JSONGraphGenerator: adding a Transform-" << node->getId().toString();
+
+	if(visitCounter == 0) {
+		subgraphId = node->getId(); //memorize node, where traversal has started
+	}
+	visitCounter++;
 
 	/* recursively go down the graph structure */
 	for(unsigned i = 0; i < node->getNumberOfChildren(); ++i) {
@@ -125,8 +143,8 @@ void JSONGraphGenerator::visit(Transform* node) {
 		TemporalCache<IHomogeneousMatrix44::IHomogeneousMatrix44Ptr> history = node->getHistory();
 		JSONTypecaster::addTransformCacheToJSON(history, jsonNode);
 
-//		/* assamble it */
-//		graphUpdate.Set("node", node);
+		/* store it for later assembly */
+		jsonLookUpTable.insert(std::make_pair(node->getId(), jsonNode));
 
 	} catch (std::exception e) {
 		LOG(ERROR) << "JSONGraphGenerator addNode: Cannot create a JSON serialization. Exception = " << std::endl << e.what();
@@ -136,6 +154,11 @@ void JSONGraphGenerator::visit(Transform* node) {
 
 void JSONGraphGenerator::visit(GeometricNode* node) {
 	LOG(DEBUG) << "JSONGraphGenerator: adding a Node-" << node->getId().toString();
+
+	if(visitCounter == 0) {
+		subgraphId = node->getId(); //memorize node, where traversal has started
+	}
+	visitCounter++;
 
 	try {
 
@@ -161,8 +184,12 @@ void JSONGraphGenerator::visit(GeometricNode* node) {
 }
 
 void JSONGraphGenerator::visit(Connection* connection) {
-
 	LOG(DEBUG) << "JSONGraphGenerator: adding a Connection-" << connection->getId().toString();
+
+	if(visitCounter == 0) {
+		subgraphId = connection->getId(); //memorize node, where traversal has started
+	}
+	visitCounter++;
 
 	try {
 
@@ -203,13 +230,24 @@ void JSONGraphGenerator::reset() {
 	alreadyVisitedNodes.clear();
 	jsonLookUpTable.clear();
 	model.Clear();
+	subgraphId.setToNil();
+	visitCounter = 0;
 }
 
 std::string JSONGraphGenerator::getJSON() {
-	return "false";
+	libvariant::Variant jsonModel = getJSONModel();
+	string jsonModelAsString = libvariant::Serialize(jsonModel, libvariant::SERIALIZE_JSON);
+	return jsonModelAsString;
 }
 
-libvariant::Variant& JSONGraphGenerator::getJSONModel() {
+libvariant::Variant& JSONGraphGenerator::getJSONModel() { // FIXME: add rootNode and remoteRootNodes
+	libvariant::Variant jsonModel;
+	jsonModel.Set("metamodel", libvariant::Variant("rsg-core-schema.json"));
+	jsonModel.Set("@worldmodeltype", libvariant::Variant("WorldModelAgent"));
+
+	libvariant::Variant graph = getJSONById(subgraphId);
+	jsonModel.Set("rootNode", graph);
+	model = jsonModel;
 	return model;
 }
 

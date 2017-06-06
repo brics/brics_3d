@@ -3458,6 +3458,38 @@ void JSONTest::testGrahpGenerator() {
 	string jsonGraph = graphGenerator.getJSON();
 	LOG(INFO) << "JSONTest::testGrahpGenerator: jsonGraph = " << jsonGraph;
 
+	/* 3.) */
+	brics_3d::rsg::Id rootId; // Explicitly set the root Id (optional)
+	rootId = brics_3d::rsg::JSONDeserializer::getRootIdFromJSONModel(jsonGraph);
+	//rootId.fromString("77fd4353-033b-4c23-a675-602fa0e59804");
+	brics_3d::WorldModel* wm2 = new brics_3d::WorldModel(new brics_3d::rsg::UuidGenerator(rootId));
+
+	// Hash for just root
+	hashTraverser.reset();
+	wm2->scene.executeGraphTraverser(&hashTraverser, wm->getRootNodeId());
+	string hash2 = hashTraverser.getHashById(wm->getRootNodeId());
+	string hashes2 = hashTraverser.getJSON();
+	CPPUNIT_ASSERT(hash2.compare(NodeHashTraverser::NIL) != 0);
+	LOG(INFO) << "JSONTest::testGrahpGenerator: hash2 = " << hash2;
+	LOG(INFO) << "JSONTest::testGrahpGenerator: hashes2 = " << hashes2;
+
+	/* Do the actual JSON parsing. */
+	brics_3d::rsg::JSONDeserializer deserializer(wm2);
+	deserializer.write(jsonGraph);
+
+	// Hash for full graph
+	hashTraverser.reset();
+	wm2->scene.executeGraphTraverser(&hashTraverser, wm->getRootNodeId());
+	string hash3 = hashTraverser.getHashById(wm->getRootNodeId());
+	string hashes3 = hashTraverser.getJSON();
+	CPPUNIT_ASSERT(hash3.compare(NodeHashTraverser::NIL) != 0);
+	LOG(INFO) << "JSONTest::testGrahpGenerator: hash3 = " << hash3;
+	LOG(INFO) << "JSONTest::testGrahpGenerator: hashes3 = " << hashes3;
+
+	/* 4.) */
+	CPPUNIT_ASSERT(hash1.compare(hash2) != 0);
+	CPPUNIT_ASSERT(hash1.compare(hash3) == 0);
+
 	delete wm;
 }
 
