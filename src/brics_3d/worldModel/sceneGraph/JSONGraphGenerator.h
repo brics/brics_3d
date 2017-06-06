@@ -66,6 +66,8 @@ protected:
     /// Iterator for jsonLookUpTable
     std::map<Id, libvariant::Variant >::const_iterator jsonIterator;
 
+	std::vector< Node* > alreadyVisitedNodes;
+
 };
 
 } /* namespace rsg */

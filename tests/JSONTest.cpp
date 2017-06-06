@@ -30,6 +30,7 @@
 #include <brics_3d/worldModel/sceneGraph/JSONSerializer.h>
 #include <brics_3d/worldModel/sceneGraph/JSONDeserializer.h>
 #include <brics_3d/worldModel/sceneGraph/JSONQueryRunner.h>
+#include <brics_3d/worldModel/sceneGraph/JSONGraphGenerator.h>
 #include <brics_3d/worldModel/sceneGraph/DotVisualizer.h>
 #include <brics_3d/worldModel/sceneGraph/UuidGenerator.h>
 #include <brics_3d/util/JSONTypecaster.h>
@@ -3360,6 +3361,105 @@ void JSONTest::testTimeStampConversion() {
 
 }
 
+void JSONTest::testGrahpGenerator() {
+	brics_3d::WorldModel* wm = new brics_3d::WorldModel();
+
+	/*
+	 * Create some graph.
+	 */
+	Id dumyId;
+	vector<Attribute> attributes;
+	vector<Attribute> dummyAttributes;
+	TimeStamp t1 = wm->now();
+
+	CPPUNIT_ASSERT(wm->scene.addNode(wm->getRootNodeId(), dumyId, attributes));
+	attributes.clear();
+	attributes.push_back(rsg::Attribute("osm:landuse", "forest"));
+	CPPUNIT_ASSERT(wm->scene.addNode(wm->getRootNodeId(), dumyId, attributes));
+	attributes.clear();
+	attributes.push_back(rsg::Attribute("gis:origin", "initial"));
+	CPPUNIT_ASSERT(wm->scene.addNode(wm->getRootNodeId(), dumyId, attributes));
+	attributes.clear();
+	CPPUNIT_ASSERT(wm->scene.addGroup(wm->getRootNodeId(), dumyId, attributes));
+
+	attributes.clear();
+	attributes.push_back(rsg::Attribute("tf:name", "tf_1"));
+	rsg::Id tf1Id;
+	brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform123(new brics_3d::HomogeneousMatrix44(1,0,0,  	// Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             1,2,3)); 						// Translation coefficients
+
+	brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform234(new brics_3d::HomogeneousMatrix44(1,0,0,  	// Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             2,3,4)); 						// Translation coefficients
+
+	CPPUNIT_ASSERT(wm->scene.addTransformNode(wm->getRootNodeId(), tf1Id, attributes, transform123, t1));
+
+	Id utfId;
+	ITransformUncertainty::ITransformUncertaintyPtr uncertainty123(new CovarianceMatrix66(3, 0.001, 0.001, 0.0000, 0.000000, 0.00000));
+	CPPUNIT_ASSERT(wm->scene.addUncertainTransformNode(wm->getRootNodeId(), utfId, dummyAttributes, transform234, uncertainty123, wm->now()));
+
+	rsg::Box::BoxPtr box( new rsg::Box(1,2,3)); //LOD 3 / 1*2*3 => 3 / 6m^3 => 1 sample /2 m^3 => LOD = 0.5
+	rsg::Id boxId;
+	CPPUNIT_ASSERT(wm->scene.addGeometricNode(wm->getRootNodeId(), boxId, dummyAttributes, box, wm->now()));
+	CPPUNIT_ASSERT(wm->scene.deleteNode(boxId));
+
+	CPPUNIT_ASSERT(wm->scene.addParent(utfId, tf1Id));
+	CPPUNIT_ASSERT(wm->scene.removeParent(utfId, tf1Id));
+
+	Id someRemoteNode = 42;
+	CPPUNIT_ASSERT(wm->scene.addRemoteRootNode(someRemoteNode, dummyAttributes));
+
+	vector<Attribute> rootAttibutes;
+	rootAttibutes.push_back(Attribute("name","someRootNodePolicy"));
+	CPPUNIT_ASSERT(wm->scene.setNodeAttributes(someRemoteNode, rootAttibutes, wm->now())); // Note, identical attribute will not be set
+
+	Id connId;
+	vector<Attribute> connectionAttributes;
+	connectionAttributes.push_back(Attribute("rsg:type","has_geometry"));
+	vector<Id> sourceIs;
+	sourceIs.push_back(utfId);
+	vector<Id> targetIs;
+	targetIs.push_back(tf1Id);
+	targetIs.push_back(utfId);
+	LOG(DEBUG) << "Adding connection { source = {" << utfId << "}, target = {" << tf1Id << ", "<< utfId << "}}";
+	CPPUNIT_ASSERT(wm->scene.addConnection(wm->getRootNodeId(), connId, connectionAttributes, sourceIs, targetIs, wm->now(), wm->now()));
+
+	brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform456(new brics_3d::HomogeneousMatrix44(1,0,0,  	// Rotation coefficients
+	                                                             0,1,0,
+	                                                             0,0,1,
+	                                                             4,5,6));
+	TimeStamp t2 = wm->now();//t1 + Duration(0.5, Units::Second);
+	CPPUNIT_ASSERT(wm->scene.setTransform(tf1Id, transform456, t2));
+	TimeStamp t3 = wm->now();//t2 + Duration(1.0, Units::Second);
+	CPPUNIT_ASSERT(wm->scene.setTransform(tf1Id, transform456, t3));
+
+	/*
+	 * 1.) calculate hash
+	 * 2.) store as JSON
+	 * 3.) load from JSON
+	 * 4.) compare hashes
+	 */
+
+	/* 1.) */
+	NodeHashTraverser hashTraverser;
+	wm->scene.executeGraphTraverser(&hashTraverser, wm->getRootNodeId());
+	string hash1 = hashTraverser.getHashById(wm->getRootNodeId());
+	string hashes1 = hashTraverser.getJSON();
+	CPPUNIT_ASSERT(hash1.compare(NodeHashTraverser::NIL) != 0);
+	LOG(INFO) << "JSONTest::testGrahpGenerator: hash1 = " << hash1;
+	LOG(INFO) << "JSONTest::testGrahpGenerator: hashes1 = " << hashes1;
+
+	/* 2.) */
+	JSONGraphGenerator graphGenerator;
+	wm->scene.executeGraphTraverser(&graphGenerator, wm->getRootNodeId());
+	string jsonGraph = graphGenerator.getJSON();
+	LOG(INFO) << "JSONTest::testGrahpGenerator: jsonGraph = " << jsonGraph;
+
+	delete wm;
+}
 
 }  // namespace unitTests
 

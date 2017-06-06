@@ -72,15 +72,25 @@ void JSONGraphGenerator::visit(Group* node) {
 		JSONTypecaster::addTimeStampToJSON(attributesTimeStamp, jsonNode, "attributesTimeStamp");
 
 
-		/* attach all childs */
+		/* attach all childs and connections */
 		libvariant::Variant childs(libvariant::VariantDefines::ListType);
-		for(unsigned i = 0; i < node->getNumberOfChildren(); ++i) { // FIXME: already traversed childs
-			libvariant::Variant child;
-			child.Set("@childtype", libvariant::Variant("Child"));
-			child.Set("child", getJSONById(node->getChild(i)->getId()));
-			childs.Append(child);
+		libvariant::Variant connections(libvariant::VariantDefines::ListType);
+		for(unsigned i = 0; i < node->getNumberOfChildren(); ++i) {
+			rsg::Transform::TransformPtr transformNode = boost::dynamic_pointer_cast<rsg::Transform>(node->getChild(i));
+			rsg::Connection::ConnectionPtr connectionNode = boost::dynamic_pointer_cast<rsg::Connection>(node->getChild(i));
+			if ((transformNode != 0) || (connectionNode != 0)) { // store Connections in connection field
+				libvariant::Variant connection;
+				connections.Append(getJSONById(node->getChild(i)->getId()));
+			} else { // store all others as child node. // FIXME: already traversed childs
+				libvariant::Variant child;
+				child.Set("@childtype", libvariant::Variant("Child"));
+				child.Set("child", getJSONById(node->getChild(i)->getId()));
+				childs.Append(child);
+			}
 		}
 		jsonNode.Set("childs", childs);
+		jsonNode.Set("connections", connections);
+
 
 		/* store it for later assembly */
 		jsonLookUpTable.insert(std::make_pair(node->getId(), jsonNode));
@@ -152,9 +162,45 @@ void JSONGraphGenerator::visit(GeometricNode* node) {
 
 void JSONGraphGenerator::visit(Connection* connection) {
 
+	LOG(DEBUG) << "JSONGraphGenerator: adding a Connection-" << connection->getId().toString();
+
+	try {
+
+		/* the actual graph primitive */
+		libvariant::Variant jsonNode;
+		jsonNode.Set("@graphtype", libvariant::Variant("Connection"));
+		JSONTypecaster::addIdToJSON(connection->getId(), jsonNode, "id");
+		JSONTypecaster::addAttributesToJSON(connection->getAttributes(), jsonNode);
+		TimeStamp attributesTimeStamp = connection->getAttributesTimeStamp();
+		JSONTypecaster::addTimeStampToJSON(attributesTimeStamp, jsonNode, "attributesTimeStamp");
+
+		/* Id lists */
+		vector<rsg::Id> sourceIds;
+		vector<rsg::Id> targetIds;
+		for (unsigned i = 0; i < connection->getNumberOfSourceNodes(); ++i) {
+			sourceIds.push_back(connection->getSourceNode(i)->getId());
+		}
+		for (unsigned i = 0; i < connection->getNumberOfTargetNodes(); ++i) {
+			targetIds.push_back(connection->getTargetNode(i)->getId());
+		}
+		JSONTypecaster::addIdsToJSON(sourceIds, jsonNode, "sourceIds");
+		JSONTypecaster::addIdsToJSON(targetIds, jsonNode, "targetIds");
+
+		/* stamps */
+		JSONTypecaster::addTimeStampToJSON(connection->getStart(), jsonNode, "start");
+		JSONTypecaster::addTimeStampToJSON(connection->getEnd(), jsonNode, "end");
+
+		/* store it for later assembly */
+		jsonLookUpTable.insert(std::make_pair(connection->getId(), jsonNode));
+
+
+	} catch (std::exception e) {
+		LOG(ERROR) << "JSONGraphGenerator addConnection: Cannot create a JSON serialization. Exception = " << std::endl << e.what();
+	}
 }
 
 void JSONGraphGenerator::reset() {
+	alreadyVisitedNodes.clear();
 	jsonLookUpTable.clear();
 	model.Clear();
 }
