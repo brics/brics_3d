@@ -143,11 +143,23 @@ void JSONGraphGenerator::visit(Transform* node) {
 		TemporalCache<IHomogeneousMatrix44::IHomogeneousMatrix44Ptr> history = node->getHistory();
 		JSONTypecaster::addTransformCacheToJSON(history, jsonNode);
 
+		/* workaround for Transform implementation not beeing a real Connection ...*/
+		vector<rsg::Id> sourceIds;
+		vector<rsg::Id> targetIds;
+		sourceIds.push_back(node->getParent(0)->getId());
+		if (node->getNumberOfChildren() > 0) {
+			targetIds.push_back(node->getChild(0)->getId());
+		} else {
+			LOG(ERROR) << "JSONGraphGenerator Transform: Transform as no target ID.";
+		}
+		JSONTypecaster::addIdsToJSON(sourceIds, jsonNode, "sourceIds");
+		JSONTypecaster::addIdsToJSON(targetIds, jsonNode, "targetIds");
+
 		/* store it for later assembly */
 		jsonLookUpTable.insert(std::make_pair(node->getId(), jsonNode));
 
 	} catch (std::exception e) {
-		LOG(ERROR) << "JSONGraphGenerator addNode: Cannot create a JSON serialization. Exception = " << std::endl << e.what();
+		LOG(ERROR) << "JSONGraphGenerator Transform: Cannot create a JSON serialization. Exception = " << std::endl << e.what();
 	}
 
 }
