@@ -282,6 +282,7 @@ IF (USE_OSG)
         	${OSGUTIL_LIBRARY_DEBUG}
         	${OSGTEXT_LIBRARY_DEBUG}
             ${LIBVARIANT_LIBRARIES}
+            pthread
         )  
     ENDIF(USE_JSON)
     
